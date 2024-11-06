@@ -11146,7 +11146,7 @@
               e > 50 &&
               ((this.cached = !0), this.cache_fixed_text());
             var o = e / s.drawFPS;
-            //var oo = this.scene.runTicks / s.drawFPS;
+            //var oo = this.scene.ghostTime / s.drawFPS;
             if (this.scene.game.mod.getVar("slowmo")) {o = o / 2}
             this.time.text = n(1e3 * o);
             //this.best.text = n(1e3 * oo);
@@ -12425,6 +12425,12 @@
               }
               if (this.scene.game.currentScene.playerManager.firstPlayer._gamepad.isButtonDown("enter")) {
                 this.setButtonDown("enter", true);
+                if (t[upKey] && Array.isArray(t[upKey]) && t[upKey].includes(e)) {
+                  this.setButtonUp(s);
+                }
+                if (t[downKey] && Array.isArray(t[downKey]) && t[downKey].includes(e)) {
+                  this.setButtonDown(s, true);
+                }
               }
               if (!this.scene.game.currentScene.playerManager.firstPlayer._gamepad.isButtonDown("enter")) {
                 this.setButtonUp("enter");
@@ -16492,13 +16498,13 @@
                     (this._tempVehicleType = !1),
                     i.updateCameraFocalPoint();
                 }
+                if (this._game.mod.getVar("oldTimer")) {e.ticks = s._sceneTicks};
+                if (!this._scene.playerManager.firstPlayer.complete && this._game.mod.getVar("oldTimer")) {e.ticks = e.ticks + 1}
                 if (
                   ((this._powerupsConsumed = JSON.parse(s._powerupsConsumed)),
                   (this._crashed = s._crashed),
                   !t)
                 ) {
-                  if (this._game.mod.getVar("oldTimer")) {e.ticks = s._sceneTicks};
-                  if (!this._scene.playerManager.firstPlayer.complete && this._game.mod.getVar("oldTimer")) {e.ticks = e.ticks + 1}
                   const t = e.settings;
                   var keyCodeToChar = {8:"Backspace",9:"Tab",13:"Enter",16:"Shift",17:"Ctrl",18:"Alt",19:"Pause/Break",20:"Caps Lock",27:"Esc",32:"Space",33:"Page Up",34:"Page Down",35:"End",36:"Home",37:"Left",38:"Up",39:"Right",40:"Down",45:"Insert",46:"Delete",48:"0",49:"1",50:"2",51:"3",52:"4",53:"5",54:"6",55:"7",56:"8",57:"9",65:"A",66:"B",67:"C",68:"D",69:"E",70:"F",71:"G",72:"H",73:"I",74:"J",75:"K",76:"L",77:"M",78:"N",79:"O",80:"P",81:"Q",82:"R",83:"S",84:"T",85:"U",86:"V",87:"W",88:"X",89:"Y",90:"Z",91:"Windows",93:"Right Click",96:"Numpad 0",97:"Numpad 1",98:"Numpad 2",99:"Numpad 3",100:"Numpad 4",101:"Numpad 5",102:"Numpad 6",103:"Numpad 7",104:"Numpad 8",105:"Numpad 9",106:"Numpad Multiply",107:"Numpad Plus",109:"Numpad Minus",110:"Numpad Decimal",111:"Numpad Divide",112:"F1",113:"F2",114:"F3",115:"F4",116:"F5",117:"F6",118:"F7",119:"F8",120:"F9",121:"F10",122:"F11",123:"F12",144:"Num Lock",145:"Scroll Lock",182:"My Computer",183:"My Calculator",186:"Semi-colon",187:"Equal Sign",188:"Comma",189:"Minus",190:"Period",191:"Slash",192:"Backquote",219:"Open Bracket",220:"Backslash",221:"Close Bracket",222:"'"};
                   let y = keyCodeToChar[GameSettings.editorHotkeys.backspace];
@@ -20806,9 +20812,11 @@
               n = s._powerupsConsumed.checkpoints;
             i < 26 &&
               e.alive &&
+              s === this.scene.playerManager._players[0] &&
               -1 === n.indexOf(this.id) &&
               (n.push(this.id),
-              s.setCheckpointOnUpdate(),
+              this.scene.playerManager._players[0].setCheckpointOnUpdate(),
+              (this.scene.playerManager._players[1] ? this.scene.playerManager._players[1].setCheckpointOnUpdate() : null),
               s.isGhost() ||
                 ((this.hit = !0),
                 (this.sector.powerupCanvasDrawn = !1),
@@ -24262,6 +24270,7 @@
             this.modObjectScenery = this.objectScenery;
             this.modObjectPowerups = this.objectPowerups;
             this.cleanCode = false;
+            this.ghostTime = 0;
 
         }
         getCanvasOffset() {
@@ -25174,6 +25183,7 @@
             player.setAsGhost();
             player.getGamepad().loadPlayback(raceData.code, this.settings.keysToRecord);
             playerManager.addPlayer(player);
+            this.ghostTime = parseInt(races.run_ticks);
           }
         parseCoordinates(t) {
           const e = t.split("#");
@@ -26709,14 +26719,14 @@
               "The game will no longer lose focus if you click elsewhere on the screen.",
           },
           */
-          /*
+          
           {
             key: "seeGhost",
             title: "See Ghost",
             description:
               "Shows a replay for the track if available.",
             //disables: ["slowmo", "rewind", "oldTimer"],
-          },*/
+          },
           {
             key: "slowmo",
             title: "Slow-Mode",
