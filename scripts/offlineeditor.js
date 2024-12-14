@@ -932,6 +932,11 @@
               GameManager.game.currentScene.objectPhysics = objectPhysics;
               GameManager.game.currentScene.objectScenery = objectScenery;
               GameManager.game.currentScene.objectPowerups = objectPowerups;
+              let name;
+              while (!name || GameManager.game.currentScene.objects[name])
+                name = `object-${GameManager.game.currentScene.objectNamegen++}`;
+              GameManager.game.currentScene.objectName = name;
+              GameManager.game.currentScene.objects[name] = {objectPhysics, objectScenery, objectPowerups};
               GameSettings.objectRotate = 0;
               GameSettings.objectScale = 1;
               GameSettings.objectOffsetX = 0;
@@ -940,6 +945,7 @@
               GameSettings.objectFlipY = !1;
               GameSettings.objectInvert = !1;
               GameManager.game.currentScene.transformObjects();
+              GameManager.game.currentScene.saveObjects();
               GameSettings.customBrush = true;
               !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
           },
@@ -1323,11 +1329,26 @@
             GameManager.game.currentScene.objectPhysics = [];
             GameManager.game.currentScene.objectScenery = [];
             GameManager.game.currentScene.objectPowerups = [];
+            GameManager.game.currentScene.objectName = "";
             GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
             GameManager.game.currentScene.toolHandler.options.lineType = "physics";
           },
+          deleteObject: function (altKey) {
+            if (altKey) {
+              GameManager.game.currentScene.objects = {};
+              this.clearObject();
+            } else {
+            let name = GameManager.game.currentScene.objectName;
+            delete GameManager.game.currentScene.objects[name];
+            this.clearObject();
+            }
+            GameManager.game.currentScene.saveObjects();
+            this.setState({ selectedObjectName: name });
+          },
           getInitialState: function () {
-            return { open: false };
+            const currentScene = GameManager && GameManager.game && GameManager.game.currentScene;
+            const objectName = currentScene ? currentScene.objectName || '' : '';
+            return { open: false, selectedObjectName: objectName };
           },
           openOptions: function (e) {
             this.setState({ open: !this.state.open });
@@ -1336,6 +1357,28 @@
             if (typeof GameManager !== "undefined") {
               GameManager.command("dialog", "importObject");
             }
+          },
+          renameObject: function () {
+            if (!GameManager.game.currentScene.objectName || 
+              Object.keys(GameManager.game.currentScene.objects).length === 0) {
+            return;
+            }
+            let oldName = GameManager.game.currentScene.objectName,
+              name = prompt("What would you like to name the object?");
+            if (!name || name == oldName) return;
+            if (GameManager.game.currentScene.objects[name]) {
+              let num = +(name.match(/-?\d+$/)?.[0] || '0'),
+                numless = name.replace('' + num, '');
+              num = Math.abs(num) + 1;
+              while (GameManager.game.currentScene.objects[`${numless}-${num}`]) num++;
+              name = `${numless}-${num}`;
+            }
+            GameManager.game.currentScene.objects[name] = GameManager.game.currentScene.objects[oldName];
+            delete GameManager.game.currentScene.objects[oldName];
+            this.forceUpdate();
+            GameManager.game.currentScene.saveObjects();
+            this.setState({ selectedObjectName: name });
+            GameManager.game.currentScene.objectName = name;
           },
           changeRotateSensitivity: function (e) {
             var t = parseInt(e.target.value, 10);
@@ -1354,6 +1397,27 @@
             e.preventDefault();
             e.stopPropagation();
             return !1;
+          },
+          changeObject: function (e) {
+            let name = e.target.value,
+              object = GameManager.game.currentScene.objects[name];
+            console.log(object);
+            // this shouldn't happen
+            if (!object) return;
+            GameManager.game.currentScene.objectName = name;
+            for (let i in object) {
+              GameManager.game.currentScene[i] = object[i];
+            }
+            GameSettings.objectRotate = 0;
+            GameSettings.objectScale = 1;
+            GameSettings.objectOffsetX = 0;
+            GameSettings.objectOffsetY = 0;
+            GameSettings.objectFlipX = !1;
+            GameSettings.objectFlipY = !1;
+            GameSettings.objectInvert = !1;
+            GameManager.game.currentScene.transformObjects();
+            GameManager.game.currentScene.toolHandler.options.object || this.setObject();
+            this.setState({ selectedObjectName: name });
           },
           renderRotateSensitivitySelect: function () {
             var e = GameSettings.rotateSensitivity,
@@ -1385,6 +1449,33 @@
               }, e);
             }));
           },
+          renderObjectSelect: function () {
+            let objects = GameManager.game.currentScene.objects,
+              selected = GameManager.game.currentScene.objectName != '',
+              names = objects ? Object.keys(objects) : [];
+            //console.log(objects, names);
+            if (names.length) {
+              return n.createElement("select", {
+                ref: "object",
+                //defaultValue: selected ? GameManager.game.currentScene.objectName : '##default',
+                value: GameManager.game.currentScene.objectName,
+                onChange: this.changeObject,
+                onClick: this.stopClickPropagation
+              }, !selected && n.createElement("option", {
+                key: '##default',
+                value: '',
+                disabled: true,
+                selected: true,
+                style: {display: "none"},
+              }, 'pick...'), 
+              ...names.map(name => n.createElement("option", {
+                key: name,
+                value: name
+              }, name)));
+            } else {
+              return n.createElement("span", {}, " ");
+            }
+          },
           stopClickPropagation: function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1412,7 +1503,9 @@
               className: "name"
             }, "Object", o), this.state.open ? 
             n.createElement("div", {}, 
-            n.createElement("span", {}, this.renderRotateSensitivitySelect()), 
+            Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {}, this.renderRotateSensitivitySelect()) : null, 
+            //n.createElement("span", {}, this.renderScaleSensitivitySelect()),
+            n.createElement("span", {}, this.renderObjectSelect()),
               n.createElement("span", {},
                 n.createElement("button", {
                   className: "margin",
@@ -1420,21 +1513,29 @@
                     event.stopPropagation();
                     this.importObject(event);
                   }
-                }, "IMPORT"),
-                n.createElement("button", {
-                  className: "margin",
-                  onClick: (event) => {
-                    event.stopPropagation();
-                    this.saveObject(event);
-                  }
-                }, "EXPORT"),
-                n.createElement("button", {
-                  className: "margin",
-                  onClick: (event) => {
-                    event.stopPropagation();
-                    this.clearObject(event);
-                  }
-                }, "CLEAR"))) : null);
+                }, "IMPORT")),
+                Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {},
+                  n.createElement("button", {
+                    className: "margin",
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      this.saveObject(event);
+                    }
+                  }, "EXPORT"),
+                  n.createElement("button", {
+                    className: "margin",
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      this.renameObject();
+                    }
+                  }, "RENAME"),
+                  n.createElement("button", {
+                    className: "margin",
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      this.deleteObject(event.altKey);
+                    }
+                  }, "REMOVE")) : null) : null)
             
           }
         });
@@ -1562,13 +1663,13 @@
                       }
                   }, "SET START POSITION")
                   ),
-                  this.state.open && n.createElement("button", {
+                  /*this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
                         this.importGhost(event);
                       }
-                  }, "IMPORT GHOST")
+                  }, "IMPORT GHOST")*/
                   
                 )
               );
@@ -1616,6 +1717,7 @@
               GameManager.game.currentScene.objectPhysics = [];
               GameManager.game.currentScene.objectScenery = [];
               GameManager.game.currentScene.objectPowerups = [];
+              GameManager.game.currentScene.objectName = "";
               GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
               GameManager.game.currentScene.toolHandler.options.lineType = "physics";
             },
@@ -1699,6 +1801,11 @@
               GameManager.game.currentScene.objectPhysics = objectPhysics;
               GameManager.game.currentScene.objectScenery = objectScenery;
               GameManager.game.currentScene.objectPowerups = objectPowerups;
+              let name;
+              while (!name || GameManager.game.currentScene.objects[name])
+                name = `object-${GameManager.game.currentScene.objectNamegen++}`;
+              GameManager.game.currentScene.objectName = name;
+              GameManager.game.currentScene.objects[name] = {objectPhysics, objectScenery, objectPowerups};
               GameSettings.objectRotate = 0;
               GameSettings.objectScale = 1;
               GameSettings.objectOffsetX = 0;
@@ -1707,6 +1814,7 @@
               GameSettings.objectFlipY = !1;
               GameSettings.objectInvert = !1;
               GameManager.game.currentScene.transformObjects();
+              GameManager.game.currentScene.saveObjects();
               GameSettings.customBrush = true;
               !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
           },
@@ -3823,6 +3931,58 @@
                   .catch(error => {
                     console.error('Error loading tracklist:', error);
                   });
+              }
+              else if (e.value.startsWith('daily')) {
+                let specifiedDate;
+                const parts = e.value.split(' ');
+            
+                if (parts.length === 2) {
+                    specifiedDate = new Date(parts[1]);
+                } else {
+                    specifiedDate = new Date();
+                }
+            
+                const formattedDate = specifiedDate.toISOString().slice(0, 10);
+
+                fetch('assets/tracks/trackdata.json')
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Failed to load trackdata.json');
+                    }
+                    return response.json();
+                  })
+
+                  .then(data => {
+                    const trackEntry = data.tracks.find(entry => entry.date === formattedDate);
+
+                    if (trackEntry && trackEntry.trackname) {
+                      const { trackname, username, collaborators } = trackEntry;
+                      console.log("Loaded track details:", { trackname, username, collaborators });
+
+                      const url = `assets/tracks/${encodeURIComponent(trackname)}.txt`;
+
+                      fetch(url)
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('track file not found, loading as track code.');
+                          }
+                          return response.text();
+                        })
+                        .then(trackData => {
+                          this.processTrackData(trackData);
+                          console.log("track loaded:", trackname);
+                          GameSettings.trackName = `${trackname}.txt`;
+                        })
+                        .catch(error => {
+                          console.error('error loading track:', error);
+                        });
+                    } else {
+                      console.log("no track entry found for today’s date.");
+                    }
+                  })
+                  .catch(error => {
+                    console.error('error loading tracklist:', error);
+                  });
               } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
             
                 fetch(url)
@@ -4215,6 +4375,7 @@
                   .catch(error => {
                     console.error(error);
                   });
+                return;
               }
             
               t && (n = t),

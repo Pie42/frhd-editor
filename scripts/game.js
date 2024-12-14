@@ -9016,7 +9016,7 @@
           o = s.n(r)()(n());
         o.push([
           t.id,
-          ".mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 6px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
+          "@media (max-height: 720px) {.mod-icon {\r\n bottom: -6px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
           "",
           {
             version: 3,
@@ -9025,7 +9025,7 @@
             mappings:
               "AAAA;IACI,eAAe;IACf,OAAO;IACP,SAAS;IACT,WAAW;IACX,uBAAuB;IACvB,uBAAuB;IACvB,iBAAiB;;IAEjB,iBAAiB,EAAE,kCAAkC;IACrD,yBAAyB,EAAE,WAAW;IACtC,wBAAwB,EAAE,mBAAmB;IAC7C,sBAAsB,EAAE,YAAY;IACpC,qBAAqB,EAAE,2BAA2B;AACtD;;AAEA;IACI,uBAAuB;IACvB,eAAe;IACf,kBAAkB;IAClB,UAAU;AACd;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,eAAe;IACf,wDAAwD;IACxD,cAAc;AAClB;AACA;IACI,oCAAoC;AACxC;;AAEA;IACI,eAAe;AACnB;AACA;IACI,YAAY;IACZ,uBAAuB;AAC3B;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;AACjB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,aAAa;IACb,sBAAsB;IACtB,YAAY;IACZ,eAAe;AACnB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,YAAY;AAChB;;;;AAIA;IACI,eAAe;IACf,0BAA0B;IAC1B,WAAW;IACX,WAAW;IACX,WAAW;IACX,YAAY;IACZ,SAAS;IACT,OAAO;AACX;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,WAAW;IACX,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,gCAAgC;IAChC,eAAe;IACf,MAAM;IACN,aAAa;IACb,kBAAkB;IAClB,iBAAiB;IACjB,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,kBAAkB;IAClB,YAAY;AAChB;AACA;IACI,kCAAkC;AACtC;;;;;;AAMA;IACI,UAAU;IACV,WAAW;IACX,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;;IAEpB,kBAAkB;IAClB,MAAM;IACN,OAAO;EACT;;AAEF;IACI,kBAAkB;AACtB;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;AACA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,WAAW;IACX,UAAU;IACV,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,OAAO;IACP,QAAQ;IACR,YAAY;IACZ,iBAAiB;IACjB,eAAe;IACf,kBAAkB;AACtB;;AAEA;IACI,cAAc;IACd,4BAA4B;AAChC;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,6BAA6B;AACjC",
             sourcesContent: [
-              ".mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
+              "@media (max-height: 720px) {.mod-menu-container {\r\n bottom: -5px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
             ],
             sourceRoot: "",
           },
@@ -11851,6 +11851,8 @@
             (this.touch.old = this.getTouchObject()),
             (this.secondaryTouch = this.getTouchObject()),
             (this.secondaryTouch.old = this.getTouchObject()),
+            (this.tickMoves = []),
+            (this.nextTickMoves = []),
             this.initAnalytics(),
             this.bindToMouseEvents(),
             (this.updateCallback = !1);
@@ -11871,6 +11873,17 @@
             real: new t.Z(0, 0),
             type: 1,
           };
+        }
+        cloneTouchObject(t) {
+          return {
+            id: t.id,
+            down: t.down,
+            press: t.down,
+            release: t.down,
+            pos: t.pos.clone(),
+            real: t.real.clone(),
+            type: t.type,
+          }
         }
         bindToMouseEvents() {
           const t = this.scene.game.stage,
@@ -11999,12 +12012,15 @@
         onMouseMove(t) {
           this.updatePosition(t, this.touch),
             this.updatePosition(t, this.secondaryTouch);
+          this.nextTickMoves.push(this.cloneTouchObject(this.touch));
         }
         update() {
           this.enabled &&
             (this.updateTouch(this.touch),
             this.updateTouch(this.secondaryTouch),
             this.updateWheel());
+          this.tickMoves = this.nextTickMoves;
+          this.nextTickMoves = [];
         }
         updateTouch(t) {
           const e = t.old,
@@ -16369,7 +16385,7 @@
                 (this._game.mod.getVar("seeGhost") || !this._ghost) && t.draw();
               for (let t = 0; t < this.deadVehicles.length; t++)
                 this.deadVehicles[t] && this.deadVehicles[t].draw();
-              this.isGhost() && this._game.mod.getVar("seeGhost") && this.drawName();
+              this.isGhost() && this._game.mod.getVar("seeGhost");
             }
             checkKeys() {
               const t = this._gamepad,
@@ -16956,9 +16972,10 @@
         }
         addActionToTimeline(t) {
           let current = this.actionTimeline[this.actionTimelinePointer];
-          if (current?.type == 'transform') {
-            current.transformations.splice(current.pointer);
-            if (current.transformations.length)
+          if (current && 'pointer' in current) {
+            let field = current.type == 'transform' ? 'transformations' : 'objects';
+            current[field].splice(current.pointer);
+            if (current[field].length)
               this.actionTimelinePointer++;
             else {
               this.actionTimeline.splice(this.actionTimelinePointer, 1);
@@ -17067,14 +17084,24 @@
         }
         revertAction() {
           let old = this.actionTimeline[this.actionTimelinePointer];
-          if (this.actionTimelinePointer > 0 || (old && old.type == 'transform' && old.pointer > 0)) {
-            if (!old || old.type != 'transform' || old.pointer == 0)
+          if (this.actionTimelinePointer > 0 || (old && 'pointer' in old && old.pointer > 0)) {
+            if (!old || !('pointer' in old) || old.pointer == 0)
                 this.actionTimelinePointer--;
             const t = this.actionTimeline[this.actionTimelinePointer];
             t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i});
             switch (t.type) {
               case "add":
-                this.removeObjects(t.objects);
+                let objects = t.objects;
+                if ('pointer' in t) {
+                    if (t.pointer == 0) break;
+                    if (this.gamepad.isButtonDown('shift')) {
+                        objects = objects.slice(0, t.pointer).flat(1);
+                        t.pointer = 0;
+                    } else {
+                        objects = [objects[--t.pointer]].flat(1);
+                    }
+                }
+                this.removeObjects(objects);
                 break;
               case "remove":
                 this.addObjects(t.objects);
@@ -17185,7 +17212,20 @@
             t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i});
             switch (t.type) {
               case "add":
-                this.addObjects(t.objects);
+                let objects = t.objects;
+                if ('pointer' in t) {
+                    if (t.pointer == t.objects.length) break;
+                    if (this.gamepad.isButtonDown('shift')) {
+                        objects = objects.slice(t.pointer).flat(1);
+                        t.pointer = t.objects.length;
+                    } else {
+                        objects = [objects[t.pointer++]].flat(1);
+                        if (t.pointer < t.objects.length) {
+                            this.actionTimelinePointer--;
+                        }
+                    }
+                }
+                this.addObjects(objects);
                 this.actionTimelinePointer++;
                 break;
               case "remove":
@@ -18930,20 +18970,18 @@
             this.lastBreakPosition = new t.Z(0, 0);
         }
         recordActionsToToolhandler() {
-          if (this.toolHandler.options.object && this.addedObjects.length > 0) {
-            this.toolHandler.addActionToTimeline({
-              type: "add",
-              objects: this.addedObjects
-            });
-          } else {
-            for (const t of this.addedObjects)
-              this.toolHandler.addActionToTimeline({ type: "add", objects: [t] });
-          }
-          this.addedObjects = [];
+            if (this.addedObjects.length == 0) return;
+            let action = {
+                type: "add",
+                objects: this.addedObjects,
+                pointer: this.addedObjects.length,
+            };
+            this.toolHandler.addActionToTimeline(action);
+            this.addedObjects = [];
         }
         press() {
           if ((this.recordActionsToToolhandler(), !this.active)) {
-            const t = this.mouse.touch.real;
+            const t = this.mouse.tickMoves.length ? this.mouse.tickMoves[0].real : this.mouse.touch.real;
             (this.p1.x = t.x),
               (this.p1.y = t.y),
               (this.p2.x = t.x),
@@ -18980,46 +19018,68 @@
         }
         hold() {
           if (this.active) {
-            const t = this.mouse.touch.real,
-              e = this.p1,
-              s = this.p2,
-              i = this.options.trailSpeed,
-              n = this.options.breakLength * 0.2;
-            s.inc(t.sub(s).factor(i));
-            let r = screen.height + t.sub(s).len();
-            if (((r *= n), s.sub(e).lenSqr() > r)) {
-              const t = this.scene.track;
+            for (let ev of this.mouse.tickMoves) {
+              const t = ev.real,
+                e = this.p1,
+                s = this.p2,
+                i = this.options.trailSpeed,
+                n = this.options.breakLength * 0.2;
+              s.inc(t.sub(s).factor(i));
+              let r = screen.height + t.sub(s).len();
+              if (((r *= n), s.sub(e).lenSqr() > r)) {
+                const t = this.scene.track;
 
-              if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
-                let i = !1;
-                i = "physics" === this.toolHandler.options.lineType
-                  ? t.addPhysicsLine(e.x, e.y, s.x, s.y)
-                  : t.addSceneryLine(e.x, e.y, s.x, s.y);
-                i && this.addedObjects.push(i);
-              }
+                if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
+                  let i = !1;
+                  i = "physics" === this.toolHandler.options.lineType
+                    ? t.addPhysicsLine(e.x, e.y, s.x, s.y)
+                    : t.addSceneryLine(e.x, e.y, s.x, s.y);
+                  i && this.addedObjects.push(i);
+                }
 
-              let modifiedPhysics = [];
-              let modifiedScenery = [];
-              let modifiedPowerups = [];
+                let modifiedPhysics = [];
+                let modifiedScenery = [];
+                let modifiedPowerups = [];
 
-              let brushRotate = GameSettings.brushRotate,
-              brushScale = GameSettings.brushScale,
-              brushRotateJitter = (GameSettings.brushRotateJitter > 0),
-              brushScaleJitter = (GameSettings.brushScaleJitter > 0);
+                let brushRotate = GameSettings.brushRotate,
+                brushScale = GameSettings.brushScale,
+                brushRotateJitter = (GameSettings.brushRotateJitter > 0),
+                brushScaleJitter = (GameSettings.brushScaleJitter > 0);
 
-              if (this.toolHandler.options.object) {
-                if (brushRotate || brushScale || brushRotateJitter || brushScaleJitter) {
-                  let offset = s.sub(e),
-                    dir = brushRotate ? Math.atan2(offset.y, offset.x) : 0,
-                    speed = brushScale ? this.calculateSpeed() : 1;
+                if (this.toolHandler.options.object) {
+                  if (brushRotate || brushScale || brushRotateJitter || brushScaleJitter) {
+                    let offset = s.sub(e),
+                      dir = brushRotate ? Math.atan2(offset.y, offset.x) : 0,
+                      speed = brushScale ? this.calculateSpeed() : 1;
 
-                    const dirJitter = (Math.random() - 0.5) * GameSettings.brushRotateJitter;
-                    const speedJitter = (Math.random() - 0.5) * GameSettings.brushScaleJitter;
-                    
-                    const modDir = dir + dirJitter;
-                    const modSpeed = speed + speedJitter;
+                      const dirJitter = (Math.random() - 0.5) * GameSettings.brushRotateJitter;
+                      const speedJitter = (Math.random() - 0.5) * GameSettings.brushScaleJitter;
+                      
+                      const modDir = dir + dirJitter;
+                      const modSpeed = speed + speedJitter;
 
-                    modifiedPhysics = this.scene.modObjectPhysics.map((line) => {
+                      modifiedPhysics = this.scene.modObjectPhysics.map((line) => {
+                        let p1 = { x: line.x1, y: line.y1 };
+                        let p2 = { x: line.x2, y: line.y2 };
+
+                        if (brushRotate || brushRotateJitter) {
+                            p1 = this.rotate(p1.x, p1.y, modDir);
+                            p2 = this.rotate(p2.x, p2.y, modDir);
+                        }
+
+                        if (brushScale || brushScaleJitter) {
+                            p1 = this.scale(p1.x, p1.y, modSpeed);
+                            p2 = this.scale(p2.x, p2.y, modSpeed);
+                        }
+                      return {
+                        x1: e.x + p1.x,
+                        y1: e.y + p1.y,
+                        x2: e.x + p2.x,
+                        y2: e.y + p2.y,
+                      };
+                    });
+
+                    modifiedScenery = this.scene.modObjectScenery.map((line) => {
                       let p1 = { x: line.x1, y: line.y1 };
                       let p2 = { x: line.x2, y: line.y2 };
 
@@ -19032,154 +19092,137 @@
                           p1 = this.scale(p1.x, p1.y, modSpeed);
                           p2 = this.scale(p2.x, p2.y, modSpeed);
                       }
-                    return {
-                      x1: e.x + p1.x,
-                      y1: e.y + p1.y,
-                      x2: e.x + p2.x,
-                      y2: e.y + p2.y,
-                    };
-                  });
+                      return {
+                        x1: e.x + p1.x,
+                        y1: e.y + p1.y,
+                        x2: e.x + p2.x,
+                        y2: e.y + p2.y,
+                      };
+                    });
 
-                  modifiedScenery = this.scene.modObjectScenery.map((line) => {
-                    let p1 = { x: line.x1, y: line.y1 };
-                    let p2 = { x: line.x2, y: line.y2 };
+                    modifiedPowerups = this.scene.modObjectPowerups.map((powerup) => {
+                      let p = { x: powerup.x, y: powerup.y };
+                      if (brushRotate || brushRotateJitter) {
+                        p = this.rotate(p.x, p.y, modDir);
+                      }
 
-                    if (brushRotate || brushRotateJitter) {
-                        p1 = this.rotate(p1.x, p1.y, modDir);
-                        p2 = this.rotate(p2.x, p2.y, modDir);
-                    }
+                      if (brushScale || brushScaleJitter) {
+                        p = this.scale(p.x, p.y, modSpeed);
+                      }
+                      return {
+                        name: powerup.name,
+                        x: e.x + p.x,
+                        y: e.y + p.y,
+                        x2: powerup.x2 !== undefined ? e.x + this.rotate(powerup.x2, powerup.y2, dir).x : undefined,
+                        y2: powerup.y2 !== undefined ? e.y + this.rotate(powerup.x2, powerup.y2, dir).y : undefined,
+                        angle: powerup.angle + p.angle
+                      };
+                    });
 
-                    if (brushScale || brushScaleJitter) {
-                        p1 = this.scale(p1.x, p1.y, modSpeed);
-                        p2 = this.scale(p2.x, p2.y, modSpeed);
-                    }
-                    return {
-                      x1: e.x + p1.x,
-                      y1: e.y + p1.y,
-                      x2: e.x + p2.x,
-                      y2: e.y + p2.y,
-                    };
-                  });
+                  } else {
+                    modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
+                      x1: e.x + line.x1,
+                      y1: e.y + line.y1,
+                      x2: e.x + line.x2,
+                      y2: e.y + line.y2
+                    }));
 
-                  modifiedPowerups = this.scene.modObjectPowerups.map((powerup) => {
-                    let p = { x: powerup.x, y: powerup.y };
-                    if (brushRotate || brushRotateJitter) {
-                      p = this.rotate(p.x, p.y, modDir);
-                    }
+                    modifiedScenery = this.scene.modObjectScenery.map(line => ({
+                      x1: e.x + line.x1,
+                      y1: e.y + line.y1,
+                      x2: e.x + line.x2,
+                      y2: e.y + line.y2,
+                    }));
 
-                    if (brushScale || brushScaleJitter) {
-                      p = this.scale(p.x, p.y, modSpeed);
-                    }
-                    return {
+                    modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
                       name: powerup.name,
-                      x: e.x + p.x,
-                      y: e.y + p.y,
-                      x2: powerup.x2 !== undefined ? e.x + this.rotate(powerup.x2, powerup.y2, dir).x : undefined,
-                      y2: powerup.y2 !== undefined ? e.y + this.rotate(powerup.x2, powerup.y2, dir).y : undefined,
-                      angle: powerup.angle + p.angle
-                    };
+                      x: e.x + powerup.x,
+                      y: e.y + powerup.y,
+                      x2: powerup.x2 !== undefined ? e.x + powerup.x2 : undefined,
+                      y2: powerup.y2 !== undefined ? e.y + powerup.y2 : undefined,
+                      angle: powerup.angle,
+                      time: powerup.time
+                    }));
+                  }
+
+                  let toAdd = [];
+
+                  modifiedPhysics.forEach(point => {
+                    let i = t.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
+                    if (i) {
+                      toAdd.push(i);
+                    }
                   });
 
-                } else {
-                  modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                    x1: e.x + line.x1,
-                    y1: e.y + line.y1,
-                    x2: e.x + line.x2,
-                    y2: e.y + line.y2
-                  }));
+                  modifiedScenery.forEach(point => {
+                    let i = t.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
+                    if (i) {
+                      toAdd.push(i);
+                    }
+                  });
 
-                  modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                    x1: e.x + line.x1,
-                    y1: e.y + line.y1,
-                    x2: e.x + line.x2,
-                    y2: e.y + line.y2,
-                  }));
-
-                  modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                    name: powerup.name,
-                    x: e.x + powerup.x,
-                    y: e.y + powerup.y,
-                    x2: powerup.x2 !== undefined ? e.x + powerup.x2 : undefined,
-                    y2: powerup.y2 !== undefined ? e.y + powerup.y2 : undefined,
-                    angle: powerup.angle,
-                    time: powerup.time
-                  }));
+                  modifiedPowerups.forEach(powerup => {
+                    let newPowerup = null;
+                    switch (powerup.name) {
+                      case "goal":
+                        newPowerup = new ge(powerup.x, powerup.y, this);
+                        this.scene.track.addTarget(newPowerup);
+                        break;
+                      case "bomb":
+                        newPowerup = new zs(powerup.x, powerup.y, this);
+                        break;
+                      case "gravity":
+                        newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
+                        break;
+                      case "boost":
+                        newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                        break;
+                      case "slowmo":
+                        newPowerup = new xs(powerup.x, powerup.y, this);
+                        break;
+                      case "checkpoint":
+                        newPowerup = new Ps(powerup.x, powerup.y, this);
+                        break;
+                      case "antigravity":
+                        newPowerup = new Vs(powerup.x, powerup.y, this);
+                        break;
+                      case "teleport":
+                        const portal1 = new Xs(powerup.x, powerup.y, this),
+                          portal2 = new Xs(powerup.x2, powerup.y2, this);
+                        portal1.addOtherPortalRef(portal2);
+                        portal2.addOtherPortalRef(portal1);
+                        this.scene.track.addPowerup(portal1);
+                        this.scene.track.addPowerup(portal2);
+                        toAdd.push(portal1);
+                        toAdd.push(portal2);
+                        break;
+                      case "helicopter":
+                          newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                          break;
+                      case "truck":
+                          newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                          break;
+                      case "balloon":
+                          newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                          break;
+                      case "blob":
+                          newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                          break;
+                    }
+                    if (newPowerup) {
+                      this.scene.track.addPowerup(newPowerup);
+                      toAdd.push(newPowerup);
+                    }
+                  });
+                  this.addedObjects.push(toAdd);
                 }
 
-                modifiedPhysics.forEach(point => {
-                  let i = t.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                  if (i) {
-                    this.addedObjects.push(i);
-                  }
-                });
-
-                modifiedScenery.forEach(point => {
-                  let i = t.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                  if (i) {
-                    this.addedObjects.push(i);
-                  }
-                });
-
-                modifiedPowerups.forEach(powerup => {
-                  let newPowerup = null;
-                  switch (powerup.name) {
-                    case "goal":
-                      newPowerup = new ge(powerup.x, powerup.y, this);
-                      this.scene.track.addTarget(newPowerup);
-                      break;
-                    case "bomb":
-                      newPowerup = new zs(powerup.x, powerup.y, this);
-                      break;
-                    case "gravity":
-                      newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                      break;
-                    case "boost":
-                      newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                      break;
-                    case "slowmo":
-                      newPowerup = new xs(powerup.x, powerup.y, this);
-                      break;
-                    case "checkpoint":
-                      newPowerup = new Ps(powerup.x, powerup.y, this);
-                      break;
-                    case "antigravity":
-                      newPowerup = new Vs(powerup.x, powerup.y, this);
-                      break;
-                    case "teleport":
-                      const portal1 = new Xs(powerup.x, powerup.y, this),
-                        portal2 = new Xs(powerup.x2, powerup.y2, this);
-                      portal1.addOtherPortalRef(portal2);
-                      portal2.addOtherPortalRef(portal1);
-                      this.scene.track.addPowerup(portal1);
-                      this.scene.track.addPowerup(portal2);
-                      this.addedObjects.push(portal1);
-                      this.addedObjects.push(portal2);
-                      break;
-                    case "helicopter":
-                        newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                        break;
-                    case "truck":
-                        newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                        break;
-                    case "balloon":
-                        newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                        break;
-                    case "blob":
-                        newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                        break;
-                  }
-                  if (newPowerup) {
-                    this.scene.track.addPowerup(newPowerup);
-                    this.addedObjects.push(newPowerup);
-                  }
-                });
+                e.equ(s);
+                this.toolHandler.snapPoint.x = s.x;
+                this.toolHandler.snapPoint.y = s.y;
               }
-
-              e.equ(s);
-              this.toolHandler.snapPoint.x = s.x;
-              this.toolHandler.snapPoint.y = s.y;
+              this.toolHandler.moveCameraTowardsMouse();
             }
-            this.toolHandler.moveCameraTowardsMouse();
           }
         }
 
@@ -19222,18 +19265,20 @@
                       angle: powerup.angle,
                       time: powerup.time
                   }));
+
+                  let toAdd = [];
       
                   modifiedPhysics.forEach(point => {
                       let i = s.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
                       if (i) {
-                          this.addedObjects.push(i);
+                          toAdd.push(i);
                       }
                   });
       
                   modifiedScenery.forEach(point => {
                       let i = s.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
                       if (i) {
-                          this.addedObjects.push(i);
+                          toAdd.push(i);
                       }
                   });
 
@@ -19250,47 +19295,48 @@
                         case "gravity":
                             newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
                             break;
-                            case "boost":
-                              newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                            case "slowmo":
-                              newPowerup = new xs(powerup.x, powerup.y, this);
-                              break;
-                            case "checkpoint":
-                              newPowerup = new Ps(powerup.x, powerup.y, this);
-                              break;
-                            case "antigravity":
-                              newPowerup = new Vs(powerup.x, powerup.y, this);
-                              break;
-                            case "teleport":
-                              const portal1 = new Xs(powerup.x, powerup.y, this),
+                        case "boost":
+                            newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                            break;
+                        case "slowmo":
+                            newPowerup = new xs(powerup.x, powerup.y, this);
+                            break;
+                        case "checkpoint":
+                            newPowerup = new Ps(powerup.x, powerup.y, this);
+                            break;
+                        case "antigravity":
+                            newPowerup = new Vs(powerup.x, powerup.y, this);
+                            break;
+                        case "teleport":
+                            const portal1 = new Xs(powerup.x, powerup.y, this),
                                 portal2 = new Xs(powerup.x2, powerup.y2, this);
-                              portal1.addOtherPortalRef(portal2);
-                              portal2.addOtherPortalRef(portal1);
-                              this.scene.track.addPowerup(portal1);
-                              this.scene.track.addPowerup(portal2);
-                              this.addedObjects.push(portal1);
-                              this.addedObjects.push(portal2);
-                              break;
-                            case "helicopter":
-                                newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                                break;
-                            case "truck":
-                                newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                                break;
-                            case "balloon":
-                                newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                                break;
-                            case "blob":
-                                newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                                break;
-                          }
-                          if (newPowerup) {
-                            this.scene.track.addPowerup(newPowerup);
-                            this.addedObjects.push(newPowerup);
-                          }
-                        });
-                      }
+                            portal1.addOtherPortalRef(portal2);
+                            portal2.addOtherPortalRef(portal1);
+                            this.scene.track.addPowerup(portal1);
+                            this.scene.track.addPowerup(portal2);
+                            toAdd.push(portal1);
+                            toAdd.push(portal2);
+                            break;
+                        case "helicopter":
+                            newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                            break;
+                        case "truck":
+                            newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                            break;
+                        case "balloon":
+                            newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                            break;
+                        case "blob":
+                            newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                            break;
+                    }
+                    if (newPowerup) {
+                      this.scene.track.addPowerup(newPowerup);
+                      toAdd.push(newPowerup);
+                    }
+                });
+                this.addedObjects.push(toAdd);
+            }
             
 
             this.recordActionsToToolhandler();
@@ -23021,7 +23067,7 @@
               (n.push(this.id),
               s.setTempVehicle(
                 "BALLOON",
-                this.time * r.settings.drawFPS * (this.scene.game.mod.getVar("slowmo") ? 2 : 1),
+                this.time * r.settings.drawFPS,
                 { x: this.x, y: this.y },
                 e.dir
               ),
@@ -24254,6 +24300,10 @@
             this.objectPhysics = [];
             this.objectScenery = [];
             this.objectPowerups = [];
+            this.objectName = "";
+            this.objectNamegen = 0;
+            this.objects = {};
+            this.loadObjects();
             this.modObjectPhysics = this.objectPhysics;
             this.modObjectScenery = this.objectScenery;
             this.modObjectPowerups = this.objectPowerups;
@@ -24774,10 +24824,11 @@
             (this.state.dialogOptions.powerupCounts = trackData.powerupCounts),
             (this.state.dialogOptions.trackSize = trackData.trackSize);
         }
-        getObjectCode() {
-          const t = this.objectPowerups,
-                e = this.objectPhysics,
-                s = this.objectScenery;
+        getObjectCode(object) {
+          object ||= this;
+          const t = object.objectPowerups || [],
+                e = object.objectPhysics || [],
+                s = object.objectScenery || [];
         
           let i = "";
           let n = false;
@@ -24921,8 +24972,29 @@
         
           if (n) i = i.slice(0, -1);
           i += "#";
+          if (object.objectName) i += object.objectName;
           
           return i;
+        }
+        loadObjects() {
+          let objects = JSON.parse(localStorage.getItem("objects") || "{}");
+          for (let i in objects) {
+            let object = this.parseCoordinates(objects[i]);
+            this.objects[i] = {
+              objectPhysics: object.physicsLines,
+              objectScenery: object.sceneryLines,
+              objectPowerups: object.powerups,
+            };
+          }
+        }
+        saveObjects() {
+          let save = {};
+          for (let i in this.objects) {
+            // the "+ i" is to add the name of the object to the end
+            save[i] = this.getObjectCode(this.objects[i]) + i;
+          }
+          localStorage.setItem("objects", JSON.stringify(save));
+          this.stateChanged();
         }
         trackComplete() {
           this.verified = !this.track.dirty;
@@ -25058,6 +25130,22 @@
                 this.objectPhysics = parsedLines.physicsLines;
                 this.objectScenery = parsedLines.sceneryLines;
                 this.objectPowerups = parsedLines.powerups;
+                this.objectName = parsedLines.extra;
+                if (this.objectName === "BMX" || this.objectName === "MTB" || !this.objectName) {
+                  this.objectName = `object-${this.objectNamegen++}`;
+                }
+                if (this.objects[this.objectName]) {
+                  let num = +(this.objectName.match(/-?\d+$/)?.[0] || '0'),
+                    numless = this.objectName.replace('' + num, '');
+                  num = Math.abs(num) + 1;
+                  while (this.objects[`${numless}-${num}`]) num++;
+                  this.objectName = `${numless}-${num}`;
+                }
+                this.objects[this.objectName] = {
+                  objectPhysics: this.objectPhysics,
+                  objectScenery: this.objectScenery,
+                  objectPowerups: this.objectPowerups
+                };
                 this.modObjectPhysics = [];
                 this.modObjectScenery = [];
                 this.modObjectPowerups = [];
@@ -25070,11 +25158,13 @@
                 GameSettings.objectInvert = !1;
                 GameSettings.objectInvertFlat = !1;
                 this.transformObjects();
+                this.saveObjects();
                 !this.toolHandler.options.object && this.toolHandler.toggleObject();
               } else {
                 this.objectPhysics = [];
                 this.objectScenery = [];
                 this.objectPowerups = [];
+                this.objectName = "";
               }
               this.command("dialog", false);
               break;
@@ -25245,7 +25335,7 @@
           const sceneryLines = parsePoints(n);
           const powerups = parsePowerups(r.join(','));
       
-          return { physicsLines, sceneryLines, powerups };
+          return { physicsLines, sceneryLines, powerups, extra: i };
         }
         transformObjects() {
           if (!this.objectPhysics || !this.objectScenery || !this.objectPowerups) return;
@@ -26665,13 +26755,14 @@
               "The game will no longer lose focus if you click elsewhere on the screen.",
           },
           */
+          /*
           {
             key: "seeGhost",
             title: "See Ghost",
             description:
               "Shows a replay for the track if available.",
             //disables: ["slowmo", "rewind", "oldTimer"],
-          },
+          },*/
           {
             key: "slowmo",
             title: "Slow-Mode",
@@ -27004,7 +27095,7 @@
       }
       let xr = document.createElement("template");
       (xr.innerHTML =
-        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://community.freeriderhd.com/threads/14964/")\'> <div style="flex:1"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
+        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://community.freeriderhd.com/threads/14964/")\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char</div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
         (xr = xr.content);
       const br = {
         bool: (t, e, s, i) => new lr(t, s[e], i),
@@ -27280,8 +27371,14 @@
           let t = window.innerHeight,
             e = window.innerWidth;
 
+          let c = 0;
+
+          if (window.innerHeight <= 720) {
+            c = 20;
+          }
+
           this.currentScene &&
-            (t -= this.currentScene.getCanvasOffset().height);
+            (t -= this.currentScene.getCanvasOffset().height - c);
           let s = window.devicePixelRatio || 1;
           this.settings.lowQualityMode && (s = 1);
           const i = e * s,

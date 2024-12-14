@@ -1667,7 +1667,8 @@ html.fullscreen #main_page {
     width: 100%;
     height: 45px;
     background: #E2E2E2;
-    border-bottom: 1px solid #000
+    border-bottom: 1px solid #000;
+    position: relative;
 }
 
 .topMenu-button {
@@ -1995,7 +1996,8 @@ html.fullscreen #main_page {
     top: 50%;
     background: #FFF;
     opacity: .95;
-    position: absolute
+    position: absolute;
+    transform: scale(1);
 }
 
 .leftMenu {
@@ -2010,6 +2012,74 @@ html.fullscreen #main_page {
     border: 1px solid #000;
     border-right: 0
 }
+
+@media (max-height: 720px) {
+    .leftMenu,
+    .rightMenu {
+        transform: scale(0.8);
+    }
+
+    .leftMenu {
+        left: -5px;
+    }
+
+    .rightMenu {
+        right: -5px;
+    }
+
+    .topMenu {
+        top: -5px;
+        width: 125%;
+        transform: scale(0.8);
+        transform-origin: left;
+    }
+
+    .bottomMenu {
+        bottom: -5px;
+        width: 125%;
+        transform: scale(0.8);
+        transform-origin: left;
+    }
+
+    .editorGui {
+        height: 35px;
+    }
+}
+
+/*
+@media (max-height: 480px) {
+    .leftMenu,
+    .rightMenu {
+        transform: scale(0.5);
+    }
+
+    .leftMenu {
+        left: -12.5px;
+    }
+
+    .rightMenu {
+        right: -12.5px;
+    }
+
+    .topMenu {
+        top: -12.5px;
+        width: 200%;
+        transform: scale(0.5);
+        transform-origin: left;
+    }
+
+    .bottomMenu {
+        bottom: -12.5px;
+        width: 200%;
+        transform: scale(0.5);
+        transform-origin: left;
+    }
+
+    .editorGui {
+        height: 35px;
+    }
+}
+*/
 
 .editorDialog {
     width: 100%;
