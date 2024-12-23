@@ -27467,9 +27467,8 @@
 
 function load() {
   // this is more hacky than i'd like it to be but it works
-  let zv = GameManager.game.currentScene.camera.position.factor(0),
-      vector = (x = 0, y = 0) => {return zv.factor(0).add({x, y})},
-      hovered,
+  zv = GameManager.game.currentScene.camera.position.factor(0);
+  let hovered,
       selected,
       hoverList,
       selectList,
@@ -27494,6 +27493,9 @@ function load() {
       isSelectIntangible = true,
       // used for copying individual lines
       shouldCopy = true,
+      // current values are: 'lasso', 'rect'
+      // might change this to an enum at some point but i don't think comparing 2 strings will be a bottleneck
+      selectMode = 'lasso',
       tempSelect,
       invert = 0;
   // for debugging
@@ -27542,6 +27544,7 @@ function load() {
           this.toolHandler = s;
           this.p1 = undefined;
           this.p2 = undefined;
+          this.lassoPoints = new _selectPolygon();
           this.dashOffset = 0;
           this.inflectionOffset;
           this.name = 'select';
@@ -27842,7 +27845,7 @@ function load() {
               shouldCopy = true;
           }
           // selecting outside of the current box
-          if (isSelectList && (hovered || !pointrect(this.mouse.touch.real, this.p1, this.p2))) {
+          if (isSelectList && selectMode == 'rect' && (hovered || !pointrect(this.mouse.touch.real, this.p1, this.p2))) {
               for (let i of selectList) {
                   remove(i);
               }
@@ -27850,6 +27853,17 @@ function load() {
               this.completeAction();
               selectList = selectList.map(s => recreate(s));
               selectOffset = vector();
+          }
+          // selecting outside of the current polygon
+          if (isSelectList && selectMode == 'lasso' && (hovered || !pointpolygon(this.lassoPoints.coords, this.mouse.touch.real.x - selectOffset.x, this.mouse.touch.real.y - selectOffset.y))) {
+              for (let i of selectList) {
+                  remove(i);
+              }
+              this.clearTemp();
+              this.completeAction();
+              selectList = selectList.map(s => recreate(s));
+              selectOffset = vector();
+              this.lassoPoints.clear();
           }
           if (hovered) {
               // TO-DO: find a better place to put / store this
@@ -27962,9 +27976,11 @@ function load() {
               selectList = selectPhysicsList = undefined;
               this.temp();
               //this.oldOffset = selectPoint ? pointOffset.factor(1) : selectOffset.factor(1);
-          } else if (this.p1 && pointrect(this.mouse.touch.real, this.p1, this.p2)) {
+          } else if (selectMode == 'rect' && this.p1 && pointrect(this.mouse.touch.real, this.p1, this.p2)) {
               selected = undefined;
               //this.oldOffset = vector(selectOffset.x, selectOffset.y);
+          } else if (selectMode == 'lasso' && pointpolygon(this.lassoPoints.coords, this.mouse.touch.real.x - selectOffset.x, this.mouse.touch.real.y - selectOffset.y)) {
+              selected = undefined;
           } else {
               isSelectedUpdated = false;
               isHoverList = true;
@@ -27980,6 +27996,9 @@ function load() {
           if (isHoverList) {
               this.p2 = this.mouse.touch.real.factor(1);
               this.toolHandler.moveCameraTowardsMouse();
+              if (selectMode == 'lasso') {
+                  this.lassoPoints.add(this.mouse.touch.real.x, this.mouse.touch.real.y);
+              }
           }
       }
 
@@ -28049,13 +28068,18 @@ function load() {
               }
 
               if (isHoverList) {
-                  this.multiHover();
+                  if (selectMode == 'rect')
+                      this.multiHoverRect();
+                  else if (selectMode == 'lasso')
+                      this.multiHoverLasso();
               } else if (this.gamepad.isButtonDown("alt") || 
                         !(this.gamepad.isButtonDown("ctrl") ||
                           (isSelectList && pointrect(this.mouse.touch.real, this.p1, this.p2))
                         )) {
                   this.singleHover(mousePos);
-              } else if (pointrect(this.mouse.touch.real, this.p1, this.p2)) {
+              } else if (selectMode == 'rect' && pointrect(this.mouse.touch.real, this.p1, this.p2)) {
+                  hovered = undefined;
+              } else if (selectMode == 'lasso' && this.lassoPoints.coords.length && pointpolygon(this.lassoPoints.coords, this.mouse.touch.real.x, this.mouse.touch.real.y)) {
                   hovered = undefined;
               }
           }
@@ -28157,7 +28181,7 @@ function load() {
           hoverPoint = minPoint;
       }
 
-      multiHover() {
+      multiHoverRect() {
           // this logic is very simple: decide which sectors to add, then add everything necessary from them
           let sectorSize = this.scene.settings.drawSectorSize,
               minVec = {x: Math.min(this.p1.x, this.p2.x), y: Math.min(this.p1.y, this.p2.y)},
@@ -28174,6 +28198,112 @@ function load() {
               }
           }
           hoverList = lines;
+      }
+
+      multiHoverLasso() {
+          let sectorSize = GameSettings.physicsSectorSize,
+              p1 = this.lassoPoints.coords[0],
+              p2 = this.lassoPoints.coords[this.lassoPoints.coords.length - 1],
+              x0 = Math.round(p1.x / sectorSize),
+              y0 = Math.round(p1.y / sectorSize),
+              x1 = Math.round(p2.x / sectorSize),
+              y1 = Math.round(p2.y / sectorSize),
+              dx = Math.abs(x1 - x0),
+              sx = p1.x < p2.x ? 1 : -1,
+              dy = -Math.abs(y1 - y0),
+              sy = p1.y < p2.y ? 1 : -1,
+              err = dx + dy,
+              e2;
+          
+          while (true) {
+              // plot
+              let sector = this.scene.track.sectors.drawSectors?.[x0]?.[y0];
+              if (sector == undefined) continue;
+              if (this.options.types.physics) {
+                    for (let i of sector.physicsLines) {
+                      if (i.remove || hoverList.includes(i))
+                          continue;
+                      if (linecollide(p1, p2, i.p1, i.p2))
+                          hoverList.push(i);
+                  }
+              }
+              /*if (this.options.types.powerups) {
+                  for (let i of sector.powerups.all) {
+                      if (i.remove || lines.includes(i))
+                          continue;
+                      if (pointpolygon(this.lassoPoints.coords, i.x, i.y))
+                          toReturn.push(i);
+                  }
+              }*/
+              //selectPhysicsList[x][y] = [...toReturn];
+              if (this.options.types.scenery) {
+                  for (let i of sector.sceneryLines) {
+                      if (i.remove || hoverList.includes(i))
+                          continue;
+                      if (linecollide(p1, p2, i.p1, i.p2))
+                          hoverList.push(i);
+                  }
+              }
+              if (x0 == x1 && y0 == y1) break;
+              e2 = 2 * err;
+              if (e2 >= dy) {
+                err += dy;
+                x0 += sx;
+              }
+              if (e2 <= dx) {
+                err += dx;
+                y0 += sy;
+              }
+          }
+      }
+
+      multiSelectLasso() {
+          // this logic is very simple: decide which sectors to add, then add everything necessary from them
+          let sectorSize = this.scene.settings.drawSectorSize,
+              minVec = this.lassoPoints.boundingBox.ul,
+              maxVec = this.lassoPoints.boundingBox.lr,
+              lines = [];
+          selectPhysicsList = {};
+          for (let x = Math.floor(minVec.x / sectorSize); x <= Math.ceil(maxVec.x / sectorSize); x++) {
+              let row = this.scene.track.sectors.drawSectors[x];
+              if (!row) continue;
+              selectPhysicsList[x] = {};
+              for (let y = Math.floor(minVec.y / sectorSize); y <= Math.ceil(maxVec.y / sectorSize); y++) {
+                  selectPhysicsList[x][y] = [];
+                  //lines.push(...this.testSectorMulti({x, y}, minVec, maxVec).filter(i => !lines.includes(i) && !i.remove));
+                  let sector = this.scene.track.sectors.drawSectors?.[x]?.[y],
+                      toReturn = [];
+                  if (sector == undefined) continue;
+                  if (this.options.types.physics) {
+                        for (let i of sector.physicsLines) {
+                          if (i.remove || lines.includes(i))
+                              continue;
+                          if (this.lassoPoints.test(i))
+                              toReturn.push(i);
+                      }
+                  }
+                  if (this.options.types.powerups) {
+                      for (let i of sector.powerups.all) {
+                          if (i.remove || lines.includes(i))
+                              continue;
+                          if (pointpolygon(this.lassoPoints.coords, i.x, i.y))
+                              toReturn.push(i);
+                      }
+                  }
+                  selectPhysicsList[x][y] = [...toReturn];
+                  if (this.options.types.scenery) {
+                      for (let i of sector.sceneryLines) {
+                          if (i.remove || lines.includes(i))
+                              continue;
+                          if (this.lassoPoints.test(i))
+                              toReturn.push(i);
+                      }
+                  }
+                  lines.push(...toReturn);
+              }
+          }
+          hoverList = lines;
+          return lines;
       }
 
       release() {
@@ -28198,8 +28328,12 @@ function load() {
               selected = undefined;
               selectPoint = undefined;
               isHoverList = false;
-              selectList = [...hoverList];
-              if (hoverList.length) {
+              if (selectMode == 'rect') {
+                  selectList = [...hoverList];
+              } else if (selectMode) {
+                  selectList = this.multiSelectLasso();
+              }
+              if (selectList.length) {
                   isSelectList = true;
                   inflectionOffset = vector();
                   this.resetCenter();
@@ -28236,6 +28370,7 @@ function load() {
                   this.temp();
               } else {
                   this.p2.equ({x: NaN, y: NaN});
+                  this.lassoPoints.clear();
                   isSelectList = false;
                   this.resetCenter();
               }
@@ -28264,33 +28399,49 @@ function load() {
           }
           //*/
           if (!isHoverList && !isSelectList) return;
-          let rp1 = this.p1.toScreen(this.scene),
-              rp2 = this.p2.toScreen(this.scene),
-              w = rp2.x - rp1.x,
-              h = rp2.y - rp1.y;
-          ctx.save();
-          if (ctx.setLineDash)
-              ctx.setLineDash([6]);
-          ctx.lineDashOffset = this.dashOffset++;
-          ctx.beginPath();
-          ctx.rect(rp1.x, rp1.y, w, h);
-          ctx.fillStyle = "rgba(24, 132, 207, 0.3)";
-          isHoverList && ctx.fill();
-          ctx.strokeStyle = "rgba(24, 132, 207, 0.7)";
-          ctx.lineWidth = 2;
-          ctx.stroke();
-          ctx.restore();
-          this.dashOffset %= 23;
-          if (!isSelectList) return;
-          let point = center.add(selectOffset).add(inflectionOffset).toScreen(this.scene);
-          ctx.globalAlpha = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(point.x - 5, point.y);
-          ctx.lineTo(point.x + 5, point.y);
-          ctx.moveTo(point.x, point.y - 5);
-          ctx.lineTo(point.x, point.y + 5);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
+          if (selectMode == 'rect') {
+              let rp1 = this.p1.toScreen(this.scene),
+                  rp2 = this.p2.toScreen(this.scene),
+                  w = rp2.x - rp1.x,
+                  h = rp2.y - rp1.y;
+              ctx.save();
+              if (ctx.setLineDash)
+                  ctx.setLineDash([6]);
+              ctx.lineDashOffset = this.dashOffset++;
+              ctx.beginPath();
+              ctx.rect(rp1.x, rp1.y, w, h);
+              ctx.fillStyle = "rgba(24, 132, 207, 0.3)";
+              isHoverList && ctx.fill();
+              ctx.strokeStyle = "rgba(24, 132, 207, 0.7)";
+              ctx.lineWidth = 2;
+              ctx.stroke();
+              ctx.restore();
+              this.dashOffset %= 23;
+              if (!isSelectList) return;
+              let point = center.add(selectOffset).add(inflectionOffset).toScreen(this.scene);
+              ctx.globalAlpha = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(point.x - 5, point.y);
+              ctx.lineTo(point.x + 5, point.y);
+              ctx.moveTo(point.x, point.y - 5);
+              ctx.lineTo(point.x, point.y + 5);
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+          } else if (selectMode == 'lasso') {
+              ctx.save();
+              if (ctx.setLineDash)
+                  ctx.setLineDash([6]);
+              ctx.lineDashOffset = this.dashOffset++;
+              ctx.beginPath();
+              for (let i of this.lassoPoints.coords) {
+                  let s = i.add(selectOffset).toScreen(this.scene);
+                  ctx.lineTo(s.x, s.y);
+              }
+              let s = this.lassoPoints.coords[0].add(selectOffset).toScreen(this.scene);
+              ctx.lineTo(s.x, s.y);
+              ctx.stroke();
+              ctx.restore();
+          }
       }
 
       testSectorSingle(sectorPos) {
@@ -28934,6 +29085,155 @@ function pointrect(p, r1, r2) {
   let ul = {x: Math.min(r1.x, r2.x), y: Math.min(r1.y, r2.y)},
       lr = {x: Math.max(r1.x, r2.x), y: Math.max(r1.y, r2.y)};
   return p.x >= ul.x && p.x <= lr.x && p.y >= ul.y && p.y <= lr.y;
+}
+
+// taken from https://web.archive.org/web/20110513210118/http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html#Explanation
+function pointpolygon(p, x, y) {
+  let i, j, c = 0;
+  for (i = 0, j = p.length - 1; i < p.length; j = i++) {
+    if (((p[i].y > y) != (p[j].y > y)) &&
+        (x < (p[j].x - p[i].x) * (y-p[i].y) / (p[j].y - p[i].y) + p[i].x)) {
+          c = !c;
+        }
+  }
+  return c;
+}
+
+function linepolygon(p, l) {
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
+    if (linecollide(p[i], p[j], l.p1, l.p2)) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+/*
+ * pretend this works in javascript (i really don't want to make classes or just use objects i miss structs so much)
+ * typedef struct polygon {
+ *     rect boundingBox;
+ *     vec2 *coords;
+ * } polygon;
+ * 
+ * typedef struct rect {
+ *     vec2 ul;
+ *     vec2 lr;
+ * } rect;
+ * 
+ * typedef struct vec2 {
+ *     double x;
+ *     double y;
+ * } vec2;
+ * 
+ * typedef struct line {
+ *     vec2 a;
+ *     vec2 b;
+ * } line;
+ */
+//let zv = GameManager.game.currentScene.camera.position.factor(0),
+let zv,
+vector = (x = 0, y = 0) => {return zv.add({x, y})};
+
+function _selectVec2(x = 0, y = 0) {
+  return vector(x, y);
+}
+
+function _selectLine(a, b) {
+  this.p1 = a || new _selectVec2();
+  this.p2 = b || new _selectVec2();
+  this.l = this.b.sub(this.a);
+}
+
+function _selectLine2(x1, y1, x2, y2) {
+  this.p1 = new _selectVec2(x1, y1);
+  this.p2 = new _selectVec2(x2, y2);
+  this.l = this.b.sub(this.a);
+}
+
+function _selectRect(ul, lr) {
+  this.ul = ul;
+  this.lr = lr;
+}
+
+function _selectRect2(x1, y1, x2, y2) {
+  this.ul = new _selectVec2(Math.min(x1, x2), Math.min(y1, y2));
+  this.lr = new _selectVec2(Math.max(x1, x2), Math.max(y1, y2));
+}
+
+class _selectPolygon {
+  constructor() {
+    this.boundingBox = new _selectRect();
+    this.coords = [];
+    this.oldCoords = [];
+  }
+
+  add(x, y) {
+    let p = new _selectVec2(x, y);
+    if (this.coords.length) {
+        this.adjust(p);
+        if (p.sub(this.coords[this.coords.length - 1]).lenSqr() < 12) return;
+    } else {
+        this.boundingBox.ul = p.factor(1);
+        this.boundingBox.lr = p.factor(1);
+    }
+    this.coords.push(p);
+  }
+
+  append(c) {
+    if (this.coords.length)
+        this.adjust(c);
+    else {
+        this.boundingBox.ul = c.factor(1);
+        this.boundingBox.lr = c.factor(1);
+    }
+    this.coords.push(c);
+  }
+
+  adjust(p) {
+    if (p.x < this.boundingBox.ul.x) this.boundingBox.ul.x = p.x;
+    if (p.x > this.boundingBox.lr.x) this.boundingBox.lr.x = p.x;
+    if (p.y < this.boundingBox.ul.y) this.boundingBox.ul.y = p.y;
+    if (p.y > this.boundingBox.lr.y) this.boundingBox.lr.y = p.y;
+  }
+
+  test(l) {
+    if (this.quickReject(l)) {
+      if (!this.outCode(l.p1) && pointpolygon(this.coords, l.p1.x, l.p1.y)) return 1;
+      if (!this.outCode(l.p2) && pointpolygon(this.coords, l.p2.x, l.p2.y)) return 1;
+      return linepolygon(this.coords, l);
+    }
+    console.log(l, 'discarded!');
+    return 0;
+  }
+
+  quickReject(l) {
+    let p1Code = this.outCode(l.p1),
+        p2Code = this.outCode(l.p2);
+    // both points inside clip rectangle
+    if ((p1Code | p2Code) == 0) {
+      return 1;
+    }
+    // either one point is inside the clip rectangle
+    // or the points are in non-contiguous segments outside of the bounding box (i.e. non-trivial scenario)
+    if ((p1Code & p2Code) == 0) {
+      return 2;
+    }
+    return 0;
+  }
+
+  outCode(p) {
+    let code = 0;
+    if (p.x < this.boundingBox.ul.x) code |= 1;
+    else if (p.x > this.boundingBox.lr.x) code |= 2;
+    if (p.y < this.boundingBox.ul.y) code |= 4;
+    else if (p.y > this.boundingBox.lr.y) code |= 8;
+    return code;
+  }
+
+  clear() {
+    this.oldCoords = [...this.coords];
+    this.coords = [];
+  }
 }
 
 function doAMario(selector) {
