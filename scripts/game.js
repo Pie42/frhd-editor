@@ -27553,6 +27553,13 @@ function load() {
           this.rotate = false;
           this.scale = false;
           this.flip = false;
+          // for drawing point data
+          this.flipAxes = vector();
+          this.rotation = 0;
+          this.currentScale = 1;
+          this.selectData = {};
+          this.hoverData = {};
+
           this.options = s.scene.settings.select;
           // used to record the entire transformation that occurs
           this.transformation = [];
@@ -27688,6 +27695,7 @@ function load() {
       
           console.log('Adding to timeline:', action);
           this.transformation.push(action);
+          this.rotation += degrees;
       }
       
       rotatePoint(point, centerX, centerY, radians) {
@@ -27744,6 +27752,7 @@ function load() {
 
               console.log('Adding to timeline:', action);
               this.transformation.push(action);
+              this.currentScale *= scaleFactor;
           } else {
               console.log('scaling would cause undefined lines (too short)');
           }
@@ -27790,6 +27799,12 @@ function load() {
       
           console.log('Adding to timeline:', action);
           this.transformation.push(action);
+
+          if (flipVertically) {
+              this.flipAxes.y = !this.flipAxes.y;
+          } else {
+              this.flipAxes.x = !this.flipAxes.x;
+          }
       }
       
       press() {
@@ -28085,6 +28100,9 @@ function load() {
           }
           if (force) return;
           this.oldMouse = this.mouse.touch.real.factor(1);
+          // can't use ctrl because it's already used to force multiselect
+          //this.shouldDrawMetadata = !!this.toolHandler.isButtonDown("ctrl");
+          this.shouldDrawMetadata = true;
           this.toolUpdate();
           this.keydown();
       }
@@ -28198,6 +28216,11 @@ function load() {
               }
           }
           hoverList = lines;
+          this.hoverData = {
+            physicsLines: hoverList.filter(i=>'highlight' in i).length,
+            sceneryLines: hoverList.filter(i=>!('highlight' in i) && 'p2' in i).length,
+            powerups: hoverList.filter(i=>!('p2' in i)).length
+          };
       }
 
       multiHoverLasso() {
@@ -28213,9 +28236,10 @@ function load() {
               dy = -Math.abs(y1 - y0),
               sy = p1.y < p2.y ? 1 : -1,
               err = dx + dy,
-              e2;
+              e2,
+              n = 0;
           
-          while (true) {
+          while (n++ <= dx + dy) {
               // plot
               let sector = this.scene.track.sectors.drawSectors?.[x0]?.[y0];
               if (sector == undefined) continue;
@@ -28332,6 +28356,11 @@ function load() {
                   selectList = [...hoverList];
               } else if (selectMode) {
                   selectList = this.multiSelectLasso();
+                  this.hoverData = {
+                    physicsLines: selectList.filter(i=>'highlight' in i).length,
+                    sceneryLines: selectList.filter(i=>!('highlight' in i) && 'p2' in i).length,
+                    powerups: selectList.filter(i=>!('p2' in i)).length
+                  };
               }
               if (selectList.length) {
                   isSelectList = true;
@@ -28343,6 +28372,7 @@ function load() {
                   selectPhysicsList = hoverPhysicsList;
                   hoverList = [];
                   selectOffset = vector();
+                  this.selectData = structuredClone(this.hoverData);
                   if (this.scene.settings.copy == true) {
                       let copied = [],
                           powerups = [];
@@ -28398,6 +28428,11 @@ function load() {
               }
           }
           //*/
+          this.drawSelectArea(ctx);
+          this.shouldDrawMetadata && this.drawPointData();
+      }
+
+      drawSelectArea(ctx) {
           if (!isHoverList && !isSelectList) return;
           if (selectMode == 'rect') {
               let rp1 = this.p1.toScreen(this.scene),
@@ -28406,8 +28441,8 @@ function load() {
                   h = rp2.y - rp1.y;
               ctx.save();
               if (ctx.setLineDash)
-                  ctx.setLineDash([6]);
-              ctx.lineDashOffset = this.dashOffset++;
+                  ctx.setLineDash([6 * this.scene.camera.zoom]);
+              ctx.lineDashOffset = this.dashOffset++ * this.scene.camera.zoom;
               ctx.beginPath();
               ctx.rect(rp1.x, rp1.y, w, h);
               ctx.fillStyle = "rgba(24, 132, 207, 0.3)";
@@ -28430,8 +28465,9 @@ function load() {
           } else if (selectMode == 'lasso') {
               ctx.save();
               if (ctx.setLineDash)
-                  ctx.setLineDash([6]);
-              ctx.lineDashOffset = this.dashOffset++;
+                  ctx.setLineDash([6 * this.scene.camera.zoom]);
+              ctx.lineDashOffset = this.dashOffset++ * this.scene.camera.zoom;
+              ctx.strokeStyle = "rgba(24, 132, 207, 0.7)";
               ctx.beginPath();
               for (let i of this.lassoPoints.coords) {
                   let s = i.add(selectOffset).toScreen(this.scene);
@@ -28442,6 +28478,62 @@ function load() {
               ctx.stroke();
               ctx.restore();
           }
+      }
+
+      drawPointData() {
+          let data = [],
+              drawPos,
+              ctx = this.game.canvas.getContext('2d'),
+              pr = this.game.pixelRatio;
+          ctx.save();
+          ctx.fillStyle = '#000000';
+          ctx.strokeStyle = '#ffffff';
+          ctx.font = `bold ${10 * pr}pt arial`;
+          ctx.lineWidth = 5 * pr;
+          if (this.selected) {
+              if (this.flipAxes.x || this.flipAxes.y) {
+                  let axes = [];
+                  if (this.flipAxes.x) axes.push('x');
+                  if (this.flipAxes.y) axes.push('y');
+                  data.push(`flip ${axes.join(', ')}`);
+              }
+              if (Math.abs(this.currentScale - 1) > 0.00001) {
+                  data.push(`${this.currentScale.toFixed(2)}x`);
+              }
+              if (this.rotation) {
+                  data.push(`${this.rotation}°`);
+              }
+              if (selectOffset.x || selectOffset.y) {
+                  data.push(`moved (${selectOffset.x / 10}, ${selectOffset.y / 10})`);
+              } else if (pointOffset.x || pointOffset.y) {
+                  data.push(`moved (${pointOffset.x / 10}, ${pointOffset.y / 10})`)
+              }
+              if (isSelectList) {
+                  data.push(`powerups: ${this.selectData.powerups}`);
+                  data.push(`scenery: ${this.selectData.sceneryLines}`);
+                  data.push(`physics: ${this.selectData.physicsLines}`);
+              }
+              if (selectPoint) {
+                  drawPos = selectPoint.toScreen(this.scene).add({x: 10, y: -10});
+              } else if (selected) {
+                  if ('p2' in selected) {
+                      let factor = Math.min(Math.max(selected.pp.dot(this.mouse.touch.real.sub(selected.p1).sub(selectOffset)) / selected.pp.dot(selected.pp), 0), 1);
+                      drawPos = selected.pp.factor(factor).add(selected.p1).add(selectOffset).toScreen(this.scene).add({x: 10, y: -10});
+                      if (factor < 0.5) {
+                          ctx.textAlign = "right";
+                          drawPos.x -= 10;
+                      }
+                  }
+              } else {
+                  drawPos = this.mouse.touch.pos.add({x: 10, y: -10});
+              }
+              for (let i of data) {
+                  ctx.strokeText(i, drawPos.x, drawPos.y);
+                  ctx.fillText(i, drawPos.x, drawPos.y);
+                  drawPos.y -= 15 * pr;
+              }
+          }
+          ctx.restore();
       }
 
       testSectorSingle(sectorPos) {
@@ -28553,6 +28645,9 @@ function load() {
           if (selectPoint && selected) completeAction.points = [(selectPoint.x == selected.p1.x && selectPoint.y == selected.p1.y) ? 'p1' : 'p2', connectedPoint];
           this.toolHandler.addActionToTimeline(completeAction);
           this.transformation = [];
+          this.rotation = 0;
+          this.currentScale = 1;
+          this.flipAxes = vector();
       }
 
       temp() {
