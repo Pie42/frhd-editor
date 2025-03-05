@@ -13354,6 +13354,9 @@
             if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
               this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
             }
+            if (this.shouldDrawPropeller !== this.scene.game.mod.getVar("propeller")) {
+              this.shouldDrawPropeller = this.scene.game.mod.getVar("propeller");
+            }
             if (this.mini !== this.scene.game.mod.getVar("mini")) {
               this.updateSprings();
               this.updateMasses();
@@ -13401,7 +13404,7 @@
               (this.frontSpring.leff = t);
           }
           control() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const t = this.gamepad,
               e = t.isButtonDown("up"),
               s = t.isButtonDown("down"),
@@ -13415,7 +13418,7 @@
               if (this.scene.game.mod.getVar("slowmo")) {
               this.slow = !x}
   
-              if (this.scene.game.mod.getVar("propeller")) {
+              if (this.shouldDrawPropeller) {
                 let angle = this.frontWheel.pos.sub(this.rearWheel.pos);
                   let angleX = angle.x / angle.len();
                   let angleY = angle.y / angle.len();
@@ -14966,6 +14969,9 @@
           if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
             this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
           }
+          if (this.shouldDrawPropeller !== this.scene.game.mod.getVar("propeller")) {
+            this.shouldDrawPropeller = this.scene.game.mod.getVar("propeller");
+          }
           if (this.mini !== this.scene.game.mod.getVar("mini")) {
             this.updateSprings();
             this.updateMasses();
@@ -15221,7 +15227,7 @@
 }
       };
         drawBikeFrame() {
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const e = this.scene,
             s = e.game.mod.getVar("crMtb"),
             i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -15288,7 +15294,7 @@
           const gg = new W(ff,pp,dd);             
 
           const mm = (.25) * Math.cos(rotor); // propeller
-          if (this.scene.game.mod.getVar("propeller")) {
+          if (this.shouldDrawPropeller) {
                   u.beginPath();  
                   u.strokeStyle = "#000000",
                   u.lineWidth = 3 * c,

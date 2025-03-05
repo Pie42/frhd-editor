@@ -32082,22 +32082,35 @@
             
               if (isJsonFile) {
                 try {
-                  const parsedInput = JSON.parse(fileContent);
-                  const raceData = parsedInput.data ? parsedInput.data[0].race : parsedInput;
-                  const parsedCode = JSON.parse(raceData.code);
-            
-                  const filteredData = {
-                    code: parsedCode,
-                    vehicle: raceData.vehicle,
-                    desktop: raceData.desktop,
-                    run_ticks: raceData.run_ticks
-                  };
-            
+                  const positionDataArray = JSON.parse(fileContent);
+
+                  const processedData = positionDataArray.map(entry => {
+                    const result = {
+                      _sceneTicks: entry._sceneTicks,
+                      _crashed: entry._crashed,
+                    };
+
+                    if (entry._baseVehicleType && entry._baseVehicle) {
+                      result._baseVehicleType = entry._baseVehicleType;
+                      result._baseVehicle = entry._baseVehicle;
+                    }
+
+                    if (entry._tempVehicleType && entry._tempVehicle) {
+                      result._tempVehicleType = entry._tempVehicleType;
+                      result._tempVehicle = entry._tempVehicle;
+                      result._tempVehicleTicks = entry._tempVehicleTicks;
+                    }
+
+                    return result;
+                  });
+
+                  GameManager.game.currentScene.ghostData = processedData;
+
                   if (typeof GameManager !== "undefined") {
-                    GameManager.command("add race", filteredData, true);
+                    GameManager.command("add race", processedData, true);
                   }
                 } catch (error) {
-                  console.error("Error parsing JSON file:", error);
+                  console.error("failed to parse JSON data and add ghost.", error);
                 }
               } else {
                 n.value = fileContent;
@@ -32221,7 +32234,7 @@
                     style: { display: "none" },
                     type: "file",
                     ref: "fileInput",
-                    accept: "text/plain",
+                    accept: "text/plain,application/json",
                     onChange: this.onDrop,
                   })
                 ),
