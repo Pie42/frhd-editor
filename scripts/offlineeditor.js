@@ -1664,6 +1664,18 @@
             importGhost: function () {
               "undefined" != typeof GameManager && GameManager.command("dialog", "importGhost");
             },
+            exportGhost: function () {
+              if (typeof GameManager !== "undefined") {
+                  GameManager.command("dialog", "exportGhost");
+                  const checkpointsData = GameManager.game.currentScene.playerManager.firstPlayer._checkpoints;
+                  const jsonData = JSON.stringify(checkpointsData, null, 2);
+                  const blob = new Blob([jsonData], { type: "application/json" });
+                  const link = document.createElement("a");
+                  link.href = URL.createObjectURL(blob);
+                  link.download = "checkpoints.json";
+                  link.click();
+              }
+            },
             render: function () {
               var e =
                   "bottomMenu-button bottomMenu-button-right bottomMenu-button_vehicle ",
@@ -1693,13 +1705,20 @@
                       }
                   }, "SET START POSITION")
                   ),
-                  /*this.state.open && n.createElement("button", {
+                  this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
                         this.importGhost(event);
                       }
-                  }, "IMPORT GHOST")*/
+                  }, "IMPORT GHOST"),
+                  this.state.open && n.createElement("button", {
+                    className: "margin",
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      this.exportGhost(event);
+                    }
+                }, "EXPORT GHOST")
                   
                 )
               );
@@ -31993,30 +32012,33 @@
               }
               else {
                 try {
-                    const parsedInput = JSON.parse(n);
-                    let raceData;
-                    if (Array.isArray(parsedInput)) {
-                        raceData = parsedInput[0].race;
-                    } 
-                    else if (parsedInput.data && Array.isArray(parsedInput.data)) {
-                        raceData = parsedInput.data[0].race;
-                    } 
-                    else {
-                        raceData = parsedInput.race;
-                    }
-            
-                    const parsedCode = JSON.parse(raceData.code || "{}");
-            
-                    const filteredData = {
-                        code: parsedCode,
-                        vehicle: raceData.vehicle,
-                        desktop: raceData.desktop,
-                        run_ticks: raceData.run_ticks
+                  const positionDataArray = JSON.parse(n);
+
+                  const processedData = positionDataArray.map(entry => {
+                    const result = {
+                      _sceneTicks: entry._sceneTicks,
+                      _crashed: entry._crashed,
                     };
-            
-                    if (typeof GameManager !== "undefined") {
-                        GameManager.command("add race", filteredData, true);
+
+                    if (entry._baseVehicleType && entry._baseVehicle) {
+                      result._baseVehicleType = entry._baseVehicleType;
+                      result._baseVehicle = entry._baseVehicle;
                     }
+
+                    if (entry._tempVehicleType && entry._tempVehicle) {
+                      result._tempVehicleType = entry._tempVehicleType;
+                      result._tempVehicle = entry._tempVehicle;
+                      result._tempVehicleTicks = entry._tempVehicleTicks;
+                    }
+
+                    return result;
+                  });
+
+                  GameManager.game.currentScene.ghostData = processedData;
+
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("add race", processedData, true);
+                  }
                 } catch (error) {
                     console.error("failed to parse JSON data and add ghost.", error);
                 }

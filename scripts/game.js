@@ -12390,7 +12390,7 @@
         }
         update() {
           this.scene,
-            this.replaying && this.updatePlayback(),
+            this.replaying,
             (this.previousTickDownButtons = (0, e.merge)(
               {},
               this.tickDownButtons
@@ -12417,7 +12417,7 @@
               void 0 !== t[i] && void 0 !== t[i][e] && this.setButtonUp(s);
           }
         }*/
-        updatePlayback() {
+        /*updatePlayback() {
           const t = this.playback;
           let e = this.scene.ticks;
           if (this.scene.game.mod.getVar("slowmo")) { e = e / 2 }
@@ -12454,7 +12454,7 @@
               }
             }
           }
-        }
+        }*/
         updateRecording() {
           let t = this.scene.ticks;
           const e = this.records,
@@ -16158,6 +16158,7 @@
             (this.firstPlayer = null),
             (this._players = []),
             (this._playerLookup = {});
+            (this.updated = false)
         }
         update() {
           for (const t of this._players) t.update();
@@ -16204,6 +16205,7 @@
                 (this._effectTicks = 0),
                 (this._opacity = 1),
                 (this.complete = !1),
+                (this.updated = false),
                 (this._powerupsConsumed = {
                   checkpoints: [],
                   targets: [],
@@ -16336,11 +16338,11 @@
                 }
                 const collected = (this._scene.playerManager.firstPlayer._powerupsConsumed.targets.length > 0) && (this._scene.playerManager.firstPlayer._powerupsConsumed.targets.length === this._scene.track.targetCount);
                 if (this._game.mod.getVar("rewind") && !this._scene.playerManager.firstPlayer._crashed && !collected) {
-                  this._createCheckpoint();
+                  !this.isGhost() && this._createCheckpoint();
                 }
                 if (this._scene.playerManager._players[1]) {
-                  if (this._addCheckpoint) {this.checkpointTick = this._scene.ticks; this._addCheckpoint = !1};
-                  console.log(this.checkpointTick);
+                  this.isGhost() && this.updateGhostPosition();
+                  this.isGhost() && (!this.updated && this.setGhostCheckpoints());
                 }
               }
             }
@@ -16446,10 +16448,8 @@
                 (t._powerupsConsumed = JSON.stringify(this._powerupsConsumed)),
                 (t._crashed = this._crashed),
                 t._sceneTicks = this._scene.ticks;
-                this._checkpoints.push(t);
-
-                if (this._checkpoints.length > 500 && this._game.mod.getVar("rewind")) {
-                  this._checkpoints.shift();
+                if (this._scene.playerManager.firstPlayer) {
+                this._scene.playerManager.firstPlayer._checkpoints.push(t);
                 }
             }
             _snapshotFilter(t, e) {
@@ -16542,6 +16542,57 @@
                 }
                 e.camera.playerFocus === this && e.camera.fastforward();
               } else t || this.restartScene();
+            }
+            setGhostCheckpoints() {
+              const positionDataArray = this._scene.ghostData;
+              const ghost = this._scene.playerManager._players[1];
+              positionDataArray.forEach(data => {
+                ghost._checkpoints.push(data);
+              });
+              this.updated = true;
+            }
+            updateGhostPosition() {
+              if (this._checkpoints.length > 0) {
+                  const currentTick = this._scene.ticks;
+                  let closestCheckpoint = null;
+          
+                  for (let i = 0; i < this._checkpoints.length; i++) {
+                      const checkpoint = this._checkpoints[i];
+                      if (checkpoint._sceneTicks <= currentTick) {
+                          closestCheckpoint = checkpoint;
+                      } else {
+                          break;
+                      }
+                  }
+          
+                  if (closestCheckpoint) {
+                      if (closestCheckpoint._tempVehicle) {
+                          let ghostVehicle = this._tempVehicle;
+          
+                          if (this._tempVehicleType !== closestCheckpoint._tempVehicleType) {
+                              ghostVehicle = new Xt[closestCheckpoint._tempVehicleType](this, { x: 0, y: 0 });
+                          }
+          
+                          Jt(ghostVehicle, JSON.parse(closestCheckpoint._tempVehicle));
+                          this._tempVehicle = ghostVehicle;
+                          this._tempVehicleType = closestCheckpoint._tempVehicleType;
+                          this._tempVehicleTicks = closestCheckpoint._tempVehicleTicks;
+                          ghostVehicle.updateCameraFocalPoint();
+                      } else {
+                          let ghostVehicle = this._baseVehicle;
+                          const vehicleData = JSON.parse(closestCheckpoint._baseVehicle);
+          
+                          Jt(ghostVehicle, vehicleData);
+                          this._baseVehicle = ghostVehicle;
+                          this._tempVehicleTicks = 0;
+                          this._tempVehicleType = false;
+                          ghostVehicle.updateCameraFocalPoint();
+                      }
+                      this._scene.camera.playerFocus === this && this._scene.camera.fastforward();
+                  }
+              } else {
+                  this._gamepad.replaying || this.restartScene();
+              }
             }
             restartScene() {
               this._scene.message.hide();
@@ -25377,7 +25428,7 @@
               "string" == typeof n && (n = JSON.parse(n));
 
             const player = playerManager.createPlayer(this, user);
-            player.setBaseVehicle(races.vehicle);
+            player.setBaseVehicle(raceData[0]._baseVehicleType);
             player.setAsGhost();
             player.getGamepad().loadPlayback(raceData.code, this.settings.keysToRecord);
             playerManager.addPlayer(player);
