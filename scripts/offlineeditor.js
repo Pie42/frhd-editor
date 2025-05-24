@@ -899,6 +899,36 @@
                 this.setState({ scaleFactor: scale });
                 GameSettings.scaleFactor = scale;
             },
+            selectionAsStamp: function() {
+              let tool = GameManager.game.currentScene.toolHandler.tools.select,
+                  p1 = tool.p1,
+                  p2 = tool.p2;
+              
+              if (!p1 || !p2) return;
+              
+              const commentText = prompt("Enter a comment for this selection:");
+              
+              let formattedUrl;
+              if (commentText && commentText.trim() !== "") {
+                  const safeComment = commentText
+                      .replace(/'/g, "\\'")
+                      .replace(/ /g, "%20");
+                  
+                  formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)},${safeComment})`;
+              } else {
+                  formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)})`;
+              }
+              
+              navigator.clipboard.writeText(formattedUrl)
+                  .then(() => {
+                      console.log("Link copied to clipboard:", formattedUrl);
+                      alert("Link copied to clipboard! Post the link on the forums to share your stamp.");
+                  })
+                  .catch(err => {
+                      console.error("Failed to copy link to clipboard:", err);
+                      alert("Failed to copy link to clipboard.");
+                  });
+            },
             selectionAsObject: function() {
               let tool = GameManager.game.currentScene.toolHandler.tools.select,
                   selected = tool.selected;
@@ -990,10 +1020,12 @@
                         n.createElement("button", {
                             className: "margin",
                             onClick: this.selectionAsObject
-                        }, "COPY SELECTION AS OBJECT"))),
-
-                    
-                    
+                        }, "SAVE AS OBJECT")),
+                      n.createElement("span", {},
+                          n.createElement("button", {
+                            className: "margin",
+                            onClick: this.selectionAsStamp
+                        }, "COPY AS STAMP"))),
                     ), 
                     
                     /*n.createElement("div", {
@@ -32436,7 +32468,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = "https://k333892.invisionservice.com/forums";
+                iframe.src = "https://forum.freerider.app";
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);

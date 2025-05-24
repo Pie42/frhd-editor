@@ -12090,6 +12090,11 @@
             (this.desiredZoom = s.cameraStartZoom * e.game.pixelRatio),
             (this.zooming = !1),
             (this.position = new t.Z(0, 0)),
+            this.sectorStamp = {
+              point1: new t.Z(0, 0),
+              point2: new t.Z(0, 0)
+            };
+            (this.sectorStampText = ""),
             (this.zoomPercentage = this.getZoomAsPercentage()),
             (this.zoomPoint = !1);
         }
@@ -12138,6 +12143,23 @@
               } else {
                   e.y = 0;
               }
+          }
+          if (this.sectorStamp.point1.x !== 0 || this.sectorStamp.point1.y !== 0) {
+            const centerX = (this.sectorStamp.point1.x + this.sectorStamp.point2.x) / 2;
+            const centerY = (this.sectorStamp.point1.y + this.sectorStamp.point2.y) / 2;
+            
+            this.position.x = centerX;
+            this.position.y = centerY;
+
+            console.log("Camera moved to center of stamp:", centerX, centerY);
+              
+            //this.sectorStamp.point1.x = 0;
+            //this.sectorStamp.point1.y = 0;
+            //this.sectorStamp.point2.x = 0;
+            //this.sectorStamp.point2.y = 0;
+              
+            this.unfocus();
+            this.scene.redraw();
           }
         }
         updateZoom() {
@@ -13815,9 +13837,11 @@
                   y.lineTo(r.x, r.y);
                   y.lineTo(i.x, i.y);
                   y.lineTo(e.x, e.y);
-                  y.fillStyle = y.strokeStyle;
-                  y.stroke();
+                  y.moveTo(s.x, s.y - 2);
+                  y.lineTo(i.x, i.y - 2);
+                  this.scene.game.mod.getVar("invisibleRider") ? y.fillStyle = "rgb(255, 255, 255)" : y.fillStyle = GameSettings.hatColor;
                   y.fill();
+                  y.stroke();
                 } else { // crhead bmx
                     this.scene.game.mod.getVar("invisibleRider") ? y.fillStyle = "rgba(0,0,0,0)" : y.fillStyle = "rgb(255, 255, 255)",
                     y.beginPath(),
@@ -15435,13 +15459,16 @@
                   u.stroke(),
                   u.beginPath(),
                   u.moveTo(..._.transform(0.37, 1.19).toArray()),
-                  u.lineTo(..._.transform(0.28, 1.17).toArray()),
-                  u.lineTo(..._.transform(0.27, 1.39).toArray()),
-                  u.lineTo(..._.transform(0.04, 1.34).toArray()),
+                  u.lineTo(..._.transform(0.29, 1.17).toArray()),
+                  u.lineTo(..._.transform(0.28, 1.39).toArray()),
+                  u.lineTo(..._.transform(0.02, 1.34).toArray()),
                   u.lineTo(..._.transform(0.09, 1.15).toArray()),
                   u.lineTo(..._.transform(0.02, 1.14).toArray()),
-                  u.stroke(),
-                  u.fill();
+                  u.moveTo(..._.transform(0.28, 1.18).toArray()),
+                  u.lineTo(..._.transform(0.09, 1.16).toArray()),
+                  (this.scene.game.mod.getVar("invisibleRider") ? u.fillStyle = "rgb(255, 255, 255)" : u.fillStyle = GameSettings.hatColor),
+                  u.fill(),
+                  u.stroke();
               else { // crhead mtb
                 const t = _.transform(0.4, 1.15),
                   e = _.transform(0.1, 1.05);
@@ -17046,14 +17073,14 @@
             }
           }
           const e = [];
-          this.actionTimelinePointer >= 50 &&
+          this.actionTimelinePointer >= 200 &&
             (e.push(
               ...this.actionTimeline.splice(
                 0,
-                this.actionTimeline.length - 50 + 1
+                this.actionTimeline.length - 200 + 1
               )
             ),
-            (this.actionTimelinePointer = 49));
+            (this.actionTimelinePointer = 199));
           const s = e.length;
           e.push(...this.actionTimeline.splice(this.actionTimelinePointer)),
             this.actionTimeline.push(t),
@@ -17153,7 +17180,7 @@
             if (!old || !('pointer' in old) || old.pointer == 0)
                 this.actionTimelinePointer--;
             const t = this.actionTimeline[this.actionTimelinePointer];
-            t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i});
+            (t.type !== "lineTrim") && (t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i}));
             switch (t.type) {
               case "add":
                 let objects = t.objects;
@@ -17171,6 +17198,33 @@
               case "remove":
                 this.addObjects(t.objects);
                 break;
+                case "lineTrim":
+                  if (t && t.operations) {
+                    console.log("Reverting lineTrim with", t.operations.length, "operations");
+                    
+                    t.operations.forEach(operation => {
+                      console.log("Operation type:", operation.type, "Objects count:", operation.objects ? operation.objects.length : 0);
+                      
+                      if (operation.objects) {
+                        operation.objects = operation.objects.map(i => {
+                          while (i.newVersion) i = i.newVersion;
+                          return i;
+                        });
+                        
+                        switch (operation.type) {
+                          case "add":
+                            console.log("Removing objects:", operation.objects.length);
+                            this.removeObjects(operation.objects);
+                            break;
+                          case "remove":
+                            console.log("Adding objects:", operation.objects.length);
+                            this.addObjects(operation.objects);
+                            break;
+                        }
+                      }
+                    });
+                  }
+                  break;
               case 'transform':
                   if (t.pointer == 0) break;
                   if (this.gamepad.isButtonDown('shift')) {
@@ -17275,7 +17329,7 @@
             e = this.actionTimelinePointer;
           if (e < t.length) {
             const t = this.actionTimeline[e];
-            t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i});
+            (t.type !== "lineTrim") && (t.objects = t.objects.map(i => {while (i.newVersion) i = i.newVersion; return i}));
             switch (t.type) {
               case "add":
                 let objects = t.objects;
@@ -17297,6 +17351,29 @@
               case "remove":
                 this.removeObjects(t.objects);
                 this.actionTimelinePointer++;
+                break;
+                case "lineTrim":
+                  if (t && t.operations) {
+                    t.operations.forEach(operation => {
+                      if (operation.objects) {
+                        // Map the objects to handle newVersion for each operation
+                        operation.objects = operation.objects.map(i => {
+                          while (i.newVersion) i = i.newVersion;
+                          return i;
+                        });
+                        
+                        switch (operation.type) {
+                          case "add":
+                            this.addObjects(operation.objects);
+                            break;
+                          case "remove":
+                            this.removeObjects(operation.objects);
+                            break;
+                        }
+                      }
+                    })
+                    this.actionTimelinePointer++;
+                  }
                 break;
               case 'transform':
                   if (t.pointer == t.transformations.length) break;
@@ -20248,7 +20325,8 @@
           super.init(e),
           (this.options = e.scene.settings.eraser),
           (this.eraserPoint = new t.Z()),
-          (this.erasedObjects = []);
+          (this.erasedObjects = []),
+          (this.addedObjects = []);
       }
       reset() {
         this.recordActionsToToolhandler();
@@ -20257,57 +20335,160 @@
         this.recordActionsToToolhandler();
       }
       recordActionsToToolhandler() {
-        this.erasedObjects.length > 0 &&
+        if (this.addedObjects.length > 0 || this.erasedObjects.length > 0) {
           this.toolHandler.addActionToTimeline({
-            type: "remove",
-            objects: (0, e.flatten)(this.erasedObjects),
-          }),
-          (this.erasedObjects = []);
+            type: "lineTrim",
+            operations: [
+              ...(this.addedObjects.length > 0 ? [{
+                type: "add", 
+                objects: (0, e.flatten)(this.addedObjects)
+              }] : []),
+              ...(this.erasedObjects.length > 0 ? [{
+                type: "remove", 
+                objects: (0, e.flatten)(this.erasedObjects)
+              }] : [])
+            ]
+          });
+          
+          this.addedObjects = [];
+          this.erasedObjects = [];
+        }
       }
       release() {
         this.recordActionsToToolhandler();
       }
       hold() {
         const t = this.mouse.touch,
-          e = this.scene.track;
-        this.eraserPoint = t.pos.toRealSnapped(this.scene);
-        const s = e.erase(
-          this.eraserPoint,
-          this.options.radius / this.scene.camera.zoom,
-          this.options.types
+            e = this.scene.track;
+          this.eraserPoint = t.pos.toRealSnapped(this.scene);
+          const eraserRadius = this.options.radius / this.scene.camera.zoom;
+          const s = e.erase(
+            this.eraserPoint,
+            this.options.radius / this.scene.camera.zoom,
+            this.options.types
         );
+
         if (s.length > 0) {
           this.erasedObjects.push(s);
+
           if (GameSettings.lineTrim) {
             s.forEach(line => {
-              if (e.powerups.includes(line)) {
-                    return;
-                }
-              const pointsList = this.calculatePoints(line);
-              if (pointsList.length >= 5) {
-                const midpointIndex = Math.floor(pointsList.length / 2);
-                const midPoint = pointsList[midpointIndex];
-                const p1 = pointsList[0];
-                const p2 = pointsList[pointsList.length - 1];
+              if (e.powerups.includes(line)) return;
 
-                let type = 'unknown';
-                if (e.physicsLines.includes(line)) {
-                  type = 'physics';
-                } else if (e.sceneryLines.includes(line)) {
-                  type = 'scenery';
+              let type = 'unknown';
+              if (e.physicsLines.includes(line)) type = 'physics';
+              else if (e.sceneryLines.includes(line)) type = 'scenery';
+
+              const p1 = line.p1;
+              const p2 = line.p2;
+              const closestPoint = this.findClosestPointOnLine(this.eraserPoint, p1, p2);
+
+              if (this.distanceBetweenPoints(closestPoint, this.eraserPoint) <= eraserRadius) {
+                const dirX = (p2.x - p1.x) / this.distanceBetweenPoints(p1, p2);
+                const dirY = (p2.y - p1.y) / this.distanceBetweenPoints(p1, p2);
+
+                const distP1ToClosest = this.distanceBetweenPoints(p1, closestPoint);
+                const distP2ToClosest = this.distanceBetweenPoints(p2, closestPoint);
+                const distToEdge = Math.sqrt(eraserRadius * eraserRadius -
+                  this.distanceBetweenPoints(closestPoint, this.eraserPoint) ** 2);
+
+                if (distP1ToClosest > (distToEdge + 10)) {
+                  const newEndpoint1 = {
+                    x: p1.x + dirX * (distP1ToClosest - distToEdge),
+                    y: p1.y + dirY * (distP1ToClosest - distToEdge)
+                  };
+                  if (this.distanceBetweenPoints(p1, newEndpoint1) >= 20) {
+                    this.addLine(p1, newEndpoint1, type);
+                  }
                 }
 
-                if (this.distanceBetweenPoints(p1, midPoint) >= 20) {
-                  this.addLine(p1, midPoint, type);
-                }
-                if (this.distanceBetweenPoints(p2, midPoint) >= 20) {
-                  this.addLine(p2, midPoint, type);
+                if (distP2ToClosest > (distToEdge + 10)) {
+                  const newEndpoint2 = {
+                    x: p2.x - dirX * (distP2ToClosest - distToEdge),
+                    y: p2.y - dirY * (distP2ToClosest - distToEdge)
+                  };
+                  if (this.distanceBetweenPoints(newEndpoint2, p2) >= 20) {
+                    this.addLine(newEndpoint2, p2, type);
+                  }
                 }
               }
             });
+
+            //after trimming, record added objects
+            this.recordActionsToToolhandler();
           }
         }
       }
+
+      pointIsInsideCircle(point, circleCenter, radius) {
+        return this.distanceBetweenPoints(point, circleCenter) <= radius;
+      }
+
+      findClosestPointOnLine(point, lineStart, lineEnd) {
+        const dx = lineEnd.x - lineStart.x;
+        const dy = lineEnd.y - lineStart.y;
+        const lineLengthSquared = dx * dx + dy * dy;
+
+        if (lineLengthSquared === 0) {
+          return lineStart;
+        }
+
+        const t = Math.max(0, Math.min(1, (
+          (point.x - lineStart.x) * dx +
+          (point.y - lineStart.y) * dy
+        ) / lineLengthSquared));
+
+        return {
+          x: lineStart.x + t * dx,
+          y: lineStart.y + t * dy
+        };
+      }
+
+      findCircleLineIntersections(cx, cy, radius, x1, y1, x2, y2) {
+        const results = [];
+
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+
+        const lineLength = Math.sqrt(dx * dx + dy * dy);
+        const dirX = dx / lineLength;
+        const dirY = dy / lineLength;
+
+        const t = dirX * (cx - x1) + dirY * (cy - y1);
+
+        const closestX = x1 + t * dirX;
+        const closestY = y1 + t * dirY;
+
+        const distX = closestX - cx;
+        const distY = closestY - cy;
+        const distSquared = distX * distX + distY * distY;
+
+        if (distSquared > radius * radius) {
+          return results;
+        }
+
+        const dt = Math.sqrt(radius * radius - distSquared);
+
+        const t1 = t - dt;
+        const t2 = t + dt;
+
+        if (t1 >= 0 && t1 <= lineLength) {
+          results.push({
+            x: x1 + t1 * dirX,
+            y: y1 + t1 * dirY
+          });
+        }
+
+        if (t2 >= 0 && t2 <= lineLength) {
+          results.push({
+            x: x1 + t2 * dirX,
+            y: y1 + t2 * dirY
+          });
+        }
+
+        return results;
+      }
+      
       distanceBetweenPoints(point1, point2) {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
       }
@@ -20316,11 +20497,14 @@
           let n = !1;
           if (type === 'physics') {
             n = this.scene.track.addPhysicsLine(point1.x, point1.y, point2.x, point2.y);
+            this.addedObjects.push(n);
           } else if (type === 'scenery') {
             n = this.scene.track.addSceneryLine(point1.x, point1.y, point2.x, point2.y);
-          } 
-          this.toolHandler.addActionToTimeline({ type: "add", objects: [n] });
+            this.addedObjects.push(n);
+          }
+          return n;
         }
+        return !1;
       }
       calculatePoints(line) {
         const pointsList = [];
@@ -23589,6 +23773,7 @@
             o = Math.max(2 * t, 0.5),
             a = this.settings.sceneryLineColor,
             h = this.settings.physicsLineColor;
+   
           (n.width = i),
             (n.height = i),
             r.clearRect(0, 0, n.width, n.height),
@@ -23610,7 +23795,15 @@
               ((r.shadowOffsetX = r.shadowOffsetY = 2),
               (r.shadowBlur = Math.max(2, 10 * t)),
               (r.shadowColor = "#000")),
-            r.stroke(),
+            r.stroke();
+            
+            (this.settings.developerMode || this.scene.game.mod.getVar("gameData")) &&
+            ((r.font = `${Math.max(10, 18 * t)}px Arial`),
+            (r.fillStyle = "rgba(0, 0, 255, 0.7)"),
+            (r.textAlign = "center"),
+            (r.textBaseline = "middle"),
+            r.fillText(`${this.column},${this.row}`, i / 2, i / 2));
+
             this.settings.developerMode &&
               (r.beginPath(),
               (r.strokeStyle = "blue"),
@@ -23828,6 +24021,7 @@
             (this.allowedVehicles = ["MTB", "BMX"]),
             (this.canvasPool = new $i(t)),
             (this.needsCleaning = !1),
+            (this.stampedAreas = []),
             this.createPowerupCache();
         }
         createPowerupCache() {
@@ -24179,7 +24373,7 @@
           }
 
           else {
-            this.game.mod.vars.play = true;
+            //this.game.mod.vars.play = true;
             fetch(`assets/tracks/${GameSettings.trackName}.txt`)
               .then(response => {
                 if (!response.ok) {
@@ -24315,6 +24509,60 @@
               s = t.row * a - v,
               r = t.powerupCanvasOffset * n;
             i.drawImage(t.powerupCanvas, e - r / 2, s - r / 2, a + r, a + r);
+          }
+
+          if (e.sectorStamp && (e.sectorStamp.point1.x || e.sectorStamp.point1.y)) {
+            i.save();
+
+            this.stampedAreas.push({
+              point1: { x: e.sectorStamp.point1.x, y: e.sectorStamp.point1.y },
+              point2: { x: e.sectorStamp.point2.x, y: e.sectorStamp.point2.y },
+              text: e.sectorStampText || ""
+            });
+
+            e.sectorStamp.point1.x = 0;
+            e.sectorStamp.point1.y = 0;
+            e.sectorStamp.point2.x = 0;
+            e.sectorStamp.point2.y = 0;
+            e.sectorStampText = "";
+
+            i.restore();
+          }
+
+          for (const stamp of this.stampedAreas) {
+            i.save();
+
+            const x1Screen = stamp.point1.x * n - m;
+            const y1Screen = stamp.point1.y * n - v;
+            const x2Screen = stamp.point2.x * n - m;
+            const y2Screen = stamp.point2.y * n - v;
+
+            const rectX = Math.min(x1Screen, x2Screen);
+            const rectY = Math.min(y1Screen, y2Screen);
+            const rectWidth = Math.abs(x2Screen - x1Screen);
+            const rectHeight = Math.abs(y2Screen - y1Screen);
+
+            i.beginPath();
+            i.strokeStyle = "#1884cf";
+            r.lineWidth = Math.max(2, 2 * n);
+            i.rect(rectX, rectY, rectWidth, rectHeight);
+            i.stroke();
+
+            if (stamp.text) {
+              const textX = rectX + rectWidth / 2;
+              const textY = rectY + rectHeight - 20 * n;
+
+              i.font = `bold ${20 * n}px Arial`; 
+              i.textAlign = "center";
+              i.textBaseline = "middle";
+              i.strokeStyle = "white";
+              i.lineWidth = Math.max(3, 3 * n);
+              i.strokeText(stamp.text, textX, textY);
+              i.fillStyle = "#1884cf";
+              i.fillText(stamp.text, textX, textY);
+            }
+
+            i.restore();
           }
         }
         closeSectors() {
@@ -24647,7 +24895,7 @@
               if (this.playerManager.firstPlayer.complete && (this.playerManager.firstPlayer._scene.ticks < this.completedTicks)){
                   this.playerManager.firstPlayer.complete = false;
             }
-            (this.track.targetCount === 0) && this.logTrackComplete();
+            (this.track.targetCount === 0 && this.playerManager.firstPlayer._scene.ticks > 1) && this.logTrackComplete();
         }
         isStateDirty() {
           const t = this.oldState,
@@ -24739,7 +24987,7 @@
             this.state.loading && this.loadingcircle.draw(),
             this.message.draw();
             this.drawInputDisplay();
-            //this.drawGameData();
+            this.drawGameData();
         }
         trackData() {
           this.trackcode = GameSettings.object ? this.getObjectCode() : this.track.getCode();
@@ -24820,7 +25068,6 @@
             trackSize
           };
         }
-        /*
         drawGameData() {
           if (this.game.mod.getVar("gameData")) {
             const t = this.game.canvas.getContext("2d");
@@ -24844,7 +25091,7 @@
               t.fillText("track: " + trackName, s.x, s.y - 15 * i);
             }
           }
-        }*/
+        }
         drawInputDisplay() {
           if (this.game.mod.getVar("inputDisplay")) {
           const t = this.game.canvas.getContext("2d");
@@ -25199,7 +25446,7 @@
           this.logTrackComplete();
         }
         logTrackComplete() {
-          if (this.logged || GameSettings.trackName === 'track.txt') return;
+          if (this.logged || !this.trackUpdated || GameSettings.trackName === 'track.txt') return;
           let completedTracks = JSON.parse(localStorage.getItem("completedTracks") || "[]");
       
           let trackData = {
@@ -26524,7 +26771,7 @@
           oldTimer: { default: !1 },
           frontBrake: { default: !1 },
           bikeData: { default: !1 },
-          //gameData: { default: !1 },
+          gameData: { default: !1 },
           inputDisplay: { default: !1 },
           hitboxes: { default: !1 },
           accurateEraser: { default: !1 },
@@ -27022,12 +27269,12 @@
             description:
               "Shows the metadata about the rider, including head angle and speed.",
           },
-        /*{
+          {
             key: "gameData",
             title: "Game Data",
             description:
               "Shows game data, including FPS.",
-          },*/
+          },
           {
             key: "hitboxes",
             title: "Visible Hitboxes",
@@ -27645,9 +27892,11 @@
         updateCanvasSize() {
           if (this.settings.editorFullscreen || this.settings.sidebar) {
             this.setSize();
+            this.currentScene.updateState();
           }
           else {
             this.setSize();
+            this.currentScene.updateState();
           }
         }
         addTrackFullscreenListener() {
