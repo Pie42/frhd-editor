@@ -17083,6 +17083,9 @@
                 this._r(drawSector.powerups[object.name + 's'], object);
                 drawSector.hasPowerups = drawSector.powerups.all.length;
                 drawSector.powerupCanvasDrawn = false;
+                object.layer.objects.delete(object);
+            } else {
+                object.layer['highlight' in object ? 'physicsLines' : 'sceneryLines'].delete(object);
             }
             object.markSectorsDirty();
             object.redrawSectors();
@@ -23564,6 +23567,34 @@
           r.has(c + "," + u) || (p.push(c, u), r.add(c + "," + u));
         }
       }
+      class Layer {
+        constructor(t) {
+          this.track = t;
+          this.scene = t.scene;
+          this.settings = t.settings;
+          this.sectors = new Set();
+          this.physicsLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor;
+          this.sceneryLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor;
+          this.physicsLines = new Set();
+          this.sceneryLines = new Set();
+          this.objects = new Set();
+          this.show = true;
+          this.name = "";
+        }
+
+        toggle() {
+          this.show = !this.show;
+          for (let i of this.sectors) {
+            i.drawn && i.clear();
+          }
+          this.track.canvasPool.update();
+          //this.track.undraw();
+        }
+      }
       class Ui {
         constructor(t, e, s) {
           (this.track = s),
@@ -23600,7 +23631,8 @@
               trucks: [],
               balloons: [],
               blobs: [],
-            });
+            }),
+            (this.layers = new Set());
         }
         addLine(t) {
           t instanceof Wi.Z && this.physicsLines.push(t),
@@ -23721,24 +23753,37 @@
             (n.height = i),
             r.clearRect(0, 0, n.width, n.height),
             r.save(),
-            r.beginPath(),
-            (r.lineWidth = o),
-            (r.lineCap = "round"),
-            (r.strokeStyle = this.track.game.mod.getVar("customColors")
-              ? Q(this.track.game.mod.getVar("sceneryColor"))
-              : a),
-            this.drawLines(s, t, r),
-            r.stroke(),
-            r.beginPath(),
-            (r.strokeStyle = this.track.game.mod.getVar("customColors")
-              ? Q(this.track.game.mod.getVar("lineColor"))
-              : h),
-            this.drawLines(e, t, r),
-            this.track.game.mod.getVar("lineShadow") &&
-              ((r.shadowOffsetX = r.shadowOffsetY = 2),
-              (r.shadowBlur = Math.max(2, 10 * t)),
-              (r.shadowColor = "#000")),
-            r.stroke();
+            (r.lineWidth = o);
+          let g = {},
+            f = [],
+            d = [...this.layers.values()], l;
+          for (let _l = d.length; --_l >= 0;) {
+            l = d[_l];
+            g[l.sceneryLineColor] = [];
+            g[l.physicsLineColor] = [];
+          }
+          for (let _l = e.length; --_l >= 0;) {
+            l = e[_l];
+            l.layer.show && g[l.layer.physicsLineColor].push(l);
+          }
+          for (let _l = s.length; --_l >= 0;) {
+            l = s[_l];
+            l.layer.show && g[l.layer.sceneryLineColor].push(l);
+          }
+          this.drawLines(g, t, r);
+          for (let _l = d.length; --_l >= 0;) {
+            l = d[_l];
+            if (!l.show) continue;
+            // easiest way to be certain that a layer doesn't ahve any lines in a sector
+            // (won't work if all layers are the same color)
+            // todo: assess performance impact of layers not getting removed from sectors
+            // and fix this to be better if need be
+            if (g[l.sceneryLineColor].length == 0 &&
+                g[l.physicsLineColor].length == 0) {
+                  this.layers.delete(l);
+                  l.sectors.delete(this);
+                }
+          }
             
             (this.settings.developerMode || this.scene.game.mod.getVar("gameData")) &&
             ((r.font = `${Math.max(10, 18 * t)}px Arial`),
@@ -23813,21 +23858,27 @@
             }
           }
         }
-        drawLines(t, e, s) {
+        drawLines(o, e, s) {
           const i = this.x,
             n = this.y;
-          let r, o, a, h, l, c;
-          for (let u = t.length - 1; u >= 0; u--) {
-            const d = t[u];
-            0 === d.remove &&
-              ((r = d.p1),
-              (o = d.p2),
-              (a = (r.x - i) * e),
-              (h = (r.y - n) * e),
-              (l = (o.x - i) * e),
-              (c = (o.y - n) * e),
-              s.moveTo(a, h),
-              s.lineTo(l, c));
+          let t, r, p, a, h, l, c;
+          for (let b in o) {
+            s.strokeStyle = b;
+            t = o[b];
+            s.beginPath();
+            for (let u = t.length - 1; u >= 0; u--) {
+              const d = t[u];
+              0 === d.remove &&
+                ((r = d.p1),
+                (p = d.p2),
+                (a = (r.x - i) * e),
+                (h = (r.y - n) * e),
+                (l = (p.x - i) * e),
+                (c = (p.y - n) * e),
+                s.moveTo(a, h),
+                s.lineTo(l, c));
+            }
+            s.stroke();
           }
         }
         drawPowerups(t, e, s) {
@@ -23836,7 +23887,7 @@
             r = (this.powerupCanvasOffset * e) / 2;
           for (let o = t.length - 1; o >= 0; o--) {
             const a = t[o];
-            if (0 === a.remove) {
+            if (0 === a.remove && a.layer.show) {
               const t = (a.x - i) * e + r,
                 o = (a.y - n) * e + r;
               a.draw(t, o, e, s);
@@ -23955,6 +24006,9 @@
             (this.sectors = {}),
             (this.sectors.drawSectors = []),
             (this.sectors.physicsSectors = []),
+            (this.layers = [new Layer(this)]),
+            (this.layers[0].name = 'Default'),
+            (this.layerIndex = 0),
             (this.totalSectors = []),
             (this.powerups = []),
             (this.powerupsLookupTable = {}),
@@ -23966,6 +24020,9 @@
             (this.needsCleaning = !1),
             (this.stampedAreas = []),
             this.createPowerupCache();
+        }
+        get currentLayer() {
+          return this.layers[this.layerIndex] || undefined;
         }
         createPowerupCache() {
           on.push(new ds(0, 0, 0, this)),
@@ -24086,6 +24143,8 @@
         addPowerup(t) {
           const e = t.x,
             s = t.y;
+          t.layer = this.currentLayer;
+          this.currentLayer.objects.add(t);
           this.addRef(
             e,
             s,
@@ -24129,6 +24188,8 @@
           const n = (i = rn(i)) - e;
           if (sn(nn(s - t, 2) + nn(n, 2)) >= 2) {
             const n = new Wi.Z(t, e, s, i, raw);
+            n.layer = this.currentLayer;
+            this.currentLayer.physicsLines.add(n);
             this.addPhysicsLineToTrack(n);
             return n;
           }
@@ -24161,6 +24222,8 @@
           const n = (i = rn(i)) - e;
           if (sn(nn(s - t, 2) + nn(n, 2)) >= 2) {
             const n = new Vi.Z(t, e, s, i, raw);
+            n.layer = this.currentLayer;
+            this.currentLayer.sceneryLines.add(n);
             return this.addSceneryLineToTrack(n), n;
           }
         }
@@ -24193,6 +24256,10 @@
               break;
             case 2:
               n[o][a].addPowerup(s), s.addSectorReference(n[o][a]);
+          }
+          if (r == this.settings.drawSectorSize) {
+            s.layer.sectors.add(h);
+            n[o][a].layers.add(s.layer);
           }
           return (this.dirty = !0), h;
         }
@@ -29450,6 +29517,9 @@ function load() {
           _r(drawSector.powerups[object.name + 's'], object);
           drawSector.hasPowerups = drawSector.powerups.all.length;
           drawSector.powerupCanvasDrawn = false;
+          object.layer.objects.delete(object);
+      } else {
+          object.layer['highlight' in object ? 'physicsLines' : 'sceneryLines'].delete(object);
       }
       object.markSectorsDirty();
       object.redrawSectors();
