@@ -315,7 +315,7 @@ html {
 input,
 textarea {
     border: none;
-    padding: .2em .2em;
+    padding: .5em;
     margin: 0;
     display: block;
     background: 0 0;
@@ -324,7 +324,11 @@ textarea {
     line-height: 1.4em;
     font-size: 1em;
     width: 100%;
-    -webkit-appearance: none
+    white-space: pre;
+    -webkit-appearance: none;
+    margin-top: 5px;
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 input,
@@ -342,9 +346,10 @@ textarea#color {
     border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
     border-image: initial;
     border-radius: 0px;
-    width: 100px;
-    height: 21px;
+    width: 60%;
     font-size: 11pt;
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 .coin_icons,
@@ -1016,10 +1021,10 @@ canvas {
     appearance: button;
     -moz-appearance: button;
     -webkit-appearance: button;
-    padding: 8px 25px;
-    border-radius: 30px;
+    padding: 8px 10px;
     background: #FFF;
-    border: 1px solid #C2C2C2
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 html.fullscreen {
@@ -1588,13 +1593,13 @@ html.fullscreen #main_page {
 .editorgui_icons-icon_hotkeys:hover {
     width: 32px;
     height: 32px;
-    background-position: -416px -32px
+    background-position: -416px -31px
 }
 
 .editorgui_icons-icon_hotkeys {
     width: 32px;
     height: 32px;
-    background-position: -412px -96px
+    background-position: -412px -95px
 }
 
 .editorgui_icons-icon_import:hover {
@@ -1627,10 +1632,18 @@ html.fullscreen #main_page {
     background-position: -340px -88px
 }
 
+.editorgui_icons-icon_upload:hover {
+    width: 32px;
+    height: 32px;
+    background-position: -353px -32px;
+    rotate: 270deg;
+}
+
 .editorgui_icons-icon_upload {
-    width: 44px;
-    height: 44px;
-    background-position: -444px -96px
+    width: 32px;
+    height: 32px;
+    background-position: -373px -64px;
+    rotate: 270deg;
 }
 
 .editorgui_icons-icon_select {
@@ -2301,7 +2314,8 @@ html.fullscreen #main_page {
 
 .ud-form-text-input {
     border: 1px solid #C2C2C2;
-    border-radius: 11px
+    border-radius: 11px;
+    margin-top: 5px;
 }
 
 .ud-form-vehicles>.ud-form-input {

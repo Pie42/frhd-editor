@@ -16165,7 +16165,7 @@ function Rtt(trackUrl) {
 function xc(n, e) {
   const t = e.dataset.url;
   const bookmark = e.querySelector("a.bookmark");
-  if (bookmark && !t.includes("freeriderhd.com") && !t.includes("freerider.app") && !t.includes("soundcloud.com") && !t.includes("spotify.com") && !t.includes("bandcamp.com")) {
+  if (bookmark && !t.includes("freeriderhd.com") && !t.includes("freerider.app") && !t.includes("gofile.io") && !t.includes("soundcloud.com") && !t.includes("spotify.com") && !t.includes("bandcamp.com")) {
     return;
   }
   const i = document.createElement("iframe");
@@ -16182,6 +16182,67 @@ function xc(n, e) {
   }
 
   e.innerHTML = "";
+
+  let trackName = "unknown";
+  let trackUrl = t;
+  let imageUrl = null;
+  let author = "unknown";
+  let isTrackPreview = false;
+
+   if (t.includes("gofile.io")) {
+  isTrackPreview = true;
+  console.log("Processing GoFile.io link:", t);
+  const urlParts = t.split('?');
+  trackUrl = urlParts[0];
+
+  if (urlParts.length > 1) {
+   const params = new URLSearchParams(urlParts[1]);
+
+   const titleParam = params.get("TITLE");
+   const authorParam = params.get("AUTHOR");
+   const imageParam = params.get("IMAGE");
+
+   if (titleParam) trackName = titleParam;
+   if (authorParam) author = authorParam;
+   if (imageParam) imageUrl = decodeURIComponent(imageParam);
+  }
+
+ }
+
+
+
+  if (isTrackPreview) {
+    if (!imageUrl) {
+      e.innerHTML = `<p>Track link: <a href="${t}" target="_blank">${trackName}</a></p>`;
+      return;
+    }
+
+    const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = trackName;
+        img.style.width = "100%";
+        img.style.cursor = "pointer";
+        img.style.objectFit = "contain";
+        img.style.borderRadius = "var(--ht-box-radius)";
+        img.style.overflow = "hidden";
+        img.style.boxShadow = "var(--ht-box-shadow)";
+        img.style.whiteSpace = "normal";
+        img.style.textDecoration = "none";
+        img.style.color = "inherit";
+        img.title = `${trackName} by ${author}`;
+
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.style.display = "inline-block";
+        wrapper.appendChild(img);
+
+        img.addEventListener("click", () => {
+            Rtt(trackUrl);
+        });
+
+        e.appendChild(wrapper);
+      return;
+  }
 
   if (t.includes("freerider.app")) {
 
