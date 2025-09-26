@@ -2387,7 +2387,7 @@ html.fullscreen #main_page {
 }
 
 .ud-uploading-message>.text {
-    padding-left: 34px;
+    padding-left: 10px;
     font-size: .9em
 }
 

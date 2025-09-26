@@ -3833,7 +3833,7 @@
                 navigator.clipboard.writeText(trackUrl).then(() => {
                   copyBtn.textContent = "Copied!";
                   setTimeout(() => {
-                    copyBtn.textContent = "Copy link";
+                    copyBtn.textContent = "Copy Link";
                   }, 1500);
                 });
               });
@@ -5115,6 +5115,8 @@
                 showErrorMsg: !1,
                 uploading: !1,
                 uploadComplete: !1,
+                copyButtonText: "Copy link",
+                trackUrl: "",
               };
             },
             getUser: function () {
@@ -5556,6 +5558,7 @@
                 i = t.track.url,
                 a = t.user_stats.tot_cns,
                 s = i;
+              this.state.trackUrl = i;
               return n.createElement(
                 "div",
                 { className: "ud-upload-complete" },
@@ -5650,6 +5653,39 @@
               this.state.uploadComplete &&
                 this.refs.trackLink.getDOMNode().click();
             },
+            copyLinkToClipboard: function() {
+              var trackUrl = this.state.trackUrl;
+              const originalText = "Copy link";
+
+              if (trackUrl) {
+                const doCopy = (text) => {
+                  if (navigator.clipboard) {
+                    return navigator.clipboard.writeText(text);
+                  } else {
+                    console.error('Copy failed: ', err);
+                    return Promise.resolve();
+                  }
+                };
+
+                doCopy(trackUrl)
+                  .then(() => {
+                    console.log('Track link copied to clipboard: ' + trackUrl);
+                    this.setState({ copyButtonText: "Copied!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  })
+                  .catch(err => {
+                    console.error('Copy failed: ', err);
+                    this.setState({ copyButtonText: "Failed!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  });
+              }
+            },
             getFooter: function () {
               var e = this.state,
                 t = this.props,
@@ -5668,9 +5704,9 @@
                     {
                       className:
                         "primary-button primary-button-blue float-right margin-0-5",
-                      onClick: this.viewTrack,
+                      onClick: this.copyLinkToClipboard,
                     },
-                    "View Track"
+                    this.state.copyButtonText
                   ))),
                 e.uploadComplete === !1)
               ) {
