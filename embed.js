@@ -16834,9 +16834,16 @@ function p0() {
 }
 function m0() {
   const n = b.use("user");
-  return n
-    ? u("div", { class: "editor-user", children: u($e, { user: n }) })
-    : null;
+  if (n) {
+    window.parent.postMessage({
+      action: 'loggedIn',
+      user: n,
+    }, '*'); 
+    return u("div", { class: "editor-user", children: u($e, { user: n }) });
+  }
+  else {
+    return null;
+  }
 }
 function _c(n) {
   let e = M(n, "auth.sso_stateless_login_url");

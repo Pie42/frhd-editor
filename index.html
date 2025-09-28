@@ -61,6 +61,10 @@
     
     <script>
         window.addEventListener("message", function (event) {
+            if (event.data.action === "loggedIn") {
+                GameSettings.beta = true;
+                GameSettings.user = event.data.user;
+            }
             if (event.data.action === "importTrack") {
                 const trackData = event.data.content;
                 var title = event.data.title ? event.data.title.toLowerCase() : null;
@@ -146,9 +150,9 @@
         });
     </script>
     
-    <script>
+    <!--<script>
         window !== window.parent ? GameSettings.beta = false : GameSettings.beta = true;
-    </script>
+    </script>-->
 
 </body>
 </html>

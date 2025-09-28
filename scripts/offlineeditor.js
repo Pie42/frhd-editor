@@ -5118,7 +5118,7 @@
               };
             },
             getUser: function () {
-              return "Guest";
+              return GameSettings.user.name || "Guest";
             },
             onTitleChange: function () {
               var e = this.refs.trackTitle,
@@ -5181,7 +5181,7 @@
             },
             uploadTrack: async function () { 
               var e = this.state;
-              var p = this.getUser(); 
+              var p = this.getUser();
               
               if (e.uploadingEnabled) {
                 this.setState({
@@ -5207,6 +5207,7 @@
                     default_vehicle: i,
                     allowed_vehicles: { MTB: a, BMX: s },
                     code: c,
+                    author: p
                   };
                 this.uploadData = u;
 
@@ -7536,7 +7537,7 @@
                 n.createElement(r, null),
                 n.createElement(o, null),
                 n.createElement(i, null),
-                n.createElement(a, null),
+                GameSettings.beta && n.createElement(a, null),
                 this.showHelp(),
                 this.showControls(),
                 //this.showOfflineEditorIcon(),
@@ -32958,7 +32959,7 @@
                 ? " editorgui_icons-icon_sidebar_close"
                 : " editorgui_icons-icon_sidebar_open";
               return e
-                ? GameSettings.beta && n.createElement(
+                ? n.createElement(
                     "div",
                     {
                       className: t,
@@ -32968,7 +32969,7 @@
                     n.createElement("span", { className: "text" }, "Forum"),
                     n.createElement("span", { className: r })
                   )
-                : GameSettings.beta && n.createElement(
+                : n.createElement(
                     "div",
                     {
                       className: t,
