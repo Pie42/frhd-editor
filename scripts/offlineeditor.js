@@ -2885,7 +2885,7 @@
                   break;
                 case "upload":
                   f = GameSettings.isStandalone
-                    ? n.createElement(u, { options: t })
+                    ? n.createElement(l, { options: t })
                     : n.createElement(l, { options: t });
                   break;
                 case "info":
@@ -3787,47 +3787,120 @@
             getInitialState: function () {
               return { isDragActive: !1 };
             },
+            updateNowPlaying(trackInfo) {
+              const iframe = document.getElementById("forumIframe");
+              if (!iframe) return;
+
+              const iframeDoc =
+                iframe.contentDocument || iframe.contentWindow.document;
+              const nowPlayingDiv = iframeDoc.getElementById("now-playing");
+              if (!nowPlayingDiv) return;
+
+              let trackName = trackInfo["track-name"] || trackInfo;
+              console.log(trackName)
+              const creator = trackInfo.creator && trackInfo.creator !== "unknown"
+                ? ` <small>by ${trackInfo.creator}</small>`
+                : "";
+
+              let imageUrl = `https://freerider.app/assets/images/tracks/${trackName}.png`;
+
+              if (trackName.endsWith(".txt")) {
+              trackName = trackName.slice(0, -4);
+              imageUrl = 'https://freerider.app/assets/images/tracks/freeriderapp.png';
+              }
+
+              const safeTrackName = trackName.replace(/'/g, "");
+              const trackUrl = `https://freerider.app/#${encodeURIComponent(safeTrackName)}`;
+
+              nowPlayingDiv.style.display = "block";
+              nowPlayingDiv.style.position = "relative";
+
+              nowPlayingDiv.innerHTML = `
+                <img src="${imageUrl}" alt="${trackName}">
+                <div style="
+                  position:absolute;
+                  top:10px;
+                  left:10px;
+                  color:white;
+                  background-color: rgba(0,0,0,0.5);
+                  padding:5px 10px;
+                  border-radius:4px;
+                  max-width:90%;
+                  font-family:sans-serif;
+                ">
+                <strong>${trackName}</strong>
+                <small>${creator}</small>
+                </div>
+                <div id="copy-link-btn" style="
+                position:absolute;
+                bottom:10px;
+                right:10px;
+                background-color: rgba(255,255,255,0.8);
+                color: #000;
+                padding:2px 6px;
+                border-radius:3px;
+                font-size:12px;
+                cursor:pointer;
+                font-family:sans-serif;
+                user-select: none;
+                ">
+                Copy link
+                </div>
+                `;
+              const copyBtn = iframeDoc.getElementById("copy-link-btn");
+              copyBtn.addEventListener("click", () => {
+                navigator.clipboard.writeText(trackUrl).then(() => {
+                  copyBtn.textContent = "Copied!";
+                  setTimeout(() => {
+                    copyBtn.textContent = "Copy Link";
+                  }, 1500);
+                });
+              });
+            },
+
             importTrack: function () {
               var e = this.refs.code.getDOMNode(),
                 t = e.getAttribute("data-paste-code"),
                 n = e.value,
-                trackName = e.value.replace(/(\.\.\/)/g, ''),
+                trackName = e.value.replace(/(\.\.\/)/g, ""),
                 url = `assets/tracks/${trackName}.txt`;
-                ghost = `assets/ghosts/${trackName}.json`;
+              ghost = `assets/ghosts/${trackName}.json`;
 
-              if (e.value.includes('$')) {
-                var commands = e.value.split('$').slice(1);
-                commands.forEach(command => {
-                  var parts = command.trim().split(' ');
-                  var settingPath = parts[0].split('.');
-                  var value = parts.slice(1).join(' ');
+              if (e.value.includes("$")) {
+                var commands = e.value.split("$").slice(1);
+                commands.forEach((command) => {
+                  var parts = command.trim().split(" ");
+                  var settingPath = parts[0].split(".");
+                  var value = parts.slice(1).join(" ");
 
                   if (settingPath.length === 1) {
                     var setting = settingPath[0];
 
-                    if (setting === 'save') {
+                    if (setting === "save") {
                       var commandList = [];
                       var editorHotkeys = GameSettings.editorHotkeys;
 
                       for (var key in editorHotkeys) {
                         if (editorHotkeys.hasOwnProperty(key)) {
-                          commandList.push(`$editorHotkeys.${key} ${editorHotkeys[key]}`);
+                          commandList.push(
+                            `$editorHotkeys.${key} ${editorHotkeys[key]}`
+                          );
                         }
                       }
 
-                      var fileContent = commandList.join('\n');
-                      var blob = new Blob([fileContent], { type: 'text/plain' });
+                      var fileContent = commandList.join("\n");
+                      var blob = new Blob([fileContent], {
+                        type: "text/plain",
+                      });
                       var url = URL.createObjectURL(blob);
-                      var a = document.createElement('a');
+                      var a = document.createElement("a");
                       a.href = url;
-                      a.download = 'editorHotkeys.txt';
+                      a.download = "editorHotkeys.txt";
                       a.click();
                       URL.revokeObjectURL(url);
-                      e.value = '$hotkeys saved';
+                      e.value = "$hotkeys saved";
                       return;
-                    }
-
-                    else if (setting === 'default') {
+                    } else if (setting === "default") {
                       e.value = `
                           $editorHotkeys.up 38
                           $editorHotkeys.down 40
@@ -3871,16 +3944,17 @@
                           $editorHotkeys.scale 83
                           $editorHotkeys.flip 70
                       `;
-                      e.setAttribute('data-paste-code', e.value);
+                      e.setAttribute("data-paste-code", e.value);
                       this.importTrack();
-                  }
-
-                    else if (GameSettings.hasOwnProperty(setting)) {
+                    } else if (GameSettings.hasOwnProperty(setting)) {
                       var parsedValue = parseFloat(value);
                       if (!isNaN(parsedValue)) {
                         GameSettings[setting] = parsedValue;
-                      } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-                        GameSettings[setting] = value.toLowerCase() === 'true';
+                      } else if (
+                        value.toLowerCase() === "true" ||
+                        value.toLowerCase() === "false"
+                      ) {
+                        GameSettings[setting] = value.toLowerCase() === "true";
                       } else {
                         GameSettings[setting] = value;
                       }
@@ -3891,12 +3965,19 @@
                   } else if (settingPath.length === 2) {
                     var parentSetting = settingPath[0];
                     var childSetting = settingPath[1];
-                    if (GameSettings.hasOwnProperty(parentSetting) && GameSettings[parentSetting].hasOwnProperty(childSetting)) {
+                    if (
+                      GameSettings.hasOwnProperty(parentSetting) &&
+                      GameSettings[parentSetting].hasOwnProperty(childSetting)
+                    ) {
                       var parsedValue = parseFloat(value);
                       if (!isNaN(parsedValue)) {
                         GameSettings[parentSetting][childSetting] = parsedValue;
-                      } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-                        GameSettings[parentSetting][childSetting] = value.toLowerCase() === 'true';
+                      } else if (
+                        value.toLowerCase() === "true" ||
+                        value.toLowerCase() === "false"
+                      ) {
+                        GameSettings[parentSetting][childSetting] =
+                          value.toLowerCase() === "true";
                       } else {
                         GameSettings[parentSetting][childSetting] = value;
                       }
@@ -3912,109 +3993,160 @@
               }
 
               if (n.length > 0) {
-                if (!confirm("The current track will be cleared. Are you sure you'd like to import?")) {
+                if (
+                  !confirm(
+                    "The current track will be cleared. Are you sure you'd like to import?"
+                  )
+                ) {
                   return;
                 }
               }
 
-              if (e.value === 'random') {
-                fetch('assets/tracks/tracklist.json')
-                  .then(response => response.json())
-                  .then(data => {
+              if (e.value === "random") {
+                fetch("assets/tracks/tracklist.json")
+                  .then((response) => response.json())
+                  .then((data) => {
                     const tracklist = data.tracks;
-                    const randomIndex = Math.floor(Math.random() * tracklist.length);
+                    const randomIndex = Math.floor(
+                      Math.random() * tracklist.length
+                    );
                     trackName = tracklist[randomIndex];
-            
+
                     url = `assets/tracks/${trackName}.txt`;
                     fetch(url)
-                      .then(response => {
+                      .then((response) => {
                         if (!response.ok) {
-                          throw new Error('no track ID found, loading as track code.');
+                          throw new Error(
+                            "no track ID found, loading as track code."
+                          );
                         }
                         return response.text();
                       })
-                      .then(data => {
+                      .then((data) => {
                         this.processTrackData(data);
                         console.log("track loaded:", trackName);
                         GameSettings.trackName = `${trackName}.txt`;
+                        console.log(match);
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         console.error(error);
                       });
                   })
-                  .catch(error => {
-                    console.error('Error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("Error loading tracklist:", error);
                   });
-              }
-              else if (e.value.startsWith('daily')) {
+              } else if (e.value.startsWith("daily")) {
                 let specifiedDate;
-                const parts = e.value.split(' ');
-            
+                const parts = e.value.split(" ");
+
                 if (parts.length === 2) {
-                    specifiedDate = new Date(parts[1]);
+                  specifiedDate = new Date(parts[1]);
                 } else {
-                    specifiedDate = new Date();
+                  specifiedDate = new Date();
                 }
-            
+
                 const formattedDate = specifiedDate.toISOString().slice(0, 10);
 
-                fetch('assets/tracks/trackdata.json')
-                  .then(response => {
+                fetch("assets/tracks/trackdata.json")
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('Failed to load trackdata.json');
+                      throw new Error("Failed to load trackdata.json");
                     }
                     return response.json();
                   })
 
-                  .then(data => {
-                    const trackEntry = data.tracks.find(entry => entry.date === formattedDate);
+                  .then((data) => {
+                    const trackEntry = data.tracks.find(
+                      (entry) => entry.date === formattedDate
+                    );
 
                     if (trackEntry && trackEntry.trackname) {
                       const { trackname, username, collaborators } = trackEntry;
-                      console.log("Loaded track details:", { trackname, username, collaborators });
+                      console.log("Loaded track details:", {
+                        trackname,
+                        username,
+                        collaborators,
+                      });
 
-                      const url = `assets/tracks/${encodeURIComponent(trackname)}.txt`;
+                      const url = `assets/tracks/${encodeURIComponent(
+                        trackname
+                      )}.txt`;
 
                       fetch(url)
-                        .then(response => {
+                        .then((response) => {
                           if (!response.ok) {
-                            throw new Error('track file not found, loading as track code.');
+                            throw new Error(
+                              "track file not found, loading as track code."
+                            );
                           }
                           return response.text();
                         })
-                        .then(trackData => {
+                        .then((trackData) => {
                           this.processTrackData(trackData);
                           console.log("track loaded:", trackname);
                           GameSettings.trackName = `${trackname}.txt`;
+                        });
+                      fetch("assets/tracks/tracklist-data.json")
+                        .then((res) => res.json())
+                        .then((trackdata) => {
+                          const match = trackdata.tracks.find(
+                            (t) => t["track-name"] === trackName
+                          );
+                          console.log(match);
+                          this.updateNowPlaying(
+                            match || { "track-name": trackName }
+                          );
+                          /*this.showTrackInSlideshow(
+                            trackInfo["track-name"] || trackInfo
+                          );*/
                         })
-                        .catch(error => {
-                          console.error('error loading track:', error);
+                        .catch((error) => {
+                          console.error("error loading track:", error);
                         });
                     } else {
                       console.log("no track entry found for today’s date.");
                     }
                   })
-                  .catch(error => {
-                    console.error('error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("error loading tracklist:", error);
                   });
-              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
-            
+              } else if (
+                !e.value.includes("$") &&
+                !e.value.includes("#") &&
+                !t
+              ) {
                 fetch(url)
-                  .then(response => {
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('no track ID found, loading as track code.');
+                      throw new Error(
+                        "no track ID found, loading as track code."
+                      );
                     }
                     return response.text();
                   })
-                  .then(data => {
+                  .then((data) => {
                     this.processTrackData(data);
                     console.log("track loaded:", trackName);
                     GameSettings.trackName = `${trackName}.txt`;
+                    fetch("assets/tracks/tracklist-data.json")
+                      .then((res) => res.json())
+                      .then((trackdata) => {
+                        const match = trackdata.tracks.find(
+                          (t) => t["track-name"] === trackName
+                        );
+                        console.log(match);
+                        this.updateNowPlaying(
+                          match || { "track-name": trackName }
+                        );
+                      })
+                      .catch(() =>
+                        this.updateNowPlaying({ "track-name": trackName })
+                      );
                   })
-                  .catch(error => {
-                    console.error('primary fetch failed.', error);
+                  .catch((error) => {
+                    console.error("primary fetch failed.", error);
 
-                    const script = document.createElement('script');
+                    const script = document.createElement("script");
                     script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t)`;
                     script.onerror = () => {
                       console.error("fallback fetch failed.");
@@ -4035,7 +4167,7 @@
                     document.body.appendChild(script);
                   });
 
-                  /*fetch(ghost)
+                /*fetch(ghost)
                   .then(response => {
                     if (!response.ok) {
                       throw new Error('no ghost found.');
@@ -4076,71 +4208,80 @@
 
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                GameManager.command("import", n, !0),
-                GameSettings.trackName = `track.txt`;
+                  GameManager.command("import", n, !0),
+                (GameSettings.trackName = `track.txt`);
             },
             addTrack: function () {
               var e = this.refs.code.getDOMNode(),
                 t = e.getAttribute("data-paste-code"),
                 n = e.value,
-                trackName = e.value.replace(/(\.\.\/)/g, ''),
+                trackName = e.value.replace(/(\.\.\/)/g, ""),
                 url = `assets/tracks/${trackName}.txt`;
-            
-              if (e.value.includes('$')) {
+
+              if (e.value.includes("$")) {
                 e.value = `$use import to change settings`;
                 return;
               }
-            
-              if (e.value === 'random') {
-                fetch('assets/tracks/tracklist.json')
-                  .then(response => response.json())
-                  .then(data => {
+
+              if (e.value === "random") {
+                fetch("assets/tracks/tracklist.json")
+                  .then((response) => response.json())
+                  .then((data) => {
                     const tracklist = data.tracks;
-                    const randomIndex = Math.floor(Math.random() * tracklist.length);
+                    const randomIndex = Math.floor(
+                      Math.random() * tracklist.length
+                    );
                     trackName = tracklist[randomIndex];
-            
+
                     url = `assets/tracks/${trackName}.txt`;
                     fetch(url)
-                      .then(response => {
+                      .then((response) => {
                         if (!response.ok) {
-                          throw new Error('no track ID found, loading as track code.');
+                          throw new Error(
+                            "no track ID found, loading as track code."
+                          );
                         }
                         return response.text();
                       })
-                      .then(data => {
+                      .then((data) => {
                         this.processAddTrackData(data);
                         console.log("track loaded:", trackName);
                         GameSettings.trackName = `track.txt`;
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         console.error(error);
                       });
                   })
-                  .catch(error => {
-                    console.error('Error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("Error loading tracklist:", error);
                   });
-              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
-            
+              } else if (
+                !e.value.includes("$") &&
+                !e.value.includes("#") &&
+                !t
+              ) {
                 fetch(url)
-                  .then(response => {
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('no track ID found, loading as track code.');
+                      throw new Error(
+                        "no track ID found, loading as track code."
+                      );
                     }
                     return response.text();
                   })
-                  .then(data => {
+                  .then((data) => {
                     this.processAddTrackData(data);
                     console.log("track loaded:", trackName);
                     GameSettings.trackName = `track.txt`;
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
-            
+
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                GameManager.command("add", n, !0);
+                  GameManager.command("add", n, !0);
             },
             processTrackData(data) {
               if ("undefined" != typeof GameManager) {
@@ -4176,13 +4317,12 @@
               (n.onload = (event) => this.fileDropComplete(event, t[0].name)),
                 (n.onerror = this.fileDropError),
                 n.readAsText(t[0]);
-                
             },
             fileDropComplete: function (e, fileName) {
               var fileContent = e.target.result;
-              var isSettingsFile = fileContent.includes('$');
+              var isSettingsFile = fileContent.includes("$");
               var n = this.refs.code.getDOMNode();
-            
+
               if (isSettingsFile) {
                 n.value = fileContent;
                 n.setAttribute("data-paste-code", fileContent);
@@ -4345,10 +4485,10 @@
                     "Cancel"
                   )
                 ),
-                n.createElement(
-                  auto,
-                  {baseURL: 'assets/tracks/', onInput: this.onInput }
-                )
+                n.createElement(auto, {
+                  baseURL: "assets/tracks/",
+                  onInput: this.onInput,
+                })
               );
             },
           });
@@ -4977,7 +5117,7 @@
                 maxTitleChars: 30,
                 minTitleChars: 3,
                 maxDescChars: 300,
-                minDescChars: 5,
+                minDescChars: 0,
               };
             },
             uploadData: null,
@@ -4994,10 +5134,12 @@
                 showErrorMsg: !1,
                 uploading: !1,
                 uploadComplete: !1,
+                copyButtonText: "Copy link",
+                trackUrl: "",
               };
             },
             getUser: function () {
-              return Application.User;
+              return GameSettings.user.name || "Guest";
             },
             onTitleChange: function () {
               var e = this.refs.trackTitle,
@@ -5024,23 +5166,23 @@
                 t = this.state,
                 n = this.props,
                 o = e.trackTitle.getDOMNode(),
-                i = e.trackDesc.getDOMNode(),
+                //i = e.trackDesc.getDOMNode(),
                 a = t.vehiclesAllowed.mtb,
                 s = t.vehiclesAllowed.bmx,
                 l = o.value,
-                c = i.value,
+                //c = i.value,
                 u = !0,
                 d = !1;
-              l.length <= n.minTitleChars && (u = !1),
-                c.length <= n.minDescChars && (u = !1),
-                a === !1 && s === !1 && (u = !1),
-                n.options.verified ||
+              l.length < n.minTitleChars && (u = !1),
+                //c.length <= n.minDescChars && (u = !1),
+                a === !1 && s === !1 && (u = !1);
+                /*n.options.verified ||
                   ((u = !1),
-                  (d = "You must complete your track before uploading"));
-              var p = this.getUser().get("user_stats"),
+                  (d = "You must complete your track before uploading"));*/
+              var p = this.getUser(),
                 h = r.trackUploadCost,
                 f = p.tot_cns;
-              h > f && ((u = !1), (d = "Not enough coins")),
+              //h > f && ((u = !1), (d = "Not enough coins")),
                 this.setState({ uploadingEnabled: u, errorMsg: d });
             },
             closeDialog: function () {
@@ -5058,8 +5200,10 @@
                 this.setState(r),
                 this.checkEnableUpload();
             },
-            uploadTrack: function () {
+            uploadTrack: async function () { 
               var e = this.state;
+              var p = this.getUser();
+              
               if (e.uploadingEnabled) {
                 this.setState({
                   uploading: !0,
@@ -5068,24 +5212,94 @@
                   loading: !0,
                   showErrorMsg: !1,
                 });
+                
                 var t = this.refs,
                   n = t.trackTitle.getDOMNode().value,
-                  r = t.trackDesc.getDOMNode().value,
+                  //r = t.trackDesc.getDOMNode().value,
                   i = e.defaultVehicle,
                   a = e.vehiclesAllowed.mtb,
                   s = e.vehiclesAllowed.bmx,
                   l = this.props.options,
                   c = l.code,
+                  
                   u = {
                     name: n,
-                    desc: r,
+                    //desc: r,
                     default_vehicle: i,
                     allowed_vehicles: { MTB: a, BMX: s },
                     code: c,
+                    author: p
                   };
                 this.uploadData = u;
-                var d = o.post("create/submit", u);
-                d.done(this.uploadTrackComplete), d.done(this.uploadTrackFail);
+
+                try {
+                    // using track code 'c' as content
+                  const trackBlob = new Blob([c], { type: 'text/plain' });
+                  const base64Content = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(",")[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(trackBlob);
+                  });
+
+                  let base64ImageContent = null;
+                  const imageInput = t.trackImage.getDOMNode();
+                  let finalImageFileName = null;
+
+                  if (imageInput && imageInput.files && imageInput.files[0]) {
+                    const imageFile = imageInput.files[0];
+                    const extension = imageFile.name.split('.').pop();
+                    finalImageFileName = `${n}.${extension}`;
+                    base64ImageContent = await new Promise((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.onload = () => resolve(reader.result.split(",")[1]);
+                      reader.onerror = reject;
+                      reader.readAsDataURL(imageFile);
+                    });
+                  }
+
+                    const res = await fetch("https://nextjs-boilerplate-rho-five-46.vercel.app/api/github", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            fileName: n + '.txt', 
+                            fileContent: base64Content,
+                            fileType: 'text/plain',
+                            imageContent: base64ImageContent,
+                            imageFileName: finalImageFileName || (n + '.jpg'), 
+                            trackMetadata: u 
+                        }),
+                    });
+
+                    if (!res.ok) throw new Error(`Proxy upload failed: ${res.statusText}`);
+
+                    const proxyResponse = await res.json();
+                    
+                    const successResponse = {
+                        result: true,
+                        data: {
+                            track: { 
+                                url: proxyResponse.url,
+                                title: n,
+                                author: p.display_name || p,
+                                imageUrl: proxyResponse.imageUrl
+                            },
+                            user_stats: { tot_cns: 99999 }
+                        }
+                    };
+
+                    this.uploadTrackComplete(successResponse); 
+
+                } catch (err) {
+                    console.error("Track upload failed:", err);
+                    this.uploadTrackFail({ msg: "Upload Failed: " + err.message });
+                    this.setState({
+                        uploading: !1,
+                        canClose: !0,
+                        errorMsg: "Upload failed! Check console for details.",
+                        showErrorMsg: !0,
+                    });
+                }
               }
             },
             trackEvent: function (e, t, n) {
@@ -5155,7 +5369,9 @@
                     n.createElement(
                       "span",
                       { className: "input-desc" },
-                      "(max ",
+                      "(",
+                      t.minTitleChars,
+                      " - ",
                       t.maxTitleChars,
                       " characters)"
                     ),
@@ -5180,7 +5396,7 @@
                       })
                     )
                   ),
-                  n.createElement(
+                  /*n.createElement(
                     "div",
                     { className: "ud-form-input" },
                     n.createElement(
@@ -5214,6 +5430,30 @@
                         name: "trackDesc",
                       })
                     )
+                  ),*/
+                  n.createElement(
+                    "div",
+                    { className: "ud-form-input" },
+                      n.createElement(
+                        "span",
+                        { className: "title" },
+                        "Track Thumbnail Image: "
+                      ),
+                      n.createElement(
+                        "span",
+                        { className: "input-desc" },
+                        "(optional, JPG/PNG only)"
+                      ),
+                      n.createElement(
+                        "div",
+                        null,
+                        n.createElement("input", {
+                          type: "file",
+                          ref: "trackImage", 
+                          accept: "image/jpeg,image/png",
+                          className: "ud-form-file-input", 
+                        })
+                      )
                   ),
                   n.createElement(
                     "div",
@@ -5241,7 +5481,7 @@
                         n.createElement("option", { value: "BMX" }, "BMX Bike")
                       )
                     ),
-                    n.createElement(
+                    /*n.createElement(
                       "div",
                       { className: "ud-form-input float-right" },
                       n.createElement(
@@ -5257,7 +5497,7 @@
                           "data-vehicle": "mtb",
                           onClick: this.toggleCheckbox,
                         },
-                        n.createElement("span", { className: "checkbox" }, " "),
+                        n.createElement("span", { className: "checkbox" }, " "),
                         n.createElement(
                           "span",
                           { className: "name" },
@@ -5272,14 +5512,14 @@
                           "data-vehicle": "bmx",
                           onClick: this.toggleCheckbox,
                         },
-                        n.createElement("span", { className: "checkbox" }, " "),
+                        n.createElement("span", { className: "checkbox" }, " "),
                         n.createElement(
                           "span",
                           { className: "name" },
                           "BMX Bike"
                         )
                       )
-                    )
+                    )*/
                   ),
                   a
                 )
@@ -5337,11 +5577,12 @@
                 o = e.name,
                 i = t.track.url,
                 a = t.user_stats.tot_cns,
-                s = r.basePlatformUrl + "/t/" + i + "/uploaded";
+                s = i;
+              this.state.trackUrl = i;
               return n.createElement(
                 "div",
                 { className: "ud-upload-complete" },
-                this.getShareData(t),
+                //this.getShareData(t),
                 n.createElement(
                   "div",
                   { className: "ud-upload-complete-message margin-bottom-10" },
@@ -5352,21 +5593,21 @@
                   ),
                   " was successfully uploaded!"
                 ),
-                n.createElement(
+                /*n.createElement(
                   "div",
                   { className: "ud-upload-complete-balance margin-bottom-10" },
                   "Your new coin balance is ",
                   n.createElement("span", { className: "balance" }, a)
-                ),
+                ),*/
                 n.createElement(
                   "div",
                   { className: "ud-upload-complete-share margin-bottom-10" },
-                  n.createElement(
+                  /*n.createElement(
                     "div",
                     { className: "title" },
                     "Share your track"
-                  ),
-                  n.createElement(
+                  ),/*
+                  /*n.createElement(
                     "div",
                     { className: "options" },
                     n.createElement("span", {
@@ -5399,7 +5640,7 @@
                       "data-service": "reddit",
                       onClick: this.shareTrack,
                     })
-                  )
+                  )*/
                 ),
                 n.createElement(
                   "div",
@@ -5432,6 +5673,39 @@
               this.state.uploadComplete &&
                 this.refs.trackLink.getDOMNode().click();
             },
+            copyLinkToClipboard: function() {
+              var trackUrl = this.state.trackUrl;
+              const originalText = "Copy link";
+
+              if (trackUrl) {
+                const doCopy = (text) => {
+                  if (navigator.clipboard) {
+                    return navigator.clipboard.writeText(text);
+                  } else {
+                    console.error('Copy failed: ', err);
+                    return Promise.resolve();
+                  }
+                };
+
+                doCopy(trackUrl)
+                  .then(() => {
+                    console.log('Track link copied to clipboard: ' + trackUrl);
+                    this.setState({ copyButtonText: "Copied!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  })
+                  .catch(err => {
+                    console.error('Copy failed: ', err);
+                    this.setState({ copyButtonText: "Failed!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  });
+              }
+            },
             getFooter: function () {
               var e = this.state,
                 t = this.props,
@@ -5450,9 +5724,9 @@
                     {
                       className:
                         "primary-button primary-button-blue float-right margin-0-5",
-                      onClick: this.viewTrack,
+                      onClick: this.copyLinkToClipboard,
                     },
-                    "View Track"
+                    this.state.copyButtonText
                   ))),
                 e.uploadComplete === !1)
               ) {
@@ -5479,8 +5753,8 @@
                 },
                 l
               );
-              if (e.uploading === !1 && e.uploadComplete === !1 && o) {
-                var p = this.getUser().get("user_stats"),
+              /*if (e.uploading === !1 && e.uploadComplete === !1 && o) {
+                var p = this.getUser(),
                   h = r.trackUploadCost,
                   f = p.tot_cns,
                   m = {};
@@ -5507,12 +5781,12 @@
                       n.createElement("span", { className: "num", style: m }, f)
                     )
                   ));
-              }
+              }*/
               e.uploading &&
                 (a = n.createElement(
                   "div",
                   { className: "ud-uploading-message" },
-                  n.createElement("span", { className: "loading-hourglass" }),
+                  //n.createElement("span", { className: "loading-hourglass" }),
                   n.createElement(
                     "span",
                     { className: "text" },
@@ -5587,7 +5861,7 @@
                     n.createElement(
                       "h1",
                       { className: "editorDialog-content-title" },
-                      "PUBLISH TRACK"
+                      "UPLOAD TRACK"
                     )
                   ),
                   i,
@@ -7318,7 +7592,7 @@
                 n.createElement(r, null),
                 n.createElement(o, null),
                 n.createElement(i, null),
-                //n.createElement(a, null),
+                GameSettings.beta && n.createElement(a, null),
                 this.showHelp(),
                 this.showControls(),
                 //this.showOfflineEditorIcon(),
@@ -7403,10 +7677,10 @@
                 {
                   className: e,
                   onClick: this.openDialog,
-                  title: "Publish Track",
+                  title: "Upload Track",
                 },
                 n.createElement("span", { className: t }),
-                n.createElement("span", { className: "text" }, "Publish")
+                n.createElement("span", { className: "text" }, "Upload")
               );
             },
           });
@@ -32457,6 +32731,148 @@
               this.toggleIframe();
               this.addImportListener();
             },
+            async updateNowPlaying(trackInfo) {
+              const iframe = document.getElementById("forumIframe");
+              if (!iframe) return;
+
+              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+              const nowPlayingDiv = iframeDoc.getElementById("now-playing");
+              if (!nowPlayingDiv) return;
+
+              let trackName = trackInfo["track-name"] || trackInfo;
+              const creator = trackInfo.creator && trackInfo.creator !== "unknown"
+                ? ` <small>by ${trackInfo.creator}</small>`
+                : "";
+              /*const trackUrl = `https://freerider.app/#${trackName
+                .replace(/'/g, "")
+                .replace(/ /g, "-")}`;*/
+
+              
+              let imageUrl = `https://freerider.app/assets/images/tracks/${trackName}.png`;
+
+              if (trackName.endsWith(".txt")) {
+              trackName = trackName.slice(0, -4);
+              imageUrl = '/assets/images/tracks/freerider.png';
+              }
+
+              if (trackInfo.id) {
+                const frhdUrl = await this.getFRHDImage(trackInfo.id);
+                if (frhdUrl) {
+                  imageUrl = frhdUrl;
+                }
+              }
+
+              const img = iframeDoc.createElement('img');
+              img.src = imageUrl;
+              img.alt = trackName;
+
+              img.onerror = function () {
+                const baseTrackUrl = `https://freerider.app/assets/images/tracks/${trackName}`;
+
+                if (this.src.endsWith('.png')) {
+                  const jpgUrl = `${baseTrackUrl}.jpg`;
+                  this.src = jpgUrl;
+                } else if (this.src.endsWith('.jpg') || this.src === imageUrl) {
+                  this.src = '/assets/images/tracks/freerider.png';
+                  this.onerror = null;
+                }
+              };
+
+              if (trackName.endsWith(".txt")) {
+              trackName = trackName.slice(0, -4);
+              imageUrl = '/assets/images/tracks/freerider.png';
+              }
+
+              if (trackInfo.id) {
+                const frhdUrl = await this.getFRHDImage(trackInfo.id);
+                if (frhdUrl) {
+                  imageUrl = frhdUrl;
+                }
+              }
+
+              const encodedTrackName = encodeURIComponent(trackName);
+              const finalTrackUrl = `https://freerider.app/#${encodedTrackName}`;
+              
+              nowPlayingDiv.style.display = "block";
+              nowPlayingDiv.style.position = "relative";
+              nowPlayingDiv.innerHTML = '';
+
+              nowPlayingDiv.innerHTML = `
+                <img src="${imageUrl}" alt="${trackName}">
+                <div style="
+                  position:absolute;
+                  top:10px;
+                  left:10px;
+                  color:white;
+                  background-color: rgba(0,0,0,0.5);
+                  padding:5px 10px;
+                  border-radius:4px;
+                  max-width:90%;
+                  font-family:sans-serif;
+                ">
+                <strong>${trackName}</strong>
+                <small>${creator}</small>
+                </div>
+                <div id="copy-link-btn" style="
+                position:absolute;
+                bottom:10px;
+                right:10px;
+                background-color: rgba(255,255,255,0.8);
+                color: #000;
+                padding:2px 6px;
+                border-radius:3px;
+                font-size:12px;
+                cursor:pointer;
+                font-family:sans-serif;
+                user-select: none;
+                ">
+                Copy link
+                </div>
+                `;
+
+                const copyButton = iframeDoc.getElementById("copy-link-btn");
+              if (copyButton) {
+                copyButton.addEventListener('click', async () => {
+                  try {
+                    await navigator.clipboard.writeText(finalTrackUrl);
+                    // Optional: Provide visual feedback
+                    copyButton.textContent = "Copied!";
+                    setTimeout(() => {
+                      copyButton.textContent = "Copy link";
+                    }, 1500);
+                  } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    // Fallback for older browsers (though unlikely)
+                    alert(`Copy failed. Manually copy this URL: ${finalTrackUrl}`);
+                  }
+                });
+              }
+            },
+
+            getFRHDImage(trackId) {
+              const versions = ["v5", "v6", "v12"];
+              let index = 0;
+
+              return new Promise((resolve) => {
+                function tryNext() {
+                  if (index >= versions.length) {
+                    resolve("");
+                    return;
+                  }
+
+                  const url = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/768x250-${versions[index]}.png`;
+                  const testImg = new Image();
+                  testImg.src = url;
+
+                  testImg.onload = () => resolve(url);
+                  testImg.onerror = () => {
+                    index++;
+                    tryNext();
+                  };
+                }
+                tryNext();
+              });
+            },
             toggleIframe: function () {
               let iframe = document.getElementById("forumIframe");
 
@@ -32468,17 +32884,17 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = "https://forum.freerider.app";
-                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads";
+                iframe.src = "./discuss.html";
+                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);
               }
             },
             addImportListener() {
-              window.addEventListener("message", function (event) {
+              window.addEventListener("message", (event) => {
                 if (event.data.action === "linkClicked") {
-                  console.log("clicked link:", event.data.url);
-            
+                  console.log("clicked link:", event.data.url, event.data.name);
+
                   try {
                     const url = new URL(event.data.url);
                     const { hostname, pathname, hash } = url;
@@ -32489,10 +32905,11 @@
                       "www.freeriderhd.com",
                       "frhd.co",
                       "k333892.invisionservice.com",
+                      "gofile.io",
                     ];
-                    if (!validHostnames.includes(hostname)) {
+                    
+                    if (!validHostnames.includes(hostname) || !hostname.endsWith(".gofile.io")) {
                       console.warn("invalid URL hostname:", hostname);
-                      return;
                     }
 
                     let trackName = "";
@@ -32505,25 +32922,37 @@
                     } else if (hostname === "k333892.invisionservice.com") {
                       const parts = pathname.split("/free-rider/")[1].split("/");
                       trackName = parts[0];
-                    } 
+                    }
 
-                    if (
-                      !trackName ||
-                      trackName.includes("../") ||
-                      trackName.length > 40
-                    ) {
+                    if (hostname.endsWith(".gofile.io")) {
+                    console.log("Processing Gofile.io URL directly");
+                    
+                    fetch(event.data.url)
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error("Gofile fetch failed.");
+                            }
+                            return response.text();
+                        })
+                        .then((data) => {
+                            console.log("Track data fetched from Gofile:", data);
+                            GameManager.command("import", data, true);
+                            GameSettings.trackName = event.data.name || "untitled";
+                            this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
+
+                        })
+                        .catch((error) => {
+                            console.error("Failed to load Gofile track.", error);
+                        });
+                    
+                    return;
+                }
+
+                    if (!trackName || trackName.includes("../") || trackName.length > 40) {
                       return;
                     }
 
-                    if (
-                      ![
-                        "1-4",
-                        "covid-19 dreamin",
-                        "demi-goddess demi-diety",
-                      ].includes(trackName)
-                    ) {
-                      trackName = trackName.replace(/-/g, " ");
-                    }
+                    trackName = decodeURIComponent(trackName);
 
                     trackName = decodeURIComponent(trackName);
                     GameSettings.trackName = trackName;
@@ -32533,9 +32962,7 @@
                     fetch(fetchUrl)
                       .then((response) => {
                         if (!response.ok)
-                          throw new Error(
-                            "No track ID found, loading as track code."
-                          );
+                          throw new Error("No track ID found, loading as track code.");
                         return response.text();
                       })
                       .then((data) => {
@@ -32543,12 +32970,24 @@
                           console.log("Track data fetched:", data);
                           GameManager.command("import", data, true);
                           GameSettings.trackName = `${trackName}.txt`;
+
+                          return fetch("assets/tracks/tracklist-data.json");
                         } else {
                           console.error("No track data found.");
                         }
                       })
+                      .then((res) => (res ? res.json() : null))
+                      .then((trackdata) => {
+                        if (trackdata) {
+                          const match = trackdata.tracks.find(
+                            (t) => t["track-name"] === trackName
+                          );
+                          this.updateNowPlaying(match || { "track-name": trackName });
+                          //showTrackInSlideshow(trackInfo["track-name"] || trackInfo);
+                        }
+                      })
                       .catch((error) => {
-                        console.error("Primary fetch failed.", error);
+                        console.error("Primary fetch failed, falling back to FRHD.", error);
                         const script = document.createElement("script");
                         script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
 
@@ -32556,15 +32995,21 @@
                           console.error("Fallback fetch failed.");
                         };
 
-                        window.t = ({ code, title }) => {
-                          if (code) {
-                            GameSettings.trackName = title;
-                            GameManager.command("import", code, true);
+                        window.t = (trackData) => {
+                          if (trackData && trackData.code) {
+                            GameSettings.trackName = trackData.title;
+                            GameManager.command("import", trackData.code, true);
                             console.log("Track loaded from FRHD.");
+
+                            this.updateNowPlaying({
+                              "track-name": trackData.title,
+                              creator: trackData.author || "unknown",
+                              description: trackData.descr || "",
+                              id: trackData.id,
+                              url: trackData.url,
+                            });
                           } else {
-                            console.error(
-                              "Failed to load track code from FRHD."
-                            );
+                            console.error("Failed to load track code from FRHD.");
                           }
                           delete window.t;
                         };
@@ -32576,7 +33021,7 @@
                   }
                 }
               });
-            },            
+            },
             render: function () {
               var e = this.state.sidebar,
                 t = "topMenu-button topMenu-button-right",
@@ -32585,7 +33030,7 @@
                 ? " editorgui_icons-icon_sidebar_close"
                 : " editorgui_icons-icon_sidebar_open";
               return e
-                ? GameSettings.beta && n.createElement(
+                ? n.createElement(
                     "div",
                     {
                       className: t,
@@ -32595,7 +33040,7 @@
                     n.createElement("span", { className: "text" }, "Forum"),
                     n.createElement("span", { className: r })
                   )
-                : GameSettings.beta && n.createElement(
+                : n.createElement(
                     "div",
                     {
                       className: t,

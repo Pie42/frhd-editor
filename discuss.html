@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>free rider - draw</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
+
+    <meta name="author" content="Ness & Pie42">
+    <meta name="description" content="track editor v1.1">
+
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="robots" content="noindex,nofollow"w />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Phaser App">
+    <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+    <meta name="format-detection" content="telephone=no">
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script defer data-domain="freerider.app" src="https://plausible.io/js/script.js"></script>
+
+</head>
+<body>
+
+    <style>
+#now-playing {
+  display: none;
+  width: auto;
+  position: relative;
+}
+
+#now-playing img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  cursor: pointer;
+  display: flex;
+  border-radius: var(--ht-box-radius);
+  overflow: hidden;
+  box-shadow: var(--ht-box-shadow);
+  white-space: normal;
+  text-decoration: none;
+  color: inherit;
+}   
+</style>
+
+<div id="now-playing">
+  <span id="track-data"></span><br>
+  <a id="link" href="#">
+    <img id="thumbnail" src=""/>
+  </a>
+</div>
+
+<div id="comments-container">
+<script async src="embed.js" type="module"></script>
+<hyvor-talk-comments
+	website-id="14106"
+	page-id=""
+  settings='{
+	"custom_css":"#app { font-size: 14px }",
+	"profiles": {
+		"pictures": true
+	},
+    "voting": {
+        "type": "both",
+        "voters": true
+    },
+    "editor": {
+        "emoji": false
+    },
+    "ui": {
+        "color_theme": "light"
+    }
+	}'
+></hyvor-talk-comments>
+</div>
+</body>
+</html>
