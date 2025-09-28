@@ -13645,7 +13645,7 @@
       }
       };
         drawBikeFrame() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const e = this.scene,
               s = e.game.mod.getVar("crBmx"),
               i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -13705,7 +13705,7 @@
             const gg = new W(ff,pp,dd);             
   
             const mm = (.25) * Math.cos(rotor); // propeller
-            if (this.scene.game.mod.getVar("propeller")) {
+            if (this.shouldDrawPropeller) {
                     y.beginPath();  
                     y.strokeStyle = "#000000",
                     y.lineWidth = 3 * v,
@@ -16392,6 +16392,7 @@
                 s < 1200 && (t = Math.min(s / 500, 1));
               }
               this._opacity = t;
+              this._scene.ticks === 0 && (this.isGhost() ? this._opacity = 0 : this._opacity = 1);
             }
             drawName() {
               const t = this._scene,
@@ -16427,7 +16428,7 @@
                 (this._game.mod.getVar("seeGhost") || !this._ghost) && t.draw();
               for (let t = 0; t < this.deadVehicles.length; t++)
                 this.deadVehicles[t] && this.deadVehicles[t].draw();
-              this.isGhost() && this._game.mod.getVar("seeGhost");
+              this.isGhost();
             }
             checkKeys() {
               const t = this._gamepad,
@@ -24895,7 +24896,11 @@
               if (this.playerManager.firstPlayer.complete && (this.playerManager.firstPlayer._scene.ticks < this.completedTicks)){
                   this.playerManager.firstPlayer.complete = false;
             }
-            (this.track.targetCount === 0 && this.playerManager.firstPlayer._scene.ticks > 1) && this.logTrackComplete();
+            (this.track.targetCount === 0) && this.logTrackComplete();
+            if (!this.state.playing && this.playerManager._players[1]) {
+              this.playerManager._players[1].isGhost() && this.playerManager._players[1].updateGhostPosition();
+              this.playerManager._players[1].isGhost() && (!this.playerManager._players[1].updated && this.playerManager._players[1].setGhostCheckpoints());
+            }
         }
         isStateDirty() {
           const t = this.oldState,
