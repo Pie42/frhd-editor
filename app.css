@@ -320,13 +320,11 @@ textarea {
     display: block;
     background: 0 0;
     outline: 0 !important;
-    min-height: 1.4em;
     line-height: 1.4em;
     font-size: 1em;
     width: 100%;
     white-space: pre;
     -webkit-appearance: none;
-    margin-top: 5px;
     border: 1px solid #C2C2C2;
     border-radius: 11px;
 }
