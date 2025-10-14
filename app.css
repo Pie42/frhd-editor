@@ -2156,7 +2156,8 @@ html.fullscreen #main_page {
     overflow-y: scroll;
     z-index: 2;
     resize: none;
-    background: #F8F8F8
+    background: #F8F8F8;
+    text-wrap: balance;
 }
 
 .importDialog-tracklist {
