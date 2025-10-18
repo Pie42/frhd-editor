@@ -3097,12 +3097,11 @@ only screen and (min-device-pixel-ratio:3) {
 }
 
 @media (max-width: 720px) or (max-height: 600px) {
-    .importDialog-placeholder {
+    /*.importDialog-placeholder {
         width: 40%;
-    }
+    }*/
 
     .importDialog-code {
-        width: 45%;
         height: 250px;
     }
 
