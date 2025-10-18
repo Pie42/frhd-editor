@@ -3097,10 +3097,6 @@ only screen and (min-device-pixel-ratio:3) {
 }
 
 @media (max-width: 720px) or (max-height: 600px) {
-    .editorDialog-content {
-        width: 360px;
-    }
-
     .importDialog-placeholder {
         width: 40%;
     }
