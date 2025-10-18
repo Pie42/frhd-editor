@@ -25489,7 +25489,8 @@
               GameSettings.trackName = "track.txt";
               GameSettings.offsetPeteX = 0;
               GameSettings.offsetPeteY = 0;
-              this.trackUpdated = true
+              this.trackUpdated = true;
+              GameManager.game.currentScene.toolHandler.actionTimeline = [];
               break;
             case "import": {
               let e = t[0];
@@ -25504,6 +25505,7 @@
                 this.command("dialog", !1);
                 this.trackUpdated = true;
                 this.logged = false;
+                GameManager.game.currentScene.toolHandler.actionTimeline = [];
               break;
             }
             case "add": {

@@ -32855,10 +32855,24 @@
                 document.body.appendChild(iframe);
               }
             },
+            hasUnsavedChanges() {
+              return (GameManager.game.currentScene.toolHandler.actionTimeline.length > 0);
+            },
             addImportListener() {
               window.addEventListener("message", (event) => {
                 if (event.data.action === "linkClicked") {
                   console.log("clicked link:", event.data.url, event.data.name);
+
+                  let proceedWithImport = true;
+
+                  if (this.hasUnsavedChanges()) {
+                    const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
+                    proceedWithImport = window.confirm(confirmationMessage);
+                  }
+
+                  if (proceedWithImport === false) {
+                    return;
+                  }
 
                   try {
                     const url = new URL(event.data.url);
