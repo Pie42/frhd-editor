@@ -373,7 +373,7 @@
                 var bottomMenuStyle = {
                   width: window.innerHeight >= 1440
                     ? largeMediaWidth
-                    : (window.innerHeight <= 1000
+                    : (window.innerHeight <= 800
                       ? mediaWidth
                       : width)
                 };
@@ -6270,8 +6270,8 @@
                 fullscreen = GameSettings.editorFullscreen;
               var sidebar = GameSettings.sidebar;
               c.right = sidebar
-                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 1000 ? "calc(25% - 5px)" : "20%"))
-                : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 1000 ? "-5px" : "0"));
+                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
+                : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 800 ? "-5px" : "0"));
               switch ((p && (c.display = "none"), e)) {
                 case "straightline":
                   (c.marginTop = -((3 * d) / 2)),
@@ -7575,7 +7575,7 @@
               var topMenuStyle = {
                   width: window.innerHeight >= 1440
                     ? largeMediaWidth
-                    : (window.innerHeight <= 1000
+                    : (window.innerHeight <= 800
                       ? mediaWidth
                       : width)
                 };

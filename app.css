@@ -3063,7 +3063,7 @@ only screen and (min-device-pixel-ratio:3) {
     border: 1px solid transparent
 }
 
-@media (max-height: 1000px) {
+@media (max-height: 800px) {
     .leftMenu,
     .rightMenu {
         transform: scale(0.8);
