@@ -1272,7 +1272,7 @@ html.fullscreen #main_page {
     background-repeat: no-repeat;
     background-image: url(assets/images/gui/cube.png);
     background-position: 0px 0px;
-    width: 45px;
+    width: 44px;
     height: 44px;
 }
 
@@ -1675,7 +1675,7 @@ html.fullscreen #main_page {
 }
 
 .topMenu {
-    width: 80%;
+    width: 100%;
     height: 45px;
     background: #E2E2E2;
     border-bottom: 1px solid #000;
@@ -1954,7 +1954,7 @@ html.fullscreen #main_page {
 }
 
 .brushToolOptions-input_vehiclepoweruptime {
-    width: 40px;
+    width: 50px;
     height: 25px;
     margin-left: 15px;
 }
@@ -3063,7 +3063,7 @@ only screen and (min-device-pixel-ratio:3) {
     border: 1px solid transparent
 }
 
-@media (max-height: 1440px) {
+@media (max-height: 1000px) {
     .leftMenu,
     .rightMenu {
         transform: scale(0.8);
@@ -3079,7 +3079,7 @@ only screen and (min-device-pixel-ratio:3) {
 
     .topMenu {
         top: -5px;
-        width: 100%;
+        width: 125%;
         transform: scale(0.8);
         transform-origin: left;
     }
@@ -3093,6 +3093,39 @@ only screen and (min-device-pixel-ratio:3) {
 
     .editorGui {
         height: 35px;
+    }
+}
+
+@media (min-height: 1440px) {
+    .leftMenu,
+    .rightMenu {
+        transform: scale(1.25);
+    }
+
+    .leftMenu {
+        left: 5px;
+    }
+
+    .rightMenu {
+        right: 5px;
+    }
+
+    .topMenu {
+        top: 5px;
+        width: 125%;
+        transform: scale(1.25);
+        transform-origin: left;
+    }
+
+    .bottomMenu {
+        bottom: 5px;
+        width: 125%;
+        transform: scale(1.25);
+        transform-origin: left;
+    }
+
+    .editorGui {
+        height: 55px;
     }
 }
 

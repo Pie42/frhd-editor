@@ -367,10 +367,15 @@
                 mobile = GameManager.game && (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")),
                 f = "";
                 var sidebar = GameSettings.sidebar;
-                var width = sidebar ? "70%" : "100%";
+                var width = sidebar ? "75%" : "100%";
                 var mediaWidth = sidebar ? "93.75%" : "125%";
+                var largeMediaWidth = sidebar ? "60%" : "80%";
                 var bottomMenuStyle = {
-                  width: window.innerHeight <= 1440 ? mediaWidth : width,
+                  width: window.innerHeight >= 1440
+                    ? largeMediaWidth
+                    : (window.innerHeight <= 1000
+                      ? mediaWidth
+                      : width)
                 };
               switch (e) {
                 case "straightline":
@@ -6264,7 +6269,9 @@
                 p = this.props.data.hideMenus,
                 fullscreen = GameSettings.editorFullscreen;
               var sidebar = GameSettings.sidebar;
-              c.right = sidebar ? (window.innerHeight <= 1440 ? "calc(25% - 5px)" : "20%") : (window.innerHeight <= 1440 ? "-5px" : "0");
+              c.right = sidebar
+                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 1000 ? "calc(25% - 5px)" : "20%"))
+                : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 1000 ? "-5px" : "0"));
               switch ((p && (c.display = "none"), e)) {
                 case "straightline":
                   (c.marginTop = -((3 * d) / 2)),
@@ -7562,11 +7569,16 @@
             displayName: "TopMenu",
             render: function () {
               var sidebar = GameSettings.sidebar;
-              var width = sidebar ? "80%" : "100%";
+              var width = sidebar ? "75%" : "100%";
               var mediaWidth = sidebar ? "93.75%" : "125%";
+              var largeMediaWidth = sidebar ? "60%" : "80%";
               var topMenuStyle = {
-                width: window.innerHeight <= 1440 ? mediaWidth : width,
-              };
+                  width: window.innerHeight >= 1440
+                    ? largeMediaWidth
+                    : (window.innerHeight <= 1000
+                      ? mediaWidth
+                      : width)
+                };
               return n.createElement(
                 "div",
                 { className: "topMenu unselectable", style: topMenuStyle},
