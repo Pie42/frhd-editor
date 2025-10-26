@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>All Tracks</title>
+    <link rel="stylesheet" type="text/css" href="/./style/style-black-o.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+    <style>
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        .pull-left {
+            float: left;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        #menu {
+            background-color: #333;
+            border-bottom: 1px solid #000;
+            width: 100%;
+        }
+
+        #menu .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .nav li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav li a,
+        .nav li span {
+            color: #ccc;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            white-space: nowrap;
+            text-shadow: 0 1px 0 #555;
+        }
+
+        .nav li a:hover,
+        .nav li span:hover {
+            background-color: #555;
+            color: white;
+        }
+
+        .nav li.active a {
+            color: #fff;
+            background-color: #080808;
+        }
+
+        .track-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 0px;
+        }
+
+        .track-item {
+            width: 25%;
+            padding: 0 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .track-item.active-page {
+            display: block !important;
+        }
+
+        @media (max-width: 992px) {
+            .track-item {
+                width: 50%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .track-item {
+                width: 100%;
+            }
+        }
+
+        .pagination-controls {
+            text-align: center;
+            margin-top: 20px;
+            user-select: none;
+        }
+
+        .track-navigation .btn {
+            min-width: 120px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+            font-size: 12px;
+        }
+
+        .page-input-group {
+            display: inline-flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .page-input {
+            width: 40px;
+            padding: 5px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 3px;
+            height: 34px;
+            box-sizing: border-box;
+            -moz-appearance: textfield;
+        }
+
+        .page-input::-webkit-outer-spin-button,
+        .page-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .page-input-group #go-page-btn {
+            padding: 5px 10px;
+            margin-left: -1px;
+            height: 34px;
+        }
+
+        .page-input-group .page-text {
+            color: #aaa;
+            margin-left: 5px;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+
+        input[type="number"] {
+            margin-bottom: 0;
+        }
+
+        .search-input {
+            width: 230px;
+            text-align: center;
+        }
+
+        #content {
+            margin: 0px auto 0 auto;
+        }
+
+        .btn {
+            padding: 0px 8px;
+        }
+
+        .track-thumbnail {
+            width: auto;
+            height: auto;
+            max-width: none;
+            max-height: none;
+            margin: 0px 30px 0px 0;
+        }
+
+        .track-thumb .thumbnail {
+            padding: 0px;
+        }
+    </style>
+
+<script>
+    function handleThumbnailFallback(img) {
+        img.onerror = null;
+        img.src = '/data/thumbnails/default.png';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const trackItems = document.querySelectorAll('.track-item');
+        const tracksPerPage = 12;
+        let currentPage = 1;
+        let filteredTracks = Array.from(trackItems);
+        // New variable to store the currently selected track type filter
+        let currentTrackType = 'frhd'; // Default to 'frhd' as it's the active tab's content
+
+        const prevBtn = document.getElementById('prev-page-btn');
+        const nextBtn = document.getElementById('next-page-btn');
+        const pageInput = document.getElementById('page-input');
+        const goBtn = document.getElementById('go-page-btn');
+        const pageInfo = document.getElementById('page-info');
+        const searchInput = document.getElementById('search-input');
+        // New: Select all track type filter links
+        const typeFilterLinks = document.querySelectorAll('.type-filter-link');
+        const frhdTypeLink = document.querySelector('.type-filter-link[data-track-type="frhd"]');
+
+        function getTotalPages() {
+            return Math.max(1, Math.ceil(filteredTracks.length / tracksPerPage));
+        }
+
+        function setActiveTypeLink() {
+            typeFilterLinks.forEach(link => {
+                const parentSpan = link.parentElement;
+                if (link.getAttribute('data-track-type') === currentTrackType) {
+                    parentSpan.style.color = '#000'; // Set active color
+                } else {
+                    parentSpan.style.color = '#aaa'; // Set inactive color
+                }
+            });
+        }
+        
+        function filterTracks() {
+            const query = searchInput.value.toLowerCase().trim();
+
+            let tracksAfterSearch = [];
+
+            // First pass: Filter ALL tracks by the search query
+            trackItems.forEach(item => {
+                const descElement = item.querySelector('.track-thumb .desc');
+                const linkElement = item.querySelector('.track-link');
+
+                const trackText = descElement ? descElement.textContent.toLowerCase() : '';
+                let trackId = '';
+
+                if (linkElement && linkElement.href) {
+                    const match = linkElement.href.match(/\/tracks\/\w+\/(\d+)\.html$/);
+                    if (match && match[1]) {
+                        trackId = match[1];
+                    }
+                }
+
+                // Check if the name/author/ID matches the search query
+                const searchMatch = trackText.includes(query) || trackId.includes(query);
+
+                if (searchMatch) {
+                    tracksAfterSearch.push(item);
+                }
+
+                item.classList.remove('active-page');
+            });
+
+            // Second pass: Apply the type filter only if the search query is EMPTY.
+            if (query === '') {
+                // If the search is empty, filter the results down to the currently active tab type
+                filteredTracks = tracksAfterSearch.filter(item =>
+                    item.getAttribute('data-track-type') === currentTrackType
+                );
+            } else {
+                // If there is a search query, keep ALL search results, regardless of the active tab.
+                filteredTracks = tracksAfterSearch;
+            }
+
+            setActiveTypeLink();
+            showPage(1);
+        }
+
+        function showPage(pageNumber) {
+            // ... existing showPage logic ...
+            const totalPages = getTotalPages();
+            
+            currentPage = Math.max(1, Math.min(pageNumber, totalPages));
+
+            const start = (currentPage - 1) * tracksPerPage;
+            const end = start + tracksPerPage;
+            
+            // Hide all track items first
+            trackItems.forEach(item => {
+                item.style.display = 'none';
+                item.classList.remove('active-page');
+            });
+            
+
+            // Display only the filtered tracks for the current page
+            for (let i = 0; i < filteredTracks.length; i++) {
+                if (i >= start && i < end) {
+                    filteredTracks[i].style.display = 'block';
+                    filteredTracks[i].classList.add('active-page');
+                }
+            }
+            // ... rest of existing showPage logic ...
+            if (prevBtn) prevBtn.disabled = (currentPage === 1);
+            if (nextBtn) nextBtn.disabled = (currentPage === totalPages);
+
+            if (pageInput) pageInput.value = currentPage;
+            if (pageInfo) pageInfo.textContent = totalPages;
+        }
+
+        function jumpToPage() {
+            // ... existing jumpToPage logic ...
+            if (!pageInput) return;
+
+            let page = parseInt(pageInput.value);
+            const totalPages = getTotalPages();
+
+            if (isNaN(page)) {
+                alert(`Please enter a number between 1 and ${totalPages}.`);
+                pageInput.value = currentPage;
+                return;
+            }
+
+            page = Math.max(1, Math.min(page, totalPages));
+
+            if (page !== currentPage) {
+                showPage(page);
+            } else {
+                pageInput.value = currentPage;
+            }
+        }
+        
+        // New: Event listener for track type filter links
+        typeFilterLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent navigation
+                const newTrackType = this.getAttribute('data-track-type');
+                if (newTrackType && newTrackType !== currentTrackType) {
+                    currentTrackType = newTrackType;
+                    searchInput.value = ''; // Clear search when switching tabs
+                    filterTracks();
+                }
+            });
+        });
+        
+        // Initial setup for the active track type link style
+        setActiveTypeLink(); 
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterTracks);
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) showPage(currentPage - 1);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < getTotalPages()) showPage(currentPage + 1);
+            });
+        }
+
+        if (goBtn) {
+            goBtn.addEventListener('click', jumpToPage);
+        }
+
+        if (pageInput) {
+            pageInput.addEventListener('input', () => {
+                let page = parseInt(pageInput.value);
+                const totalPages = getTotalPages();
+
+                if (isNaN(page)) {
+                    return; 
+                }
+                
+                if (page >= 1) { 
+                    showPage(page);
+                }
+            });
+            
+            if (goBtn) {
+                 goBtn.addEventListener('click', jumpToPage);
+            }
+        }
+        
+        if (trackItems.length > 0) {
+            filterTracks();
+        }
+    });
+</script>
+
+    <script>
+        // --- Core Client-Side Logic to be included in your EJS template ---
+
+        /**
+         * Fetches the list of all available tracks and updates the "Random track" link.
+         * This function should run once when the page loads.
+         */
+        async function updateRandomTrackLink() {
+            const linkElement = document.getElementById('randomTrackLink');
+            
+            if (!linkElement) {
+                console.error("Link element not found.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/tracks/all_tracks.json');
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load track data`);
+                }
+                
+                const allTracks = await response.json();
+
+                if (!allTracks || allTracks.length === 0) {
+                    linkElement.textContent = "No Tracks Available";
+                    return;
+                }
+
+                // 2. Randomly select a track from the array
+                const randomIndex = Math.floor(Math.random() * allTracks.length);
+                const randomTrack = allTracks[randomIndex];
+                
+                // 3. Construct the full, absolute path using the format: /tracks/{type}/{id}.html
+                const fullPath = `/tracks/${randomTrack.trackType}/${randomTrack.id}.html`;
+
+                // 4. Update the link element's href and text
+                linkElement.href = fullPath;
+                linkElement.textContent = 'Random Track';
+                
+            } catch (error) {
+                console.error("Error updating random track link:", error);
+                linkElement.textContent = "Random Track (Error)";
+            }
+        }
+
+        // Run the function when the page finishes loading
+        window.onload = updateRandomTrackLink;
+        
+        // --- End of Core Client-Side Logic ---
+    </script>
+</head>
+
+<body>
+
+    <nav id="menu" style="top:0">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="nav-collapse collapse">
+                    <ul class="nav" id="menu-collapse">
+                        <li><a href="index.html" title="Homepage"><img src="/images/bike.png" alt="Black Hat"
+                                    style="width: 24px; height: 24px;"></a></li>
+                        <li class="active"><a href="/tracks" title="The latest tracks">Tracks</a></li>
+                        <li><span title="Recent ghosts">Ghosts</span></li>
+                        <li><a id="randomTrackLink" href="#" title="Play a random track instantly">Random
+                                track</a></li>
+                        <li><span title="Draw a track">Draw track</a></li>
+                        <li><span title="Discuss in our forum">Forum</a></li>
+                        <li><span title="Private Message">PM </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="content" class="container clearfix">
+        <div class="container">
+            <p style="font: 10px eiven; letter-spacing: 1px; margin-bottom: 10px"><strong>Track Archive</strong></p>
+            <p style="font: 10px eiven; letter-spacing: 1px; margin-bottom: 20px">
+                <strong>
+                    <span class="track-type-filter" style="color: #aaa">
+                        <a href="/tracks/frdb" class="type-filter-link" data-track-type="frdb" style="color: inherit;">FRDB</a>
+                    </span>
+                    /
+                    <span class="track-type-filter" style="color: #aaa">
+                        <a href="/tracks/cr" class="type-filter-link" data-track-type="cr" style="color: inherit;">CR</a>
+                    </span>
+                    /
+                    <span class="track-type-filter" style="color: #aaa">
+                        <a href="/tracks/bhr" class="type-filter-link" data-track-type="bhr" style="color: inherit;">BHR</a>
+                    </span>
+                    /
+                    <span class="track-type-filter" style="color: #000">
+                        <a href="/tracks/frhd" class="type-filter-link" data-track-type="frhd" style="color: inherit;">FRHD</a>
+                    </span>
+                </strong>
+            </p>
+            <div class="mb-6" style="margin-bottom: 10px">
+            <input type="text" id="search-input" class="search-input" placeholder="Search tracks by name, author, or ID..." aria-label="Search track archive">
+            </div>
+
+
+            <div class="track-grid">
+                <% tracks.forEach(function(track, index) { %>
+                    <div class="track-item" data-track-type="<%= track.trackType %>">
+                        <a href="/tracks/<%= track.trackType %>/<%= track.trackType %>-<%= track.id %>.html" class="track-link">
+                            <div class="track-thumb">
+                                <div class="thumbnail">
+                                    <% // This creates the correct PUBLIC URL, e.g., /data/bhr/thumbnails/123.png const
+                                        imageBasePath='/data/' + track.trackType + '/thumbnails/' + track.id + '.png' ; %>
+            
+                                        <% if (track.hasThumbnail) { %>
+                                            <img class="track-thumbnail" src="<%= imageBasePath %>" alt="Track ID <%= track.id %>"
+                                                onerror="handleThumbnailFallback(this)">
+                                            <% } else { %>
+                                                <div class="thumbnail-placeholder"><img src="/data/thumbnails/default.png"
+                                                        alt="Default Thumbnail"></div>
+                                                <% } %>
+                                </div>
+            
+                                <p class="desc" style="margin-bottom: 0px">
+                                    <%= track.name %> by <strong>
+                                            <%= track.authors %>
+                                        </strong>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                    <% }); %>
+            </div>
+
+            <% if (tracks.length> 12) { %>
+                <div class="pagination-controls track-navigation">
+                    <button id="prev-page-btn" class="btn btn-default">&laquo; Previous</button>
+
+                    <span class="page-input-group">
+                        <span class="page-text">Page</span>
+                        <input type="number" id="page-input" min="1" value="1" class="page-input"
+                            aria-label="Page number input">
+                        <span class="page-text">of <span id="page-info">1</span></span>
+                    </span>
+
+                    <button id="next-page-btn" class="btn btn-default">Next &raquo;</button>
+                </div>
+                <% } %>
+
+        </div>
+
+    </div>
+
+    <footer>blackhatrider.com by Renée
+        <br>blackhatrider.app is an archival project by Ness & Renée
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title><%= track.name %> - Discussion</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
+
+    <meta name="author" content="Ness & Pie42">
+    <meta name="description" content="Discussion for track ID: <%= track.id %>">
+
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="robots" content="noindex,nofollow"w />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Phaser App">
+    <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+    <meta name="format-detection" content="telephone=no">
+    <base href="/./">
+    
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script defer data-domain="freerider.app" src="https://plausible.io/js/script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const trackId = "<%= track.id %>";
+            const trackName = "<%= track.name %>";
+            const copyButton = document.getElementById("copy-link-btn");
+            
+            // 1. Handle Thumbnail Source Fallback (simulating part of the JS logic)
+            const thumbnailImg = document.getElementById("thumbnail-img");
+            if (thumbnailImg) {
+                // The thumbnail URL is hardcoded to /data/thumbnails/<%= track.id %>.png in the HTML below.
+                // We add an error handler to hide it if it doesn't exist, 
+                // which simulates the check your build script was performing.
+                thumbnailImg.onerror = function() {
+                    // Assuming your build script checked for existence, we just hide it 
+                    // if the server returns a 404 (or similar) when the page is loaded.
+                    // If you want to replace with a fallback image, set this.src = 'fallback/path.png';
+                    this.style.display = 'none'; 
+                    const nowPlayingDiv = document.getElementById("now-playing");
+                    // Ensure the now-playing div is still visible even if the image is gone.
+                    if (nowPlayingDiv) nowPlayingDiv.style.display = "block";
+                };
+                
+                // If the thumbnail is known NOT to exist (based on your build script's check),
+                // you might conditionally hide the <img> tag directly in EJS for a cleaner result.
+                // Since EJS doesn't know the full existence status here, we rely on onerror/CSS.
+            }
+
+            // 2. Handle Copy Link Button
+            if (copyButton) {
+                // The URL logic from your JS: https://freerider.app/#${encodedTrackName}
+                const encodedTrackName = encodeURIComponent(trackName);
+                const finalTrackUrl = `https://freerider.app/#${encodedTrackName}`;
+                
+                copyButton.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(finalTrackUrl);
+                        copyButton.textContent = "Copied!";
+                        setTimeout(() => {
+                            copyButton.textContent = "Copy link";
+                        }, 1500);
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                        alert(`Copy failed. Manually copy this URL: ${finalTrackUrl}`);
+                    }
+                });
+            }
+
+            // Ensure the container is visible on page load (unless hidden by CSS)
+            const nowPlayingDiv = document.getElementById("now-playing");
+            if (nowPlayingDiv) nowPlayingDiv.style.display = "block";
+        });
+    </script>
+</head>
+<body>
+
+    <style>
+#now-playing {
+    /* Set to 'block' by the script above on load, but keep original styling for structure */
+    display: none; 
+    width: auto;
+    position: relative;
+}
+/* Ensure the inner image element matches the styling */
+#now-playing img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    cursor: pointer;
+    display: flex;
+    border-radius: var(--ht-box-radius);
+    overflow: hidden;
+    box-shadow: var(--ht-box-shadow);
+    white-space: normal;
+    text-decoration: none;
+    color: inherit;
+} 
+    </style>
+
+<div id="now-playing" style="position: relative;">
+    <img id="thumbnail-img" src="/data/thumbnails/<%= track.id %>.png" alt="<%= track.name %>">
+    
+    <div style="
+        position:absolute;
+        top:10px;
+        left:10px;
+        color:white;
+        background-color: rgba(0,0,0,0.5);
+        padding:5px 10px;
+        border-radius:4px;
+        max-width:90%;
+        font-family:sans-serif;
+    ">
+        <strong><%= track.name %></strong>
+        <small><%= track.authors && track.authors !== 'unknown' ? ' by ' + track.authors : '' %></small>
+    </div>
+    
+    <div id="copy-link-btn" style="
+        position:absolute;
+        bottom:10px;
+        right:10px;
+        background-color: rgba(255,255,255,0.8);
+        color: #000;
+        padding:2px 6px;
+        border-radius:3px;
+        font-size:12px;
+        cursor:pointer;
+        font-family:sans-serif;
+        user-select: none;
+    ">
+        Copy link
+    </div>
+</div>
+
+<style>
+blockquote{
+    font-size: 1em;
+    margin: 15px auto;
+    font-family: Open Sans;
+    font-style: italic;
+    color: #555555;
+    padding: 1em 20px 1em 20px;
+    border-left: 8px solid #aaa;
+    line-height: 1.6;
+    position: relative;
+    background: #EDEDED;
+    border-radius: 4px;
+}
+
+blockquote::after{
+  content: '';
+}
+
+blockquote span{
+  display:block;
+  color:#333333;
+  font-style: normal;
+  font-weight: bold;
+  margin-top:1em;
+}</style>
+
+<blockquote><%= track.description %></blockquote>
+<p>published: <%= track.published %>
+<br>size: <%= track.size %></p>
+
+
+<div id="comments-container">
+<script async src="embed.js" type="module"></script>
+<hyvor-talk-comments
+    website-id="14106"
+    page-id="<%= track.id %>" settings='{
+    "custom_css":"#app { font-size: 14px }",
+    "profiles": {
+        "pictures": true
+    },
+        "voting": {
+            "type": "both",
+            "voters": true
+        },
+        "editor": {
+            "emoji": false
+        },
+        "ui": {
+            "color_theme": "light"
+        }
+    }'
+></hyvor-talk-comments>
+</div>
+</body>
+</html>
