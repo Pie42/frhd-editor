@@ -4132,7 +4132,7 @@
                   .catch((error) => {
                     console.error("primary fetch failed.", error);
 
-                    const script = document.createElement("script");
+                    /*const script = document.createElement("script");
                     script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t)`;
                     script.onerror = () => {
                       console.error("fallback fetch failed.");
@@ -4150,7 +4150,7 @@
                       delete window.t;
                     };
 
-                    document.body.appendChild(script);
+                    document.body.appendChild(script);*/
                   });
 
                 /*fetch(ghost)
@@ -32861,7 +32861,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = "./discuss.html";
+                iframe.src = `discuss.html?id=${GameSettings.type}-${GameSettings.id}`;
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);
