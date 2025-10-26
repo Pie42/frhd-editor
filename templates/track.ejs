@@ -1,8 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <!-- Use server-provided data for title -->
-    <title><%= track.name %> by <%= track.authors || 'Unknown' %></title>
+    <title>free rider - draw</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
 
@@ -36,66 +35,17 @@
     <script src="scripts/settings.js"></script>
     
     <script src="scripts/offlineeditor.js"></script>
+
+    <script type="text/plain" id="trackcode"><%= track.code %></script>
     
     <script>
-    // --- GUARANTEED STARTUP LOG ---
-    console.log("EJS Script: Starting track initialization.");
-    
-    // 1. Inject the raw track code directly into a JavaScript variable.
-    // We use <%= %> (escaped output) to ensure quotes and special characters
-    // in the track code do not break the surrounding JavaScript string literal.
-    const serverCode = "<%= track.code %>";
+    const trackCode = document.getElementById('trackcode').textContent;
 
-    // Get the trackId passed separately by the server
-    const trackId = "<%= trackId %>";
-    
-    // Initialize GameSettings if available
-    if (typeof GameSettings !== 'undefined') {
-        GameSettings.id = trackId;
-    }
-
-    // --- Function to Process Track Data ---
-    // This function takes the server-provided data and initializes the game.
-    function processTrackData(code, title, author, descr) {
-        // We trim the code here just in case any whitespace was included during injection.
-        const trimmedCode = code?.trim() || '';
-
-        if (trimmedCode) {
-            // Log successful data acquisition
-            console.log(`Processing fetched track data: Title='${title}', Author='${author}', Code Length=${trimmedCode.length}`);
-            
-            // Update Game Settings with server-provided name/title
-            GameSettings.trackName = title || `Track #${trackId}`;
-            
-            // Check if GameManager is loaded before using it
-            if (typeof GameManager !== 'undefined') {
-                GameManager.command("import", trimmedCode, true);
-            } else {
-                console.error("GameManager is not defined. Track import failed.");
-            }
-            
-            // Update the browser tab title
-            document.title = `${title} by ${author || 'Unknown'}`;
-            
-            console.log(`Track #${trackId} loaded successfully.`);
-        } else {
-            console.error("Track code was not provided by the server.");
-            // Optionally display an error to the user in the game container
-            const gameContainer = document.getElementById('game-container');
-            if(gameContainer) {
-                gameContainer.innerHTML = `<p style="color:red;">Error: Could not load track code for ID ${trackId}.</p>`;
-            }
-        }
-    }
-
-    // --- Immediately Use Server-Fetched Data ---
-    // Call the processing function with the injected track code and EJS variables
-    processTrackData(
-        serverCode,
-        "<%= track.name %>",      // Name/Title fetched by server
-        "<%= track.authors %>",   // Author fetched by server
-        "" // Description is not currently fetched/passed by server
-    );
+    GameManager.command("import", trackCode, true);
+    GameSettings.trackName = "<%= track.name %>";
+    GameSettings.id = "<%= track.id %>";
+    GameSettings.type = "<%= track.type %>";
+    GameSettings.code = trackCode
     </script>
 
 </body>

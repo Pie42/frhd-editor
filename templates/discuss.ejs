@@ -101,9 +101,15 @@
 } 
     </style>
 
+<% 
+const primaryThumbnailSrc = track.thumbnail || `data/bhr/thumbnails/default.png`;
+%>
+
+
+
+
 <div id="now-playing" style="position: relative;">
-    <img id="thumbnail-img" src="/data/thumbnails/<%= track.id %>.png" alt="<%= track.name %>">
-    
+<img id="thumbnail-img" src="<%= primaryThumbnailSrc %>" alt="<%= track.name %>">    
     <div style="
         position:absolute;
         top:10px;
@@ -161,17 +167,39 @@ blockquote span{
   font-style: normal;
   font-weight: bold;
   margin-top:1em;
-}</style>
+}
 
+#details {
+    font-size: 10px;
+  }
+</style>
+
+<% if (!track.description || track.description.trim().length === 0) { %>
+<style>
+  #details {
+    display: none;
+  }
+  #description {
+    display: none;
+  }
+</style>
+<% } %>
+
+<div id="description">
 <blockquote><%= track.description %></blockquote>
-<p>published: <%= track.published %>
+</div>
+
+<div id="details">
+<p><span style="text-decoration: underline">track details</span>
+<br>published: <%= track.published %>
 <br>size: <%= track.size %></p>
+</div>
 
 <div id="comments-container">
 <script async src="embed.js" type="module"></script>
 <hyvor-talk-comments
     website-id="14106"
-    page-id="<%= track.id %>" settings='{
+    page-id="<%= track.pageId %>" settings='{
     "custom_css":"#app { font-size: 14px }",
     "profiles": {
         "pictures": true
