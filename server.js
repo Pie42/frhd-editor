@@ -138,7 +138,7 @@ app.get('/discuss.html', async (req, res) => {
     const { id: rawCombinedId } = req.query; 
     
     if (!rawCombinedId) {
-        return res.status(400).send('Missing Discussion ID. Usage: /discuss.html?id=<type>-<id>');
+        return res.sendFile(path.join(__dirname, 'templates', 'discuss.html'));
     }
 
     const parts = rawCombinedId.split('-');

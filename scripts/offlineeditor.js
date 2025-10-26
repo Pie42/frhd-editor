@@ -32861,7 +32861,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = `discuss.html?id=${GameSettings.type}-${GameSettings.id}`;
+                iframe.src = GameSettings.type ? `discuss.html?id=${GameSettings.type}-${GameSettings.id}` : `discuss.html`;
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);
