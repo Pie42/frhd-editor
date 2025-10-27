@@ -135,7 +135,7 @@ app.use(express.static(path.join(__dirname, '/')));
 
 // A. discussion route: /discuss.html?id=<type>-<id>
 app.get('/discuss.html', async (req, res) => {
-    const { id: rawCombinedId } = req.query; 
+    const { id: rawCombinedId, json } = req.query;
     
     if (!rawCombinedId) {
         return res.sendFile(path.join(__dirname, 'templates', 'discuss.html'));
@@ -144,6 +144,9 @@ app.get('/discuss.html', async (req, res) => {
     const parts = rawCombinedId.split('-');
 
     if (parts.length < 2) {
+        if (json === 'true') {
+            return res.status(400).json({ error: 'Invalid Discussion ID format. Expected: <type>-<id>' });
+        }
         return res.status(400).send('Invalid Discussion ID format. Expected: <type>-<id>');
     }
     
@@ -250,6 +253,17 @@ app.get('/discuss.html', async (req, res) => {
         console.error(`Error fetching FRHD data for discussion page ID ${uniquePageId}:`, error);
         trackData.name = `FRHD Track #${numericTrackId} Discussion (Fetch Error)`;
     }
+
+    if (json === 'true') {
+        // send trackData as JSON
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            id: trackData.id,
+            type: trackData.type
+        });
+    }
 } else if (type === 'bhr') {
         const metadata = bhrMetadata.find(t => t.id === numericTrackId);
 
@@ -310,6 +324,16 @@ app.get('/discuss.html', async (req, res) => {
         }
     } 
 
+    if (req.query.json === 'true') {
+        // send data as json for hyvor
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type
+        });
+    }
+
     // render the discussion template with the track data
     const renderedHtml = discussTemplate({
         track: trackData
@@ -369,6 +393,17 @@ app.get('/frhd/:id', async (req, res) => {
         trackData = { id: trackId, name: `FRHD Track #${trackId} (Error)`, authors: 'System', code: '', type: 'frhd' };
     }
 
+    
+    if (req.query.json === 'true') {
+        // send data as json for hyvor
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type
+        });
+    }
+
     const renderedHtml = trackTemplate({
         trackId: trackId,
         trackType: 'frhd',
@@ -404,11 +439,22 @@ app.get('/bhr/:id', async (req, res) => {
         trackData.name = `BHR track #${trackId} error`;
     }
 
+    if (req.query.json === 'true') {
+        // send data as json for hyvor
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type
+        });
+    }
+
     const renderedHtml = trackTemplate({
         trackId: trackId,
         trackType: 'bhr',
         track: trackData
     });
+
 
     res.status(200).send(renderedHtml);
 });

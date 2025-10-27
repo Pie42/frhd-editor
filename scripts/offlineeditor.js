@@ -32877,6 +32877,9 @@
 
                   let proceedWithImport = true;
 
+                  const url = event.data.url;
+                  const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(bhr|frhd)\/\d+$/;
+
                   if (this.hasUnsavedChanges()) {
                     const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
                     proceedWithImport = window.confirm(confirmationMessage);
@@ -32884,6 +32887,10 @@
 
                   if (proceedWithImport === false) {
                     return;
+                  }
+
+                  if (validUrlPattern.test(url)) {
+                    window.location.href = event.data.url;
                   }
 
                   try {

@@ -16248,7 +16248,122 @@ function xc(n, e) {
       return;
   }
 
-  if (t.includes("freerider.app")) {
+
+if (t.includes("freerider.app") && !t.includes("#")) {
+
+    const trackUrlMatch = t.match(/freerider\.app\/(frhd|bhr)\/(\d+)/);
+    const hashMatch = t.match(/#(.+)$/); // Existing hash logic
+
+    let trackType = null;
+    let trackId = null;
+    let trackName = "Loading...";
+    let trackAuthor = "Unknown";
+    let imageUrl = "assets/images/default-track-thumbnail.png";
+
+    let isIdLink = false;
+    let discussId = null; // The ID parameter for the discuss.html route (e.g., 'frhd-123')
+
+    if (trackUrlMatch) {
+      trackType = trackUrlMatch[1];
+      trackId = trackUrlMatch[2];
+
+      discussId = `${trackType}-${trackId}`;
+
+      trackName = `${trackType.toUpperCase()} Track #${trackId}`;
+      imageUrl = `/data/${trackType}/thumbnails/${trackId}.png`;
+      isIdLink = true;
+
+    } else if (hashMatch) {
+      trackName = decodeURIComponent(hashMatch[1]);
+      imageUrl = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/768x250-v12.png`;
+
+    } else {
+      return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.style.cssText = `
+        position: relative; display: inline-block; border-radius: var(--ht-box-radius); 
+        overflow: hidden; box-shadow: var(--ht-box-shadow); white-space: normal; 
+        text-decoration: none; color: inherit; cursor: pointer;
+    `;
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = trackName;
+    img.style.width = "100%";
+    img.style.objectFit = "contain";
+    img.title = `${trackName}`;
+
+    wrapper.appendChild(img);
+
+    const overlay = document.createElement("div");
+    overlay.id = `track-overlay-${Date.now()}`;
+    overlay.style.cssText = `
+        position:absolute; top:10px; left:10px; color:white; background-color: rgba(0,0,0,0.5); 
+        padding:5px 10px; border-radius:4px; max-width:calc(100% - 20px); font-family:sans-serif; 
+        user-select: none; pointer-events: none; z-index: 10;
+    `;
+
+    overlay.innerHTML = `<strong>${trackName}</strong>`;
+    wrapper.appendChild(overlay);
+    e.appendChild(wrapper);
+
+
+    img.addEventListener("click", () => {
+      Rtt(t);
+    });
+
+
+    // fetch data for ID links using the /discuss.html route
+    if (isIdLink) {
+      const fetchUrl = `/discuss.html?id=${discussId}&json=true`;
+
+      fetch(fetchUrl)
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          let newTrackName = data.name || trackName;
+          let newImageUrl = data.thumbnail || imageUrl;
+          let newAuthor = data.authors || "Unknown";
+
+          if (newImageUrl && newImageUrl.startsWith('/') && !newImageUrl.startsWith('http')) {
+            newImageUrl = `https://freerider.app${newImageUrl}`;
+          }
+
+          if (overlay) {
+            overlay.innerHTML = `<strong>${newTrackName}</strong>`;
+            if (newAuthor && newAuthor !== "Unknown") {
+              overlay.innerHTML += ` <small>by ${newAuthor}</small>`;
+            }
+          }
+
+          img.src = newImageUrl;
+          img.alt = newTrackName;
+          img.title = `${newTrackName} by ${newAuthor}`;
+        })
+        .catch(error => {
+          console.warn(`Error fetching metadata for ${fetchUrl}. Using placeholder data.`, error);
+        });
+    } else {
+      fetch("assets/tracks/tracklist-data.json")
+        .then((res) => res.json())
+        .then((trackdata) => {
+          const match = trackdata.tracks.find((tr) => tr["track-name"] === trackName);
+          const title = match ? match["track-name"] : trackName;
+          img.title = `${title}`;
+        })
+        .catch(() => {
+          img.title = trackName;
+        });
+    }
+
+    return;
+  }
+
+      if (t.includes("freerider.app/")) {
 
   const trackNameMatch = t.match(/#(.+)$/);
   let trackName = trackNameMatch ? decodeURIComponent(trackNameMatch[1]) : "unknown";
@@ -16313,6 +16428,7 @@ function xc(n, e) {
   e.appendChild(wrapper);
   return;
 }
+
 
   if (t.includes("soundcloud.com")) {
     const trackUrl = encodeURIComponent(t);
