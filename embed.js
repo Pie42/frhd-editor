@@ -16326,7 +16326,7 @@ if (t.includes("freerider.app") && !t.includes("#")) {
         })
         .then(data => {
           let newTrackName = data.name || trackName;
-          let newImageUrl = data.thumbnail || imageUrl;
+          let newImageUrl = data.thumbnail || '/data/bhr/thumbnails/default.png';
           let newAuthor = data.authors || "Unknown";
 
           if (newImageUrl && newImageUrl.startsWith('/') && !newImageUrl.startsWith('http')) {
@@ -16334,10 +16334,20 @@ if (t.includes("freerider.app") && !t.includes("#")) {
           }
 
           if (overlay) {
-            overlay.innerHTML = `<strong>${newTrackName}</strong>`;
+            let html = `<strong>${newTrackName}</strong>`;
+    
             if (newAuthor && newAuthor !== "Unknown") {
-              overlay.innerHTML += ` <small>by ${newAuthor}</small>`;
+              const authorLinksHtml = newAuthor.split(', ').map(author => {
+                const trimmedAuthor = author.trim();
+                const encodedAuthor = encodeURIComponent(trimmedAuthor).toLowerCase();
+
+                return `<a href="/discuss.html?id=${encodedAuthor}" style="color:white; text-decoration:underline; pointer-events:auto;">${trimmedAuthor}</a>`;
+              }).join(', ');
+
+              html += ` <br><small>by ${authorLinksHtml}</small>`;
             }
+
+            overlay.innerHTML = html;
           }
 
           img.src = newImageUrl;
@@ -16346,6 +16356,18 @@ if (t.includes("freerider.app") && !t.includes("#")) {
         })
         .catch(error => {
           console.warn(`Error fetching metadata for ${fetchUrl}. Using placeholder data.`, error);
+
+          const img = document.getElementById('thumbnail-img');
+          const overlay = document.getElementById('overlay');
+
+          if (img) {
+            img.src = '/bhr/thumbnails/default.png';
+            img.alt = 'Error: Metadata Not Found';
+          }
+
+          if (overlay) {
+            overlay.innerHTML = '<strong>Metadata Load Error</strong>';
+          }
         });
     } else {
       fetch("assets/tracks/tracklist-data.json")
@@ -18482,10 +18504,10 @@ function J0() {
                           children: [
                             l
                               ? u(se, {
-                                  children: [u(G0, { user: o }), u(K0, {})],
+                                  children: [u(G0, { user: o }), u(Y0Y0, { user: o }), u(K0, {})],
                                 })
                               : null,
-                            s && !l && u(Mc, { user: o }),
+                            s && !l && u(Mc, { user: o }) && u(Y0Y0, { user: o }),
                           ],
                         }),
                       ],
@@ -18543,7 +18565,24 @@ function G0({ user: n }) {
     : u("a", {
         href: "https://hyvor.com/account",
         target: "_blank",
-        children: u(te, { scale: "medium", children: k(e, "account_my") }),
+        children: u(te, { scale: "medium", children: "Account" }),
+      });
+}
+function Y0Y0({ user: n }) {
+  const e = C();
+  return n.type !== "hyvor"
+    ? null
+    : u("a", {
+        //href: `https://freerider.app/u/${n.name}`,
+        target: "_blank",
+        onClick: (e) => {
+        e.preventDefault();
+        console.log(n)
+        //changePage(n.name);
+        const message = { action: "linkClicked", url: `https://freerider.app/u/${n.name}` };
+        window.parent.postMessage(message, "*");
+        },
+        children: u(te, { scale: "medium", children: "Gallery" }),
       });
 }
 function Mn(n, e) {

@@ -29,32 +29,18 @@
             const trackName = "<%= track.name %>";
             const copyButton = document.getElementById("copy-link-btn");
             
-            // 1. Handle Thumbnail Source Fallback (simulating part of the JS logic)
             const thumbnailImg = document.getElementById("thumbnail-img");
             if (thumbnailImg) {
-                // The thumbnail URL is hardcoded to /data/thumbnails/<%= track.id %>.png in the HTML below.
-                // We add an error handler to hide it if it doesn't exist, 
-                // which simulates the check your build script was performing.
                 thumbnailImg.onerror = function() {
-                    // Assuming your build script checked for existence, we just hide it 
-                    // if the server returns a 404 (or similar) when the page is loaded.
-                    // If you want to replace with a fallback image, set this.src = 'fallback/path.png';
                     this.style.display = 'none'; 
                     const nowPlayingDiv = document.getElementById("now-playing");
-                    // Ensure the now-playing div is still visible even if the image is gone.
                     if (nowPlayingDiv) nowPlayingDiv.style.display = "block";
                 };
-                
-                // If the thumbnail is known NOT to exist (based on your build script's check),
-                // you might conditionally hide the <img> tag directly in EJS for a cleaner result.
-                // Since EJS doesn't know the full existence status here, we rely on onerror/CSS.
             }
 
-            // 2. Handle Copy Link Button
             if (copyButton) {
-                // The URL logic from your JS: https://freerider.app/#${encodedTrackName}
                 const encodedTrackName = encodeURIComponent(trackName);
-                const finalTrackUrl = `https://freerider.app/#${encodedTrackName}`;
+                const finalTrackUrl = `https://freerider.app/<%= track.type %>/<%= track.id %>`;
                 
                 copyButton.addEventListener('click', async () => {
                     try {
@@ -69,8 +55,6 @@
                     }
                 });
             }
-
-            // Ensure the container is visible on page load (unless hidden by CSS)
             const nowPlayingDiv = document.getElementById("now-playing");
             if (nowPlayingDiv) nowPlayingDiv.style.display = "block";
         });
@@ -80,12 +64,10 @@
 
     <style>
 #now-playing {
-    /* Set to 'block' by the script above on load, but keep original styling for structure */
     display: none; 
     width: auto;
     position: relative;
 }
-/* Ensure the inner image element matches the styling */
 #now-playing img {
     height: 100%;
     width: 100%;
@@ -122,7 +104,15 @@ const primaryThumbnailSrc = track.thumbnail || `data/bhr/thumbnails/default.png`
         font-family:sans-serif;
     ">
         <strong><%= track.name %></strong>
-        <small><%= track.authors && track.authors !== 'unknown' ? ' by ' + track.authors : '' %></small>
+        <% if (track.authors) { %>
+        <small>
+            <%- track.authors && track.authors !== 'Unknown' && track.authors !== 'unknown' 
+                ? ' by ' + track.authors.split(', ').map(author => {
+                    const encodedAuthor = encodeURIComponent(author.trim()).toLowerCase();
+                    return `<a href="/discuss.html?id=${encodedAuthor}" style="color:white; text-decoration:underline;">${author.trim()}</a>`;
+                }).join(', ')
+                : '' 
+            %></small><% } %>
     </div>
     
     <div id="copy-link-btn" style="

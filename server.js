@@ -143,42 +143,69 @@ app.get('/discuss.html', async (req, res) => {
 
     const parts = rawCombinedId.split('-');
 
-    if (parts.length < 2) {
-        if (json === 'true') {
-            return res.status(400).json({ error: 'Invalid Discussion ID format. Expected: <type>-<id>' });
-        }
-        return res.status(400).send('Invalid Discussion ID format. Expected: <type>-<id>');
+    const uniquePageId = rawCombinedId;
+
+    let type = 'general';
+    let identifier = rawCombinedId;
+
+    if (parts.length >= 2) {
+        type = parts[0].toLowerCase();
+        identifier = parts.slice(1).join('-'); 
     }
-    
-    const type = parts[0].toLowerCase();
-    const trackIdString = parts.slice(1).join('-'); 
-
-    const allowedTypes = ['tracks', 'bhr', 'frhd'];
-    if (!allowedTypes.includes(type)) {
-        return res.status(404).send(`Invalid track type in ID: ${type}. Must be one of: ${allowedTypes.join(', ')}`);
-    }
-
-    const { isValid, id: numericTrackId } = validateId(trackIdString);
-
-    if (!isValid) {
-        return res.status(404).send('Invalid Discussion Track ID Range');
-    }
-
-    const uniquePageId = `${type}-${numericTrackId}`;
 
     // initialize
     let trackData = {
-        pageId: uniquePageId, // used for hyvor page-id
-        id: numericTrackId,
-        name: `${type.toUpperCase()} Track #${numericTrackId} Discussion`,
+        pageId: uniquePageId, 
+        id: identifier,
+        name: `${rawCombinedId}`,
         type: type, 
         authors: '',
         description: '',
         published: 'unknown date',
         size: 'unknown size',
         thumbnail: '',
-        sourceUrl: `/${type}/${numericTrackId}`
+        sourceUrl: ''
     };
+
+    // A. page discussion
+    if (type === 'general') {
+        const pageName = identifier;
+        
+        trackData.name = `${pageName}`;
+        trackData.authors = '';
+        trackData.description = '';
+        trackData.type = 'u'; // used for url: /u/ness
+        trackData.sourceUrl = `/data/pages/trackcodes/${pageName}.txt`;
+        const thumbnailPath = path.join(
+        __dirname, 
+        'data',
+        'pages',
+        'thumbnails', 
+        `${trackData.name}.png`
+    );
+        try {
+        await fsPromises.access(thumbnailPath); 
+        
+        trackData.thumbnail = `/data/pages/thumbnails/${pageName}.png`;
+        specificThumbnailFound = true;
+
+        if (!specificThumbnailFound) {
+            trackData.thumbnail = '/data/bhr/thumbnails/default.png'
+        }
+        
+        } catch (e) {
+        // file not found locally
+        }
+    } 
+    // B. track discussion (requires numeric ID for fetching)
+    else if (['frhd', 'bhr', 'tracks'].includes(type)) {
+
+    const numericTrackId = parseInt(identifier, 10);
+        
+        if (!isNaN(numericTrackId) && numericTrackId > 0) {
+            trackData.id = numericTrackId;
+            trackData.name = `${type.toUpperCase()} Track #${numericTrackId} Discussion`;
+            trackData.sourceUrl = `/${type}/${numericTrackId}`;
 
     // fetch data based on type
     if (type === 'frhd') {
@@ -323,13 +350,15 @@ app.get('/discuss.html', async (req, res) => {
             trackData.name = `BHR Track #${numericTrackId} Discussion (Not Found)`;
         }
     } 
+        }}
 
-    if (req.query.json === 'true') {
+    if (json === 'true') {
         // send data as json for hyvor
         return res.json({
             name: trackData.name,
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
+            id: trackData.id,
             type: trackData.type
         });
     }
@@ -465,6 +494,29 @@ app.get('/bhr/:id', async (req, res) => {
 // D. fr.app /tracks route: /tracks/:id
 app.get('/tracks/:id', (req, res) => {
 });*/
+
+// E. /u/:id route
+app.get('/u/:id', (req, res) => {
+    const userId = req.params.id;
+
+    // minimal
+    const trackData = { 
+        id: userId,
+        name: userId,
+        authors: '', 
+        code: '',
+        type: 'general' 
+    };
+
+    const renderedHtml = trackTemplate({
+        trackId: userId,
+        trackType: 'general',
+        track: trackData
+    });
+
+    console.log(`page for user: ${userId}`);
+    res.status(200).send(renderedHtml);
+});
 
 
 // server listener

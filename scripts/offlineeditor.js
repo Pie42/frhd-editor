@@ -366,7 +366,13 @@
                 t = this.props.data.toolOptions,
                 mobile = GameManager.game && (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")),
                 f = "";
-                var sidebar = GameSettings.sidebar;
+                var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
                 var width = sidebar ? "75%" : "100%";
                 var mediaWidth = sidebar ? "93.75%" : "125%";
                 var largeMediaWidth = sidebar ? "60%" : "80%";
@@ -2848,11 +2854,18 @@
                 GameManager.command("dialog", !1);
             },
             render: function () {
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
               var e = this.props.data.showDialog,
                 t = this.props.data.dialogOptions,
                 h = {},
                 f = "";
-                h.width = GameSettings.sidebar ? "75%" : "100%";
+                h.width = sidebar ? "75%" : "100%";
               switch (e) {
                 case "import":
                   f = n.createElement(r, null);
@@ -6268,7 +6281,13 @@
                 d = 48.6,
                 p = this.props.data.hideMenus,
                 fullscreen = GameSettings.editorFullscreen;
-              var sidebar = GameSettings.sidebar;
+                var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
               c.right = sidebar
                 ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
                 : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 800 ? "-5px" : "0"));
@@ -7568,7 +7587,13 @@
           f = n.createClass({
             displayName: "TopMenu",
             render: function () {
-              var sidebar = GameSettings.sidebar;
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
               var width = sidebar ? "75%" : "100%";
               var mediaWidth = sidebar ? "93.75%" : "125%";
               var largeMediaWidth = sidebar ? "60%" : "80%";
@@ -32700,11 +32725,22 @@
           r = n.createClass({
             displayName: "Sidebar",
             getInitialState: function () {
-              return { sidebar: false };
+              return { sidebar: true };
             },
+            componentDidMount: function () {
+              this.toggleIframe();
+              this.addImportListener();
+            },
             toggleSidebar: function () {
-              GameSettings.sidebar = !GameSettings.sidebar;
-              this.setState({ sidebar: GameSettings.sidebar });
+              if (typeof GameSettings !== 'undefined') {
+                GameSettings.sidebar = !(GameSettings.sidebar ?? true);
+              } else {
+
+              }
+
+              var newSidebarState = GameSettings.sidebar ?? false;
+
+              this.setState({ sidebar: newSidebarState });
               this.toggleIframe();
               this.addImportListener();
             },
@@ -32853,15 +32889,24 @@
             toggleIframe: function () {
               let iframe = document.getElementById("forumIframe");
 
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
+
+
               if (iframe) {
                 iframe.style.display =
-                  iframe.style.display === "none" && GameSettings.sidebar
+                  iframe.style.display === "none" && sidebar
                     ? "block"
                     : "none";
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = GameSettings.type ? `discuss.html?id=${GameSettings.type}-${GameSettings.id}` : `discuss.html`;
+                iframe.src = GameSettings.type ? (GameSettings.type === 'general' ? `discuss.html?id=${GameSettings.id}` : `discuss.html?id=${GameSettings.type}-${GameSettings.id}`) : `discuss.html`;
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);
@@ -32878,7 +32923,7 @@
                   let proceedWithImport = true;
 
                   const url = event.data.url;
-                  const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(bhr|frhd)\/\d+$/;
+                  const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(bhr|frhd|u)\/[\w-]+$/
 
                   if (this.hasUnsavedChanges()) {
                     const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
