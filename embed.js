@@ -18579,7 +18579,8 @@ function Y0Y0({ user: n }) {
         e.preventDefault();
         console.log(n)
         //changePage(n.name);
-        const message = { action: "linkClicked", url: `https://freerider.app/u/${n.name}` };
+        const username = n.name.toLowerCase();
+        const message = { action: "linkClicked", url: `https://freerider.app/u/${username}` };
         window.parent.postMessage(message, "*");
         },
         children: u(te, { scale: "medium", children: "Gallery" }),
