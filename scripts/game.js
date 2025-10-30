@@ -23802,10 +23802,12 @@
           }
           for (let _l = e.length; --_l >= 0;) {
             l = e[_l];
+            if (l.remove) continue;
             l.layer.show && g[l.layer.physicsLineColor].push(l);
           }
           for (let _l = s.length; --_l >= 0;) {
             l = s[_l];
+            if (l.remove) continue;
             l.layer.show && g[l.layer.sceneryLineColor].push(l);
           }
           this.drawLines(g, t, r);
