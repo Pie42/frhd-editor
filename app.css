@@ -1853,7 +1853,7 @@ html.fullscreen #main_page {
     margin-left: 5px
 }
 
-.bottomMenu-button:hover {
+.bottomMenu-button:hover:not(:has(.hover-events:hover)) {
     background: #CCC
 }
 
@@ -3191,4 +3191,32 @@ only screen and (min-device-pixel-ratio:3) {
     border-bottom: none;
     border-top: none;
     border-width: 1px;
+}
+
+div.layer-modal {
+    position: absolute;
+    bottom: 30px;
+    left: 0px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: #e2e2e2;
+    line-height: 3em;
+}
+
+span:has(div.layer-modal) {
+    position: relative;
+}
+
+div.layer-item {
+    padding-inline: 1em;
+}
+
+div.layer-item:hover {
+    background-color: #d2d2d2;
+}
+
+div.sideDivider {
+    border: 0.5px solid black;
+    width: 80%;
+    margin-inline: 10%;
 }

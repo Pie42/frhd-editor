@@ -23579,6 +23579,7 @@
           this.sceneryLineColor = this.track.game.mod.getVar("customColors")
           ? Q(this.track.game.mod.getVar("sceneryColor"))
           : this.settings.sceneryLineColor;
+          this.usesDefaultColors = true;
           this.physicsLines = new Set();
           this.sceneryLines = new Set();
           this.objects = new Set();
@@ -23588,11 +23589,46 @@
 
         toggle() {
           this.show = !this.show;
+          this.update();
+        }
+
+        update() {
+          this.doesUseDefaultColors();
           for (let i of this.sectors) {
             i.drawn && i.clear();
           }
           this.track.canvasPool.update();
-          //this.track.undraw();
+        }
+
+        doesUseDefaultColors() {
+          this.usesDefaultColors = (this.physicsLineColor == (this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor)) &&
+          (this.sceneryLineColor == (this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor));
+        }
+
+        resetColors() {
+          this.physicsLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor;
+          this.sceneryLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor;
+          this.update();
+        }
+
+        clear() {
+          for (let object of this.physicsLines) {
+            remove(object);
+          }
+          for (let object of this.sceneryLines) {
+            remove(object);
+          }
+          for (let object of this.objects) {
+            remove(object);
+          }
         }
       }
       class Ui {
@@ -23702,14 +23738,16 @@
             (this.powerupCanvasDrawn = !1);
         }
         erase(t, e, s) {
-          const i = [];
+          const i = [],
+            l = this.track.currentLayer,
+            r = this.track.settings.eraser.mode;
           if (s.physics)
-            for (const s of this.physicsLines) s.erase(t, e) && i.push(s);
+            for (const s of this.physicsLines) (r == "all" || s.layer == l) && s.erase(t, e) && i.push(s);
           if (s.scenery)
-            for (const s of this.sceneryLines) s.erase(t, e) && i.push(s);
+            for (const s of this.sceneryLines) (r == "all" || s.layer == l) && s.erase(t, e) && i.push(s);
           if (s.powerups)
             for (const s of this.powerups.all) {
-              const n = s.erase(t, e);
+              const n = (r == "all" || s.layer == l) && s.erase(t, e);
               n && i.push(...n);
             }
           return i;
@@ -24038,6 +24076,11 @@
             on.push(new Si(0, 0, 0, this)),
             on.push(new Li(0, 0, 0, this));
         }
+        createLayer() {
+          this.layers.push(new Layer(this));
+          this.layerIndex = this.layers.length - 1;
+          this.currentLayer.name = `Layer ${this.layerIndex}`;
+        }
         recachePowerups(t) {
           for (const e of on) e.recache(t);
         }
@@ -24258,7 +24301,7 @@
               n[o][a].addPowerup(s), s.addSectorReference(n[o][a]);
           }
           if (r == this.settings.drawSectorSize) {
-            s.layer.sectors.add(h);
+            s.layer.sectors.add(n[o][a]);
             n[o][a].layers.add(s.layer);
           }
           return (this.dirty = !0), h;
@@ -26852,6 +26895,7 @@
             set(t, e, s) {
               t !== s &&
                 (e && e.currentScene.track.undraw(),
+                e && e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors()),
                 t
                   ? document.head.appendChild(nr)
                   : document.head.removeChild(nr));
@@ -26867,6 +26911,7 @@
             default: [61, 0, 15],
             set(t, e) {
               e.currentScene.track.undraw();
+              e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
             },
           },
           sceneryColor: {
@@ -26874,6 +26919,7 @@
             default: [190, 169, 158],
             set(t, e) {
               e.currentScene.track.undraw();
+              e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
             },
           },
           backgroundColor: {
@@ -28591,9 +28637,11 @@ function load() {
       singleHover(mousePos) {
           let minDist = 1000,
               bestLine = undefined,
-              adjustedDist = 2 * HOVER_DIST / this.scene.camera.zoom;
+              adjustedDist = 2 * HOVER_DIST / this.scene.camera.zoom,
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           // selected doesn't exist on the track, so we have to check it separately
-          if (selected) {
+          if (selected && (mode == 'all' || layer == selected.layer)) {
               let dist = selected.p1 ?
                   linesdf(mousePos.sub(selectOffset), selected) :
                   pointsdf(mousePos.sub(selectOffset), selected);
@@ -28604,6 +28652,7 @@ function load() {
               }
           } else if (this.gamepad.isButtonDown("alt") && isSelectList) {
               for (let i of selectList) {
+                  if (mode != 'all' && layer != i.layer) continue;
                   let dist = i.p1 ?
                       linesdf(mousePos.sub(selectOffset), i) :
                       pointsdf(mousePos.sub(selectOffset), i);
@@ -28820,13 +28869,15 @@ function load() {
           let mousePos = this.mouse.touch.real,
               sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y],
               minDist = 1000,
-              bestLine = undefined;
+              bestLine = undefined,
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           if (sector == undefined) {
               return [minDist, bestLine];
           }
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist && i != tempSelect) {
@@ -28837,7 +28888,7 @@ function load() {
           }
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist) {
@@ -28848,7 +28899,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   let dist = pointsdf(mousePos, i);
                   if (dist < minDist) {
@@ -28863,7 +28914,9 @@ function load() {
       testSectorMulti(sectorPos, minVec, maxVec) {
           let sectorSize = this.scene.settings.drawSectorSize,
               sectorTrackPos = {x: sectorPos.x * sectorSize, y: sectorPos.y * sectorSize},
-              sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y];
+              sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y],
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           if (sector == undefined)
               return [];
           // see if we can just return the whole sector
@@ -28872,15 +28925,15 @@ function load() {
               maxVec.x >= sectorTrackPos.x + sectorSize &&
               maxVec.y >= sectorTrackPos.y + sectorSize) {
               hoverPhysicsList[sectorPos.x][sectorPos.y] = 
-                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove) : [])
-                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove) : []));
+                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : [])
+                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : []));
               return hoverPhysicsList[sectorPos.x][sectorPos.y]
-                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove) : []));
+                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : []));
           }
           let toReturn = [];
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -28888,7 +28941,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   if (pointrect(i, minVec, maxVec))
                       toReturn.push(i);
@@ -28897,7 +28950,7 @@ function load() {
           hoverPhysicsList[sectorPos.x][sectorPos.y] = [...toReturn];
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove)
+                  if (i.remove || (mode != 'all' && layer != i.layer))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -29309,7 +29362,7 @@ function load() {
                   moveAccumulator += moveSpeed;
                   if (!isSelectIntangible) {
                       isSelectIntangible = true;
-                      tempSelect?.forEach?.(i=>remove(i));
+                      tempSelect?.forEach?.(i => remove(i));
                       tempSelect = undefined;
                       remove(connected);
                   }
@@ -29490,6 +29543,8 @@ function load() {
       }
   });
 
+
+
   function _r(a, b) {
       let i = a.indexOf(b);
       i >= 0 && a.splice(i, 1);
@@ -29497,6 +29552,7 @@ function load() {
 
   function remove(object) {
       if (!object) return;
+      let scene = GameManager.game.currentScene;
       object.remove = true;
       // if you want something done (removing a powerup), you gotta do it yourself
       if (object.name) {
@@ -29529,7 +29585,8 @@ function load() {
 
   function recreate(object) {
       if (!object) return;
-      let newObject;
+      let newObject,
+          scene = GameManager.game.currentScene;
       if (object.p1) {
           let isPhysics = 'highlight' in object;
           if (isSelectList && (invert >> 1) & 1) isPhysics = !(invert & 1);
@@ -29539,6 +29596,7 @@ function load() {
           } else {
               newObject = scene.track.addSceneryLine(object.p1.x + selectOffset.x, object.p1.y + selectOffset.y, object.p2.x + selectOffset.x, object.p2.y + selectOffset.y);
           }
+          object.layer && (newObject.layer = object.layer);
       } else {
           object.x = object.oldPos.x + selectOffset.x;
           object.y = object.oldPos.y + selectOffset.y;
