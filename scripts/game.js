@@ -10223,9 +10223,11 @@
               return s && (e += " " + s.getCode(t)), e;
             }
             checkForConnectedLine(t, e) {
-              const s = t.physicsLines.indexOf(this);
-              if (s + 1 === t.physicsLines.length) return !1;
-              const i = t.physicsLines[s + 1];
+              // should give significant speedups
+              const sector = t.sectors.physicsSectors[Math.floor(e.x / t.settings.physicsSectorSize)][Math.floor(e.y / t.settings.physicsSectorSize)];
+              const s = sector.physicsLines.indexOf(this);
+              if (s + 1 === sector.physicsLines.length) return !1;
+              const i = sector.physicsLines[s + 1];
               if (t.scene.cleanCode) {
                   if (
                       (i.p1.x === e.x && i.p1.y === e.y && i.p2.x === this.p1.x && i.p2.y === this.p1.y) ||
@@ -10235,7 +10237,7 @@
                       return false;
                   }
               }
-              return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && i;
+              return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && sector.physicsLines[s].layer === i.layer && i;
             }
             addSectorReference(t) {
               this.sectors.push(t);
@@ -10344,9 +10346,11 @@
             return s && (e += " " + s.getCode(t)), e;
           }
           checkForConnectedLine(t, e) {
-            const s = t.sceneryLines.indexOf(this);
-            if (s + 1 === t.sceneryLines.length) return !1;
-            const i = t.sceneryLines[s + 1];
+            // should give significant speedups
+            let sector = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)][Math.floor(e.y / t.settings.drawSectorSize)];
+            const s = sector.sceneryLines.indexOf(this);
+            if (s + 1 === sector.sceneryLines.length) return !1;
+            const i = sector.sceneryLines[s + 1];
             if (t.scene.cleanCode) {
                 if (
                     (i.p1.x === e.x && i.p1.y === e.y && i.p2.x === this.p1.x && i.p2.y === this.p1.y) ||
@@ -10356,7 +10360,7 @@
                     return false;
                 }
             }
-            return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && i;
+            return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && sector.sceneryLines[s].layer === i.layer && i;
           }
           erase(t, e) {
             let s = !1;
@@ -23630,6 +23634,109 @@
             remove(object);
           }
         }
+
+        fixColor(c) {
+          if (/^rgba?/.test(c)) {
+            let d = c.match(/\((\d+), ?(\d+), ?(\d+)/);
+            return `#${('0' + d[1].toString(16)).slice(-2)}${('0' + d[2].toString(16)).slice(-2)}${('0' + d[3].toString(16)).slice(-2)}`;
+          }
+          return /^#[0-9A-Fa-f]{3}$/.test(c) ? c.replaceAll(/([0-9A-Fa-f])/g, '$1$1') : c;
+        }
+
+        getCode() {
+          const t = this.objects,
+            e = this.physicsLines,
+            s = this.sceneryLines;
+          let i = "",
+            n = !1;
+          let toReturn = {
+            name: this.name,
+            show: this.show,
+            defaultColors: this.usesDefaultColors
+          };
+
+          if (!this.usesDefaultColors) {
+            toReturn['physColor'] = this.fixColor(this.physicsLineColor);
+            toReturn['scenColor'] = this.fixColor(this.sceneryLineColor);
+          }
+        
+          const uniquePhysicsLines = new Set();
+          const uniqueSceneryLines = new Set();
+          const uniquePowerups = new Set();
+        
+          for (const t of e) {
+            if (!t.recorded && t.remove === 0) {
+              const code = (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32) + " " + t.getCode(this.track);
+              const codeReversed = t.getCode(this.track) + " " + (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32);
+              if (!this.scene.cleanCode || (!uniquePhysicsLines.has(code) && !uniquePhysicsLines.has(codeReversed))) {
+                uniquePhysicsLines.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          for (const t of e) t.recorded = !1;
+        
+          i += "#";
+          n = !1;
+        
+          for (const t of s) {
+            if (!t.recorded && t.remove === 0) {
+              const code = (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32) + " " + t.getCode(this.track);
+              const codeReversed = t.getCode(this.track) + " " + (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32);
+              if (!this.scene.cleanCode || (!uniqueSceneryLines.has(code) && !uniqueSceneryLines.has(codeReversed))) {
+                uniqueSceneryLines.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          for (const t of s) t.recorded = !1;
+        
+          i += "#";
+          n = !1;
+        
+          for (const e of t) {
+            if (e.remove === 0) {
+              const code = e.getCode();
+              if (code && (!this.scene.cleanCode || !uniquePowerups.has(code))) {
+                uniquePowerups.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          toReturn.code = i;
+        
+          return toReturn;
+        }
+
+        static import(l, t) {
+          let layer = new Layer(t);
+          layer.name = l.name;
+          layer.show = l.show;
+          layer.usesDefaultColors = l.defaultColors;
+          if (!l.defaultColors) {
+            layer.physicsLineColor = l.physColor;
+            layer.sceneryLineColor = l.scenColor;
+          }
+
+          t.layerIndex = t.layers.push(layer) - 1;
+
+          let code = l.code,
+            [physics, scenery, objects] = code.split('#');
+          if (physics)
+            t.addLines(physics.split(','), t.addPhysicsLine.bind(t));
+          if (scenery)
+            t.addLines(scenery.split(','), t.addSceneryLine.bind(t));
+          if (objects)
+            t.addPowerups(objects.split(','));
+
+          return layer;
+        }
       }
       class Ui {
         constructor(t, e, s) {
@@ -24087,6 +24194,14 @@
           for (const e of on) e.recache(t);
         }
         read(t) {
+          try {
+            let layers = JSON.parse(t);
+            this.layers.shift();
+            for (let i of layers) {
+              Layer.import(i, this);
+            }
+            return;
+          } catch {};
           const e = t.split("#"),
             s = e[0].split(",");
           let i,
@@ -24349,8 +24464,15 @@
               (i.sector.powerupCanvasDrawn = !1);
           }
         }
-        getCode() {
+        getCode(flat = false) {
           this.cleanTrack();
+          if (!flat && this.layers.length > 1) {
+            let layers = [];
+            for (let i of this.layers) {
+              layers.push(i.getCode());
+            }
+            return JSON.stringify(layers);
+          }
           const t = this.powerups,
             e = this.physicsLines,
             s = this.sceneryLines;
@@ -25044,8 +25166,8 @@
             this.drawInputDisplay();
             this.drawGameData();
         }
-        trackData() {
-          this.trackcode = GameSettings.object ? this.getObjectCode() : this.track.getCode();
+        trackData(code = '') {
+          this.trackcode = GameSettings.object ? this.getObjectCode() : (code || this.track.getCode(true));
           let trackSize = new Blob([this.trackcode]).size / 1024;
           trackSize = trackSize.toFixed(2);
         
@@ -25315,10 +25437,29 @@
           (this.state.playing = !1), (this.state.showDialog = t);
         }
         getTrackCode() {
-          const trackData = this.trackData();
+          const code = this.track.getCode();
+          const trackData = this.trackData(
+              this.track.layers.length > 1
+                  ? JSON.parse(code)
+                        .reduce(
+                            (a, b, n) => {
+                                let c = b.code.split('#');
+                                return [
+                                    a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
+                                    a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
+                                    a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
+                                ];
+                            },
+                            ['', '', '']
+                        )
+                        .join('#')
+                  : code
+          );
+          this.trackcode = code;
+          console.log(code);
           (this.state.dialogOptions = {}),
             (this.state.dialogOptions.verified = this.verified),
-            (this.state.dialogOptions.code = this.track.getCode()),
+            (this.state.dialogOptions.code = code),
             (this.state.dialogOptions.physicsLineCount = trackData.physicsLineCount),
             (this.state.dialogOptions.sceneryLineCount = trackData.sceneryLineCount),
             (this.state.dialogOptions.powerupCounts = trackData.powerupCounts),

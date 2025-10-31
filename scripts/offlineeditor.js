@@ -3204,6 +3204,11 @@
           o = e("../utils/filesaver").saveAs,
           i = n.createClass({
             displayName: "ExportDialog",
+            getInitialState: function () {
+              return {
+                flat: false,
+              };
+            },
             closeDialog: function () {
               "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
@@ -3281,6 +3286,27 @@
             selectAllText: function () {
               var e = this.refs.code.getDOMNode();
               e.focus(), e.select();
+            },
+            flattenTrack: function () {
+              var e = this.props.options;
+              if (!this.state.flat) {
+                GameManager.game.currentScene.trackcode = JSON.parse(e.code)
+                .reduce(
+                    (a, b, n) => {
+                        let c = b.code.split('#');
+                        return [
+                            a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
+                            a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
+                            a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
+                        ];
+                    },
+                    ['', '', '']
+                )
+                .join('#');
+              } else {
+                GameManager.game.currentScene.trackcode = e.code;
+              }
+              this.setState({flat: !this.state.flat});
             },
             render: function () {
               var e = this.props.options,
@@ -3418,6 +3444,16 @@
                       },
                       "Clean Track"
                     ),
+                    GameManager?.game?.currentScene?.track?.layers?.length > 1 && this.fileSaverSupport ? n.createElement(
+                      "button",
+                      {
+                        className:
+                          "primary-button primary-button-blue float-right",
+                        onClick: this.flattenTrack,
+                        style: {marginLeft: '5px'}
+                      },
+                      this.state.flat ? "Unflatten" : "Flatten"
+                    ) : null,
                     r
                   )
                 )
