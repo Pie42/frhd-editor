@@ -6156,7 +6156,7 @@
                     ),
                     n.createElement(
                       "div",
-                      { className: R, onClick: _ => this.setMode("layer") },
+                      { className: R, onClick: _ => this.setMode("layer"), title: 'current layer' },
                       n.createElement("span", {
                         className:
                           "editorgui_icons editorgui_icons-icon_layer",
@@ -6164,7 +6164,7 @@
                     ),
                     n.createElement(
                       "div",
-                      { className: O, onClick: _ => this.setMode("all") },
+                      { className: O, onClick: _ => this.setMode("all"), title: 'all layers' },
                       n.createElement("span", {
                         className:
                           "editorgui_icons editorgui_icons-icon_all",
