@@ -2314,7 +2314,7 @@ class eu {
     G(this, "client", null);
     (this.context = e),
       M(this.context, "realtime.on") &&
-        (Bi(() => import("https://talk.hyvor.com/embed/pusher.js").then((t) => t.p), []).then((t) => {
+        (Bi(() => import("https://talk.hyvor.com/embed/comments-pusher.js").then((t) => t.p), []).then((t) => {
           const r = Ol.get().services.pusher;
           (this.client = new t.default(r.app_key, {
             wsHost: r.host,
@@ -16169,7 +16169,7 @@ function Rtt(trackUrl) {
 function xc(n, e) {
   const t = e.dataset.url;
   const bookmark = e.querySelector("a.bookmark");
-  if (bookmark && !t.includes("freeriderhd.com") && !t.includes("freerider.app") && !t.includes("gofile.io") && !t.includes("soundcloud.com") && !t.includes("spotify.com") && !t.includes("bandcamp.com")) {
+  if (bookmark && !t.includes("freeriderhd.com") && !t.includes("frhd.co") && !t.includes("freerider.app") && !t.includes("soundcloud.com") && !t.includes("spotify.com") && !t.includes("bandcamp.com")) {
     return;
   }
   const i = document.createElement("iframe");
@@ -16994,11 +16994,16 @@ function p0() {
   );
 }
 function m0() {
-  const n = b.use("user");
-  if (n) {
+  const n = b.use("user")
+  const page = b.use("page");
+  const name = n.name;
+  const identifier = page.identifier.toLowerCase();
+  console.log(page)
+  if (name === identifier) {
     window.parent.postMessage({
       action: 'loggedIn',
-      user: n,
+      user: name,
+      page: page,
     }, '*'); 
     return u("div", { class: "editor-user", children: u($e, { user: n }) });
   }
@@ -17684,8 +17689,6 @@ function wr({ id: n, replies: e = null, canReply: t, onReply: r }) {
     if (link) {
         const linkUrl = link.getAttribute("href");
         const linkName = link.textContent;
-        const url = new URL(linkUrl);
-        const hostname = url.hostname;
         if (
             linkUrl &&
             (linkUrl.startsWith("https://freerider.app") ||
@@ -17693,8 +17696,7 @@ function wr({ id: n, replies: e = null, canReply: t, onReply: r }) {
              linkUrl.startsWith("https://freeriderhd.com") ||
              linkUrl.startsWith("https://www.freeriderhd.com") ||
              linkUrl.startsWith("https://frhd.co") ||
-             linkUrl.startsWith("https://www.frhd.co")) ||
-             hostname.endsWith(".gofile.io")
+             linkUrl.startsWith("https://www.frhd.co"))
         ) 
         message = { action: "linkClicked", url: linkUrl, name: linkName};
       }
@@ -17751,8 +17753,6 @@ function wr({ id: n, replies: e = null, canReply: t, onReply: r }) {
     const link = tempDiv.querySelector("a[href]");
     if (link) {
         const linkUrl = link.getAttribute("href");
-        const url = new URL(linkUrl);
-        const hostname = url.hostname;
         if (
             linkUrl &&
             (linkUrl.startsWith("https://freerider.app") ||
@@ -17760,8 +17760,7 @@ function wr({ id: n, replies: e = null, canReply: t, onReply: r }) {
              linkUrl.startsWith("https://freeriderhd.com") ||
              linkUrl.startsWith("https://www.freeriderhd.com") ||
              linkUrl.startsWith("https://frhd.co") ||
-             linkUrl.startsWith("https://www.frhd.co")) ||
-             hostname.endsWith(".gofile.io")
+             linkUrl.startsWith("https://www.frhd.co"))
         ) {
             return true;
         }
