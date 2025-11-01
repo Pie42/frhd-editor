@@ -291,6 +291,18 @@ async function saveGlobalTrackData(data) {
     await fsPromises.writeFile(GLOBAL_METADATA_PATH, JSON.stringify(data, null, 2), 'utf8');
 }
 
+async function ensurePersistentRootExists() {
+    try {
+        await fsPromises.mkdir(PERSISTENT_ROOT, { recursive: true });
+        console.log(`[Init] Ensured persistent root directory exists: ${PERSISTENT_ROOT}`);
+    } catch (e) {
+        if (e.code !== 'EEXIST') {
+            console.error(`ERROR: Could not create persistent root directory ${PERSISTENT_ROOT}: ${e.message}`);
+            throw e; 
+        }
+    }
+}
+
 app.use(express.static(path.join(__dirname, '/')));
 
 async function initializeUserProfile(userId) {
@@ -324,7 +336,7 @@ async function initializeUserProfile(userId) {
     try {
         globalData.push(newProfileData);
         await saveGlobalTrackData(globalData);
-        
+
         const targetDir = path.join(PERSISTENT_ROOT, sanitizedUserId);
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
@@ -894,10 +906,20 @@ app.post('/api/upload-track', async (req, res) => {
     }
 });
 
-// server listener
-app.listen(PORT, () => {
-    console.log(`Minimal server running on http://localhost:${PORT}`);
-    console.log('Test paths:');
-    console.log(`- http://localhost:${PORT}/frhd/977281 (server-side fetch)`);
-    console.log(`- http://localhost:${PORT}/bhr/10309 (server-side fetch)`);
-});
+async function startServer() {
+    try {
+        await ensurePersistentRootExists();
+    } catch (error) {
+        console.error("Failed to initialize server due to critical file system error:", error);
+        process.exit(1); 
+    }
+
+    app.listen(PORT, () => {
+        console.log(`Minimal server running on http://localhost:${PORT}`);
+        console.log('Test paths:');
+        console.log(`- http://localhost:${PORT}/frhd/977281 (server-side fetch)`);
+        console.log(`- http://localhost:${PORT}/bhr/10309 (server-side fetch)`);
+    });
+}
+
+startServer();
