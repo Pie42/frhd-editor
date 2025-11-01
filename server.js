@@ -886,7 +886,7 @@ app.post('/api/upload-track', async (req, res) => {
         await saveUserTracks(sanitizedPagePath, tracks);
 
         let permalink;
-        const basePermalink = `https://freerider.app/u/${sanitizedPagePath}`;
+        const basePermalink = `https://freerider.app/u${sanitizedPagePath}`;
 
         if (trackSlug === 'page') { 
             permalink = basePermalink; // freerider.app/u/ness
@@ -897,7 +897,7 @@ app.post('/api/upload-track', async (req, res) => {
         res.status(200).json({ 
             trackUrl: trackUrl,
             imageUrl: imageUrl,
-            permalink: `https://freerider.app/u/${sanitizedPagePath}/${trackSlug}` 
+            permalink: `https://freerider.app/u${sanitizedPagePath}/${trackSlug}` 
         });
 
     } catch (err) {
