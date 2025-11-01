@@ -273,7 +273,75 @@ async function saveUserTracks(sanitizedPagePath, tracks) {
     }
 }
 
+const GLOBAL_METADATA_PATH = path.join(PERSISTENT_ROOT, PAGE_METADATA_FILE);
+
+async function loadGlobalTrackData() {
+    try {
+        const data = await fsPromises.readFile(GLOBAL_METADATA_PATH, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT' || e instanceof SyntaxError) {
+            return [];
+        }
+        throw e;
+    }
+}
+
+async function saveGlobalTrackData(data) {
+    await fsPromises.writeFile(GLOBAL_METADATA_PATH, JSON.stringify(data, null, 2), 'utf8');
+}
+
 app.use(express.static(path.join(__dirname, '/')));
+
+async function initializeUserProfile(userId) {
+    const sanitizedUserId = sanitizePath(userId);
+    if (!sanitizedUserId || sanitizedUserId !== userId) {
+        console.error(`[Init Profile] Sanitization failed for userId: ${userId}`);
+        return false;
+    }
+
+    const globalData = await loadGlobalTrackData();
+    const existingEntry = globalData.find(t => t.slug === sanitizedUserId);
+
+    if (existingEntry) {
+        return true;
+    }
+
+    console.log(`[Init Profile] Creating initial profile entry for '${userId}'.`);
+    
+    const newProfileData = {
+        slug: userId,
+        name: userId,
+        authors: userId, 
+        trackUrl: `/data/page/${userId}/page.txt`,
+        imageUrl: `/data/page/${userId}/page.png`,
+        metadata: {
+            description: `The personal gallery page for user ${userId}.`
+        },
+        uploaded_at: new Date().toISOString()
+    };
+    
+    try {
+        globalData.push(newProfileData);
+        await saveGlobalTrackData(globalData);
+        
+        const targetDir = path.join(PERSISTENT_ROOT, sanitizedUserId);
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+        }
+        
+        const rootFilePath = path.join(targetDir, 'page.txt');
+        if (!fs.existsSync(rootFilePath)) {
+            fs.writeFileSync(rootFilePath, '...');
+        }
+
+        console.log(`[Init Profile] Successfully created initial profile entry for '${userId}'.`);
+        return true;
+    } catch (err) {
+        console.error(`[Init Profile] Error initializing profile data: ${err.message}`);
+        return false;
+    }
+}
 
 // dynamic routes
 
@@ -308,6 +376,8 @@ app.get('/discuss.html', async (req, res) => {
     if (parts.length === 1) {
         const userId = rawCombinedId;
 
+        await initializeUserProfile(userId); 
+
         fetchedData = await getUserTrackData(userId); 
 
         if (fetchedData) {
@@ -320,7 +390,14 @@ app.get('/discuss.html', async (req, res) => {
             };
             trackData.thumbnail = fetchedData.thumbnail || trackData.thumbnail;
         } else {
-             trackData.name = `User Page: ${userId} (Not Found)`;
+            trackData = {
+                ...trackData,
+                ...fetchedData,
+                type: 'u',
+                name: `${fetchedData.name || userId} gallery`,
+                sourceUrl: `/u/${userId}`
+            };
+            trackData.thumbnail = fetchedData.thumbnail || trackData.thumbnail;
         }
     } 
     else if (parts.length >= 3 && parts[0].toLowerCase() === 'page') {
@@ -653,6 +730,7 @@ app.get('/u/:id', async (req, res) => {
     const trackSlug = false;
 
     try {
+        await initializeUserProfile(userId);
         const trackData = await getUserTrackData(userId, trackSlug);
 
         if (!trackData) {
