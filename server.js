@@ -885,20 +885,21 @@ app.post('/api/upload-track', async (req, res) => {
 
         await saveUserTracks(sanitizedPagePath, tracks);
 
-        let permalink;
-        const basePermalink = `https://freerider.app/u${sanitizedPagePath}`;
+        const userSegment = sanitizedPagePath ? `/${sanitizedPagePath}` : '';
+        const basePermalink = `https://freerider.app/u${userSegment}`;
 
-        if (trackSlug === 'page') { 
-            permalink = basePermalink; // freerider.app/u/ness
-        } else {
-            permalink = `${basePermalink}/${trackSlug}`; // freerider.app/u/ness/toronto
-        }
-        
-        res.status(200).json({ 
-            trackUrl: trackUrl,
-            imageUrl: imageUrl,
-            permalink: `https://freerider.app/u${sanitizedPagePath}/${trackSlug}` 
-        });
+        let permalink;
+        if (trackSlug === 'page') { 
+            permalink = basePermalink; // freerider.app/u/ness
+        } else {
+            permalink = `${basePermalink}/${trackSlug}`; // freerider.app/u/ness/toronto
+        }
+        
+        res.status(200).json({ 
+            trackUrl: trackUrl,
+            imageUrl: imageUrl,
+            permalink: permalink
+        });
 
     } catch (err) {
         console.error("Server-side file writing error:", err);
