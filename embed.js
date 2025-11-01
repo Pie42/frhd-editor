@@ -16994,7 +16994,7 @@ function p0() {
   );
 }
 function m0() {
-  const n = b.use("user")
+  const n = b.use("user");
   const page = b.use("page");
   const name = n.name;
   const identifier = page.identifier.toLowerCase();
@@ -17004,7 +17004,8 @@ function m0() {
       action: 'loggedIn',
       user: name,
       page: page,
-    }, '*'); 
+    }, '*');}
+    if (n) {
     return u("div", { class: "editor-user", children: u($e, { user: n }) });
   }
   else {

@@ -104,16 +104,18 @@ const primaryThumbnailSrc = track.thumbnail || `data/bhr/thumbnails/default.png`
         font-family:sans-serif;
     ">
         <strong><%= track.name %></strong>
-        <% if (track.type === 'user') { %>
-        <% if (track.authors) { %>
-        <small>
-            <%- track.authors && track.authors !== 'Unknown' && track.authors !== 'unknown' 
-                ? ' by ' + track.authors.split(', ').map(author => {
-                    const encodedAuthor = encodeURIComponent(author.trim()).toLowerCase();
-                    return `<a href="/discuss.html?id=${encodedAuthor}" style="color:white; text-decoration:underline;">${author.trim()}</a>`;
-                }).join(', ')
-                : '' 
-            %></small><% } %><% } %>
+        <% if (track.type!=='u') { %>
+            <% if (track.authors) { %>
+                <small>
+                    <%- track.authors && track.authors !=='Unknown' && track.authors !=='unknown' ? ' by ' +
+                        track.authors.split(', ').map(author => {
+                        const encodedAuthor = encodeURIComponent(author.trim()).toLowerCase();
+                        return `<a href="/u/${encodedAuthor}" style="color:white; text-decoration:underline;">${author.trim()}</a>`;
+                    }).join(' , ')
+                    : '' 
+                %></small>
+            <% } %>
+        <% } %>
     </div>
     
     <div id="copy-link-btn" style="
