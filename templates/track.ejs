@@ -38,15 +38,23 @@
 
     <script type="text/plain" id="trackcode"><%= track.code %></script>
     
-    <script>
+    <script>   
     const trackCode = document.getElementById('trackcode').textContent;
 
     GameManager.command("import", trackCode, true);
     GameSettings.trackName = "<%= track.name %>";
     GameSettings.id = "<%= track.id %>";
     GameSettings.type = "<%= track.type %>";
+    GameSettings.userId = "<%= track.userId %>";
+    GameSettings.pageName = "<%= track.pageName %>";
     GameSettings.code = trackCode
-    </script>
 
+    window.addEventListener("message", function (event) {
+        if (event.data.action === "loggedIn") {
+            GameSettings.beta = true;
+            GameSettings.user = event.data.user;
+        }
+    })
+    </script>
 </body>
 </html>
