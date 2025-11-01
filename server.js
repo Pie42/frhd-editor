@@ -8,6 +8,13 @@ const ejs = require('ejs');
 
 const PORT = 3000;
 const MAX_ID = 1100000;
+const PAGE_METADATA_FILE = 'page.json';
+const PERSISTENT_ROOT = '/var/data/page';
+
+app.use(express.static(path.join(__dirname, '/')));
+app.use('/data/page', express.static(PERSISTENT_ROOT));
+
+app.use(express.json({ limit: '20mb' }));
 
 const trackTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/track.ejs'), 'utf8'));
 const discussTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/discuss.ejs'), 'utf8'));
@@ -129,6 +136,143 @@ async function getBhrTrackData(trackId) {
     };
 }
 
+function sanitizePath(inputPath) {
+    if (!inputPath) return '';
+    let cleanPath = path.normalize(inputPath).replace(/^(\.\.(\/|\\|$))+/, '');
+    cleanPath = cleanPath.replace(/^(\/|\\)|(\/|\\)$/g, '');
+    return cleanPath;
+}
+
+async function getUserTrackData(userId) {
+    const sanitizedUserId = sanitizePath(userId);
+    
+    if (!sanitizedUserId || sanitizedUserId !== userId) {
+        return null;
+    }
+
+    const globalMetadataPath = path.join(PERSISTENT_ROOT, PAGE_METADATA_FILE);
+    let tracks = [];
+    try {
+        const data = await fsPromises.readFile(globalMetadataPath, 'utf8');
+        tracks = JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            console.error(`[Global Lookup] Global metadata file NOT FOUND at ${globalMetadataPath}.`);
+        } else {
+             console.error(`[Global Lookup] Error loading or parsing metadata:`, e);
+        }
+        return null;
+    }
+    
+    const metadata = tracks.find(t => t.slug === sanitizedUserId);
+
+    if (!metadata) {
+        console.log(`[Global Lookup] Slug '${sanitizedUserId}' not found in global metadata.`);
+        return null;
+    }
+    
+    const trackFilePath = path.join(PERSISTENT_ROOT, `${sanitizedUserId}.txt`);
+    let trackCode = '';
+
+    try {
+        trackCode = await fsPromises.readFile(trackFilePath, 'utf8');
+    } catch (e) {
+        console.error(`[Global Lookup] Error reading track file for ${sanitizedUserId}:`, e);
+    }
+    
+    return {
+        id: sanitizedUserId,
+        name: metadata.name,
+        authors: metadata.authors,
+        code: trackCode.trim(),
+        type: 'user',
+        size: formatSize(trackCode.length),
+        description: metadata.metadata?.description || '',
+        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
+        thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
+        sourceUrl: metadata.trackUrl
+    };
+}
+
+async function getPageTrackData(userId, trackSlug) {
+    const sanitizedUserId = sanitizePath(userId);
+    
+    if (!sanitizedUserId || sanitizedUserId !== userId) {
+        return null;
+    }
+
+    const globalMetadataPath = path.join(PERSISTENT_ROOT, sanitizedUserId, PAGE_METADATA_FILE);
+    let tracks = [];
+    try {
+        const data = await fsPromises.readFile(globalMetadataPath, 'utf8');
+        tracks = JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            console.error(`[Global Lookup] Global metadata file NOT FOUND at ${globalMetadataPath}.`);
+        } else {
+             console.error(`[Global Lookup] Error loading or parsing metadata:`, e);
+        }
+        return null;
+    }
+    
+    const metadata = tracks.find(t => t.slug === trackSlug);
+
+    if (!metadata) {
+        console.log(`[Global Lookup] Slug '${sanitizedUserId}' not found in global metadata.`);
+        return null;
+    }
+    
+    const trackFilePath = path.join(PERSISTENT_ROOT, sanitizedUserId, `${trackSlug}.txt`);
+    let trackCode = '';
+
+    try {
+        trackCode = await fsPromises.readFile(trackFilePath, 'utf8');
+    } catch (e) {
+        console.error(`[Global Lookup] Error reading track file for ${sanitizedUserId}:`, e);
+    }
+    
+    return {
+        id: sanitizedUserId,
+        name: metadata.name,
+        authors: metadata.authors,
+        code: trackCode.trim(),
+        type: 'page',
+        size: formatSize(trackCode.length),
+        description: metadata.metadata?.description || '',
+        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
+        thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
+        sourceUrl: metadata.trackUrl,
+        pageName: metadata.name
+    };
+}
+
+async function loadUserTracks(sanitizedPagePath) {
+    const metadataPath = path.join(PERSISTENT_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
+    try {
+        const data = await fsPromises.readFile(metadataPath, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            return [];
+        }
+        console.error(`Error loading user track metadata for ${sanitizedPagePath}:`, e);
+        return [];
+    }
+}
+
+async function saveUserTracks(sanitizedPagePath, tracks) {
+    const metadataPath = path.join(PERSISTENT_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
+    try {
+        const targetDir = path.join(PERSISTENT_ROOT, sanitizedPagePath);
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+        }
+        await fsPromises.writeFile(metadataPath, JSON.stringify(tracks, null, 2), 'utf8');
+    } catch (e) {
+        console.error(`Error saving user track metadata for ${sanitizedPagePath}:`, e);
+    }
+}
+
 app.use(express.static(path.join(__dirname, '/')));
 
 // dynamic routes
@@ -142,61 +286,69 @@ app.get('/discuss.html', async (req, res) => {
     }
 
     const parts = rawCombinedId.split('-');
-
     const uniquePageId = rawCombinedId;
 
-    let type = 'general';
-    let identifier = rawCombinedId;
-
-    if (parts.length >= 2) {
-        type = parts[0].toLowerCase();
-        identifier = parts.slice(1).join('-'); 
-    }
-
-    // initialize
+    let type = parts.length > 1 ? parts[0].toLowerCase() : 'u';
+    let identifier = parts.length > 1 ? parts.slice(1).join('-') : rawCombinedId; 
     let trackData = {
         pageId: uniquePageId, 
         id: identifier,
-        name: `${rawCombinedId}`,
+        name: `${rawCombinedId} Discussion`, 
         type: type, 
         authors: '',
         description: '',
         published: 'unknown date',
         size: 'unknown size',
-        thumbnail: '',
+        thumbnail: '/data/bhr/thumbnails/default.png',
         sourceUrl: ''
     };
+    
+    let fetchedData = null;
 
-    // A. page discussion
-    if (type === 'general') {
-        const pageName = identifier;
-        
-        trackData.name = `${pageName}`;
-        trackData.authors = '';
-        trackData.description = '';
-        trackData.type = 'u'; // used for url: /u/ness
-        trackData.sourceUrl = `/data/pages/trackcodes/${pageName}.txt`;
-        const thumbnailPath = path.join(
-        __dirname, 
-        'data',
-        'pages',
-        'thumbnails', 
-        `${trackData.name}.png`
-    );
-        try {
-        await fsPromises.access(thumbnailPath); 
-        
-        trackData.thumbnail = `/data/pages/thumbnails/${pageName}.png`;
-        specificThumbnailFound = true;
+    if (parts.length === 1) {
+        const userId = rawCombinedId;
 
-        if (!specificThumbnailFound) {
-            trackData.thumbnail = '/data/bhr/thumbnails/default.png'
-        }
-        
-        } catch (e) {
-        // file not found locally
+        fetchedData = await getUserTrackData(userId); 
+
+        if (fetchedData) {
+            trackData = {
+                ...trackData,
+                ...fetchedData,
+                type: 'u',
+                name: `${fetchedData.name || userId} gallery`,
+                sourceUrl: `/u/${userId}`
+            };
+            trackData.thumbnail = fetchedData.thumbnail || trackData.thumbnail;
+        } else {
+             trackData.name = `User Page: ${userId} (Not Found)`;
         }
     } 
+    else if (parts.length >= 3 && parts[0].toLowerCase() === 'page') {
+        const userId = parts[1];
+        let trackSlug = parts.slice(2).join('-');
+        type = 'page';
+
+        trackSlug = trackSlug
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]+/g, '')
+            .replace(/^-+|-+$/g, '');
+
+        fetchedData = await getPageTrackData(userId, trackSlug);
+
+        if (fetchedData) {
+            trackData = {
+                ...trackData,
+                ...fetchedData,
+                type: 'page',
+                name: `${fetchedData.name}`,
+                sourceUrl: `/u/${userId}/${trackSlug}`
+            };
+            trackData.thumbnail = fetchedData.thumbnail || trackData.thumbnail;
+        } else {
+             trackData.name = `User Track: ${userId}/${trackSlug} (Not Found)`;
+        }
+    }
     // B. track discussion (requires numeric ID for fetching)
     else if (['frhd', 'bhr', 'tracks'].includes(type)) {
 
@@ -496,28 +648,173 @@ app.get('/tracks/:id', (req, res) => {
 });*/
 
 // E. /u/:id route
-app.get('/u/:id', (req, res) => {
-    const userId = req.params.id;
+app.get('/u/:id', async (req, res) => {
+    const userId = req.params.id; // e.g., 'ness'
+    const trackSlug = false;
 
-    // minimal
-    const trackData = { 
-        id: userId,
-        name: userId,
-        authors: '', 
-        code: '',
-        type: 'general' 
-    };
+    try {
+        const trackData = await getUserTrackData(userId, trackSlug);
 
-    const renderedHtml = trackTemplate({
-        trackId: userId,
-        trackType: 'general',
-        track: trackData
-    });
+        if (!trackData) {
+            return res.status(404).send(`Data not found for user "${userId}".`);
+        }
+
+        trackData.userId = userId;
+
+        // render the track template
+        const renderedHtml = trackTemplate({
+            trackId: trackSlug,
+            trackType: 'user',
+            track: trackData,
+        });
+
+        res.status(200).send(renderedHtml);
+
+    } catch (error) {
+        console.error(`Error processing /u/${userId}:`, error);
+        res.status(500).send('Internal Server Error while fetching track.');
+    }
 
     console.log(`page for user: ${userId}`);
-    res.status(200).send(renderedHtml);
+});
+// F. /u/:id/:trackSlug route (Specific user track page)
+
+app.get('/u/:userId/:trackSlug', async (req, res) => {
+    const { userId, trackSlug } = req.params;
+    
+    try {
+        const trackData = await getPageTrackData(userId, trackSlug);
+
+        if (!trackData) {
+            return res.status(404).send(`Track "${trackSlug}" not found for user "${userId}".`);
+        }
+
+        trackData.userId = userId;
+
+        const renderedHtml = trackTemplate({
+            trackId: trackSlug,
+            trackType: 'page',
+            track: trackData,
+        });
+
+        res.status(200).send(renderedHtml);
+
+    } catch (error) {
+        console.error(`Error processing /u/${userId}/${trackSlug}:`, error);
+        res.status(500).send('Internal Server Error while fetching track.');
+    }
 });
 
+app.post('/api/upload-track', async (req, res) => {
+    try {
+        const { 
+            pagePath, // the unique page identifier (e.g., 'ness' or '')
+            fileName, 
+            fileContent,
+            imageContent,
+            imageFileName,
+            trackMetadata 
+        } = req.body; 
+        
+        console.log(`[Upload Debug] Page Path: "${pagePath}", File Name: "${fileName}", File Content Status: ${fileContent ? 'Present (Length: ' + fileContent.length + ')' : 'Missing/Empty'}`);
+
+        if (!fileName || !fileContent) {
+            return res.status(400).json({ error: "Missing required fields: fileName, or fileContent. (Track or filename is likely empty)" });
+        }
+
+        const effectivePagePath = pagePath || ''; 
+        let sanitizedPagePath = effectivePagePath;
+        
+        if (effectivePagePath !== '') {
+            sanitizedPagePath = sanitizePath(effectivePagePath);
+            if (!sanitizedPagePath) {
+                return res.status(400).json({ error: "Invalid pagePath provided after sanitization." });
+            }
+        }
+
+        const targetDir = path.join(PERSISTENT_ROOT, sanitizedPagePath);
+
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+            console.log(`Created nested directory: ${targetDir}`);
+        }
+
+        const trackFilePath = path.join(targetDir, fileName);
+        const trackBuffer = Buffer.from(fileContent, "base64");
+        fs.writeFileSync(trackFilePath, trackBuffer);
+        let trackUrl;
+
+        if (sanitizedPagePath === '') {
+            trackUrl = `/data/page/${fileName}`;
+        } else {
+            trackUrl = `/data/page/${sanitizedPagePath}/${fileName}`;
+        }
+        
+        let imageUrl = null;
+        let finalImageFileName = imageFileName;
+
+        if (imageContent && finalImageFileName) {
+            const imageFilePath = path.join(targetDir, finalImageFileName);
+            const imageBuffer = Buffer.from(imageContent, "base64");
+            fs.writeFileSync(imageFilePath, imageBuffer);
+            
+            if (sanitizedPagePath === '') {
+                imageUrl = `/data/page/${finalImageFileName}`;
+            } else {
+                imageUrl = `/data/page/${sanitizedPagePath}/${finalImageFileName}`;
+            }
+        }
+
+        const tracks = await loadUserTracks(sanitizedPagePath);
+        
+        let trackSlug = fileName.split('.').slice(0, -1).join('.');
+        
+        if (trackSlug !== 'page') {
+            trackSlug = trackSlug
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-]+/g, '')
+                .replace(/^-+|-+$/g, '');
+        }
+        const newTrack = {
+            slug: trackSlug,
+            name: trackMetadata.name,
+            authors: trackMetadata.author, 
+            trackUrl: trackUrl,
+            imageUrl: imageUrl,
+            metadata: trackMetadata,
+            uploaded_at: new Date().toISOString()
+        };
+
+        const existingIndex = tracks.findIndex(t => t.slug === trackSlug);
+        if (existingIndex > -1) {
+            tracks[existingIndex] = newTrack;
+        } else {
+            tracks.push(newTrack);
+        }
+
+        await saveUserTracks(sanitizedPagePath, tracks);
+
+        let permalink;
+        const basePermalink = `https://freerider.app/u/${sanitizedPagePath}`;
+
+        if (trackSlug === 'page') { 
+            permalink = basePermalink; // freerider.app/u/ness
+        } else {
+            permalink = `${basePermalink}/${trackSlug}`; // freerider.app/u/ness/toronto
+        }
+        
+        res.status(200).json({ 
+            trackUrl: trackUrl,
+            imageUrl: imageUrl,
+            permalink: `https://freerider.app/u/${sanitizedPagePath}/${trackSlug}` 
+        });
+
+    } catch (err) {
+        console.error("Server-side file writing error:", err);
+        res.status(500).json({ error: `Internal Server Error: Failed to save files (${err.message})` });
+    }
+});
 
 // server listener
 app.listen(PORT, () => {

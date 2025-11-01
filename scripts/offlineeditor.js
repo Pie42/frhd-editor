@@ -5127,7 +5127,7 @@
                 descCharCountLeft: this.props.maxDescChars,
                 defaultVehicle: "MTB",
                 vehiclesAllowed: { mtb: !0, bmx: !0 },
-                uploadingEnabled: !1,
+                uploadingEnabled: !0,
                 canClose: !0,
                 errorMsg: "",
                 showErrorMsg: !1,
@@ -5138,7 +5138,7 @@
               };
             },
             getUser: function () {
-              return GameSettings.user.name || "Guest";
+              return GameSettings.user.name || "Unknown";
             },
             onTitleChange: function () {
               var e = this.refs.trackTitle,
@@ -5172,7 +5172,7 @@
                 //c = i.value,
                 u = !0,
                 d = !1;
-              l.length < n.minTitleChars && (u = !1),
+              //l.length < n.minTitleChars && (u = !1),
                 //c.length <= n.minDescChars && (u = !1),
                 a === !1 && s === !1 && (u = !1);
                 /*n.options.verified ||
@@ -5201,7 +5201,12 @@
             },
             uploadTrack: async function () { 
               var e = this.state;
-              var p = this.getUser();
+              var p = GameSettings.id;
+
+              var t = this.refs,
+                n = t.trackTitle.getDOMNode().value;
+
+              const pagePath = n.trim() ? `${GameSettings.id}` : "";
               
               if (e.uploadingEnabled) {
                 this.setState({
@@ -5212,10 +5217,7 @@
                   showErrorMsg: !1,
                 });
                 
-                var t = this.refs,
-                  n = t.trackTitle.getDOMNode().value,
-                  //r = t.trackDesc.getDOMNode().value,
-                  i = e.defaultVehicle,
+                var i = e.defaultVehicle,
                   a = e.vehiclesAllowed.mtb,
                   s = e.vehiclesAllowed.bmx,
                   l = this.props.options,
@@ -5243,12 +5245,19 @@
 
                   let base64ImageContent = null;
                   const imageInput = t.trackImage.getDOMNode();
+                  let finalTrackFileName = null;
                   let finalImageFileName = null;
+
+                  const trackFileNameBase = (pagePath === '') ? `${GameSettings.id}` : n;
+                  const sanitizedTrackBase = trackFileNameBase.toLowerCase().replace(/\s+/g, '-');
+                  finalTrackFileName = sanitizedTrackBase + '.txt';
 
                   if (imageInput && imageInput.files && imageInput.files[0]) {
                     const imageFile = imageInput.files[0];
                     const extension = imageFile.name.split('.').pop();
-                    finalImageFileName = `${n}.${extension}`;
+                    const imageFileNameBase = (pagePath === '') ? `${GameSettings.id}` : n;
+                    const sanitizedImageBase = imageFileNameBase.toLowerCase().replace(/\s+/g, '-');
+                    finalImageFileName = `${sanitizedImageBase}.${extension}`;
                     base64ImageContent = await new Promise((resolve, reject) => {
                       const reader = new FileReader();
                       reader.onload = () => resolve(reader.result.split(",")[1]);
@@ -5257,15 +5266,18 @@
                     });
                   }
 
-                    const res = await fetch("https://nextjs-boilerplate-rho-five-46.vercel.app/api/github", {
+                  const defaultImageBase = (n.trim() === '') ? GameSettings.id : n;
+
+                    const res = await fetch("/api/upload-track", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            fileName: n + '.txt', 
+                            pagePath: pagePath, 
+                            fileName: finalTrackFileName, 
                             fileContent: base64Content,
                             fileType: 'text/plain',
                             imageContent: base64ImageContent,
-                            imageFileName: finalImageFileName || (n + '.jpg'), 
+                            imageFileName: finalImageFileName || `${defaultImageBase.toLowerCase()}.jpg`,
                             trackMetadata: u 
                         }),
                     });
@@ -5278,7 +5290,7 @@
                         result: true,
                         data: {
                             track: { 
-                                url: proxyResponse.url,
+                                url: proxyResponse.permalink,
                                 title: n,
                                 author: p.display_name || p,
                                 imageUrl: proxyResponse.imageUrl
@@ -5369,10 +5381,9 @@
                       "span",
                       { className: "input-desc" },
                       "(",
-                      t.minTitleChars,
-                      " - ",
+                      "up to ",
                       t.maxTitleChars,
-                      " characters)"
+                      " characters, leave blank to use in gallery)"
                     ),
                     n.createElement(
                       "span",
@@ -32906,7 +32917,16 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = GameSettings.type ? (GameSettings.type === 'general' ? `discuss.html?id=${GameSettings.id}` : `discuss.html?id=${GameSettings.type}-${GameSettings.id}`) : `discuss.html`;
+                iframe.src = GameSettings.type
+                  ? (GameSettings.type === 'user' || (GameSettings.type === 'page' && !GameSettings.userId))
+                    // Case 1: /u/ness
+                    ? `discuss.html?id=${GameSettings.id}`
+                    // Case 2: /u/ness/track1
+                    : (GameSettings.type === 'page' || GameSettings.type === 'user'
+                      ? `discuss.html?id=${GameSettings.type}-${GameSettings.userId}-${GameSettings.pageName}`
+                      // Case 3: other types (frhd, bhr)
+                      : `discuss.html?id=${GameSettings.type}-${GameSettings.id}`)
+                  : `discuss.html`;        
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
                 document.body.appendChild(iframe);
