@@ -16252,6 +16252,7 @@ function xc(n, e) {
 if (t.includes("freerider.app") && !t.includes("#")) {
 
     const trackUrlMatch = t.match(/freerider\.app\/(frhd|bhr)\/(\d+)/);
+    const userUrlMatch = t.match(/freerider\.app\/u\/([^/?#]+)(?:\/([^/?#]+))?/i);
     const hashMatch = t.match(/#(.+)$/); // Existing hash logic
 
     let trackType = null;
@@ -16261,7 +16262,11 @@ if (t.includes("freerider.app") && !t.includes("#")) {
     let imageUrl = "assets/images/default-track-thumbnail.png";
 
     let isIdLink = false;
-    let discussId = null; // The ID parameter for the discuss.html route (e.g., 'frhd-123')
+    let discussId = null;
+    let fetchUrl = null; 
+
+    let username = null; 
+    let slug = null;
 
     if (trackUrlMatch) {
       trackType = trackUrlMatch[1];
@@ -16272,6 +16277,24 @@ if (t.includes("freerider.app") && !t.includes("#")) {
       trackName = `${trackType.toUpperCase()} Track #${trackId}`;
       imageUrl = `/data/${trackType}/thumbnails/${trackId}.png`;
       isIdLink = true;
+      
+      fetchUrl = `/discuss.html?id=${discussId}&json=true`;
+
+    } else if (userUrlMatch) {
+        username = userUrlMatch[1];
+        slug = userUrlMatch[2];
+
+        isIdLink = true;
+        
+        if (slug) {
+            // fetch user's track list array
+            fetchUrl = `/data/page/${username}/page.json`; 
+            trackName = `${username}'s track: ${slug}`;
+        } else {
+            // fetch from user array
+            fetchUrl = `/data/page/page.json`;
+            trackName = `${username} gallery`;
+        }
 
     } else if (hashMatch) {
       trackName = decodeURIComponent(hashMatch[1]);
@@ -16314,10 +16337,7 @@ if (t.includes("freerider.app") && !t.includes("#")) {
       Rtt(t);
     });
 
-
-    // fetch data for ID links using the /discuss.html route
     if (isIdLink) {
-      const fetchUrl = `/discuss.html?id=${discussId}&json=true`;
 
       fetch(fetchUrl)
         .then(res => {
@@ -16325,9 +16345,30 @@ if (t.includes("freerider.app") && !t.includes("#")) {
           return res.json();
         })
         .then(data => {
-          let newTrackName = data.name || trackName;
-          let newImageUrl = data.thumbnail || '/data/bhr/thumbnails/default.png';
-          let newAuthor = data.authors || "Unknown";
+          let newTrackName = Array.isArray(data) ? trackName : data.name || trackName;
+          let newImageUrl = Array.isArray(data) ? '/data/bhr/thumbnails/default.png' : data.thumbnail || data.imageUrl || '/data/bhr/thumbnails/default.png';
+          let newAuthor = Array.isArray(data) ? "Unknown" : data.authors || "Unknown";
+
+          let match; // (either track or user page)
+
+          // track slug exists, and data is the array of tracks for that user (e.g., /u/ness/toronto)
+          if (slug && Array.isArray(data)) {
+            // data is the array of tracks, search for the track matching the URL slug
+            match = data.find(t => t.slug && t.slug.toLowerCase() === slug.toLowerCase());
+          } 
+          // no track slug, and data is the array of user pages (e.g., /u/ness)
+          else if (!slug && username && Array.isArray(data)) {
+              // data is the array of user pages, search for the page matching the username
+              match = data.find(p => p.slug && p.slug.toLowerCase() === username.toLowerCase());
+          }
+            
+          if (match) {
+            // found the specific data object (track or user page)
+            newTrackName = match.name || newTrackName;
+            // prioritize match's imageUrl, then match's thumbnail, then previously set URL
+            newImageUrl = match.imageUrl || match.thumbnail || newImageUrl; 
+            newAuthor = match.authors || newAuthor;
+          }
 
           if (newImageUrl && newImageUrl.startsWith('/') && !newImageUrl.startsWith('http')) {
             newImageUrl = `https://freerider.app${newImageUrl}`;
@@ -16350,16 +16391,14 @@ if (t.includes("freerider.app") && !t.includes("#")) {
             overlay.innerHTML = html;
           }
 
+          // updates img.src using the thumbnail from JSON data
           img.src = newImageUrl;
           img.alt = newTrackName;
           img.title = `${newTrackName} by ${newAuthor}`;
         })
         .catch(error => {
           console.warn(`Error fetching metadata for ${fetchUrl}. Using placeholder data.`, error);
-
-          const img = document.getElementById('thumbnail-img');
-          const overlay = document.getElementById('overlay');
-
+          
           if (img) {
             img.src = '/bhr/thumbnails/default.png';
             img.alt = 'Error: Metadata Not Found';
@@ -16383,9 +16422,9 @@ if (t.includes("freerider.app") && !t.includes("#")) {
     }
 
     return;
-  }
+}
 
-      if (t.includes("freerider.app/")) {
+if (t.includes("freerider.app/")) {
 
   const trackNameMatch = t.match(/#(.+)$/);
   let trackName = trackNameMatch ? decodeURIComponent(trackNameMatch[1]) : "unknown";
@@ -16449,7 +16488,9 @@ if (t.includes("freerider.app") && !t.includes("#")) {
 
   e.appendChild(wrapper);
   return;
+
 }
+
 
 
   if (t.includes("soundcloud.com")) {

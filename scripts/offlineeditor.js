@@ -32947,7 +32947,7 @@
                   let proceedWithImport = true;
 
                   const url = event.data.url;
-                  const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(bhr|frhd|u)\/[\w-]+$/
+                  const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(bhr|frhd|u)(\/[\w-]+)+\/?$/
 
                   if (this.hasUnsavedChanges()) {
                     const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
@@ -32975,7 +32975,7 @@
                       "gofile.io",
                     ];
                     
-                    if (!validHostnames.includes(hostname) || !hostname.endsWith(".gofile.io")) {
+                    if (!validHostnames.includes(hostname)) {
                       console.warn("invalid URL hostname:", hostname);
                     }
 
