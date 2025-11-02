@@ -16996,7 +16996,7 @@ function p0() {
 function m0() {
   const n = b.use("user");
   const page = b.use("page");
-  const name = n.name;
+  const name = n ? n.name : false;
   const identifier = page.identifier.toLowerCase();
   console.log(page)
   if (name === identifier) {
@@ -18504,10 +18504,10 @@ function J0() {
                           children: [
                             l
                               ? u(se, {
-                                  children: [u(G0, { user: o }), u(Y0Y0, { user: o }), u(K0, {})],
+                                  children: [u(G0, { user: o }), u(K0, {})],
                                 })
                               : null,
-                            s && !l && u(Mc, { user: o }) && u(Y0Y0, { user: o }),
+                            s && !l && u(Mc, { user: o }), u(Y0Y0, { user: o }),
                           ],
                         }),
                       ],

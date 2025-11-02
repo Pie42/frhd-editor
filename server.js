@@ -242,7 +242,8 @@ async function getPageTrackData(userId, trackSlug) {
         published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
         thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
         sourceUrl: metadata.trackUrl,
-        pageName: metadata.name
+        pageName: metadata.name,
+        permalink: metadata.permalink
     };
 }
 
@@ -866,6 +867,17 @@ app.post('/api/upload-track', async (req, res) => {
                 .replace(/[^a-z0-9-]+/g, '')
                 .replace(/^-+|-+$/g, '');
         }
+
+        const userSegment = sanitizedPagePath ? `/${sanitizedPagePath}` : '';
+        const basePermalink = `https://freerider.app/u${userSegment}`;
+
+        let permalink;
+        if (trackSlug === 'page') { 
+            permalink = basePermalink; // freerider.app/u/ness
+        } else {
+            permalink = `${basePermalink}/${trackSlug}`; // freerider.app/u/ness/toronto
+        }
+
         const newTrack = {
             slug: trackSlug,
             name: trackMetadata.name,
@@ -873,7 +885,8 @@ app.post('/api/upload-track', async (req, res) => {
             trackUrl: trackUrl,
             imageUrl: imageUrl,
             metadata: trackMetadata,
-            uploaded_at: new Date().toISOString()
+            uploaded_at: new Date().toISOString(),
+            permalink: permalink
         };
 
         const existingIndex = tracks.findIndex(t => t.slug === trackSlug);
@@ -884,16 +897,6 @@ app.post('/api/upload-track', async (req, res) => {
         }
 
         await saveUserTracks(sanitizedPagePath, tracks);
-
-        const userSegment = sanitizedPagePath ? `/${sanitizedPagePath}` : '';
-        const basePermalink = `https://freerider.app/u${userSegment}`;
-
-        let permalink;
-        if (trackSlug === 'page') { 
-            permalink = basePermalink; // freerider.app/u/ness
-        } else {
-            permalink = `${basePermalink}/${trackSlug}`; // freerider.app/u/ness/toronto
-        }
         
         res.status(200).json({ 
             trackUrl: trackUrl,

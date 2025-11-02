@@ -5249,7 +5249,11 @@
                   let finalImageFileName = null;
 
                   const trackFileNameBase = (pagePath === '') ? `${GameSettings.id}` : n;
-                  const sanitizedTrackBase = trackFileNameBase.toLowerCase().replace(/\s+/g, '-');
+                  const sanitizedTrackBase = trackFileNameBase
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]+/g, '')
+                    .replace(/^-+|-+$/g, '');
                   finalTrackFileName = sanitizedTrackBase + '.txt';
 
                   if (imageInput && imageInput.files && imageInput.files[0]) {
