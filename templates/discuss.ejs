@@ -114,7 +114,7 @@ const primaryThumbnailSrc = track.thumbnail || `data/bhr/thumbnails/default.png`
                         const cleanAuthor = author.trim();
                         const onClickHandler = `event.preventDefault(); var u = '${cleanAuthor}'.toLowerCase(); console.log(u); window.parent.postMessage({ action: 'linkClicked', url: 'https://freerider.app/u/' + u }, '*'); return false;`;
                         return `<a href="#" target="_blank" onclick="${onClickHandler}" style="color:white; text-decoration:underline;">${cleanAuthor}</a>`;
-                    }).join(' , ')
+                    }).join(', ')
                     : '' 
                 %></small>
             <% } %>

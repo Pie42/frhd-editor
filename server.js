@@ -740,6 +740,7 @@ app.get('/tracks/:id', (req, res) => {
 // E. /u/:id route
 app.get('/u/:id', async (req, res) => {
     const userId = req.params.id; // e.g., 'ness'
+    const json = req.query.json === 'true';
     const trackSlug = false;
 
     try {
@@ -749,6 +750,17 @@ app.get('/u/:id', async (req, res) => {
         if (!trackData) {
             return res.status(404).send(`Data not found for user "${userId}".`);
         }
+
+
+        if (json) {
+            return res.json({
+                name: trackData.name,
+                authors: trackData.authors,
+                thumbnail: trackData.thumbnail,
+                id: userId,
+                type: 'user'
+            });
+        }
 
         trackData.userId = userId;
 
@@ -772,6 +784,7 @@ app.get('/u/:id', async (req, res) => {
 
 app.get('/u/:userId/:trackSlug', async (req, res) => {
     const { userId, trackSlug } = req.params;
+    const json = req.query.json === 'true';
     
     try {
         const trackData = await getPageTrackData(userId, trackSlug);
@@ -779,6 +792,16 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
         if (!trackData) {
             return res.status(404).send(`Track "${trackSlug}" not found for user "${userId}".`);
         }
+
+        if (json) {
+            return res.json({
+                name: trackData.name,
+                authors: trackData.authors,
+                thumbnail: trackData.thumbnail,
+                id: trackSlug,
+                type: 'page' 
+            });
+        }
 
         trackData.userId = userId;
 
