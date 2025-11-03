@@ -23849,12 +23849,12 @@
             l = this.track.currentLayer,
             r = this.track.settings.eraser.mode;
           if (s.physics)
-            for (const s of this.physicsLines) (r == "all" || s.layer == l) && s.erase(t, e) && i.push(s);
+            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
           if (s.scenery)
-            for (const s of this.sceneryLines) (r == "all" || s.layer == l) && s.erase(t, e) && i.push(s);
+            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
           if (s.powerups)
             for (const s of this.powerups.all) {
-              const n = (r == "all" || s.layer == l) && s.erase(t, e);
+              const n = (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e);
               n && i.push(...n);
             }
           return i;
@@ -28784,7 +28784,7 @@ function load() {
               layer = this.scene.track.currentLayer,
               mode = this.scene.settings.select.mode;
           // selected doesn't exist on the track, so we have to check it separately
-          if (selected && (mode == 'all' || layer == selected.layer)) {
+          if (selected && (mode != 'layer' || layer == selected.layer) && (mode != "visible" || selected.layer.hide == false)) {
               let dist = selected.p1 ?
                   linesdf(mousePos.sub(selectOffset), selected) :
                   pointsdf(mousePos.sub(selectOffset), selected);
@@ -28795,7 +28795,8 @@ function load() {
               }
           } else if (this.gamepad.isButtonDown("alt") && isSelectList) {
               for (let i of selectList) {
-                  if (mode != 'all' && layer != i.layer) continue;
+                  if (mode == 'layer' && layer != i.layer) continue;
+                  if (mode == 'visible' && i.layer.hide == true) continue;
                   let dist = i.p1 ?
                       linesdf(mousePos.sub(selectOffset), i) :
                       pointsdf(mousePos.sub(selectOffset), i);
@@ -29020,8 +29021,9 @@ function load() {
           }
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist && i != tempSelect) {
                       minDist = dist;
@@ -29031,8 +29033,9 @@ function load() {
           }
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'visible' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist) {
                       minDist = dist;
@@ -29042,8 +29045,9 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = pointsdf(mousePos, i);
                   if (dist < minDist) {
                       minDist = dist;
@@ -29068,15 +29072,15 @@ function load() {
               maxVec.x >= sectorTrackPos.x + sectorSize &&
               maxVec.y >= sectorTrackPos.y + sectorSize) {
               hoverPhysicsList[sectorPos.x][sectorPos.y] = 
-                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : [])
-                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : []));
+                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : [])
+                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
               return hoverPhysicsList[sectorPos.x][sectorPos.y]
-                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && (mode == 'all' || layer == i.layer)) : []));
+                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
           }
           let toReturn = [];
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -29084,7 +29088,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (pointrect(i, minVec, maxVec))
                       toReturn.push(i);
@@ -29093,7 +29097,7 @@ function load() {
           hoverPhysicsList[sectorPos.x][sectorPos.y] = [...toReturn];
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove || (mode != 'all' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);

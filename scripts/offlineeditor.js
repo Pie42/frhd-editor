@@ -6143,16 +6143,20 @@
                   o = t + " sideButton_eraserScenery",
                   i = t + " sideButton_eraserPowerups",
                   R = t + " sideButton_eraserLayer",
+                  s = t + " sideButton_eraserVisible",
                   O = t + " sideButton_eraserAll";
                 switch (e.mode) {
                   case "layer":
                     R += " active";
                     break;
+                  case "visible":
+                    s += " active";
+                    break;
                   case "all":
                     O += " active";
                     break;
                   default:
-                    console.warn('unrecognized eraser mode', e.mode);
+                    console.warn('unrecognized tool mode', e.mode);
                 }
                 return (
                   e.types &&
@@ -6193,6 +6197,14 @@
                     n.createElement(
                       "div",
                       { className: R, onClick: _ => this.setMode("layer"), title: 'current layer' },
+                      n.createElement("span", {
+                        className:
+                          "editorgui_icons editorgui_icons-icon_layer",
+                      })
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: s, onClick: _ => this.setMode("visible"), title: 'visible layers' },
                       n.createElement("span", {
                         className:
                           "editorgui_icons editorgui_icons-icon_layer",
