@@ -17037,9 +17037,8 @@ function p0() {
 function m0() {
   const n = b.use("user");
   const page = b.use("page");
-  const name = n ? n.name : false;
+  const name = n ? n.name.toLowerCase() : false;
   const identifier = page.identifier.toLowerCase();
-  console.log(page)
   if (name === identifier) {
     window.parent.postMessage({
       action: 'loggedIn',
