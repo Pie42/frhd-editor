@@ -23517,59 +23517,134 @@
         Vi = s(578),
         Hi = s(301),
         Ni = s.n(Hi);
-      function Zi(t, e, s, i, n) {
-        const r = new Set(),
-          o = s - t,
-          a = i - e;
-        if (Math.max(Math.abs(o), Math.abs(a)) >= 500200) return [];
-        const h = Math.sqrt(o * o + a * a),
-          l = t + (-o + a) / h,
-          c = e + (-o - a) / h,
-          u = s + (o + a) / h,
-          d = i + (-o + a) / h,
-          p = [];
-        m(
-          t + (-o - a) / h,
-          e + (o - a) / h,
-          s + (o - a) / h,
-          i + (o + a) / h,
-          n
-        ),
-          m(l, c, u, d, n);
-        let f = Math.floor((t - Math.sign(o) * Math.SQRT1_2) / n),
-          g = Math.floor((e - Math.sign(a) * Math.SQRT1_2) / n);
-        return (
-          r.has(f + "," + g) || (p.push(f, g), r.add(f + "," + g)),
-          (f = Math.floor((s + Math.sign(o) * Math.SQRT1_2) / n)),
-          (g = Math.floor((i + Math.sign(a) * Math.SQRT1_2) / n)),
-          r.has(f + "," + g) || p.push(f, g),
-          p
-        );
-        function m(t, e, s, i, n) {
-          let o =
-              s > t ? (Math.floor(t / n) + 1) * n : (Math.ceil(t / n) - 1) * n,
-            a =
-              i > e ? (Math.floor(e / n) + 1) * n : (Math.ceil(e / n) - 1) * n,
-            h = Math.abs((o - t) / (s - t)),
-            l = Math.abs((a - e) / (i - e));
-          for (; !(s > t ? s <= o : s >= o) || !(i > e ? i <= a : i >= a); ) {
-            (h = Math.abs((o - t) / (s - t))),
-              (l = Math.abs((a - e) / (i - e)));
-            const c = s > t ? Math.floor(o / n) - 1 : Math.floor(o / n),
-              u = i > e ? Math.floor(a / n) - 1 : Math.floor(a / n);
-            r.has(c + "," + u) || (p.push(c, u), r.add(c + "," + u)),
-              l < h
-                ? i > e
-                  ? (a += n)
-                  : (a -= n)
-                : s > t
-                ? (o += n)
-                : (o -= n);
-          }
-          const c = s > t ? Math.ceil(s / n) - 1 : Math.floor(s / n),
-            u = i > e ? Math.ceil(i / n) - 1 : Math.floor(i / n);
-          r.has(c + "," + u) || (p.push(c, u), r.add(c + "," + u));
+      function Zi(t, e, s, a, h) {
+        var i = Math.round,
+            n = Math.floor,
+            r = Math.ceil,
+            o = Math.pow;
+        let lw = 1;
+        // sort points based on x
+        if (t > s) {
+            let tt = t,
+                ee = e;
+            t = s;
+            e = a;
+            s = tt;
+            a = ee;
         }
+        // lines going up and right are degenerate, so handle them by pretending they're going down and right :P
+        if (e > a) {
+            let r = Zi(t, -e, s, -a, h);
+            for (let i = 1; i < r.length; i += 2) {
+                r[i] = -r[i] - 1;
+            }
+            return r;
+        }
+        var l = [],
+            c = t,
+            u = e,
+            d = (a - e) / (s - t),
+            p = s > t ? 1 : -1,
+            f = a > e ? 1 : -1,
+            g = 0;
+        // straight up or straight down lines are degenerate, so handle them by treating them as horizontal
+        if (d == Infinity || d == -Infinity) {
+            let r = Zi(e, t, a, s, h),
+                temp;
+            for (let i = 0; i < r.length; i += 2) {
+                temp = r[i];
+                r[i] = r[i + 1];
+                r[i + 1] = temp;
+            }
+            return r;
+        }
+        l.push(t, e);
+        let C = c % h,
+            U = u % h;
+        C < 0 && (C += h);
+        U < 0 && (U += h);
+        // replicates the behavior in polygon's mod
+        if (C < 2 || U < 2) {
+            if (C == 0 && U < 2) {
+                l.push(t - h, e - h);
+            }
+            if (C < 2) {
+                l.push(t - h, e);
+            }
+            if (U < 2) {
+                l.push(t, e - h);
+            }
+        }
+        do {
+            var m = n(c / h) >= n(s / h),
+                v = n(u / h) >= n(a / h);
+            if (m && v) break;
+            var y,
+                w = 0;
+            w = i(n(c / h + p) * h);
+            if (p < 0) w = i(r((c + 1) / h + p) * h) - 1;
+            y = i(e + (w - t) * d);
+            var x,
+                b = 0;
+            b = i(n(u / h + f) * h);
+            if (f < 0) b = i(r((u + 1) / h + f) * h) - 1;
+            x = i(t + (b - e) / d);
+            let erry = o(w - t, 2) + o(y - e, 2),
+                errx = o(x - t, 2) + o(b - e, 2);
+            if (erry < errx) {
+                // detect: y is close to a grid line, and the next cell from x isn't in that direction
+                let m = y % h;
+                m < 0 && (m += h);
+                if (!m) {
+                    (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) &&
+                        l.push(w + 1, y - 1 * h * 0.9);
+                    (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) &&
+                        l.push(w - 1, y + 1 * h * 0.8);
+                } else if (m <= lw) {
+                    (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) &&
+                        l.push(w + 1, y - 1 * h * 0.9);
+                } else if (m >= h - lw) {
+                    (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) &&
+                        l.push(w - 1, y + 1 * h * 0.8);
+                }
+                c = w;
+                u = y;
+                l.push(w, y);
+            } else {
+                let m = x % h;
+                m < 0 && (m += h);
+                // if this one is also used to detect close calls, it will result in overdraws, so we just use it to detect passing in between cells
+                if (!m) {
+                    (n(c / h) != n(x / h - 0.8) ||
+                        n(u / h) != n((b + 1) / h)) &&
+                        l.push(x - 1 * h * 0.9, b + 1);
+                    (n(c / h) != n(x / h + 0.8) ||
+                        n(u / h) != n((b - 1) / h)) &&
+                        l.push(x + 1 * h * 0.8, b - 1);
+                }
+                c = x;
+                u = b;
+                l.push(x, b);
+            }
+        } while (g++ < 5000);
+        C = s % h;
+        C < 0 && (C += h);
+        U = a % h;
+        U < 0 && (U += h);
+        // replicates the behavior in polygon's mod
+        if (C > h - 2 || U > h - 2) {
+            if (C > h - 2) {
+                l.push(s + h, a - 1);
+            }
+            if (U > h - 2) {
+                l.push(s, a + h);
+            }
+        }
+        return l;
       }
       class Layer {
         constructor(t) {
@@ -24009,6 +24084,7 @@
           const i = this.x,
             n = this.y;
           let t, r, p, a, h, l, c;
+          s.lineCap = s.lineJoin = "round";
           for (let b in o) {
             s.strokeStyle = b;
             t = o[b];
@@ -24361,8 +24437,8 @@
           let n = Zi(s.x, s.y, i.x, i.y, e),
             r = this.sectors.drawSectors;
           for (let s = 0; n.length > s; s += 2) {
-            const i = n[s] * e,
-              o = n[s + 1] * e,
+            const i = n[s],
+              o = n[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
@@ -24394,8 +24470,8 @@
             n = Zi(s.x, s.y, i.x, i.y, e),
             r = this.sectors.drawSectors;
           for (let s = 0; s < n.length; s += 2) {
-            const i = n[s] * e,
-              o = n[s + 1] * e,
+            const i = n[s],
+              o = n[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
