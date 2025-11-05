@@ -1849,7 +1849,7 @@
             },
             render: function() {
               let e = "bottomMenu-button bottomMenu-button-right bottomMenu-button_layer",
-                t = "cube cube-margin",
+                t = "layer layer-margin",
                 o = this.state.open ? " : " : "";
               if (this.props.active) {
                 e += " bottomMenu-button-active";
@@ -6207,7 +6207,7 @@
                       { className: s, onClick: _ => this.setMode("visible"), title: 'visible layers' },
                       n.createElement("span", {
                         className:
-                          "editorgui_icons editorgui_icons-icon_layer",
+                          "editorgui_icons editorgui_icons-icon_visible",
                       })
                     ),
                     n.createElement(
