@@ -23517,13 +23517,16 @@
         Vi = s(578),
         Hi = s(301),
         Ni = s.n(Hi);
-      function Zi(t, e, s, a, h) {
+      function Zi(t, e, s, a, h, l) {
+        // rewritten to take in an array reference in l that it overwrites, and returns the number of things it added (= the 'length' of l)
+        // this avoids so many allocations and deallocations
         var i = Math.round,
             n = Math.floor,
             r = Math.ceil,
             o = Math.pow;
-        let lw = 1;
-        // sort points based on x
+        let lw = 1,
+          I = 0;
+        // sort points based on x (lines going left are degenerate)
         if (t > s) {
             let tt = t,
                 ee = e;
@@ -23534,14 +23537,13 @@
         }
         // lines going up and right are degenerate, so handle them by pretending they're going down and right :P
         if (e > a) {
-            let r = Zi(t, -e, s, -a, h);
-            for (let i = 1; i < r.length; i += 2) {
-                r[i] = -r[i] - 1;
+            let r = Zi(t, -e, s, -a, h, l);
+            for (let i = 1; i < r; i += 2) {
+                l[i] = -l[i] - 1;
             }
             return r;
         }
-        var l = [],
-            c = t,
+        var c = t,
             u = e,
             d = (a - e) / (s - t),
             p = s > t ? 1 : -1,
@@ -23549,16 +23551,17 @@
             g = 0;
         // straight up or straight down lines are degenerate, so handle them by treating them as horizontal
         if (d == Infinity || d == -Infinity) {
-            let r = Zi(e, t, a, s, h),
+            let r = Zi(e, t, a, s, h, l),
                 temp;
-            for (let i = 0; i < r.length; i += 2) {
-                temp = r[i];
-                r[i] = r[i + 1];
-                r[i + 1] = temp;
+            for (let i = 0; i < r; i += 2) {
+                temp = l[i];
+                l[i] = l[i + 1];
+                l[i + 1] = temp;
             }
             return r;
         }
-        l.push(t, e);
+        l[I++] = t;
+        l[I++] = e;
         let C = c % h,
             U = u % h;
         C < 0 && (C += h);
@@ -23566,13 +23569,16 @@
         // replicates the behavior in polygon's mod
         if (C < 2 || U < 2) {
             if (C == 0 && U < 2) {
-                l.push(t - h, e - h);
+              l[I++] = t - h;
+              l[I++] = e - h;
             }
             if (C < 2) {
-                l.push(t - h, e);
+              l[I++] = t - h;
+              l[I++] = e;
             }
             if (U < 2) {
-                l.push(t, e - h);
+              l[I++] = t;
+              l[I++] = e - h;
             }
         }
         do {
@@ -23596,39 +23602,53 @@
                 let m = y % h;
                 m < 0 && (m += h);
                 if (!m) {
-                    (n(c / h) != n((w + 1) / h) ||
-                        n(u / h) != n(y / h - 0.8)) &&
-                        l.push(w + 1, y - 1 * h * 0.9);
-                    (n(c / h) != n((w - 1) / h) ||
-                        n(u / h) != n(y / h + 0.8)) &&
-                        l.push(w - 1, y + 1 * h * 0.8);
+                    if (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) {
+                          l[I++] = w + 1;
+                          l[I++] = y - h / 2;
+                        }
+                    if (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) {
+                          l[I++] = w - 1;
+                          l[I++] = y + h / 2;
+                        }
                 } else if (m <= lw) {
-                    (n(c / h) != n((w + 1) / h) ||
-                        n(u / h) != n(y / h - 0.8)) &&
-                        l.push(w + 1, y - 1 * h * 0.9);
+                    if (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) {
+                          l[I++] = w + 1;
+                          l[I++] = y - h / 2;
+                        }
                 } else if (m >= h - lw) {
-                    (n(c / h) != n((w - 1) / h) ||
-                        n(u / h) != n(y / h + 0.8)) &&
-                        l.push(w - 1, y + 1 * h * 0.8);
+                    if (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) {
+                          l[I++] = w - 1;
+                          l[I++] = y + h / 2;
+                        }
                 }
                 c = w;
                 u = y;
-                l.push(w, y);
+                l[I++] = w;
+                l[I++] = y;
             } else {
                 let m = x % h;
                 m < 0 && (m += h);
                 // if this one is also used to detect close calls, it will result in overdraws, so we just use it to detect passing in between cells
                 if (!m) {
-                    (n(c / h) != n(x / h - 0.8) ||
-                        n(u / h) != n((b + 1) / h)) &&
-                        l.push(x - 1 * h * 0.9, b + 1);
-                    (n(c / h) != n(x / h + 0.8) ||
-                        n(u / h) != n((b - 1) / h)) &&
-                        l.push(x + 1 * h * 0.8, b - 1);
+                    if (n(c / h) != n(x / h - 0.8) ||
+                        n(u / h) != n((b + 1) / h)) {
+                        l[I++] = x - h / 2;
+                        l[I++] = b + 1;
+                    }
+                    if (n(c / h) != n(x / h + 0.8) ||
+                        n(u / h) != n((b - 1) / h)) {
+                        l[I++] = x + h / 2;
+                        l[I++] = b - 1;
+                      }
                 }
                 c = x;
                 u = b;
-                l.push(x, b);
+                l[I++] = x;
+                l[I++] = b;
             }
         } while (g++ < 5000);
         C = s % h;
@@ -23638,13 +23658,15 @@
         // replicates the behavior in polygon's mod
         if (C > h - 2 || U > h - 2) {
             if (C > h - 2) {
-                l.push(s + h, a - 1);
+                l[I++] = s + h;
+                l[I++] = a - 1;
             }
             if (U > h - 2) {
-                l.push(s, a + h);
+              l[I++] = s;
+              l[I++] = a + h;
             }
         }
-        return l;
+        return I;
       }
       class Layer {
         constructor(t) {
@@ -24229,6 +24251,7 @@
             (this.sectors = {}),
             (this.sectors.drawSectors = []),
             (this.sectors.physicsSectors = []),
+            (this.sectorArray = Array(20000)),
             (this.layers = [new Layer(this)]),
             (this.layers[0].name = 'Default'),
             (this.layerIndex = 0),
@@ -24279,17 +24302,18 @@
             return;
           } catch {};
           const e = t.split("#"),
-            s = e[0].split(",");
+            b = new TextEncoder(),
+            s = b.encode(e[0]);
           let i,
             n = [],
             r = [];
           e.length > 3
-            ? ((n = e[1].split(",")), (r = e[2].split(",")), (i = e[3]))
+            ? ((n = b.encode(e[1])), (r = e[2].split(",")), (i = e[3]))
             : e.length > 2
-            ? ((n = e[1].split(",")), (r = e[2].split(",")))
+            ? ((n = b.encode(e[1])), (r = e[2].split(",")))
             : e.length > 1 && (r = e[1].split(",")),
-            this.addLines(s, this.addPhysicsLine),
-            this.addLines(n, this.addSceneryLine),
+            this.addLines(s, this.addPhysicsLine.bind(this)),
+            this.addLines(n, this.addSceneryLine.bind(this)),
             this.addPowerups(r),
             this.scene.selectVehicle(i);
         }
@@ -24406,17 +24430,38 @@
           );
         }
         addLines(t, e) {
-          for (let s = 0; s < t.length; s++) {
-            const i = t[s].split(" ");
-            if (i.length > 3)
-              for (let t = 0; t < i.length - 2; t += 2) {
-                const s = parseInt(i[t], 32),
-                  n = parseInt(i[t + 1], 32),
-                  r = parseInt(i[t + 2], 32),
-                  o = parseInt(i[t + 3], 32);
-                isNaN(s + n + r + o) || e.call(this, s, n, r, o);
-              }
-          }
+            let q, a, b, c, d, m, o, u;
+            for (let s = t.length, i = 0; i < s; i++) {
+                q = a = b = c = d = 0;
+                m = 1;
+                for (; i < s && (o = t[i]) != 44; i++) {
+                    if (o == 32) {
+                        a *= m;
+                        q++;
+                        if (q > 3 && !(q & 1)) {
+                            u = a + b + c + d;
+                            if (u == u) e(d, c, b, a);
+                        }
+                        d = c;
+                        c = b;
+                        b = a;
+                        a = 0;
+                        m = 1;
+                    } else if (o == 45) {
+                        m = -1;
+                    } else {
+                        a *= 32;
+                        a += o - 48;
+                        o > 57 && (a -= 39);
+                    }
+                }
+                a *= m;
+                q++;
+                if (q > 3 && !(q & 1)) {
+                    u = a + b + c + d;
+                    if (u == u) e(d, c, b, a);
+                }
+            }
         }
         addPhysicsLine(t, e, s, i) {
           let raw = [t, e, s, i];
@@ -24433,12 +24478,13 @@
         addPhysicsLineToTrack(t) {
           let e = this.settings.drawSectorSize;
           const s = t.p1,
-            i = t.p2;
-          let n = Zi(s.x, s.y, i.x, i.y, e),
+            i = t.p2,
+            arr = this.sectorArray;
+          let n = Zi(s.x, s.y, i.x, i.y, e, arr),
             r = this.sectors.drawSectors;
-          for (let s = 0; n.length > s; s += 2) {
-            const i = n[s],
-              o = n[s + 1],
+          for (let s = 0; n > s; s += 2) {
+            const i = arr[s],
+              o = arr[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
@@ -24464,14 +24510,15 @@
           }
         }
         addSceneryLineToTrack(t) {
-          const e = this.settings.drawSectorSize,
+          const arr = this.sectorArray,
+            e = this.settings.drawSectorSize,
             s = t.p1,
             i = t.p2,
-            n = Zi(s.x, s.y, i.x, i.y, e),
+            n = Zi(s.x, s.y, i.x, i.y, e, arr),
             r = this.sectors.drawSectors;
-          for (let s = 0; s < n.length; s += 2) {
-            const i = n[s],
-              o = n[s + 1],
+          for (let s = 0; s < n; s += 2) {
+            const i = arr[s],
+              o = arr[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
@@ -24480,18 +24527,22 @@
         addRef(t, e, s, i, n, r) {
           const o = Qi(t / r),
             a = Qi(e / r);
-          let h = !1;
-          switch (
-            (void 0 === n[o] && (n[o] = []),
-            void 0 === n[o][a] &&
-              ((n[o][a] = new Gi(o, a, this)), (h = n[o][a])),
-            i)
-          ) {
+          let h = !1,
+          S, R;
+          if (!(R = n[o])) {
+            n[o] = [];
+            n[o][a] = S = h = new Gi(o, a, this);
+          } else if (!(S = R[a])) {
+            R[a] = S = h = new Gi(o, a, this);
+          }
+          switch (i) {
             case 1:
-              n[o][a].addLine(s), s.addSectorReference(n[o][a]);
+              S.addLine(s);
+              s.sectors.push(S);
               break;
             case 2:
-              n[o][a].addPowerup(s), s.addSectorReference(n[o][a]);
+              S.addPowerup(s);
+              s.sector = S;
           }
           if (r == this.settings.drawSectorSize) {
             s.layer.sectors.add(n[o][a]);
