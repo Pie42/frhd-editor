@@ -5228,7 +5228,6 @@
                     //desc: r,
                     default_vehicle: i,
                     allowed_vehicles: { MTB: a, BMX: s },
-                    code: c,
                     author: p
                   };
                 this.uploadData = u;
@@ -5603,7 +5602,7 @@
                   n.createElement(
                     "a",
                     { href: s, ref: "trackLink", className: "track-title" },
-                    o
+                    o ? o : "Gallery"
                   ),
                   " was successfully uploaded!"
                 ),

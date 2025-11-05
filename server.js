@@ -159,7 +159,7 @@ async function getUserTrackData(userId) {
         if (e.code === 'ENOENT') {
             console.error(`[Global Lookup] Global metadata file NOT FOUND at ${globalMetadataPath}.`);
         } else {
-             console.error(`[Global Lookup] Error loading or parsing metadata:`, e);
+            console.error(`[Global Lookup] Error loading or parsing metadata:`, e);
         }
         return null;
     }
@@ -170,14 +170,27 @@ async function getUserTrackData(userId) {
         console.log(`[Global Lookup] Slug '${sanitizedUserId}' not found in global metadata.`);
         return null;
     }
+
+    if (!metadata.trackUrl) {
+        console.error(`[Global Lookup] Metadata for '${sanitizedUserId}' is missing trackUrl.`);
+        return null;
+    }
     
-    const trackFilePath = path.join(PERSISTENT_ROOT, `${sanitizedUserId}.txt`);
+    const urlPrefix = '/data/page/';
+    if (!metadata.trackUrl.startsWith(urlPrefix)) {
+        console.error(`[Global Lookup] trackUrl has unexpected format: ${metadata.trackUrl}`);
+        return null;
+    }
+    
+    const relativeTrackPath = metadata.trackUrl.substring(urlPrefix.length);
+    const trackFilePath = path.join(PERSISTENT_ROOT, relativeTrackPath);
+    
     let trackCode = '';
 
     try {
         trackCode = await fsPromises.readFile(trackFilePath, 'utf8');
     } catch (e) {
-        console.error(`[Global Lookup] Error reading track file for ${sanitizedUserId}:`, e);
+        console.error(`[Global Lookup] Error reading track file for ${sanitizedUserId} at path ${trackFilePath}:`, e);
     }
     
     return {
@@ -757,6 +770,7 @@ app.get('/u/:id', async (req, res) => {
                 name: trackData.name,
                 authors: trackData.authors,
                 thumbnail: trackData.thumbnail,
+                trackURL: trackData.trackURL,
                 id: userId,
                 type: 'user'
             });
@@ -798,6 +812,7 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                 name: trackData.name,
                 authors: trackData.authors,
                 thumbnail: trackData.thumbnail,
+                trackURL: trackData.trackURL,
                 id: trackSlug,
                 type: 'page' 
             });
@@ -881,14 +896,11 @@ app.post('/api/upload-track', async (req, res) => {
 
         const tracks = await loadUserTracks(sanitizedPagePath);
         
-        let trackSlug = fileName.split('.').slice(0, -1).join('.');
+        let trackSlug = sanitizedPagePath ? fileName.split('.').slice(0, -1).join('.') : trackMetadata.author;
         
         if (trackSlug !== 'page') {
             trackSlug = trackSlug
                 .toLowerCase()
-                .replace(/\s+/g, '-')
-                .replace(/[^a-z0-9-]+/g, '')
-                .replace(/^-+|-+$/g, '');
         }
 
         const userSegment = sanitizedPagePath ? `/${sanitizedPagePath}` : '';
