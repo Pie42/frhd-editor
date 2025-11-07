@@ -23812,7 +23812,8 @@
         }
 
         static import(l, t) {
-          let layer = new Layer(t);
+          let layer = new Layer(t),
+            b = new TextEncoder();
           layer.name = l.name;
           layer.show = l.show;
           layer.usesDefaultColors = l.defaultColors;
@@ -23826,9 +23827,9 @@
           let code = l.code,
             [physics, scenery, objects] = code.split('#');
           if (physics)
-            t.addLines(physics.split(','), t.addPhysicsLine.bind(t));
+            t.addLines(b.encode(physics), t.addPhysicsLine.bind(t));
           if (scenery)
-            t.addLines(scenery.split(','), t.addSceneryLine.bind(t));
+            t.addLines(b.encode(scenery), t.addSceneryLine.bind(t));
           if (objects)
             t.addPowerups(objects.split(','));
 
@@ -24449,6 +24450,10 @@
                         m = 1;
                     } else if (o == 45) {
                         m = -1;
+                    // periods shouldn't appear in track codes, but handle them without breaking a lot if they do (as they're a reasonable thing to get in e.g. generated tracks) (other improper characters will have unexpected results, however, with the severity depending on what character it is and where)
+                    } else if (o == 46) {
+                        for (; i < s && (o = t[i]) != 32 && o != 44; i++);
+                        i--;
                     } else {
                         a *= 32;
                         a += o - 48;
