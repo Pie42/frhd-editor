@@ -1822,7 +1822,7 @@
               l.sceneryLines = new Set();
               l.objects = new Set();
               delete track.layers[track.layerIndex];
-              track.layerIndex = j;
+              track.setLayerIndex(j);
               track.canvasPool.update();
             },
             deleteLayer: function(e) {
@@ -1833,9 +1833,9 @@
                 l.clear();
                 delete track.layers[track.layerIndex];
                 if (track.layerIndex < track.layers.length - 1) {
-                  track.layerIndex++;
+                  track.setLayerIndex(track.layerIndex + 1);
                 } else {
-                  track.layerIndex--;
+                  track.setLayerIndex(track.layerIndex - 1);
                 }
               }
             },
@@ -1843,7 +1843,7 @@
               //
             },
             switchLayer: function(n) {
-              GameManager.game.currentScene.track.layerIndex = n;
+              GameManager.game.currentScene.track.setLayerIndex(n);
               this.setState({name: GameManager.game.currentScene.track.currentLayer.name});
               this.openLayerList();
             },
@@ -32260,6 +32260,10 @@
                 );
             },
             searchData: function(string) {
+              if (string.length > 200) {
+                this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});
+                return;
+              }
               let tracks = this.state.tracks;
               if (!tracks || !tracks?.length) {
                 this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});

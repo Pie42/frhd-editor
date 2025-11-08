@@ -23822,7 +23822,7 @@
             layer.sceneryLineColor = l.scenColor;
           }
 
-          t.layerIndex = t.layers.push(layer) - 1;
+          t.setLayerIndex(t.layers.push(layer) - 1);
 
           let code = l.code,
             [physics, scenery, objects] = code.split('#');
@@ -24023,11 +24023,12 @@
             // (won't work if all layers are the same color)
             // todo: assess performance impact of layers not getting removed from sectors
             // and fix this to be better if need be
-            if (g[l.sceneryLineColor].length == 0 &&
+            // this breaks undo / redo in certain cases
+            /*if (g[l.sceneryLineColor].length == 0 &&
                 g[l.physicsLineColor].length == 0) {
                   this.layers.delete(l);
                   l.sectors.delete(this);
-                }
+                }*/
           }
             
             (this.settings.developerMode || this.scene.game.mod.getVar("gameData")) &&
@@ -24256,6 +24257,7 @@
             (this.layers = [new Layer(this)]),
             (this.layers[0].name = 'Default'),
             (this.layerIndex = 0),
+            (this.currentLayer = this.layers[0]),
             (this.totalSectors = []),
             (this.powerups = []),
             (this.powerupsLookupTable = {}),
@@ -24267,9 +24269,6 @@
             (this.needsCleaning = !1),
             (this.stampedAreas = []),
             this.createPowerupCache();
-        }
-        get currentLayer() {
-          return this.layers[this.layerIndex] || undefined;
         }
         createPowerupCache() {
           on.push(new ds(0, 0, 0, this)),
@@ -24287,8 +24286,14 @@
         }
         createLayer() {
           this.layers.push(new Layer(this));
-          this.layerIndex = this.layers.length - 1;
+          this.setLayerIndex(this.layers.length - 1);
           this.currentLayer.name = `Layer ${this.layerIndex}`;
+        }
+        setLayerIndex(i) {
+          if (this.layers[i]) {
+            this.layerIndex = i;
+            this.currentLayer = this.layers[i];
+          }
         }
         recachePowerups(t) {
           for (const e of on) e.recache(t);
