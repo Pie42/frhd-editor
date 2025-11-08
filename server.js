@@ -12,8 +12,9 @@ const PAGE_METADATA_FILE = 'page.json';
 // persistent disk mount
 const PERSISTENT_ROOT_DISK = '/var/data'; 
 
-// cr trackcodes location on disk
+// cr trackcodes / thumbnails location on disk
 const CR_TRACKCODES_ROOT = path.join(PERSISTENT_ROOT_DISK, 'cr', 'trackcodes'); 
+const CR_THUMBNAILS_ROOT = path.join(PERSISTENT_ROOT_DISK, 'cr', 'thumbnails'); 
 
 // user uploaded pages path
 const USER_TRACKS_ROOT = '/var/data/page'; 
@@ -21,6 +22,7 @@ const USER_TRACKS_ROOT = '/var/data/page';
 app.use(express.static(path.join(__dirname, '/')));
 app.use('/data/page', express.static(USER_TRACKS_ROOT));
 app.use('/data/cr/trackcodes', express.static(CR_TRACKCODES_ROOT)); // maps /var/data/cr/trackcodes to the public URL /data/cr/trackcodes
+app.use('/data/cr/thumbnails', express.static(CR_THUMBNAILS_ROOT));
 
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -704,18 +706,15 @@ app.get('/discuss.html', async (req, res) => {
         let specificThumbnailFound = false;
     
         const localThumbnailPath = path.join(
-            __dirname,
-            'data',
-            type, 
-            'thumbnails', 
+            CR_THUMBNAILS_ROOT,
             `${numericTrackId}.png`
         );
-    
+
         try {
-            await fsPromises.access(localThumbnailPath); 
-            trackData.thumbnail = `/data/${type}/thumbnails/${numericTrackId}.png`;
+            await fsPromises.access(localThumbnailPath);
+            trackData.thumbnail = `/data/cr/thumbnails/${numericTrackId}.png`;
             specificThumbnailFound = true;
-            
+
         } catch (e) {
             // file does not exist
         }
