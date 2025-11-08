@@ -16251,7 +16251,7 @@ function xc(n, e) {
 
 if (t.includes("freerider.app") && !t.includes("#")) {
 
-    const trackUrlMatch = t.match(/freerider\.app\/(frhd|bhr)\/(\d+)/);
+    const trackUrlMatch = t.match(/freerider\.app\/(frhd|bhr|cr)\/(\d+)/);
     const userUrlMatch = t.match(/freerider\.app\/u\/([^/?#]+)(?:\/([^/?#]+))?/i);
     const hashMatch = t.match(/#(.+)$/); // Existing hash logic
 
