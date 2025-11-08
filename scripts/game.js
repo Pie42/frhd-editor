@@ -24550,8 +24550,8 @@
               s.sector = S;
           }
           if (r == this.settings.drawSectorSize) {
-            s.layer.sectors.add(n[o][a]);
-            n[o][a].layers.add(s.layer);
+            s.layer.sectors.add(S);
+            S.layers.add(s.layer);
           }
           return (this.dirty = !0), h;
         }
