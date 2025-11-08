@@ -7,14 +7,23 @@ const path = require('path');
 const ejs = require('ejs');
 
 const PORT = 3000;
-const MAX_ID = 1100000;
+const MAX_ID = 1500000;
 const PAGE_METADATA_FILE = 'page.json';
-const PERSISTENT_ROOT = '/var/data/page';
+// persistent disk mount
+const PERSISTENT_ROOT_DISK = '/var/data'; 
+
+// cr trackcodes location on disk
+const CR_TRACKCODES_ROOT = path.join(PERSISTENT_ROOT_DISK, 'cr', 'trackcodes'); 
+
+// user uploaded pages path
+const USER_TRACKS_ROOT = '/var/data/page'; 
 
 app.use(express.static(path.join(__dirname, '/')));
-app.use('/data/page', express.static(PERSISTENT_ROOT));
+app.use('/data/page', express.static(USER_TRACKS_ROOT));
+app.use('/data/cr/trackcodes', express.static(CR_TRACKCODES_ROOT)); // maps /var/data/cr/trackcodes to the public URL /data/cr/trackcodes
 
 app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 const trackTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/track.ejs'), 'utf8'));
 const discussTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/discuss.ejs'), 'utf8'));
@@ -68,6 +77,56 @@ function loadBhrMetadata() {
 }
 
 loadBhrMetadata();
+
+let crMetadata = [];
+const CR_METADATA_PATH = path.join(__dirname, 'data', 'cr', 'tracks.csv');
+
+function loadCrMetadata() {
+    try {
+        console.log(`bhr - loading metadata from: ${CR_METADATA_PATH}`);
+        const csvContent = fs.readFileSync(CR_METADATA_PATH, 'utf8').trim();
+        
+        const lines = csvContent.split('\n');
+        if (lines.length < 2) {
+            console.warn('cr - metadata CSV file is empty or missing header.');
+            return;
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim());
+        const dataRows = lines.slice(1);
+        
+        const parsedData = dataRows.map(line => {
+            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"|"$/g, ''));
+            
+            if (values.length !== headers.length) {
+                console.warn(`cr - skipping line due to column mismatch: ${line}`);
+                return null;
+            }
+
+            const track = {};
+            headers.forEach((header, index) => {
+                const value = (header === 'id' || header === 'upvotes' || header === 'downvotes' || header === 'favorites')
+                    ? parseInt(values[index], 10)
+                    : values[index];
+                track[header] = value;
+            });
+            return track;
+        }).filter(t => t !== null);
+
+        crMetadata = parsedData;
+        console.log(`cr - successfully loaded ${crMetadata.length} tracks.`);
+        
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            console.error(`cr - metadata file not found at ${CR_METADATA_PATH}. Using empty array.`);
+        } else {
+            console.error('cr - failed to load or parse CR metadata CSV:', e.message);
+        }
+        crMetadata = [];
+    }
+}
+
+loadCrMetadata();
 
 const validateId = (id) => {
     const trackId = parseInt(id, 10);
@@ -136,6 +195,32 @@ async function getBhrTrackData(trackId) {
     };
 }
 
+async function getCrTrackData(trackId) {
+    const metadata = crMetadata.find(t => t.id === trackId);
+
+    if (!metadata) {
+        console.log(`[CR] Metadata not found for ID ${trackId}.`);
+        return null;
+    }
+
+    const codePath = path.join(CR_TRACKCODES_ROOT, `${trackId}.txt`);
+    
+    let trackCode = '';
+    
+    try {
+        trackCode = fs.readFileSync(codePath, 'utf8').trim();
+    } catch (e) {
+        console.error(`[CR] Failed to read track code file ${codePath}. Track may be invalid or file missing.`, e);
+    }
+
+    return {
+        id: metadata.id,
+        name: metadata.name,
+        authors: metadata.username,
+        code: trackCode
+    };
+}
+
 function sanitizePath(inputPath) {
     if (!inputPath) return '';
     let cleanPath = path.normalize(inputPath).replace(/^(\.\.(\/|\\|$))+/, '');
@@ -150,7 +235,7 @@ async function getUserTrackData(userId) {
         return null;
     }
 
-    const globalMetadataPath = path.join(PERSISTENT_ROOT, PAGE_METADATA_FILE);
+    const globalMetadataPath = path.join(USER_TRACKS_ROOT, PAGE_METADATA_FILE);
     let tracks = [];
     try {
         const data = await fsPromises.readFile(globalMetadataPath, 'utf8');
@@ -183,7 +268,7 @@ async function getUserTrackData(userId) {
     }
     
     const relativeTrackPath = metadata.trackUrl.substring(urlPrefix.length);
-    const trackFilePath = path.join(PERSISTENT_ROOT, relativeTrackPath);
+    const trackFilePath = path.join(USER_TRACKS_ROOT, relativeTrackPath);
     
     let trackCode = '';
 
@@ -214,7 +299,7 @@ async function getPageTrackData(userId, trackSlug) {
         return null;
     }
 
-    const globalMetadataPath = path.join(PERSISTENT_ROOT, sanitizedUserId, PAGE_METADATA_FILE);
+    const globalMetadataPath = path.join(USER_TRACKS_ROOT, sanitizedUserId, PAGE_METADATA_FILE);
     let tracks = [];
     try {
         const data = await fsPromises.readFile(globalMetadataPath, 'utf8');
@@ -235,7 +320,7 @@ async function getPageTrackData(userId, trackSlug) {
         return null;
     }
     
-    const trackFilePath = path.join(PERSISTENT_ROOT, sanitizedUserId, `${trackSlug}.txt`);
+    const trackFilePath = path.join(USER_TRACKS_ROOT, sanitizedUserId, `${trackSlug}.txt`);
     let trackCode = '';
 
     try {
@@ -261,7 +346,7 @@ async function getPageTrackData(userId, trackSlug) {
 }
 
 async function loadUserTracks(sanitizedPagePath) {
-    const metadataPath = path.join(PERSISTENT_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
+    const metadataPath = path.join(USER_TRACKS_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
     try {
         const data = await fsPromises.readFile(metadataPath, 'utf8');
         return JSON.parse(data);
@@ -275,9 +360,9 @@ async function loadUserTracks(sanitizedPagePath) {
 }
 
 async function saveUserTracks(sanitizedPagePath, tracks) {
-    const metadataPath = path.join(PERSISTENT_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
+    const metadataPath = path.join(USER_TRACKS_ROOT, sanitizedPagePath, PAGE_METADATA_FILE);
     try {
-        const targetDir = path.join(PERSISTENT_ROOT, sanitizedPagePath);
+        const targetDir = path.join(USER_TRACKS_ROOT, sanitizedPagePath);
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
         }
@@ -287,7 +372,7 @@ async function saveUserTracks(sanitizedPagePath, tracks) {
     }
 }
 
-const GLOBAL_METADATA_PATH = path.join(PERSISTENT_ROOT, PAGE_METADATA_FILE);
+const GLOBAL_METADATA_PATH = path.join(USER_TRACKS_ROOT, PAGE_METADATA_FILE);
 
 async function loadGlobalTrackData() {
     try {
@@ -307,11 +392,11 @@ async function saveGlobalTrackData(data) {
 
 async function ensurePersistentRootExists() {
     try {
-        await fsPromises.mkdir(PERSISTENT_ROOT, { recursive: true });
-        console.log(`[Init] Ensured persistent root directory exists: ${PERSISTENT_ROOT}`);
+        await fsPromises.mkdir(USER_TRACKS_ROOT, { recursive: true });
+        console.log(`[Init] Ensured persistent root directory exists: ${USER_TRACKS_ROOT}`);
     } catch (e) {
         if (e.code !== 'EEXIST') {
-            console.error(`ERROR: Could not create persistent root directory ${PERSISTENT_ROOT}: ${e.message}`);
+            console.error(`ERROR: Could not create persistent root directory ${USER_TRACKS_ROOT}: ${e.message}`);
             throw e; 
         }
     }
@@ -351,7 +436,7 @@ async function initializeUserProfile(userId) {
         globalData.push(newProfileData);
         await saveGlobalTrackData(globalData);
 
-        const targetDir = path.join(PERSISTENT_ROOT, sanitizedUserId);
+        const targetDir = path.join(USER_TRACKS_ROOT, sanitizedUserId);
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
         }
@@ -453,7 +538,7 @@ app.get('/discuss.html', async (req, res) => {
         }
     }
     // B. track discussion (requires numeric ID for fetching)
-    else if (['frhd', 'bhr', 'tracks'].includes(type)) {
+    else if (['frhd', 'bhr', 'cr', 'tracks'].includes(type)) {
 
     const numericTrackId = parseInt(identifier, 10);
         
@@ -604,7 +689,45 @@ app.get('/discuss.html', async (req, res) => {
         } else {
             trackData.name = `BHR Track #${numericTrackId} Discussion (Not Found)`;
         }
-    } 
+    } else if (type === 'cr') {
+    const metadata = crMetadata.find(t => t.id === numericTrackId);
+
+    if (metadata) {
+        trackData.name = metadata.name || trackData.name;
+        trackData.authors = metadata.username || 'Unknown';
+        trackData.description = metadata.description || trackData.description;
+        trackData.size = metadata.size ? formatSize(parseInt(metadata.size, 10)) : trackData.size; 
+        trackData.published = metadata.published_at 
+            ? new Date(metadata.published_at).toLocaleDateString()
+            : trackData.published;
+
+        let specificThumbnailFound = false;
+    
+        const localThumbnailPath = path.join(
+            __dirname,
+            'data',
+            type, 
+            'thumbnails', 
+            `${numericTrackId}.png`
+        );
+    
+        try {
+            await fsPromises.access(localThumbnailPath); 
+            trackData.thumbnail = `/data/${type}/thumbnails/${numericTrackId}.png`;
+            specificThumbnailFound = true;
+            
+        } catch (e) {
+            // file does not exist
+        }
+    
+        if (!specificThumbnailFound && metadata.thumbnail_url) {
+             trackData.thumbnail = metadata.thumbnail_url;
+        }
+        
+    } else {
+        trackData.name = `CR Track #${numericTrackId} Discussion (Not Found)`;
+    }
+} 
         }}
 
     if (json === 'true') {
@@ -743,7 +866,51 @@ app.get('/bhr/:id', async (req, res) => {
     res.status(200).send(renderedHtml);
 });
 
+app.get('/cr/:id', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
 
+    let trackData = { id: trackId, name: `CR Track #${trackId}`, authors: 'Unknown', code: '', type: 'cr' };
+
+    try {
+        const fetchedData = await getCrTrackData(trackId); 
+
+        if (fetchedData) {
+            // merge fetched data, keep 'type'
+            trackData = { ...fetchedData, type: 'cr' };
+        } else {
+            console.error(`cr track ${trackId} not found`);
+            trackData.name = `CR track #${trackId} not found`;
+        }
+
+    } catch (error) {
+        console.error(`cr track ${trackId} error`, error);
+        trackData.name = `CR track #${trackId} error`;
+    }
+
+    if (req.query.json === 'true') {
+        // send data as json for hyvor
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type
+        });
+    }
+    
+    const trackFileUrl = `/data/cr/trackcodes/${trackId}.txt`;
+
+    const renderedHtml = trackTemplate({
+        trackId: trackId,
+        trackType: 'cr',
+        track: { ...trackData } 
+    });
+
+
+    res.status(200).send(renderedHtml);
+});
 
 /*
 // D. fr.app /tracks route: /tracks/:id
@@ -861,7 +1028,7 @@ app.post('/api/upload-track', async (req, res) => {
             }
         }
 
-        const targetDir = path.join(PERSISTENT_ROOT, sanitizedPagePath);
+        const targetDir = path.join(USER_TRACKS_ROOT, sanitizedPagePath);
 
         if (!fs.existsSync(targetDir)) {
             fs.mkdirSync(targetDir, { recursive: true });
