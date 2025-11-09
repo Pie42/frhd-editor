@@ -10224,7 +10224,10 @@
             }
             checkForConnectedLine(t, e) {
               // should give significant speedups
-              const sector = t.sectors.physicsSectors[Math.floor(e.x / t.settings.physicsSectorSize)][Math.floor(e.y / t.settings.physicsSectorSize)];
+              let row = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)];
+              if (!row) return false;
+              let sector = row[Math.floor(e.y / t.settings.drawSectorSize)];
+              if (!sector) return false;
               const s = sector.physicsLines.indexOf(this);
               if (s + 1 === sector.physicsLines.length) return !1;
               const i = sector.physicsLines[s + 1];
@@ -10347,7 +10350,10 @@
           }
           checkForConnectedLine(t, e) {
             // should give significant speedups
-            let sector = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)][Math.floor(e.y / t.settings.drawSectorSize)];
+            let row = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)];
+            if (!row) return false;
+            let sector = row[Math.floor(e.y / t.settings.drawSectorSize)];
+            if (!sector) return false;
             const s = sector.sceneryLines.indexOf(this);
             if (s + 1 === sector.sceneryLines.length) return !1;
             const i = sector.sceneryLines[s + 1];
@@ -23517,7 +23523,31 @@
         Vi = s(578),
         Hi = s(301),
         Ni = s.n(Hi);
+      // sort points so all lines are going down and right before calling the actual function
       function Zi(t, e, s, a, h, l) {
+        if (t > s && e > a) {
+          let r = _Zi(-t, -e, -s, -a, h, l);
+          for (let i = 0; i < r; i++)
+            l[i] = -l[i] - 1;
+          return r;
+        }
+        if (t > s) {
+          let r = _Zi(-t, e, -s, a, h, l);
+          for (let i = 0; i < r; i += 2) {
+              l[i] = -l[i] - 1;
+          }
+          return r;
+        }
+        if (e > a) {
+            let r = _Zi(t, -e, s, -a, h, l);
+            for (let i = 1; i < r; i += 2) {
+                l[i] = -l[i] - 1;
+            }
+            return r;
+        }
+        return _Zi(t, e, s, a, h, l);
+      }
+      function _Zi(t, e, s, a, h, l) {
         // rewritten to take in an array reference in l that it overwrites, and returns the number of things it added (= the 'length' of l)
         // this avoids so many allocations and deallocations
         var i = Math.round,
@@ -23526,23 +23556,6 @@
             o = Math.pow;
         let lw = 1,
           I = 0;
-        // sort points based on x (lines going left are degenerate)
-        if (t > s) {
-            let tt = t,
-                ee = e;
-            t = s;
-            e = a;
-            s = tt;
-            a = ee;
-        }
-        // lines going up and right are degenerate, so handle them by pretending they're going down and right :P
-        if (e > a) {
-            let r = Zi(t, -e, s, -a, h, l);
-            for (let i = 1; i < r; i += 2) {
-                l[i] = -l[i] - 1;
-            }
-            return r;
-        }
         var c = t,
             u = e,
             d = (a - e) / (s - t),
@@ -24253,7 +24266,7 @@
             (this.sectors = {}),
             (this.sectors.drawSectors = []),
             (this.sectors.physicsSectors = []),
-            (this.sectorArray = Array(20000)),
+            (this.sectorArray = Array(20012)),
             (this.layers = [new Layer(this)]),
             (this.layers[0].name = 'Default'),
             (this.layerIndex = 0),
