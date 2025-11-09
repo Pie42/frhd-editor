@@ -5134,6 +5134,8 @@
                 uploading: !1,
                 uploadComplete: !1,
                 copyButtonText: "Copy link",
+                collaborators: [],
+                currentCollaboratorInput: "",
                 trackUrl: "",
               };
             },
@@ -5159,6 +5161,40 @@
               (o.style.color = 0 >= r ? "#E5302F" : "#595959"),
                 this.setState({ descCharCountLeft: r }),
                 this.checkEnableUpload();
+            },
+            onCollaboratorsChange: function (event) {
+                var rawText = event.target.value;
+                var collaborators = this.state.collaborators.slice();
+                var currentInput = rawText;
+                
+                var lastChars = rawText.slice(-2); 
+
+                if (rawText.length > 2 && lastChars === ", ") {
+                    var name = rawText.substring(0, rawText.length - 2).trim();
+
+                    if (name.length > 0 && collaborators.indexOf(name) === -1) {
+                        collaborators.push(name);
+                    }
+                    
+                    currentInput = ""; 
+                }
+                
+                this.setState({ 
+                    collaborators: collaborators,
+                    currentCollaboratorInput: currentInput
+                });
+            },
+            onRemoveCollaborator: function (name) {
+                var collaborators = this.state.collaborators.filter(function (c) {
+                    return c !== name;
+                });
+                this.setState({ collaborators: collaborators });
+            },
+            onCollaboratorsKeyDown: function (e) {
+                if (e.key === 'Backspace' && e.target.value === '' && this.state.collaborators.length > 0) {
+                    e.preventDefault();
+                    this.onRemoveCollaborator(this.state.collaborators[this.state.collaborators.length - 1]);
+                }
             },
             checkEnableUpload: function () {
               var e = this.refs,
@@ -5204,7 +5240,8 @@
               var p = GameSettings.id;
 
               var t = this.refs,
-                n = t.trackTitle.getDOMNode().value;
+                n = t.trackTitle.getDOMNode().value,
+                r = t.trackDesc.getDOMNode().value;
 
               const pagePath = n.trim() ? `${GameSettings.id}` : "";
               
@@ -5221,15 +5258,19 @@
                   a = e.vehiclesAllowed.mtb,
                   s = e.vehiclesAllowed.bmx,
                   l = this.props.options,
-                  c = l.code,
-                  
-                  u = {
-                    name: n,
-                    //desc: r,
-                    default_vehicle: i,
-                    allowed_vehicles: { MTB: a, BMX: s },
-                    author: p
-                  };
+                  c = l.code;
+
+                let allAuthors = [p].concat(e.collaborators).filter((value, index, self) => self.indexOf(value) === index);
+                const authorsString = allAuthors.join(', ');
+
+                var u = {
+                  name: n,
+                  desc: r,
+                  default_vehicle: i,
+                  allowed_vehicles: { MTB: a, BMX: s },
+                  author: p,
+                  all_authors: authorsString
+                };
                 this.uploadData = u;
 
                 try {
@@ -5409,7 +5450,52 @@
                       })
                     )
                   ),
-                  /*n.createElement(
+                  n.createElement(
+                    "div",
+                    { className: "ud-form-input" },
+                    n.createElement(
+                      "span",
+                      { className: "title" },
+                      "Collaborators: "
+                    ),
+                    n.createElement(
+                      "span",
+                      { className: "input-desc" },
+                      "(separate names with a comma and a space)"
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: "collaborators-container ud-form-text-input" },
+                      this.state.collaborators.map(function (c) {
+                        return n.createElement(
+                          "span",
+                          {
+                            key: c,
+                            className: "collaborator-chip",
+                            onClick: this.onRemoveCollaborator.bind(this, c)
+                          },
+                          c,
+                          n.createElement("span", { className: "remove-x" }, " \u00D7")
+                        );
+                      }.bind(this)),
+                      n.createElement("input", {
+                        type: "text",
+                        value: this.state.currentCollaboratorInput,
+                        onChange: this.onCollaboratorsChange,
+                        onKeyDown: this.onCollaboratorsKeyDown,
+                        maxLength: 50,
+                        className: "collaborator-active-input",
+                        ref: "activeCollaboratorInput"
+                      }),
+                      n.createElement("input", {
+                        type: "hidden",
+                        value: this.state.collaborators.join(', '),
+                        name: "track-collaborators",
+                        ref: "trackCollaborators"
+                      })
+                    )
+                  ),
+                  n.createElement(
                     "div",
                     { className: "ud-form-input" },
                     n.createElement(
@@ -5443,7 +5529,7 @@
                         name: "trackDesc",
                       })
                     )
-                  ),*/
+                  ),
                   n.createElement(
                     "div",
                     { className: "ud-form-input" },
@@ -5488,10 +5574,10 @@
                         },
                         n.createElement(
                           "option",
-                          { value: "MTB" },
-                          "Mountain Bike"
+                          { value: "BMX" },
+                          "BMX Bike"
                         ),
-                        n.createElement("option", { value: "BMX" }, "BMX Bike")
+                        n.createElement("option", { value: "MTB" }, "Mountain Bike")
                       )
                     ),
                     /*n.createElement(

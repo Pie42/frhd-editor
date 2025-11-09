@@ -3233,3 +3233,44 @@ only screen and (min-device-pixel-ratio:3) {
     border-top: none;
     border-width: 1px;
 }
+
+.collaborators-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 2px;
+    height: auto;
+}
+
+.collaborator-chip {
+    display: flex;
+    align-items: center;
+    background-color: #eee;
+    color: #1883cf;
+    border-radius: 11px;
+    padding: 4px 8px;
+    margin: 4px 4px 4px 2px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+}
+
+.collaborator-chip:hover {
+    background-color: #ccc;
+}
+
+.collaborator-chip .remove-x {
+    margin-left: 5px;
+    font-weight: bold;
+    color: #CC0000;
+}
+
+.collaborator-active-input {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: .5em;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 50px;
+}

@@ -287,7 +287,7 @@ async function getUserTrackData(userId) {
         code: trackCode.trim(),
         type: 'user',
         size: formatSize(trackCode.length),
-        description: metadata.metadata?.description || '',
+        description: metadata.description || '',
         published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
         thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
         sourceUrl: metadata.trackUrl
@@ -338,7 +338,7 @@ async function getPageTrackData(userId, trackSlug) {
         code: trackCode.trim(),
         type: 'page',
         size: formatSize(trackCode.length),
-        description: metadata.metadata?.description || '',
+        description: metadata.description || '',
         published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
         thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
         sourceUrl: metadata.trackUrl,
@@ -937,6 +937,7 @@ app.get('/u/:id', async (req, res) => {
                 authors: trackData.authors,
                 thumbnail: trackData.thumbnail,
                 trackURL: trackData.trackURL,
+                description: trackData.description,
                 id: userId,
                 type: 'user'
             });
@@ -979,6 +980,7 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                 authors: trackData.authors,
                 thumbnail: trackData.thumbnail,
                 trackURL: trackData.trackURL,
+                description: trackData.description,
                 id: trackSlug,
                 type: 'page' 
             });
@@ -1082,7 +1084,8 @@ app.post('/api/upload-track', async (req, res) => {
         const newTrack = {
             slug: trackSlug,
             name: trackMetadata.name,
-            authors: trackMetadata.author, 
+            authors: trackMetadata.all_authors,
+            description: trackMetadata.desc,
             trackUrl: trackUrl,
             imageUrl: imageUrl,
             metadata: trackMetadata,
