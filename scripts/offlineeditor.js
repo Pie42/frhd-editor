@@ -33151,25 +33151,32 @@
                     });
                 return;
             }
-            
-            if (trackType === 'frhd') {
-                // Fetch BHR track
-                fetch(`https://freerider.app/data/frhd/trackcodes/${trackId}.txt`)
-                    .then((response) => {
-                        if (!response.ok) throw new Error("FRHD track not found");
-                        return response.text();
-                    })
-                    .then((code) => {
-                        console.log("FRHD Track data fetched:", code);
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = `FRHD Track #${trackId}`;
-                        this.updateNowPlaying({ "track-name": `FRHD Track #${trackId}` });
-                    })
-                    .catch((error) => {
-                        console.error("Failed to load FRHD track:", error);
-                    });
-                return;
-            }
+
+          if (trackType === 'frhd') {
+            fetch(`https://freerider.app/frhd/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("FRHD track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("FRHD metadata fetched:", metadata);
+
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("FRHD Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load FRHD track:", error);
+              });
+            return;
+          }
 
             // Original logic for user tracks and other types
             const fetchUrl = trackType === 'user'
