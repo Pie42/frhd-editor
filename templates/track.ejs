@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>free rider - draw</title>
+    <!--<title>free rider - draw</title>-->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
 
@@ -55,6 +55,8 @@
     GameSettings.permalink = "<%= track.permalink || '' %>";
     GameSettings.published = "<%= track.published || '' %>";
     GameSettings.size = "<%= track.size || '' %>";
+
+    document.title = "<%= track.name %>" || "free rider - draw";
 
     if (GameSettings.authors === "thefunkymonkie" || GameSettings.authors === "Ness") {
     GameSettings.beta = true;

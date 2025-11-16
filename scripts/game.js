@@ -24728,7 +24728,7 @@
             message.show(trackName, !1, "#000000", "#FFFFFF");
             setTimeout(() => {
               message.hide();
-            }, 1500);
+            }, 5000);
           };
 
 showMessage();

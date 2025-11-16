@@ -32936,8 +32936,138 @@
             hasUnsavedChanges() {
               return (GameManager.game.currentScene.toolHandler.actionTimeline.length > 0);
             },
+            loadTrackFromState(trackType, trackId) {
+              console.log(`[PopState] Loading track: ${trackType}/${trackId}`);
+
+              if (trackType === 'cr') {
+                fetch(`/cr/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("CR track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `CR Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: trackId,
+                          name: metadata.name || `CR Track #${trackId}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || ''
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load CR track ${trackId}:`, error);
+                  });
+                return;
+              }
+
+              if (trackType === 'bhr') {
+                fetch(`/bhr/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("BHR track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `BHR Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: trackId,
+                          name: metadata.name || `BHR Track #${trackId}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || ''
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load BHR track ${trackId}:`, error);
+                  });
+                return;
+              }
+
+              if (trackType === 'frhd') {
+                fetch(`/frhd/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("FRHD track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `FRHD Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: trackId,
+                          name: metadata.name || `FRHD Track #${trackId}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || ''
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load FRHD track ${trackId}:`, error);
+                  });
+                return;
+              }
+            },
             addImportListener() {
-    window.addEventListener("message", (event) => {
+              window.addEventListener('popstate', (event) => {
+                console.log('[PopState] Event triggered:', event.state);
+
+                if (event.state && event.state.trackId && event.state.trackType) {
+                  const { trackId, trackType } = event.state;
+                  console.log(`[PopState] Loading ${trackType} track ${trackId}`);
+                  this.loadTrackFromState(trackType, trackId);
+                } else {
+                  const path = window.location.pathname;
+                  const match = path.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+
+                  if (match) {
+                    const trackType = match[1];
+                    const trackId = parseInt(match[2], 10);
+                    console.log(`[PopState] No state data, loading from URL: ${trackType}/${trackId}`);
+                    this.loadTrackFromState(trackType, trackId);
+                  } else {
+                    console.log('[PopState] Navigating to default state');
+                    GameManager.command("clear");
+                    GameSettings.trackName = "";
+                    document.title = "Free Rider";
+                    this.updateNowPlaying(null);
+                  }
+                }
+              });
+              window.addEventListener("message", (event) => {
 
     if (event.data.action === "linkClicked") {
         console.log("clicked link:", event.data.url, event.data.name);
@@ -32969,16 +33099,16 @@
             }
 
             let trackName = "";
-            let trackType = null; // NEW: Track what type of track this is
-            let trackId = null;   // NEW: Store numeric ID for CR/BHR/FRHD
+            let trackType = null;
+            let trackId = null;
 
             if (hostname === "freerider.app" && hash) {
                 trackName = hash.substring(1);
             } 
-            // NEW: Handle /cr/, /bhr/, /frhd/ links
+
             else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
                 const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
-                trackType = match[1]; // 'cr', 'bhr', or 'frhd'
+                trackType = match[1];
                 trackId = parseInt(match[2], 10);
                 trackName = `${trackType}-${trackId}`;
             }
@@ -32987,7 +33117,7 @@
                 trackName = parts[0];
             } 
             else if (hostname === "freerider.app" && pathname.startsWith("/u/")) {
-                trackName = pathname.substring(3); // e.g., "ness/jon312-a-retrospective"
+                trackName = pathname.substring(3);
                 trackType = 'user';
             } 
             else if (hostname === "k333892.invisionservice.com") {
@@ -33043,6 +33173,21 @@
                     console.log("CR Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `CR Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
 
                     this.updateNowPlaying({
                       id: trackId,
@@ -33081,6 +33226,21 @@
                     console.log("BHR Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `BHR Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
 
                     this.updateNowPlaying({
                       id: trackId,
@@ -33119,6 +33279,21 @@
                     console.log("FRHD Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `FRHD Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
 
                     this.updateNowPlaying({
                       id: trackId,
