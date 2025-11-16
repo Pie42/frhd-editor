@@ -33113,44 +33113,67 @@
             trackName = decodeURIComponent(trackName);
             GameSettings.trackName = trackName;
 
-            // NEW: Handle different track types
-            if (trackType === 'cr') {
-                // Fetch CR track
-                fetch(`/data/cr/trackcodes/${trackId}.txt`)
-                    .then((response) => {
-                        if (!response.ok) throw new Error("CR track not found");
-                        return response.text();
-                    })
-                    .then((code) => {
-                        console.log("CR Track data fetched:", code);
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = `CR Track #${trackId}`;
-                        this.updateNowPlaying({ "track-name": `CR Track #${trackId}` });
-                    })
-                    .catch((error) => {
-                        console.error("Failed to load CR track:", error);
+          if (trackType === 'cr') {
+            fetch(`https://freerider.app/cr/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("CR track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("CR metadata fetched:", metadata);
+
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("CR Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                    this.updateNowPlaying({
+                      "track-name": metadata.name,
+                      creator: metadata.authors
                     });
-                return;
-            }
-            
-            if (trackType === 'bhr') {
-                // Fetch BHR track
-                fetch(`/data/bhr/trackcodes/${trackId}.txt`)
-                    .then((response) => {
-                        if (!response.ok) throw new Error("BHR track not found");
-                        return response.text();
-                    })
-                    .then((code) => {
-                        console.log("BHR Track data fetched:", code);
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = `BHR Track #${trackId}`;
-                        this.updateNowPlaying({ "track-name": `BHR Track #${trackId}` });
-                    })
-                    .catch((error) => {
-                        console.error("Failed to load BHR track:", error);
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load CR track:", error);
+              });
+            return;
+          }
+
+          if (trackType === 'bhr') {
+            // Fetch JSON to get metadata
+            fetch(`https://freerider.app/bhr/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("BHR track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("BHR metadata fetched:", metadata);
+
+                // Fetch the trackcode
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("BHR Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                    this.updateNowPlaying({
+                      "track-name": metadata.name,
+                      creator: metadata.authors
                     });
-                return;
-            }
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load BHR track:", error);
+              });
+            return;
+          }
 
           if (trackType === 'frhd') {
             fetch(`https://freerider.app/frhd/${trackId}?json=true`)
@@ -33170,6 +33193,10 @@
                     console.log("FRHD Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                    this.updateNowPlaying({
+                      "track-name": metadata.name,
+                      creator: metadata.authors
+                    });
                   });
               })
               .catch((error) => {
