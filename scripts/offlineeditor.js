@@ -33006,7 +33006,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = GameSettings.beta ? `https://community.freerider.app/` : (GameSettings.type
+                iframe.src = GameSettings.beta ? `https://community.freerider.app/feed/` : (GameSettings.type
                   ? (GameSettings.type === 'user')
                     // Case 1: /u/ness
                     ? `/u/${GameSettings.id}?discuss=true`
@@ -33026,166 +33026,246 @@
             },
             addImportListener() {
     window.addEventListener("message", (event) => {
-        if (event.data.action === "linkClicked") {
-            console.log("clicked link:", event.data.url, event.data.name);
 
-            let proceedWithImport = true;
+    if (event.data.action === "linkClicked") {
+        console.log("clicked link:", event.data.url, event.data.name);
 
-            const url = event.data.url;
-            // Kept original validUrlPattern commented out
-            /*const validUrlPattern = /^https?:\/\/(www\.)?freerider\.app\/(cr|bhr|frhd|u)(\/[\w-]+)+\/?$*/
+        let proceedWithImport = true;
 
-            if (this.hasUnsavedChanges()) {
-                // IMPORTANT: Replaced window.confirm() with a console warning as alert/confirm are forbidden.
-                // In a real application, this should use a custom modal UI.
-                const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
-                console.warn(confirmationMessage);
-                // For demonstration, we assume confirmation is always true to proceed, 
-                // but this must be handled via a custom UI in production.
+        const url = event.data.url;
+
+        if (this.hasUnsavedChanges()) {
+            const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
+            console.warn(confirmationMessage);
+        }
+
+        try {
+            const url = new URL(event.data.url);
+            const { hostname, pathname, hash } = url;
+
+            const validHostnames = [
+                "freerider.app",
+                "freeriderhd.com",
+                "www.freeriderhd.com",
+                "frhd.co",
+                "k333892.invisionservice.com",
+                "gofile.io",
+            ];
+
+            if (!validHostnames.includes(hostname)) {
+                console.warn("invalid URL hostname:", hostname);
             }
 
-            // Since we can't use window.confirm, we bypass the check here for snippet completeness
-            // but note the real-world requirement for a custom modal.
-            /*if (proceedWithImport === false) {
-                return;
-            }*/
+            let trackName = "";
+            let trackType = null; // NEW: Track what type of track this is
+            let trackId = null;   // NEW: Store numeric ID for CR/BHR/FRHD
 
-            try {
-                const url = new URL(event.data.url);
-                const { hostname, pathname, hash } = url;
+            if (hostname === "freerider.app" && hash) {
+                trackName = hash.substring(1);
+            } 
+            // NEW: Handle /cr/, /bhr/, /frhd/ links
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
+                const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+                trackType = match[1]; // 'cr', 'bhr', or 'frhd'
+                trackId = parseInt(match[2], 10);
+                trackName = `${trackType}-${trackId}`;
+            }
+            else if (pathname.startsWith("/t/")) {
+                const parts = pathname.split("/t/")[1].split("-");
+                trackName = parts[0];
+            } 
+            else if (hostname === "freerider.app" && pathname.startsWith("/u/")) {
+                trackName = pathname.substring(3); // e.g., "ness/jon312-a-retrospective"
+                trackType = 'user';
+            } 
+            else if (hostname === "k333892.invisionservice.com") {
+                const parts = pathname.split("/free-rider/")[1].split("/");
+                trackName = parts[0];
+            }
 
-                const validHostnames = [
-                    "freerider.app",
-                    "freeriderhd.com",
-                    "www.freeriderhd.com",
-                    "frhd.co",
-                    "k333892.invisionservice.com",
-                    "gofile.io",
-                ];
+            if (hostname.endsWith(".gofile.io")) {
+                console.log("Processing Gofile.io URL directly");
 
-                if (!validHostnames.includes(hostname)) {
-                    console.warn("invalid URL hostname:", hostname);
-                }
-
-                let trackName = "";
-                let isPageTrack = false; // Flag to determine fetch path
-
-                if (hostname === "freerider.app" && hash) {
-                    trackName = hash.substring(1);
-                } else if (pathname.startsWith("/t/")) {
-                    const parts = pathname.split("/t/")[1].split("-");
-                    trackName = parts[0];
-                } else if (hostname === "freerider.app" && pathname.startsWith("/u/")) {
-                    // NEW: Logic for /u/ links
-                    trackName = pathname.substring(3); // e.g., "ness/jon312-a-retrospective"
-                    isPageTrack = true;
-                } else if (hostname === "k333892.invisionservice.com") {
-                    const parts = pathname.split("/free-rider/")[1].split("/");
-                    trackName = parts[0];
-                }
-
-                if (hostname.endsWith(".gofile.io")) {
-                    console.log("Processing Gofile.io URL directly");
-
-                    fetch(event.data.url)
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error("Gofile fetch failed.");
-                            }
-                            return response.text();
-                        })
-                        .then((data) => {
-                            console.log("Track data fetched from Gofile:", data);
-                            GameManager.command("import", data, true);
-                            GameSettings.trackName = event.data.name || "untitled";
-                            this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
-
-                        })
-                        .catch((error) => {
-                            console.error("Failed to load Gofile track.", error);
-                        });
-
-                    return;
-                }
-
-                if (!trackName || trackName.includes("../") || trackName.length > 40) {
-                    return;
-                }
-
-                trackName = decodeURIComponent(trackName);
-
-                trackName = decodeURIComponent(trackName);
-                GameSettings.trackName = trackName;
-                GameManager.command("import", trackName, true);
-
-                // Determine fetch URL based on the track type
-                const fetchUrl = isPageTrack
-                    ? `data/page/${trackName}.txt` // Use /page/ for /u/ links
-                    : `assets/tracks/${trackName}.txt`; // Use assets/tracks/ for others
-                    
-                fetch(fetchUrl)
+                fetch(event.data.url)
                     .then((response) => {
-                        if (!response.ok)
-                            throw new Error("No track ID found, loading as track code.");
+                        if (!response.ok) {
+                            throw new Error("Gofile fetch failed.");
+                        }
                         return response.text();
                     })
                     .then((data) => {
-                        if (data) {
-                            console.log("Track data fetched:", data);
-                            GameManager.command("import", data, true);
-                            GameSettings.trackName = `${trackName}.txt`;
-
-                            return fetch("assets/tracks/tracklist-data.json");
-                        } else {
-                            console.error("No track data found.");
-                        }
-                    })
-                    .then((res) => (res ? res.json() : null))
-                    .then((trackdata) => {
-                        if (trackdata) {
-                            const match = trackdata.tracks.find(
-                                (t) => t["track-name"] === trackName
-                            );
-                            this.updateNowPlaying(match || { "track-name": trackName });
-                            //showTrackInSlideshow(trackInfo["track-name"] || trackInfo);
-                        }
+                        console.log("Track data fetched from Gofile:", data);
+                        GameManager.command("import", data, true);
+                        GameSettings.trackName = event.data.name || "untitled";
+                        this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
                     })
                     .catch((error) => {
-                        console.error("Primary fetch failed, falling back to FRHD.", error);
+                        console.error("Failed to load Gofile track.", error);
+                    });
+
+                return;
+            }
+
+            if (!trackName || trackName.includes("../") || trackName.length > 40) {
+                return;
+            }
+
+            trackName = decodeURIComponent(trackName);
+            GameSettings.trackName = trackName;
+
+            // NEW: Handle different track types
+            if (trackType === 'cr') {
+                // Fetch CR track
+                fetch(`/data/cr/trackcodes/${trackId}.txt`)
+                    .then((response) => {
+                        if (!response.ok) throw new Error("CR track not found");
+                        return response.text();
+                    })
+                    .then((code) => {
+                        console.log("CR Track data fetched:", code);
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = `CR Track #${trackId}`;
+                        this.updateNowPlaying({ "track-name": `CR Track #${trackId}` });
+                    })
+                    .catch((error) => {
+                        console.error("Failed to load CR track:", error);
+                    });
+                return;
+            }
+            
+            if (trackType === 'bhr') {
+                // Fetch BHR track
+                fetch(`/data/bhr/trackcodes/${trackId}.txt`)
+                    .then((response) => {
+                        if (!response.ok) throw new Error("BHR track not found");
+                        return response.text();
+                    })
+                    .then((code) => {
+                        console.log("BHR Track data fetched:", code);
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = `BHR Track #${trackId}`;
+                        this.updateNowPlaying({ "track-name": `BHR Track #${trackId}` });
+                    })
+                    .catch((error) => {
+                        console.error("Failed to load BHR track:", error);
+                    });
+                return;
+            }
+            
+            if (trackType === 'frhd') {
+                // Fetch FRHD track using API
+                console.log("Fetching FRHD track:", trackId);
+                
+                // Note: frhdv2 is a Node.js module, so you'll need to proxy this through your server
+                // Make a request to your server endpoint instead
+                fetch(`/frhd/${trackId}?json=true`)
+                    .then((response) => {
+                        if (!response.ok) throw new Error("FRHD track not found");
+                        return response.json();
+                    })
+                    .then((trackData) => {
+                        console.log("FRHD Track data fetched:", trackData);
+                        
+                        // Now fetch the actual track code
+                        return fetch(`/api/frhd-code/${trackId}`);
+                    })
+                    .then((response) => response.text())
+                    .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = `FRHD Track #${trackId}`;
+                        this.updateNowPlaying({ "track-name": `FRHD Track #${trackId}` });
+                    })
+                    .catch((error) => {
+                        console.error("Failed to load FRHD track:", error);
+                        // Fallback to FRHD CDN
                         const script = document.createElement("script");
-                        script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
-
-                        script.onerror = () => {
-                            console.error("Fallback fetch failed.");
-                        };
-
+                        script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/track-data-v1.js?callback=t`;
+                        
                         window.t = (trackData) => {
                             if (trackData && trackData.code) {
                                 GameSettings.trackName = trackData.title;
                                 GameManager.command("import", trackData.code, true);
-                                console.log("Track loaded from FRHD.");
-
+                                console.log("Track loaded from FRHD CDN.");
                                 this.updateNowPlaying({
                                     "track-name": trackData.title,
                                     creator: trackData.author || "unknown",
-                                    description: trackData.descr || "",
-                                    id: trackData.id,
-                                    url: trackData.url,
                                 });
-                            } else {
-                                console.error("Failed to load track code from FRHD.");
                             }
                             delete window.t;
                         };
-
+                        
                         document.body.appendChild(script);
                     });
-            } catch (error) {
-                console.error("Error processing URL:", error);
+                return;
             }
+
+            // Original logic for user tracks and other types
+            const fetchUrl = trackType === 'user'
+                ? `/data/page/${trackName}.txt`
+                : `assets/tracks/${trackName}.txt`;
+                
+            fetch(fetchUrl)
+                .then((response) => {
+                    if (!response.ok)
+                        throw new Error("No track ID found, loading as track code.");
+                    return response.text();
+                })
+                .then((data) => {
+                    if (data) {
+                        console.log("Track data fetched:", data);
+                        GameManager.command("import", data, true);
+                        GameSettings.trackName = `${trackName}.txt`;
+
+                        return fetch("assets/tracks/tracklist-data.json");
+                    } else {
+                        console.error("No track data found.");
+                    }
+                })
+                .then((res) => (res ? res.json() : null))
+                .then((trackdata) => {
+                    if (trackdata) {
+                        const match = trackdata.tracks.find(
+                            (t) => t["track-name"] === trackName
+                        );
+                        this.updateNowPlaying(match || { "track-name": trackName });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Primary fetch failed, falling back to FRHD.", error);
+                    const script = document.createElement("script");
+                    script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
+
+                    script.onerror = () => {
+                        console.error("Fallback fetch failed.");
+                    };
+
+                    window.t = (trackData) => {
+                        if (trackData && trackData.code) {
+                            GameSettings.trackName = trackData.title;
+                            GameManager.command("import", trackData.code, true);
+                            console.log("Track loaded from FRHD.");
+
+                            this.updateNowPlaying({
+                                "track-name": trackData.title,
+                                creator: trackData.author || "unknown",
+                                description: trackData.descr || "",
+                                id: trackData.id,
+                                url: trackData.url,
+                            });
+                        } else {
+                            console.error("Failed to load track code from FRHD.");
+                        }
+                        delete window.t;
+                    };
+
+                    document.body.appendChild(script);
+                });
+        } catch (error) {
+            console.error("Error processing URL:", error);
         }
-    });
-},
+    }
+});
+            },
             render: function () {
               var e = this.state.sidebar,
                 t = "topMenu-button topMenu-button-right",
