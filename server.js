@@ -144,7 +144,7 @@ const validateId = (id) => {
 };
 
 function formatSize(bytes) {
-    if (bytes === null || bytes === undefined || bytes === 0 || isNaN(bytes)) { return '0 Bytes'; }
+    if (bytes === null || bytes === undefined || bytes === 0 || isNaN(bytes)) { return ''; }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -293,7 +293,7 @@ async function getUserTrackData(userId) {
         type: 'user',
         size: formatSize(trackCode.length),
         description: metadata.description || '',
-        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
+        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : '',
         thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
         sourceUrl: metadata.trackUrl
     };
@@ -344,7 +344,7 @@ async function getPageTrackData(userId, trackSlug) {
         type: 'page',
         size: formatSize(trackCode.length),
         description: metadata.description || '',
-        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : 'Unknown Date',
+        published: metadata.uploaded_at ? new Date(metadata.uploaded_at).toLocaleDateString() : '',
         thumbnail: metadata.imageUrl || '/data/bhr/thumbnails/default.png',
         sourceUrl: metadata.trackUrl,
         pageName: metadata.name,
@@ -497,8 +497,8 @@ app.get('/discuss.html', async (req, res) => {
         name: `${fetchedData?.name || userId} gallery`,
         authors: fetchedData?.authors || userId,
         description: fetchedData?.description || '',
-        published: fetchedData?.published || 'unknown date',
-        size: fetchedData?.size || 'unknown size',
+        published: fetchedData?.published || '',
+        size: fetchedData?.size || '',
         thumbnail: fetchedData?.thumbnail || '/data/bhr/thumbnails/default.png',
         sourceUrl: `/u/${userId}`
     };
@@ -519,37 +519,46 @@ app.get('/cr/:id', async (req, res) => {
 
     const isDiscussMode = req.query.discuss === 'true';
     const isJsonMode = req.query.json === 'true';
-    let trackData = { id: trackId, name: `CR Track #${trackId}`, authors: 'Unknown', code: '', type: 'cr' };
+    let trackData = {
+        id: trackId,
+        name: `CR Track #${trackId}`,
+        authors: 'Unknown',
+        code: '',
+        type: 'cr',
+        description: '',
+        published: '',
+        size: '',
+        thumbnail: '/data/bhr/thumbnails/default.png',
+        permalink: `https://freerider.app/cr/${trackId}`
+    };
 
     try {
         const fetchedData = await getCrTrackData(trackId);
-        
+
         if (fetchedData) {
-            trackData = { 
-                ...fetchedData, 
+            trackData = {
+                ...fetchedData,
                 pageId: `cr-${trackId}`,
                 type: 'cr',
-                sourceUrl: `/cr/${trackId}`
+                sourceUrl: `/cr/${trackId}`,
+                permalink: `https://freerider.app/cr/${trackId}`
             };
+
+            const metadata = crMetadata.find(t => t.id === trackId);
+            if (metadata) {
+                trackData.description = metadata.description || '';
+                trackData.size = metadata.size ? formatSize(parseInt(metadata.size, 10)) : formatSize(trackData.code.length);
+                trackData.published = metadata.published_at
+                    ? new Date(metadata.published_at).toLocaleDateString()
+                    : '';
+            }
 
             const localThumbnailPath = path.join(CR_THUMBNAILS_ROOT, `${trackId}.png`);
             try {
                 await fsPromises.access(localThumbnailPath);
                 trackData.thumbnail = `/data/cr/thumbnails/${trackId}.png`;
             } catch {
-                const metadata = crMetadata.find(t => t.id === trackId);
                 trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
-            }
-
-            if (isDiscussMode || isJsonMode) {
-                const metadata = crMetadata.find(t => t.id === trackId);
-                if (metadata) {
-                    trackData.description = metadata.description || '';
-                    trackData.size = metadata.size ? formatSize(parseInt(metadata.size, 10)) : formatSize(trackData.code.length);
-                    trackData.published = metadata.published_at 
-                        ? new Date(metadata.published_at).toLocaleDateString()
-                        : 'Unknown Date';
-                }
             }
         }
     } catch (error) {
@@ -585,67 +594,57 @@ app.get('/cr/:id', async (req, res) => {
 
 
 app.get('/frhd/:id', async (req, res) => {
-    const frhdModule = await import('frhdv2');
-    const getTrackData = frhdModule.getTrackData;
-    const getTrackCode = frhdModule.getTrackCode;
+    const frhdModule = await import('frhdv2');
+    const getTrackData = frhdModule.getTrackData;
+    const getTrackCode = frhdModule.getTrackCode;
 
-    if (!getTrackData || !getTrackCode) {
-        return res.status(500).send('Server configuration error');
-    }
+    if (!getTrackData || !getTrackCode) {
+        return res.status(500).send('Server configuration error');
+    }
 
-    const { isValid, id: trackId } = validateId(req.params.id);
-    if (!isValid) {
-        return res.status(404).send('invalid id');
-    }
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
 
-    const isDiscussMode = req.query.discuss === 'true';
-    const isJsonMode = req.query.json === 'true';
-    let trackData = {};
+    const isDiscussMode = req.query.discuss === 'true';
+    const isJsonMode = req.query.json === 'true';
+    let trackData = {};
 
-    // --- FRHD CACHING LOGIC START ---
     const cacheDir = FRHD_TRACKCODES_ROOT;
     const cacheFilePath = path.join(cacheDir, `${trackId}.txt`);
     let code = '';
     let isCodeCached = false;
 
-    // 1. TRY TO LOAD CODE FROM CACHE FIRST
     try {
         code = await fsPromises.readFile(cacheFilePath, 'utf8');
         code = code.trim();
         isCodeCached = true;
         console.log(`[FRHD] Track ${trackId} code loaded from cache.`);
     } catch (e) {
-        // File not found, proceed to external fetch
         console.log(`[FRHD] Track ${trackId} code not found in cache.`);
     }
-    // --- FRHD CACHING LOGIC END ---
 
-    try {
-        // Prepare promises
-        const metadataFields = (isDiscussMode || isJsonMode)
-            ? ['title', 'author', 'descr', 'img', 'p_ts', 'size']
-            : ['title', 'author'];
-        
+    try {
+        const metadataFields = ['title', 'author', 'descr', 'img', 'p_ts', 'size'];
+
         const fetchPromises = [
-            getTrackData(trackId, metadataFields) // Always fetch metadata externally
+            getTrackData(trackId, metadataFields)
         ];
-        
+
         if (!isCodeCached) {
-            // Only fetch code externally if not cached
             fetchPromises.push(getTrackCode(trackId, ['code']));
         }
 
-        const [metadataResponse, codeResponse] = await Promise.all(fetchPromises);
+        const [metadataResponse, codeResponse] = await Promise.all(fetchPromises);
 
-        const metadata = metadataResponse?.track || metadataResponse || {};
-        
+        const metadata = metadataResponse?.track || metadataResponse || {};
+
         if (!isCodeCached && codeResponse) {
-            // If code was fetched externally, set it and cache it
             const freshCode = codeResponse?.track?.code || codeResponse?.code || codeResponse || '';
-            code = freshCode; // Update the 'code' variable
+            code = freshCode;
 
             if (code) {
-                // 2. CACHE THE FETCHED CODE
                 try {
                     await fsPromises.mkdir(cacheDir, { recursive: true });
                     await fsPromises.writeFile(cacheFilePath, code, 'utf8');
@@ -655,153 +654,176 @@ app.get('/frhd/:id', async (req, res) => {
                 }
             }
         }
-        
-        const rawAuthor = metadata.author || 'Unknown';
-        const authorName = typeof rawAuthor === 'object' && rawAuthor !== null
-            ? (rawAuthor.name || rawAuthor.username || 'Unknown Author')
-            : rawAuthor;
 
-        trackData = {
-            pageId: `frhd-${trackId}`,
-            id: trackId,
-            name: metadata.title || `FRHD Track #${trackId}`,
-            authors: authorName,
-            code: code, // Use the 'code' variable, guaranteed to have code if fetch/cache was successful
-            type: 'frhd',
-            sourceUrl: `/frhd/${trackId}`
-        };
+        const rawAuthor = metadata.author || 'Unknown';
+        const authorName = typeof rawAuthor === 'object' && rawAuthor !== null
+            ? (rawAuthor.name || rawAuthor.username || 'Unknown Author')
+            : rawAuthor;
 
-        // Add additional metadata for discuss mode OR json mode
-        if (isDiscussMode || isJsonMode) {
-            trackData.description = metadata.descr || '';
-            trackData.published = metadata.p_ts 
-                ? new Date(metadata.p_ts * 1000).toLocaleDateString()
-                : 'Unknown Date';
-            trackData.size = formatSize(metadata.size || code.length);
+        trackData = {
+            pageId: `frhd-${trackId}`,
+            id: trackId,
+            name: metadata.title || `FRHD Track #${trackId}`,
+            authors: authorName,
+            code: code,
+            type: 'frhd',
+            sourceUrl: `/frhd/${trackId}`,
+            description: metadata.descr || '',
+            published: metadata.p_ts
+                ? new Date(metadata.p_ts * 1000).toLocaleDateString()
+                : '',
+            size: formatSize(metadata.size || code.length),
+            permalink: `https://freerider.app/frhd/${trackId}`
+        };
 
-            // Handle thumbnail - check local first
-            let specificThumbnailFound = false;
-            const localThumbnailPath = path.join(__dirname, 'data', 'frhd', 'thumbnails', `${trackId}.png`);
-            
-            try {
-                await fsPromises.access(localThumbnailPath);
-                trackData.thumbnail = `/data/frhd/thumbnails/${trackId}.png`;
-                specificThumbnailFound = true;
-            } catch {
-                // File not found locally
-            }
+        let specificThumbnailFound = false;
+        const localThumbnailPath = path.join(__dirname, 'data', 'frhd', 'thumbnails', `${trackId}.png`);
 
-            // Only use API thumbnail if local file wasn't found
-            if (!specificThumbnailFound) {
-                let thumbnail = metadata.img;
-                if (thumbnail) {
-                    thumbnail = thumbnail.replace(/(\d+x\d+)/, '768x250');
-                }
-                trackData.thumbnail = thumbnail || '/data/bhr/thumbnails/default.png';
-            }
-        }
+        try {
+            await fsPromises.access(localThumbnailPath);
+            trackData.thumbnail = `/data/frhd/thumbnails/${trackId}.png`;
+            specificThumbnailFound = true;
+        } catch {
+            // File not found locally
+        }
 
-    } catch (error) {
-        console.error(`Error fetching FRHD data for ID ${trackId}:`, error);
-        trackData = { 
-            pageId: `frhd-${trackId}`,
-            id: trackId, 
-            name: `FRHD Track #${trackId} (Error)`, 
-            authors: 'System', 
-            code: '', 
-            type: 'frhd',
-            sourceUrl: `/frhd/${trackId}`,
-            thumbnail: '/data/bhr/thumbnails/default.png'
-        };
-    }
+        if (!specificThumbnailFound) {
+            let thumbnail = metadata.img;
+            if (thumbnail) {
+                thumbnail = thumbnail.replace(/(\d+x\d+)/, '768x250');
+            }
+            trackData.thumbnail = thumbnail || '/data/bhr/thumbnails/default.png';
+        }
 
-    // Return JSON for API requests
-    if (req.query.json === 'true') {
-        return res.json({
-            name: trackData.name,
-            authors: trackData.authors,
-            thumbnail: trackData.thumbnail,
-            type: trackData.type,
+    } catch (error) {
+        console.error(`Error fetching FRHD data for ID ${trackId}:`, error);
+        trackData = {
+            pageId: `frhd-${trackId}`,
+            id: trackId,
+            name: '',
+            authors: '',
+            code: '',
+            type: 'frhd',
+            sourceUrl: `/frhd/${trackId}`,
+            thumbnail: '/data/bhr/thumbnails/default.png',
+            description: '',
+            published: '',
+            size: '',
+            permalink: `https://freerider.app/frhd/${trackId}`
+        };
+    }
+
+    if (req.query.json === 'true') {
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type,
             trackUrl: `/data/frhd/trackcodes/${trackId}.txt`
-        });
-    }
+        });
+    }
 
-    // Render discuss template if in discuss mode
-    if (isDiscussMode) {
-        const renderedHtml = discussTemplate({
-            track: trackData
-        });
-        return res.status(200).send(renderedHtml);
-    }
+    if (isDiscussMode) {
+        const renderedHtml = discussTemplate({
+            track: trackData
+        });
+        return res.status(200).send(renderedHtml);
+    }
 
-    // Otherwise render normal track template
-    const renderedHtml = trackTemplate({
-        trackId: trackId,
-        trackType: 'frhd',
-        track: trackData
-    });
+    const renderedHtml = trackTemplate({
+        trackId: trackId,
+        trackType: 'frhd',
+        track: trackData
+    });
 
-    res.status(200).send(renderedHtml);
+    res.status(200).send(renderedHtml);
 });
 
-// Similar modifications for /bhr/:id
 app.get('/bhr/:id', async (req, res) => {
-    const { isValid, id: trackId } = validateId(req.params.id);
-    if (!isValid) {
-        return res.status(404).send('invalid id');
-    }
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
 
-    const isDiscussMode = req.query.discuss === 'true';
-    let trackData = { id: trackId, name: `BHR Track #${trackId}`, authors: 'Unknown', code: '', type: 'bhr' };
+    const isDiscussMode = req.query.discuss === 'true';
+    const isJsonMode = req.query.json === 'true';
 
-    try {
-        const fetchedData = await getBhrTrackData(trackId);
-        if (fetchedData) {
-            trackData = { 
-                ...fetchedData, 
-                pageId: `bhr-${trackId}`,
-                type: 'bhr',
-                sourceUrl: `/bhr/${trackId}`
-            };
+    let trackData = {
+        id: trackId,
+        name: `BHR Track #${trackId}`,
+        authors: 'Unknown',
+        code: '',
+        type: 'bhr',
+        description: '',
+        published: '',
+        size: '',
+        thumbnail: '/data/bhr/thumbnails/default.png',
+        permalink: `https://freerider.app/bhr/${trackId}`
+    };
 
-            const localThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', `${trackId}.png`);
-            try {
-                await fsPromises.access(localThumbnailPath);
-                trackData.thumbnail = `/data/bhr/thumbnails/${trackId}.png`;
-            } catch {
-                const metadata = bhrMetadata.find(t => t.id === trackId);
-                trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
-            }
-        }
-    } catch (error) {
-        console.error(`BHR track ${trackId} error`, error);
-        trackData.name = `BHR track #${trackId} error`;
-    }
+    try {
+        const fetchedData = await getBhrTrackData(trackId);
 
-    if (req.query.json === 'true') {
-        return res.json({
-            name: trackData.name,
-            authors: trackData.authors,
-            thumbnail: trackData.thumbnail,
-            type: trackData.type,
+        if (fetchedData) {
+            trackData = {
+                ...trackData,
+                ...fetchedData,
+                pageId: `bhr-${trackId}`,
+                type: 'bhr',
+                sourceUrl: `/bhr/${trackId}`,
+                permalink: `https://freerider.app/bhr/${trackId}`
+            };
+
+            const metadata = bhrMetadata.find(t => t.id === trackId);
+            if (metadata) {
+                trackData.description = metadata.description || '';
+
+                trackData.size = metadata.size
+                    ? formatSize(parseInt(metadata.size, 10))
+                    : formatSize(trackData.code.length);
+
+                trackData.published = metadata.published_at
+                    ? new Date(metadata.published_at).toLocaleDateString()
+                    : '';
+            }
+
+            const localThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', `${trackId}.png`);
+            try {
+                await fsPromises.access(localThumbnailPath);
+                trackData.thumbnail = `/data/bhr/thumbnails/${trackId}.png`;
+            } catch {
+                trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
+            }
+        }
+    } catch (error) {
+        console.error(`BHR track ${trackId} error`, error);
+        trackData.name = `BHR track #${trackId} error`;
+    }
+
+    if (isJsonMode) {
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type,
             trackUrl: `/data/bhr/trackcodes/${trackId}.txt`
-        });
-    }
+        });
+    }
 
-    if (isDiscussMode) {
-        const renderedHtml = discussTemplate({
-            track: trackData
-        });
-        return res.status(200).send(renderedHtml);
-    }
+    if (isDiscussMode) {
+        const renderedHtml = discussTemplate({
+            track: trackData
+        });
+        return res.status(200).send(renderedHtml);
+    }
 
-    const renderedHtml = trackTemplate({
-        trackId: trackId,
-        trackType: 'bhr',
-        track: trackData
-    });
+    const renderedHtml = trackTemplate({
+        trackId: trackId,
+        trackType: 'bhr',
+        track: trackData
+    });
 
-    res.status(200).send(renderedHtml);
+    res.status(200).send(renderedHtml);
 });
 
 app.get('/u/:id', async (req, res) => {

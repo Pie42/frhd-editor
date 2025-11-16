@@ -32844,121 +32844,13 @@
               this.toggleIframe();
               this.addImportListener();
             },
-            async updateNowPlaying(trackInfo) {
+            async updateNowPlaying(trackData) {
               const iframe = document.getElementById("forumIframe");
-              if (!iframe) return;
-
-              const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-              const nowPlayingDiv = iframeDoc.getElementById("now-playing");
-              if (!nowPlayingDiv) return;
-
-              let trackName = trackInfo["track-name"] || trackInfo;
-              const creator = trackInfo.creator && trackInfo.creator !== "unknown"
-                ? ` <small>by ${trackInfo.creator}</small>`
-                : "";
-              /*const trackUrl = `https://freerider.app/#${trackName
-                .replace(/'/g, "")
-                .replace(/ /g, "-")}`;*/
-
-              
-              let imageUrl = `https://freerider.app/assets/images/tracks/${trackName}.png`;
-
-              if (trackName.endsWith(".txt")) {
-              trackName = trackName.slice(0, -4);
-              imageUrl = '/assets/images/tracks/freerider.png';
-              }
-
-              if (trackInfo.id) {
-                const frhdUrl = await this.getFRHDImage(trackInfo.id);
-                if (frhdUrl) {
-                  imageUrl = frhdUrl;
-                }
-              }
-
-              const img = iframeDoc.createElement('img');
-              img.src = imageUrl;
-              img.alt = trackName;
-
-              img.onerror = function () {
-                const baseTrackUrl = `https://freerider.app/assets/images/tracks/${trackName}`;
-
-                if (this.src.endsWith('.png')) {
-                  const jpgUrl = `${baseTrackUrl}.jpg`;
-                  this.src = jpgUrl;
-                } else if (this.src.endsWith('.jpg') || this.src === imageUrl) {
-                  this.src = '/assets/images/tracks/freerider.png';
-                  this.onerror = null;
-                }
-              };
-
-              if (trackName.endsWith(".txt")) {
-              trackName = trackName.slice(0, -4);
-              imageUrl = '/assets/images/tracks/freerider.png';
-              }
-
-              if (trackInfo.id) {
-                const frhdUrl = await this.getFRHDImage(trackInfo.id);
-                if (frhdUrl) {
-                  imageUrl = frhdUrl;
-                }
-              }
-
-              const encodedTrackName = encodeURIComponent(trackName);
-              const finalTrackUrl = `https://freerider.app/#${encodedTrackName}`;
-              
-              nowPlayingDiv.style.display = "block";
-              nowPlayingDiv.style.position = "relative";
-              nowPlayingDiv.innerHTML = '';
-
-              nowPlayingDiv.innerHTML = `
-                <img src="${imageUrl}" alt="${trackName}">
-                <div style="
-                  position:absolute;
-                  top:10px;
-                  left:10px;
-                  color:white;
-                  background-color: rgba(0,0,0,0.5);
-                  padding:5px 10px;
-                  border-radius:4px;
-                  max-width:90%;
-                  font-family:sans-serif;
-                ">
-                <strong>${trackName}</strong>
-                <small>${creator}</small>
-                </div>
-                <div id="copy-link-btn" style="
-                position:absolute;
-                bottom:10px;
-                right:10px;
-                background-color: rgba(255,255,255,0.8);
-                color: #000;
-                padding:2px 6px;
-                border-radius:3px;
-                font-size:12px;
-                cursor:pointer;
-                font-family:sans-serif;
-                user-select: none;
-                ">
-                Copy link
-                </div>
-                `;
-
-                const copyButton = iframeDoc.getElementById("copy-link-btn");
-              if (copyButton) {
-                copyButton.addEventListener('click', async () => {
-                  try {
-                    await navigator.clipboard.writeText(finalTrackUrl);
-                    // Optional: Provide visual feedback
-                    copyButton.textContent = "Copied!";
-                    setTimeout(() => {
-                      copyButton.textContent = "Copy link";
-                    }, 1500);
-                  } catch (err) {
-                    console.error('Failed to copy text: ', err);
-                    // Fallback for older browsers (though unlikely)
-                    alert(`Copy failed. Manually copy this URL: ${finalTrackUrl}`);
-                  }
-                });
+              if (iframe && iframe.style.display !== 'none' && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  type: 'freerider-track-data',
+                  data: trackData
+                }, 'https://forum.freerider.app');
               }
             },
 
@@ -33006,7 +32898,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = GameSettings.beta ? `https://community.freerider.app/feed/` : (GameSettings.type
+                iframe.src = GameSettings.beta ? `https://forum.freerider.app/feed/` : (GameSettings.type
                   ? (GameSettings.type === 'user')
                     // Case 1: /u/ness
                     ? `/u/${GameSettings.id}?discuss=true`
@@ -33018,7 +32910,27 @@
                   : `discuss.html`);
                 iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
                 iframe.style.display = "block";
+                iframe.allow="clipboard-write; fullscreen"
                 document.body.appendChild(iframe);
+
+                iframe.addEventListener('load', () => {
+                  const trackData = {
+                    id: GameSettings.id,
+                    name: GameSettings.trackName || '',
+                    authors: GameSettings.authors || '',
+                    thumbnail: GameSettings.thumbnail,
+                    type: GameSettings.type,
+                    description: GameSettings.description || '',
+                    permalink: GameSettings.permalink,
+                    published: GameSettings.published || '',
+                    size: GameSettings.size || ''
+                  };
+
+                  iframe.contentWindow.postMessage({
+                    type: 'freerider-track-data',
+                    data: trackData
+                  }, 'https://forum.freerider.app');
+                });
               }
             },
             hasUnsavedChanges() {
@@ -33083,57 +32995,62 @@
                 trackName = parts[0];
             }
 
-            if (hostname.endsWith(".gofile.io")) {
-                console.log("Processing Gofile.io URL directly");
+          if (hostname.endsWith(".gofile.io")) {
+            console.log("Processing Gofile.io URL directly");
 
-                fetch(event.data.url)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error("Gofile fetch failed.");
-                        }
-                        return response.text();
-                    })
-                    .then((data) => {
-                        console.log("Track data fetched from Gofile:", data);
-                        GameManager.command("import", data, true);
-                        GameSettings.trackName = event.data.name || "untitled";
-                        this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
-                    })
-                    .catch((error) => {
-                        console.error("Failed to load Gofile track.", error);
-                    });
+            fetch(event.data.url)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Gofile fetch failed.");
+                }
+                return response.text();
+              })
+              .then((data) => {
+                console.log("Track data fetched from Gofile:", data);
+                GameManager.command("import", data, true);
+                GameSettings.trackName = event.data.name || "untitled";
+                this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
+              })
+              .catch((error) => {
+                console.error("Failed to load Gofile track.", error);
+              });
 
-                return;
-            }
+            return;
+          }
 
-            if (!trackName || trackName.includes("../") || trackName.length > 40) {
-                return;
-            }
+          if (!trackName || trackName.includes("../") || trackName.length > 40) {
+            return;
+          }
 
-            trackName = decodeURIComponent(trackName);
-            GameSettings.trackName = trackName;
+          trackName = decodeURIComponent(trackName);
+          GameSettings.trackName = trackName;
 
+          // CR logic
           if (trackType === 'cr') {
-            fetch(`https://freerider.app/cr/${trackId}?json=true`)
+            fetch(`/cr/${trackId}?json=true`)
               .then((response) => {
                 if (!response.ok) throw new Error("CR track not found");
                 return response.json();
               })
               .then((metadata) => {
-                console.log("CR metadata fetched:", metadata);
-
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
-                    console.log("CR Track code fetched:", code);
-                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+
                     this.updateNowPlaying({
-                      "track-name": metadata.name,
-                      creator: metadata.authors
+                      id: trackId,
+                      name: metadata.name || `CR Track #${trackId}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'cr'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || ''
                     });
                   });
               })
@@ -33143,29 +33060,32 @@
             return;
           }
 
+          // BHR logic
           if (trackType === 'bhr') {
-            // Fetch JSON to get metadata
-            fetch(`https://freerider.app/bhr/${trackId}?json=true`)
+            fetch(`/bhr/${trackId}?json=true`)
               .then((response) => {
                 if (!response.ok) throw new Error("BHR track not found");
                 return response.json();
               })
               .then((metadata) => {
-                console.log("BHR metadata fetched:", metadata);
-
-                // Fetch the trackcode
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
-                    console.log("BHR Track code fetched:", code);
-                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+
                     this.updateNowPlaying({
-                      "track-name": metadata.name,
-                      creator: metadata.authors
+                      id: trackId,
+                      name: metadata.name || `BHR Track #${trackId}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'bhr'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || ''
                     });
                   });
               })
@@ -33175,27 +33095,32 @@
             return;
           }
 
+          // FRHD logic
           if (trackType === 'frhd') {
-            fetch(`https://freerider.app/frhd/${trackId}?json=true`)
+            fetch(`/frhd/${trackId}?json=true`)
               .then((response) => {
                 if (!response.ok) throw new Error("FRHD track not found");
                 return response.json();
               })
               .then((metadata) => {
-                console.log("FRHD metadata fetched:", metadata);
-
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
-                    console.log("FRHD Track code fetched:", code);
-                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+
                     this.updateNowPlaying({
-                      "track-name": metadata.name,
-                      creator: metadata.authors
+                      id: trackId,
+                      name: metadata.name || `FRHD Track #${trackId}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'frhd'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || ''
                     });
                   });
               })
@@ -33205,7 +33130,6 @@
             return;
           }
 
-            // Original logic for user tracks and other types
             const fetchUrl = trackType === 'user'
                 ? `/data/page/${trackName}.txt`
                 : `assets/tracks/${trackName}.txt`;

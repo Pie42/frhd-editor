@@ -49,7 +49,14 @@
     GameSettings.pageName = "<%= track.pageName %>";
     GameSettings.code = trackCode
 
-    if (GameSettings.id === "1167") {
+    GameSettings.authors = "<%= track.authors || 'Unknown' %>";
+    GameSettings.thumbnail = "<%= track.thumbnail || '' %>";
+    GameSettings.description = "<%= track.description || '' %>";
+    GameSettings.permalink = "<%= track.permalink || '' %>";
+    GameSettings.published = "<%= track.published || '' %>";
+    GameSettings.size = "<%= track.size || '' %>";
+
+    if (GameSettings.authors === "thefunkymonkie" || GameSettings.authors === "Ness") {
     GameSettings.beta = true;
     }
 
