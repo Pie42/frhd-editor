@@ -572,7 +572,11 @@ app.get('/cr/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
-            trackUrl: `/data/cr/trackcodes/${trackId}.txt`
+            trackUrl: `/data/cr/trackcodes/${trackId}.txt`,
+            description: trackData.description,
+            published: trackData.published,
+            size: trackData.size,
+            permalink: `https://freerider.app/cr/${trackId}`
         });
     }
 
@@ -719,7 +723,11 @@ app.get('/frhd/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
-            trackUrl: `/data/frhd/trackcodes/${trackId}.txt`
+            trackUrl: `/data/frhd/trackcodes/${trackId}.txt`,
+            description: trackData.description,
+            published: trackData.published,
+            size: trackData.size,
+            permalink: `https://freerider.app/frhd/${trackId}`
         });
     }
 
@@ -806,7 +814,11 @@ app.get('/bhr/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
-            trackUrl: `/data/bhr/trackcodes/${trackId}.txt`
+            trackUrl: `/data/bhr/trackcodes/${trackId}.txt`,
+            description: trackData.description,
+            published: trackData.published,
+            size: trackData.size,
+            permalink: `https://freerider.app/bhr/${trackId}`
         });
     }
 

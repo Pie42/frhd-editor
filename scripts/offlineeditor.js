@@ -33033,12 +33033,15 @@
                 return response.json();
               })
               .then((metadata) => {
+                console.log("CR metadata fetched:", metadata);
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
+                    console.log("CR Track code fetched:", code);
+                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
 
                     this.updateNowPlaying({
@@ -33068,12 +33071,15 @@
                 return response.json();
               })
               .then((metadata) => {
+                console.log("BHR metadata fetched:", metadata);
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
+                    console.log("BHR Track code fetched:", code);
+                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
 
                     this.updateNowPlaying({
@@ -33103,12 +33109,15 @@
                 return response.json();
               })
               .then((metadata) => {
+                console.log("FRHD metadata fetched:", metadata);
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
+                    console.log("FRHD Track code fetched:", code);
+                    GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
 
                     this.updateNowPlaying({

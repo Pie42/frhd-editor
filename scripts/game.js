@@ -24720,25 +24720,18 @@
             (this.track = t);
             const message = this.message;
 
-          let iteration = 0;
           const showMessage = () => {
             if (GameSettings.trackName === "track.txt") return;
 
-            let trackName = GameSettings.trackName;
+            let trackName = GameSettings.trackName + " - " + GameSettings.authors;
             trackName = trackName.replace(".txt", "");
             message.show(trackName, !1, "#000000", "#FFFFFF");
-
             setTimeout(() => {
               message.hide();
-
-              iteration++;
-              if (iteration < 3) {
-                showMessage();
-              }
             }, 1500);
           };
 
-          showMessage();
+showMessage();
         }
         updateControls() {
           if (this.controls) {
