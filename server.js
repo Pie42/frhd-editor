@@ -511,6 +511,79 @@ app.get('/discuss.html', async (req, res) => {
     res.status(200).send(renderedHtml);
 });
 
+app.get('/cr/:id', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const isDiscussMode = req.query.discuss === 'true';
+    const isJsonMode = req.query.json === 'true';
+    let trackData = { id: trackId, name: `CR Track #${trackId}`, authors: 'Unknown', code: '', type: 'cr' };
+
+    try {
+        const fetchedData = await getCrTrackData(trackId);
+        
+        if (fetchedData) {
+            trackData = { 
+                ...fetchedData, 
+                pageId: `cr-${trackId}`,
+                type: 'cr',
+                sourceUrl: `/cr/${trackId}`
+            };
+
+            const localThumbnailPath = path.join(CR_THUMBNAILS_ROOT, `${trackId}.png`);
+            try {
+                await fsPromises.access(localThumbnailPath);
+                trackData.thumbnail = `/data/cr/thumbnails/${trackId}.png`;
+            } catch {
+                const metadata = crMetadata.find(t => t.id === trackId);
+                trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
+            }
+
+            if (isDiscussMode || isJsonMode) {
+                const metadata = crMetadata.find(t => t.id === trackId);
+                if (metadata) {
+                    trackData.description = metadata.description || '';
+                    trackData.size = metadata.size ? formatSize(parseInt(metadata.size, 10)) : formatSize(trackData.code.length);
+                    trackData.published = metadata.published_at 
+                        ? new Date(metadata.published_at).toLocaleDateString()
+                        : 'Unknown Date';
+                }
+            }
+        }
+    } catch (error) {
+        console.error(`CR track ${trackId} error`, error);
+        trackData.name = `CR track #${trackId} error`;
+    }
+
+    if (isJsonMode) {
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type,
+            trackUrl: `/data/cr/trackcodes/${trackId}.txt`
+        });
+    }
+
+    if (isDiscussMode) {
+        const renderedHtml = discussTemplate({
+            track: trackData
+        });
+        return res.status(200).send(renderedHtml);
+    }
+
+    const renderedHtml = trackTemplate({
+        trackId: trackId,
+        trackType: 'cr',
+        track: trackData
+    });
+
+    res.status(200).send(renderedHtml);
+});
+
+
 app.get('/frhd/:id', async (req, res) => {
     const frhdModule = await import('frhdv2');
     const getTrackData = frhdModule.getTrackData;
@@ -691,7 +764,6 @@ app.get('/bhr/:id', async (req, res) => {
                 sourceUrl: `/bhr/${trackId}`
             };
 
-            // Handle thumbnail
             const localThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', `${trackId}.png`);
             try {
                 await fsPromises.access(localThumbnailPath);
@@ -712,7 +784,6 @@ app.get('/bhr/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
-            // Added trackUrl pointing to the static file location
             trackUrl: `/data/bhr/trackcodes/${trackId}.txt`
         });
     }

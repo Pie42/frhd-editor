@@ -33153,48 +33153,20 @@
             }
             
             if (trackType === 'frhd') {
-                // Fetch FRHD track using API
-                console.log("Fetching FRHD track:", trackId);
-                
-                // Note: frhdv2 is a Node.js module, so you'll need to proxy this through your server
-                // Make a request to your server endpoint instead
-                fetch(`/frhd/${trackId}?json=true`)
+                // Fetch BHR track
+                fetch(`https://freerider.app/data/frhd/trackcodes/${trackId}.txt`)
                     .then((response) => {
                         if (!response.ok) throw new Error("FRHD track not found");
-                        return response.json();
+                        return response.text();
                     })
-                    .then((trackData) => {
-                        console.log("FRHD Track data fetched:", trackData);
-                        
-                        // Now fetch the actual track code
-                        return fetch(`/api/frhd-code/${trackId}`);
-                    })
-                    .then((response) => response.text())
                     .then((code) => {
+                        console.log("FRHD Track data fetched:", code);
                         GameManager.command("import", code, true);
                         GameSettings.trackName = `FRHD Track #${trackId}`;
                         this.updateNowPlaying({ "track-name": `FRHD Track #${trackId}` });
                     })
                     .catch((error) => {
                         console.error("Failed to load FRHD track:", error);
-                        // Fallback to FRHD CDN
-                        const script = document.createElement("script");
-                        script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/track-data-v1.js?callback=t`;
-                        
-                        window.t = (trackData) => {
-                            if (trackData && trackData.code) {
-                                GameSettings.trackName = trackData.title;
-                                GameManager.command("import", trackData.code, true);
-                                console.log("Track loaded from FRHD CDN.");
-                                this.updateNowPlaying({
-                                    "track-name": trackData.title,
-                                    creator: trackData.author || "unknown",
-                                });
-                            }
-                            delete window.t;
-                        };
-                        
-                        document.body.appendChild(script);
                     });
                 return;
             }
