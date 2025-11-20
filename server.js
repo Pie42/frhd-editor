@@ -463,6 +463,129 @@ async function initializeUserProfile(userId) {
 
 // dynamic routes
 
+// Serve FRHD thumbnails directly at /frhd/:id.png
+app.get('/frhd/:id.png', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    // Try local thumbnail first
+    const localThumbnailPath = path.join(__dirname, 'data', 'frhd', 'thumbnails', `${trackId}.png`);
+    
+    try {
+        await fsPromises.access(localThumbnailPath);
+        return res.sendFile(localThumbnailPath);
+    } catch {
+        // If not found locally, fetch metadata and get CDN URL
+        try {
+            const frhdModule = await import('frhdv2');
+            const getTrackData = frhdModule.getTrackData;
+            
+            const metadataResponse = await getTrackData(trackId, ['img']);
+            const metadata = metadataResponse?.track || metadataResponse || {};
+            
+            let thumbnail = metadata.img;
+            if (thumbnail) {
+                // Replace dimensions with 768x250
+                thumbnail = thumbnail.replace(/(\d+x\d+)/, '768x250');
+                return res.redirect(302, thumbnail);
+            }
+        } catch (error) {
+            console.error(`Error fetching FRHD thumbnail metadata for ${trackId}:`, error);
+        }
+        
+        // Fallback to default thumbnail
+        const defaultThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', 'default.png');
+        return res.sendFile(defaultThumbnailPath);
+    }
+});
+
+// Serve FRHD trackcode directly at /frhd/:id.txt
+app.get('/frhd/:id.txt', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const codeFilePath = path.join(FRHD_TRACKCODES_ROOT, `${trackId}.txt`);
+    
+    try {
+        const code = await fsPromises.readFile(codeFilePath, 'utf8');
+        res.type('text/plain').send(code);
+    } catch {
+        return res.status(404).send('Track code not found');
+    }
+});
+
+// Serve BHR thumbnails directly at /bhr/:id.png
+app.get('/bhr/:id.png', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const localThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', `${trackId}.png`);
+    
+    try {
+        await fsPromises.access(localThumbnailPath);
+        return res.sendFile(localThumbnailPath);
+    } catch {
+        return res.status(404).send('Thumbnail not found');
+    }
+});
+
+// Serve BHR trackcode directly at /bhr/:id.txt
+app.get('/bhr/:id.txt', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const codeFilePath = path.join(__dirname, 'data', 'bhr', 'trackcodes', `${trackId}.txt`);
+    
+    try {
+        const code = await fsPromises.readFile(codeFilePath, 'utf8');
+        res.type('text/plain').send(code);
+    } catch {
+        return res.status(404).send('Track code not found');
+    }
+});
+
+// Serve CR thumbnails directly at /cr/:id.png
+app.get('/cr/:id.png', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const localThumbnailPath = path.join(CR_THUMBNAILS_ROOT, `${trackId}.png`);
+    
+    try {
+        await fsPromises.access(localThumbnailPath);
+        return res.sendFile(localThumbnailPath);
+    } catch {
+        return res.status(404).send('Thumbnail not found');
+    }
+});
+
+// Serve CR trackcode directly at /cr/:id.txt
+app.get('/cr/:id.txt', async (req, res) => {
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    const codeFilePath = path.join(CR_TRACKCODES_ROOT, `${trackId}.txt`);
+    
+    try {
+        const code = await fsPromises.readFile(codeFilePath, 'utf8');
+        res.type('text/plain').send(code);
+    } catch {
+        return res.status(404).send('Track code not found');
+    }
+});
+
 // Simplified /discuss.html - only handles default page and user galleries
 app.get('/discuss.html', async (req, res) => {
     const { id: rawId } = req.query;

@@ -32908,7 +32908,7 @@
                       // Case 3: other types (frhd, bhr, cr)
                       : `/${GameSettings.type}/${GameSettings.id}?discuss=true`)
                   : `discuss.html`);
-                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-top-navigation";
+                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation";
                 iframe.style.display = "block";
                 iframe.allow="clipboard-write; fullscreen"
                 document.body.appendChild(iframe);
