@@ -512,9 +512,32 @@ app.get('/frhd/:id.txt', async (req, res) => {
     
     try {
         const code = await fsPromises.readFile(codeFilePath, 'utf8');
-        res.type('text/plain').send(code);
+        return res.type('text/plain').send(code);
     } catch {
-        return res.status(404).send('Track code not found');
+        try {
+            const frhdModule = await import('frhdv2');
+            const getTrackCode = frhdModule.getTrackCode;
+            
+            const codeResponse = await getTrackCode(trackId, ['code']);
+            const code = codeResponse?.track?.code || codeResponse?.code || codeResponse || '';
+            
+            if (code) {
+                try {
+                    await fsPromises.mkdir(FRHD_TRACKCODES_ROOT, { recursive: true });
+                    await fsPromises.writeFile(codeFilePath, code, 'utf8');
+                    console.log(`[FRHD Cache] Track ${trackId} code successfully cached to ${codeFilePath}`);
+                } catch (writeError) {
+                    console.error(`[FRHD Cache] Failed to write track code ${trackId}:`, writeError);
+                }
+                
+                return res.type('text/plain').send(code);
+            } else {
+                return res.status(404).send('Track code not found');
+            }
+        } catch (error) {
+            console.error(`Error fetching FRHD track code for ${trackId}:`, error);
+            return res.status(500).send('Error fetching track code');
+        }
     }
 });
 
