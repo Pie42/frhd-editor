@@ -19,6 +19,8 @@ const CR_THUMBNAILS_ROOT = path.join(PERSISTENT_ROOT_DISK, 'cr', 'thumbnails');
 const FRHD_TRACKCODES_ROOT = path.join(PERSISTENT_ROOT_DISK, 'frhd', 'trackcodes'); 
 //const FRHD_THUMBNAILS_ROOT = path.join(PERSISTENT_ROOT_DISK, 'frhd', 'thumbnails'); 
 
+const FORUM_LINKS_PATH = path.join(PERSISTENT_ROOT_DISK, 'forum-links.json');
+
 app.use('/data/frhd/trackcodes', express.static(FRHD_TRACKCODES_ROOT));
 
 // user uploaded pages path
@@ -149,6 +151,178 @@ function formatSize(bytes) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+async function loadForumLinks() {
+    try {
+        const data = await fsPromises.readFile(FORUM_LINKS_PATH, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            return [];
+        }
+        console.error('Error loading forum links:', e);
+        return [];
+    }
+}
+
+async function saveForumLinks(links) {
+    try {
+        await fsPromises.writeFile(FORUM_LINKS_PATH, JSON.stringify(links, null, 2), 'utf8');
+    } catch (e) {
+        console.error('Error saving forum links:', e);
+        throw e;
+    }
+}
+
+app.post('/api/forum-link', async (req, res) => {
+    try {
+        const { trackUrl, forumUrl, user} = req.body;
+        
+        if (!trackUrl || !forumUrl) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: trackUrl and forumUrl' 
+            });
+        }
+        
+        const trackMatch = trackUrl.match(/^\/(frhd|bhr|cr|u)\/(.+)$/);
+        if (!trackMatch) {
+            return res.status(400).json({ 
+                error: 'Invalid track URL format. Expected: /frhd/123 or /bhr/456 or /cr/789 or /u/username' 
+            });
+        }
+        
+        if (!forumUrl.startsWith('https://forum.freerider.app/')) {
+            return res.status(400).json({ 
+                error: 'Invalid forum URL. Must start with https://forum.freerider.app/' 
+            });
+        }
+        
+        const trackType = trackMatch[1];
+        const trackId = trackMatch[2];
+        
+        const links = await loadForumLinks();
+        
+        const existingIndex = links.findIndex(
+            link => link.trackUrl === trackUrl
+        );
+        
+        const linkData = {
+            trackUrl,
+            trackType,
+            trackId,
+            forumUrl,
+            user: user || '',
+            createdAt: existingIndex >= 0 ? links[existingIndex].createdAt : new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        
+        if (existingIndex >= 0) {
+            links[existingIndex] = linkData;
+        } else {
+            links.push(linkData);
+        }
+        
+        await saveForumLinks(links);
+        
+        res.status(200).json({ 
+            success: true,
+            link: linkData
+        });
+        
+    } catch (err) {
+        console.error('Error creating/updating forum link:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/forum-link/:type/:id
+app.get('/api/forum-link/:type/:id', async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        
+        if (!['frhd', 'bhr', 'cr', 'u'].includes(type)) {
+            return res.status(400).json({ 
+                error: 'Invalid track type. Must be frhd, bhr, cr, or u' 
+            });
+        }
+        
+        const trackUrl = `/${type}/${id}`;
+        const links = await loadForumLinks();
+        
+        const link = links.find(l => l.trackUrl === trackUrl);
+        
+        if (!link) {
+            return res.status(404).json({ 
+                error: 'No forum link found for this track' 
+            });
+        }
+        
+        res.status(200).json(link);
+        
+    } catch (err) {
+        console.error('Error fetching forum link:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/forum-links
+app.get('/api/forum-links', async (req, res) => {
+    try {
+        const links = await loadForumLinks();
+        res.status(200).json({ 
+            links,
+            count: links.length 
+        });
+    } catch (err) {
+        console.error('Error fetching forum links:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// DELETE /api/forum-link/:type/:id - Delete a forum link
+/*
+app.delete('/api/forum-link/:type/:id', async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const trackUrl = `/${type}/${id}`;
+        
+        const links = await loadForumLinks();
+        const filteredLinks = links.filter(l => l.trackUrl !== trackUrl);
+        
+        if (links.length === filteredLinks.length) {
+            return res.status(404).json({ 
+                error: 'No forum link found for this track' 
+            });
+        }
+        
+        await saveForumLinks(filteredLinks);
+        
+        res.status(200).json({ 
+            success: true,
+            message: 'Forum link deleted successfully' 
+        });
+        
+    } catch (err) {
+        console.error('Error deleting forum link:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+*/
+
+// helper function to get forum link for track metadata
+async function getForumLinkForTrack(trackType, trackId) {
+    const links = await loadForumLinks();
+    const trackUrl = `/${trackType}/${trackId}`;
+    return links.find(l => l.trackUrl === trackUrl);
 }
 
 async function getBhrTrackData(trackId) {
@@ -674,6 +848,7 @@ app.get('/cr/:id', async (req, res) => {
         description: '',
         published: '',
         size: '',
+        forumUrl: '',
         thumbnail: '/data/bhr/thumbnails/default.png',
         permalink: `https://freerider.app/cr/${trackId}`
     };
@@ -705,6 +880,11 @@ app.get('/cr/:id', async (req, res) => {
                 trackData.thumbnail = `/data/cr/thumbnails/${trackId}.png`;
             } catch {
                 trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
+            }
+
+            const forumLink = await getForumLinkForTrack('cr', trackId);
+            if (forumLink) {
+                trackData.forumUrl = forumLink.forumUrl;
             }
         }
     } catch (error) {
@@ -822,6 +1002,7 @@ app.get('/frhd/:id', async (req, res) => {
             published: metadata.p_ts
                 ? new Date(metadata.p_ts * 1000).toLocaleDateString()
                 : '',
+            forumUrl: '',
             size: formatSize(metadata.size || code.length),
             permalink: `https://freerider.app/frhd/${trackId}`
         };
@@ -843,6 +1024,11 @@ app.get('/frhd/:id', async (req, res) => {
                 thumbnail = thumbnail.replace(/(\d+x\d+)/, '768x250');
             }
             trackData.thumbnail = thumbnail || '/data/bhr/thumbnails/default.png';
+        }
+
+        const forumLink = await getForumLinkForTrack('frhd', trackId);
+        if (forumLink) {
+            trackData.forumUrl = forumLink.forumUrl;
         }
 
     } catch (error) {
@@ -911,6 +1097,7 @@ app.get('/bhr/:id', async (req, res) => {
         description: '',
         published: '',
         size: '',
+        forumUrl: '',
         thumbnail: '/data/bhr/thumbnails/default.png',
         permalink: `https://freerider.app/bhr/${trackId}`
     };
@@ -947,6 +1134,11 @@ app.get('/bhr/:id', async (req, res) => {
                 trackData.thumbnail = `/data/bhr/thumbnails/${trackId}.png`;
             } catch {
                 trackData.thumbnail = metadata?.thumbnail_url || '/data/bhr/thumbnails/default.png';
+            }
+
+            const forumLink = await getForumLinkForTrack('bhr', trackId);
+            if (forumLink) {
+                trackData.forumUrl = forumLink.forumUrl;
             }
         }
     } catch (error) {

@@ -56,11 +56,9 @@
     GameSettings.published = "<%= track.published || '' %>";
     GameSettings.size = "<%= track.size || '' %>";
 
-    document.title = "<%= track.name %>" || "free rider - draw";
+    GameSettings.forumUrl = "<%= track.forumUrl || '' %>";
 
-    if (GameSettings.authors === "thefunkymonkie" || GameSettings.authors === "Ness") {
-    GameSettings.beta = true;
-    }
+    document.title = "<%= track.name %>" || "free rider - draw";
 
     window.addEventListener("message", function (event) {
         if (event.data.action === "loggedIn") {

@@ -32898,7 +32898,7 @@
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = GameSettings.beta ? `https://forum.freerider.app/feed/` : (GameSettings.type
+                iframe.src = GameSettings.forumUrl ? GameSettings.forumUrl : (GameSettings.type
                   ? (GameSettings.type === 'user')
                     // Case 1: /u/ness
                     ? `/u/${GameSettings.id}?discuss=true`
