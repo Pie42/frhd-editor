@@ -24316,7 +24316,12 @@
           }
 
           else {
-            //this.game.mod.vars.play = true;
+            if (GameSettings.trackName !== 'track.txt') {
+              if (this.ui?.obj?.['play']) {
+                this.ui.obj['play'].checkbox.checked = true;
+                this.ui.obj['play'].disable();
+              }
+            }
             fetch(`assets/tracks/${GameSettings.trackName}.txt`)
               .then(response => {
                 if (!response.ok) {
@@ -26688,11 +26693,11 @@ showMessage();
           invisibleRider: { default: !1 },
           mini: { default: !1 },
           propeller: { default: !1 },
-          crouch: { default: !1 },
-          seeGhost: { default: !0 },
+          crouch: { default: !0 },
+          seeGhost: { default: !1 },
           slowmo: { default: !1 },
-          rewind: { default: !1 },
-          oldTimer: { default: !1 },
+          rewind: { default: !0 },
+          oldTimer: { default: !0 },
           frontBrake: { default: !1 },
           bikeData: { default: !1 },
           gameData: { default: !1 },
@@ -27646,6 +27651,20 @@ showMessage();
           for (const t in this.vars)
             rr[t].hasOwnProperty("initialize") &&
               rr[t].initialize(this.vars[t]);
+          if (typeof GameSettings !== 'undefined' && GameSettings) {
+            if (GameSettings.trackName !== 'track.txt' && this.ui.obj['play']) {
+              this.vars.play = true;
+              this.ui.obj['play'].checkbox.checked = true;
+              this.ui.obj['play'].disable();
+            }
+            else if (GameSettings.trackName === 'track.txt' && this.ui.obj['play']) {
+              this.vars.play = false;
+              this.ui.obj['play'].checkbox.checked = false;
+            }
+
+            this.vars.crouch = true;
+            this.ui.obj['crouch'].checkbox.checked = true;
+          }
         }
         setVar(t, e) {
           if (rr.hasOwnProperty(t)) {

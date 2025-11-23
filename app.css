@@ -1735,12 +1735,12 @@ html.fullscreen #main_page {
     }
 }
 
-@media screen and (max-width: 720px) {
+/*@media screen and (max-width: 720px) {
     .topMenu-button_help,
     .topMenu-button_controls {
         display: none
     }
-}
+}*/
 
 .horizontal-slider-container {
     display: inline-block;

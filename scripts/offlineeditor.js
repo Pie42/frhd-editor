@@ -370,8 +370,10 @@
 
                 if (typeof GameSettings !== 'undefined') {
                   sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
                 } else {
                   sidebar = true;
+                  playMode = false;
                 }
                 var width = sidebar ? "75%" : "100%";
                 var mediaWidth = sidebar ? "93.75%" : "125%";
@@ -421,12 +423,12 @@
                     "div",
                     { className: "clearfix" },
                     f,
-                    !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
-                    !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
-                    !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
+                    !playMode && !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
+                    !playMode && !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
+                    !playMode && !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
                     //e !== "select" && n.createElement(vv),
                     n.createElement(r, { vehicle: this.props.data.vehicle }),
-                    !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
+                    !playMode && !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
                     //e === "select" && n.createElement(vvv),
                     //n.createElement(v),
                     n.createElement("span", { className: "divider" })
@@ -1695,7 +1697,7 @@
               return { open: false };
             },
             openOptions: function (e) {
-              if (GameManager.game.currentScene.mod.getVar("mobile"))
+              if (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")) // remove "play" when you want to have ghost imports
               { this.toggleVehicle();
                 return;
               }
@@ -1713,6 +1715,12 @@
                 t = "editorgui_icons editorgui_icons-icon_bmx",
                 r = "BMX";
                 var o = this.state.open ? " :" : "";
+
+                if (typeof GameSettings !== 'undefined') {
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  playMode = false;
+                }
               return (
                 this.props.vehicle &&
                   ((r = this.props.vehicle.toLowerCase()),
@@ -1728,7 +1736,7 @@
                     "span",
                     { className: "name" },
                     "",
-                    n.createElement("span", { className: "name" }, r, o), this.state.open && n.createElement("button", {
+                    n.createElement("span", { className: "name" }, r, o), !playMode && this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
@@ -1736,13 +1744,13 @@
                       }
                   }, "SET START POSITION")
                   ),
-                  /*this.state.open && n.createElement("button", {
+                  playMode && this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
                         this.importGhost(event);
                       }
-                  }, "IMPORT GHOST")*/
+                  }, "IMPORT GHOST")
                   
                 )
               );
@@ -2858,8 +2866,10 @@
 
                 if (typeof GameSettings !== 'undefined') {
                   sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
                 } else {
                   sidebar = true;
+                  playMode = false;
                 }
               var e = this.props.data.showDialog,
                 t = this.props.data.dialogOptions,
@@ -6014,9 +6024,17 @@
                 t = this.props.data.hideMenus,
                 u = 48.6,
                 d = {};
+
+              var playMode;
+              if (typeof GameSettings !== 'undefined') {
+                playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                playMode = false;
+              }
+              
               return (
                 (d.marginTop = -((9 * u) / 2)),
-                t && (d.display = "none"),
+                (t || playMode) && (d.display = "none"),
                 n.createElement(
                   "div",
                   { className: "leftMenu", style: d },
@@ -6385,13 +6403,20 @@
 
                 if (typeof GameSettings !== 'undefined') {
                   sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
                 } else {
                   sidebar = true;
+                  playMode = false;
                 }
+
+                if (playMode || p) {
+                c.display = "none";
+                }
+
               c.right = sidebar
                 ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
                 : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 800 ? "-5px" : "0"));
-              switch ((p && (c.display = "none"), e)) {
+              switch (e) {
                 case "straightline":
                   (c.marginTop = -((3 * d) / 2)),
                     (u = n.createElement(r, { options: t }));
@@ -7691,8 +7716,10 @@
 
                 if (typeof GameSettings !== 'undefined') {
                   sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
                 } else {
                   sidebar = true;
+                  playMode = false;
                 }
               var width = sidebar ? "75%" : "100%";
               var mediaWidth = sidebar ? "93.75%" : "125%";
@@ -7707,12 +7734,13 @@
               return n.createElement(
                 "div",
                 { className: "topMenu unselectable", style: topMenuStyle},
-                n.createElement(r, null),
-                n.createElement(o, null),
-                n.createElement(i, null),
-                GameSettings.beta && n.createElement(a, null),
-                this.showHelp(),
-                this.showControls(),
+                !playMode && n.createElement(r, null),
+                !playMode && n.createElement(o, null),
+                !playMode && n.createElement(i, null),
+                !playMode && GameSettings.beta && n.createElement(a, null),
+                !playMode && this.showHelp(),
+                n.createElement(l, null),
+                //this.showControls(),
                 //this.showOfflineEditorIcon(),
                 this.showFullscreen(),
                 n.createElement(x, null),

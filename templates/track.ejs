@@ -56,7 +56,8 @@
     GameSettings.published = "<%= track.published || '' %>";
     GameSettings.size = "<%= track.size || '' %>";
 
-    GameSettings.forumUrl = "<%= track.forumUrl || '' %>";
+    GameSettings.forumUrl = "<%= track.forumUrl || 'https://forum.freerider.app/feed' %>";
+    GameSettings.type === 'bhr' ? GameSettings.blackHat = true : false;
 
     document.title = "<%= track.name %>" || "free rider - draw";
 
