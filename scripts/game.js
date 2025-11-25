@@ -24317,9 +24317,9 @@
 
           else {
             if (GameSettings.trackName !== 'track.txt') {
-              if (this.ui?.obj?.['play']) {
-                this.ui.obj['play'].checkbox.checked = true;
-                this.ui.obj['play'].disable();
+              if (this.game.mod.ui?.obj?.['play']) {
+                this.game.mod.ui.obj['play'].checkbox.checked = true;
+                this.game.mod.ui.obj['play'].disable();
               }
             }
             fetch(`assets/tracks/${GameSettings.trackName}.txt`)

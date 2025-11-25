@@ -33217,6 +33217,11 @@
 
                     document.title = trackName;
 
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
                     this.updateNowPlaying({
                       id: trackId,
                       name: metadata.name || `CR Track #${trackId}`,
@@ -33270,6 +33275,11 @@
 
                     document.title = trackName;
 
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
                     this.updateNowPlaying({
                       id: trackId,
                       name: metadata.name || `BHR Track #${trackId}`,
@@ -33322,6 +33332,11 @@
                     );
 
                     document.title = trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
 
                     this.updateNowPlaying({
                       id: trackId,
