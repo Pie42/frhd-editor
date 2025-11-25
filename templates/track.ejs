@@ -25,12 +25,12 @@
     <meta name="author" content="<%= track.authors || 'Ness & Pie42' %>">
     <meta name="description" content="<%= (track.description || 'track editor v1.1').substring(0, 160) %>">
 
-    <meta property="og:title" content="<%= track.name || 'free rider - draw' %>">
+    <meta property="og:title" content="<%= track.name || 'free rider - draw' %> by <%= track.authors || 'Unknown' %>">
     <meta property="og:description" content="<%= (track.description || 'track editor v1.1').substring(0, 200) %>">
     <meta property="og:image" content="https://freerider.app/<%= track.type %>/<%= track.id %>.png">
     <meta property="og:url" content="<%= track.permalink || 'https://freerider.app' %>">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Free Rider">
+    <meta property="og:site_name" content="freerider.app">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= track.name || 'free rider - draw' %>">
@@ -43,9 +43,9 @@
             <% if (track.published) { %>
                 <meta property="article:published_time" content="<%= track.published %>">
                 <% } %>
-                    <base href="/./">
+                    <base href="/">
     
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://freerider.app/favicon.ico" type="image/x-icon">
     <link type="text/css" rel="stylesheet" href="app.css"></link>
     <script defer data-domain="freerider.app" src="https://plausible.io/js/script.js"></script>
 

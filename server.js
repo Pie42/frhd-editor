@@ -8,6 +8,8 @@ const ejs = require('ejs');
 
 const PORT = 3000;
 const MAX_ID = 1500000;
+const CR_MAX_ID = 1470321;
+const FRHD_MAX_ID = 1015000;
 const PAGE_METADATA_FILE = 'page.json';
 // persistent disk mount
 const PERSISTENT_ROOT_DISK = '/var/data'; 
@@ -51,6 +53,12 @@ const discussTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templa
 
 let bhrMetadata = [];
 const BHR_METADATA_PATH = path.join(__dirname, 'data', 'bhr', 'tracks.csv');
+
+let crMetadata = [];
+const CR_METADATA_PATH = path.join(__dirname, 'data', 'cr', 'tracks.csv');
+
+let frhdMetadata = [];
+const FRHD_METADATA_PATH = path.join(__dirname, 'data', 'frhd', 'tracks.csv');
 
 function loadBhrMetadata() {
     try {
@@ -99,9 +107,6 @@ function loadBhrMetadata() {
 
 loadBhrMetadata();
 
-let crMetadata = [];
-const CR_METADATA_PATH = path.join(__dirname, 'data', 'cr', 'tracks.csv');
-
 function loadCrMetadata() {
     try {
         console.log(`bhr - loading metadata from: ${CR_METADATA_PATH}`);
@@ -148,6 +153,53 @@ function loadCrMetadata() {
 }
 
 loadCrMetadata();
+
+function loadFrhdMetadata() {
+    try {
+        console.log(`frhd - loading metadata from: ${FRHD_METADATA_PATH}`);
+        const csvContent = fs.readFileSync(FRHD_METADATA_PATH, 'utf8').trim();
+        
+        const lines = csvContent.split('\n');
+        if (lines.length < 2) {
+            console.warn('frhd - metadata CSV file is empty or missing header.');
+            return;
+        }
+
+        const headers = lines[0].split(',').map(h => h.trim());
+        const dataRows = lines.slice(1);
+        
+        const parsedData = dataRows.map(line => {
+            const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.trim().replace(/^"|"$/g, ''));
+            
+            if (values.length !== headers.length) {
+                console.warn(`frhd - skipping line due to column mismatch: ${line}`);
+                return null;
+            }
+
+            const track = {};
+            headers.forEach((header, index) => {
+                const value = (header === 'id' || header === 'upvotes' || header === 'downvotes' || header === 'favorites')
+                    ? parseInt(values[index], 10)
+                    : values[index];
+                track[header] = value;
+            });
+            return track;
+        }).filter(t => t !== null);
+
+        frhdMetadata = parsedData;
+        console.log(`frhd - successfully loaded ${frhdMetadata.length} tracks.`);
+        
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            console.error(`frhd - metadata file not found at ${FRHD_METADATA_PATH}. Using empty array.`);
+        } else {
+            console.error('frhd - failed to load or parse FRHD metadata CSV:', e.message);
+        }
+        frhdMetadata = [];
+    }
+}
+
+loadFrhdMetadata();
 
 const validateId = (id) => {
     const trackId = parseInt(id, 10);
@@ -648,6 +700,69 @@ async function initializeUserProfile(userId) {
 }
 
 // dynamic routes
+
+app.get('/frhd/random', (req, res) => {
+    if (frhdMetadata.length === 0) {
+        return res.status(404).send('No FRHD tracks available');
+    }
+    const randomIndex = Math.floor(Math.random() * frhdMetadata.length);
+    const randomId = frhdMetadata[randomIndex].id;
+    res.redirect(302, `/frhd/${randomId}`);
+});
+
+app.get('/frhd/daily', (req, res) => {
+    if (frhdMetadata.length === 0) {
+        return res.status(404).send('No FRHD tracks available');
+    }
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0].replace(/-/g, '');
+    const seed = parseInt(dateString);
+    const dailyIndex = seed % frhdMetadata.length;
+    const dailyId = frhdMetadata[dailyIndex].id;
+    res.redirect(302, `/frhd/${dailyId}`);
+});
+
+app.get('/bhr/random', (req, res) => {
+    if (bhrMetadata.length === 0) {
+        return res.status(404).send('No BHR tracks available');
+    }
+    const randomIndex = Math.floor(Math.random() * bhrMetadata.length);
+    const randomId = bhrMetadata[randomIndex].id;
+    res.redirect(302, `/bhr/${randomId}`);
+});
+
+app.get('/bhr/daily', (req, res) => {
+    if (bhrMetadata.length === 0) {
+        return res.status(404).send('No BHR tracks available');
+    }
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0].replace(/-/g, '');
+    const seed = parseInt(dateString);
+    const dailyIndex = seed % bhrMetadata.length;
+    const dailyId = bhrMetadata[dailyIndex].id;
+    res.redirect(302, `/bhr/${dailyId}`);
+});
+
+app.get('/cr/random', (req, res) => {
+    if (crMetadata.length === 0) {
+        return res.status(404).send('No CR tracks available');
+    }
+    const randomIndex = Math.floor(Math.random() * crMetadata.length);
+    const randomId = crMetadata[randomIndex].id;
+    res.redirect(302, `/cr/${randomId}`);
+});
+
+app.get('/cr/daily', (req, res) => {
+    if (crMetadata.length === 0) {
+        return res.status(404).send('No CR tracks available');
+    }
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0].replace(/-/g, '');
+    const seed = parseInt(dateString);
+    const dailyIndex = seed % crMetadata.length;
+    const dailyId = crMetadata[dailyIndex].id;
+    res.redirect(302, `/cr/${dailyId}`);
+});
 
 // Serve FRHD thumbnails directly at /frhd/:id.png
 app.get('/frhd/:id.png', async (req, res) => {
