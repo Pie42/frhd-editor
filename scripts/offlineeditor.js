@@ -32951,7 +32951,9 @@
                     description: GameSettings.description || '',
                     permalink: GameSettings.permalink,
                     published: GameSettings.published || '',
-                    size: GameSettings.size || ''
+                    size: GameSettings.size || '',
+                    nextId: GameSettings.nextId,
+                    prevId: GameSettings.prevId
                   };
 
                   iframe.contentWindow.postMessage({

@@ -699,6 +699,25 @@ async function initializeUserProfile(userId) {
     }
 }
 
+function findClosestIds(metadata, id) {
+    if (metadata.length === 0) return { nextId: null, prevId: null };
+
+    const sorted = [...metadata].sort((a, b) => a.id - b.id);
+
+    let prev = null;
+    let next = null;
+
+    for (const t of sorted) {
+        if (t.id < id) prev = t.id;
+        if (t.id > id && next === null) next = t.id;
+    }
+
+    if (prev === null) prev = sorted[sorted.length - 1].id;
+    if (next === null) next = sorted[0].id;
+
+    return { nextId: next, prevId: prev };
+}
+
 // dynamic routes
 
 app.get('/frhd/random', (req, res) => {
@@ -707,6 +726,10 @@ app.get('/frhd/random', (req, res) => {
     }
     const randomIndex = Math.floor(Math.random() * frhdMetadata.length);
     const randomId = frhdMetadata[randomIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/frhd/${randomId}?json=true`);
+    }
     res.redirect(302, `/frhd/${randomId}`);
 });
 
@@ -719,6 +742,11 @@ app.get('/frhd/daily', (req, res) => {
     const seed = parseInt(dateString);
     const dailyIndex = seed % frhdMetadata.length;
     const dailyId = frhdMetadata[dailyIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/frhd/${dailyId}?json=true`);
+    }
+
     res.redirect(302, `/frhd/${dailyId}`);
 });
 
@@ -728,6 +756,11 @@ app.get('/bhr/random', (req, res) => {
     }
     const randomIndex = Math.floor(Math.random() * bhrMetadata.length);
     const randomId = bhrMetadata[randomIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/bhr/${randomId}?json=true`);
+    }
+
     res.redirect(302, `/bhr/${randomId}`);
 });
 
@@ -740,6 +773,11 @@ app.get('/bhr/daily', (req, res) => {
     const seed = parseInt(dateString);
     const dailyIndex = seed % bhrMetadata.length;
     const dailyId = bhrMetadata[dailyIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/bhr/${dailyId}?json=true`);
+    }
+
     res.redirect(302, `/bhr/${dailyId}`);
 });
 
@@ -749,6 +787,11 @@ app.get('/cr/random', (req, res) => {
     }
     const randomIndex = Math.floor(Math.random() * crMetadata.length);
     const randomId = crMetadata[randomIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/cr/${randomId}?json=true`);
+    }
+
     res.redirect(302, `/cr/${randomId}`);
 });
 
@@ -761,6 +804,11 @@ app.get('/cr/daily', (req, res) => {
     const seed = parseInt(dateString);
     const dailyIndex = seed % crMetadata.length;
     const dailyId = crMetadata[dailyIndex].id;
+
+    if (req.query.json === 'true') {
+        return res.redirect(302, `/cr/${dailyId}?json=true`);
+    }
+
     res.redirect(302, `/cr/${dailyId}`);
 });
 
@@ -1019,6 +1067,21 @@ app.get('/cr/:id', async (req, res) => {
         trackData.name = `CR track #${trackId} error`;
     }
 
+    if (crMetadata.length > 0) {
+        const currentIndex = crMetadata.findIndex(t => t.id === trackId);
+        if (currentIndex !== -1) {
+            const nextIndex = (currentIndex + 1) % crMetadata.length;
+            const prevIndex = (currentIndex - 1 + crMetadata.length) % crMetadata.length;
+            trackData.nextId = crMetadata[nextIndex].id;
+            trackData.prevId = crMetadata[prevIndex].id;
+        }
+        else {
+            const { nextId, prevId } = findClosestIds(crMetadata, trackId);
+            trackData.nextId = nextId;
+            trackData.prevId = prevId;
+        }
+    }
+
     if (isJsonMode) {
         return res.json({
             name: trackData.name,
@@ -1029,7 +1092,9 @@ app.get('/cr/:id', async (req, res) => {
             description: trackData.description,
             published: trackData.published,
             size: trackData.size,
-            permalink: `https://freerider.app/cr/${trackId}`
+            permalink: `https://freerider.app/cr/${trackId}`,
+            nextId: trackData.nextId,
+            prevId: trackData.prevId
         });
     }
 
@@ -1172,8 +1237,25 @@ app.get('/frhd/:id', async (req, res) => {
             description: '',
             published: '',
             size: '',
-            permalink: `https://freerider.app/frhd/${trackId}`
+            permalink: `https://freerider.app/frhd/${trackId}`,
+            nextId: '',
+            prevId: ''
         };
+    }
+
+    if (frhdMetadata.length > 0) {
+        const currentIndex = frhdMetadata.findIndex(t => t.id === trackId);
+        if (currentIndex !== -1) {
+            const nextIndex = (currentIndex + 1) % frhdMetadata.length;
+            const prevIndex = (currentIndex - 1 + frhdMetadata.length) % frhdMetadata.length;
+            trackData.nextId = frhdMetadata[nextIndex].id;
+            trackData.prevId = frhdMetadata[prevIndex].id;
+        }
+        else {
+            const { nextId, prevId } = findClosestIds(frhdMetadata, trackId);
+            trackData.nextId = nextId;
+            trackData.prevId = prevId;
+        }
     }
 
     if (req.query.json === 'true') {
@@ -1186,7 +1268,9 @@ app.get('/frhd/:id', async (req, res) => {
             description: trackData.description,
             published: trackData.published,
             size: trackData.size,
-            permalink: `https://freerider.app/frhd/${trackId}`
+            permalink: `https://freerider.app/frhd/${trackId}`,
+            nextId: trackData.nextId,
+            prevId: trackData.prevId
         });
     }
 
@@ -1273,6 +1357,21 @@ app.get('/bhr/:id', async (req, res) => {
         trackData.name = `BHR track #${trackId} error`;
     }
 
+    if (bhrMetadata.length > 0) {
+        const currentIndex = bhrMetadata.findIndex(t => t.id === trackId);
+        if (currentIndex !== -1) {
+            const nextIndex = (currentIndex + 1) % bhrMetadata.length;
+            const prevIndex = (currentIndex - 1 + bhrMetadata.length) % bhrMetadata.length;
+            trackData.nextId = bhrMetadata[nextIndex].id;
+            trackData.prevId = bhrMetadata[prevIndex].id;
+        }
+        else {
+            const { nextId, prevId } = findClosestIds(bhrMetadata, trackId);
+            trackData.nextId = nextId;
+            trackData.prevId = prevId;
+        }
+    }
+
     if (isJsonMode) {
         return res.json({
             name: trackData.name,
@@ -1283,7 +1382,9 @@ app.get('/bhr/:id', async (req, res) => {
             description: trackData.description,
             published: trackData.published,
             size: trackData.size,
-            permalink: `https://freerider.app/bhr/${trackId}`
+            permalink: `https://freerider.app/bhr/${trackId}`,
+            nextId: trackData.nextId,
+            prevId: trackData.prevId
         });
     }
 

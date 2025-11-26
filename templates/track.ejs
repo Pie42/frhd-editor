@@ -25,7 +25,7 @@
     <meta name="author" content="<%= track.authors || 'Ness & Pie42' %>">
     <meta name="description" content="<%= (track.description || 'track editor v1.1').substring(0, 160) %>">
 
-    <meta property="og:title" content="<%= track.name || 'free rider - draw' %> by <%= track.authors || 'Unknown' %>">
+    <meta property="og:title" content="<%= track.name || 'free rider - draw' %>, by <%= track.authors || 'Ness & Pie42' %>">
     <meta property="og:description" content="<%= (track.description || 'track editor v1.1').substring(0, 200) %>">
     <meta property="og:image" content="https://freerider.app/<%= track.type %>/<%= track.id %>.png">
     <meta property="og:url" content="<%= track.permalink || 'https://freerider.app' %>">
@@ -78,6 +78,8 @@
     GameSettings.permalink = "<%= track.permalink || '' %>";
     GameSettings.published = "<%= track.published || '' %>";
     GameSettings.size = "<%= track.size || '' %>";
+    GameSettings.nextId = "<%= track.nextId || '' %>";
+    GameSettings.prevId = "<%= track.prevId || '' %>";
 
     GameSettings.forumUrl = "<%= track.forumUrl || 'https://forum.freerider.app/feed' %>";
     GameSettings.type === 'bhr' ? GameSettings.blackHat = true : false;
