@@ -32993,7 +32993,9 @@
                           description: metadata.description || '',
                           permalink: metadata.permalink,
                           published: metadata.published || '',
-                          size: metadata.size || ''
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId
                         });
                       });
                   })
@@ -33027,7 +33029,9 @@
                           description: metadata.description || '',
                           permalink: metadata.permalink,
                           published: metadata.published || '',
-                          size: metadata.size || ''
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId
                         });
                       });
                   })
@@ -33061,7 +33065,9 @@
                           description: metadata.description || '',
                           permalink: metadata.permalink,
                           published: metadata.published || '',
-                          size: metadata.size || ''
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId
                         });
                       });
                   })
@@ -33135,6 +33141,20 @@
             if (hostname === "freerider.app" && hash) {
                 trackName = hash.substring(1);
             } 
+
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
+                const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
+                trackType = match[1];
+                const idPart = match[2];
+                
+                if (idPart.match(/^\d+$/)) {
+                    trackId = parseInt(idPart, 10);
+                    trackName = `${trackType}-${trackId}`;
+                } else {
+                    trackId = idPart;
+                    trackName = `${trackType}-${idPart}`;
+                }
+            }
 
             else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
                 const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
@@ -33233,7 +33253,9 @@
                       description: metadata.description || '',
                       permalink: metadata.permalink,
                       published: metadata.published || '',
-                      size: metadata.size || ''
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId
                     });
                   });
               })
@@ -33291,7 +33313,9 @@
                       description: metadata.description || '',
                       permalink: metadata.permalink,
                       published: metadata.published || '',
-                      size: metadata.size || ''
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId
                     });
                   });
               })
@@ -33349,7 +33373,9 @@
                       description: metadata.description || '',
                       permalink: metadata.permalink,
                       published: metadata.published || '',
-                      size: metadata.size || ''
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId
                     });
                   });
               })
