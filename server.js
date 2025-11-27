@@ -833,7 +833,7 @@ app.get('/frhd/:id/:user', async (req, res) => {
                 : '',
             forumUrl: '',
             size: formatSize(metadata.size || code.length),
-            permalink: `https://freerider.app/frhd/${trackId}`
+            permalink: `https://freerider.app/frhd/${trackId}/${userIdOrName}`
         };
 
         let specificThumbnailFound = false;
@@ -875,7 +875,7 @@ app.get('/frhd/:id/:user', async (req, res) => {
             description: '',
             published: '',
             size: '',
-            permalink: `https://freerider.app/frhd/${trackId}`,
+            permalink: `https://freerider.app/frhd/${trackId}/${userIdOrName}`,
             nextId: '',
             prevId: ''
         };
@@ -902,11 +902,12 @@ app.get('/frhd/:id/:user', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
+            id: trackData.id,
             trackUrl: `/data/frhd/trackcodes/${trackId}.txt`,
             description: trackData.description,
             published: trackData.published,
             size: trackData.size,
-            permalink: `https://freerider.app/frhd/${trackId}`,
+            permalink: `https://freerider.app/frhd/${trackId}/${userIdOrName}`,
             nextId: trackData.nextId,
             prevId: trackData.prevId,
             ghost: trackData.ghost || null,
@@ -1301,6 +1302,7 @@ app.get('/cr/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
+            id: trackData.id,
             trackUrl: `/data/cr/trackcodes/${trackId}.txt`,
             description: trackData.description,
             published: trackData.published,
@@ -1481,6 +1483,7 @@ app.get('/frhd/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
+            id: trackData.id,
             trackUrl: `/data/frhd/trackcodes/${trackId}.txt`,
             description: trackData.description,
             published: trackData.published,
@@ -1595,6 +1598,7 @@ app.get('/bhr/:id', async (req, res) => {
             authors: trackData.authors,
             thumbnail: trackData.thumbnail,
             type: trackData.type,
+            id: trackData.id,
             trackUrl: `/data/bhr/trackcodes/${trackId}.txt`,
             description: trackData.description,
             published: trackData.published,

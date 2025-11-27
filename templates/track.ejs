@@ -19,10 +19,7 @@
     } else {
         const descriptionText = track.ghoster ? `ghost by ${track.ghoster}` : (track.description || 'play now at freerider.app!');
         ogDescription = descriptionText.substring(0, 400);
-        
-        const twitterDefault = 'track editor v1.1';
-        const twitterText = (track.description || twitterDefault);
-        twitterDescription = twitterText.substring(0, 400);
+        twitterDescription = descriptionText.substring(0, 400);
     }
     %>
 
@@ -54,7 +51,7 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= track.name || 'free rider - draw' %>">
-    <meta name="twitter:description" content="<%= ogDescription %>">
+    <meta name="twitter:description" content="<%= twitterDescription %>">
     <meta name="twitter:image" content="https://freerider.app/<%= track.type %>/<%= track.id %>.png">
 
     <% if (track.authors) { %>

@@ -33062,6 +33062,8 @@
                       .then((code) => {
                         GameManager.command("import", code, true);
                         GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                        GameSettings.id = metadata.id;
+                        GameSettings.type = metadata.type || 'frhd';
                         GameSettings.authors = metadata.authors || '';
                         document.title = metadata.name || `FRHD Track #${trackId}`;
 
@@ -33168,11 +33170,18 @@
                 }
             }
 
-            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
-                const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/);
                 trackType = match[1];
                 trackId = parseInt(match[2], 10);
+              const userName = match[3];
                 trackName = `${trackType}-${trackId}`;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+              trackType = match[1];
+              trackId = parseInt(match[2], 10);
+              trackName = `${trackType}-${trackId}`;
             }
             else if (pathname.startsWith("/t/")) {
                 const parts = pathname.split("/t/")[1].split("-");
@@ -33235,6 +33244,7 @@
                     console.log("CR Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                    GameSettings.id = metadata.id;
                     GameSettings.authors = metadata.authors || ``;
 
                     const fullPermalink = metadata.permalink;
@@ -33298,6 +33308,7 @@
                     console.log("BHR Track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                    GameSettings.id = metadata.id;
                     GameSettings.authors = metadata.authors || ``;
 
                     const fullPermalink = metadata.permalink;
@@ -33345,13 +33356,52 @@
 
           // FRHD logic
           if (trackType === 'frhd') {
-            fetch(`/frhd/${trackId}?json=true`)
+            const pathMatch = pathname.match(/^\/(frhd)\/(\d+)\/(.+)/);
+            const userName = pathMatch ? pathMatch[3] : null;
+
+            const fetchUrl = userName
+              ? `/frhd/${trackId}/${userName}?json=true`
+              : `/frhd/${trackId}?json=true`;
+
+            const isSameTrack = (
+              GameSettings.id === String(trackId) &&
+              GameSettings.type === trackType
+            );
+            
+            fetch(fetchUrl)
               .then((response) => {
                 if (!response.ok) throw new Error("FRHD track not found");
                 return response.json();
               })
               .then((metadata) => {
                 console.log("FRHD metadata fetched:", metadata);
+                let ghostData = null;
+                let fullRaceData = null;
+                let ghoster = metadata.ghoster || '';
+                let ghostTime = metadata.ghostTime || '';
+                let ghostTicks = metadata.ghostTicks || null;
+
+                if (metadata.ghost) {
+                  ghostData = metadata.ghost.code || metadata.ghost;
+                  ghoster = metadata.ghoster || '';
+                  ghostTime = metadata.ghostTime || '';
+                  ghostTicks = metadata.ghostTicks || metadata.ghost.run_ticks || null;
+
+                  fullRaceData = {
+                    user: {
+                      id: userName || ghoster,
+                      username: userName || ghoster,
+                      displayName: ghoster,
+                      cosmetics: {}
+                    },
+                    ghost: {
+                      code: ghostData,
+                      vehicle: metadata.ghost.vehicle || 'BMX',
+                      desktop: metadata.ghost.desktop || true,
+                      run_ticks: ghostTicks
+                    }
+                  };
+                }
                 return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
@@ -33359,9 +33409,21 @@
                   })
                   .then((code) => {
                     console.log("FRHD Track code fetched:", code);
-                    GameManager.command("import", code, true);
+                    !isSameTrack && (GameManager.command("import", code, true), GameManager.command("clear race"));
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                    GameSettings.id = metadata.id;
                     GameSettings.authors = metadata.authors || ``;
+
+                    if (ghostData) {
+                      GameSettings.ghostData = ghostData;
+                      GameSettings.ghoster = ghoster;
+                      GameSettings.ghostTime = ghostTime;
+                      GameSettings.ghostTicks = ghostTicks;
+                      GameSettings.fullRaceData = fullRaceData;
+                      console.log("Ghost data loaded:", { ghoster, ghostTime, ghostTicks });
+
+                      GameManager.command("add race", fullRaceData);
+                    }
 
                     const fullPermalink = metadata.permalink;
 

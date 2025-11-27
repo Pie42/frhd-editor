@@ -25598,6 +25598,12 @@ showMessage();
               raceData && this.command("dialog", !1);
               break;
             }
+            case "clear race":
+              (this.races = []),
+                (this.restartTrack = !0);
+                const playerManager = this.playerManager;
+                playerManager.clear();
+              break;
           }
         }
         addRaces(raceData) {
