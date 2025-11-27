@@ -32953,7 +32953,10 @@
                     published: GameSettings.published || '',
                     size: GameSettings.size || '',
                     nextId: GameSettings.nextId,
-                    prevId: GameSettings.prevId
+                    prevId: GameSettings.prevId,
+                    ghoster: GameSettings.ghoster,
+                    ghostTime: GameSettings.ghostTime,
+                    ghostTicks: GameSettings.ghostTicks
                   };
 
                   iframe.contentWindow.postMessage({
@@ -32995,7 +32998,10 @@
                           published: metadata.published || '',
                           size: metadata.size || '',
                           nextId: metadata.nextId,
-                          prevId: metadata.prevId
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
                         });
                       });
                   })
@@ -33031,7 +33037,10 @@
                           published: metadata.published || '',
                           size: metadata.size || '',
                           nextId: metadata.nextId,
-                          prevId: metadata.prevId
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
                         });
                       });
                   })
@@ -33067,7 +33076,10 @@
                           published: metadata.published || '',
                           size: metadata.size || '',
                           nextId: metadata.nextId,
-                          prevId: metadata.prevId
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
                         });
                       });
                   })
@@ -33255,7 +33267,10 @@
                       published: metadata.published || '',
                       size: metadata.size || '',
                       nextId: metadata.nextId,
-                      prevId: metadata.prevId
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
                     });
                   });
               })
@@ -33315,7 +33330,10 @@
                       published: metadata.published || '',
                       size: metadata.size || '',
                       nextId: metadata.nextId,
-                      prevId: metadata.prevId
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
                     });
                   });
               })
@@ -33375,7 +33393,10 @@
                       published: metadata.published || '',
                       size: metadata.size || '',
                       nextId: metadata.nextId,
-                      prevId: metadata.prevId
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
                     });
                   });
               })
