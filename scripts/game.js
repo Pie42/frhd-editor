@@ -11118,9 +11118,9 @@
               r.y = 100,
 
               g.x = 12,
-              g.y = 171,
+              g.y = 169,
               v.x = 90,
-              v.y = 180,
+              v.y = 178,
               
               i.addChild(r),
               i.addChild(a),
@@ -11153,7 +11153,7 @@
               e > 50 &&
               ((this.cached = !0), this.cache_fixed_text());
             var o = e / s.drawFPS;
-            //var oo = this.scene.runTicks / s.drawFPS;
+            //var oo = GameSettings.ghostTicks / s.drawFPS;
             if (this.scene.game.mod.getVar("slowmo")) {o = o / 2}
             this.time.text = n(1e3 * o);
             //this.best.text = n(1e3 * oo);
@@ -13215,31 +13215,39 @@
         at = Math.min;
         class ht extends q {
           constructor(t, e, s, i) {
-            super(),
-              super.init(t),
-              this.offsetX = GameSettings.offsetPeteX;
-              this.offsetY = GameSettings.offsetPeteY;
-              this.createMasses(e, i),
-              this.createSprings(),
-              this.updateCameraFocalPoint(),
-              this.stopSounds(),
-              this.mini = this.scene.game.mod.getVar("mini"),
-              this.propeller = 0,
-              this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData"),
-              this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes"),
-              -1 === s && this.swap();
+            super();
+            this.color = "rgba(0,0,0,1)";
+            super.init(t);
+
+            const pm = this.scene?.playerManager;
+            this.isFirstPlayer = pm && t.id === pm.firstPlayer?.id;
+            this.mini = this.isFirstPlayer && this.scene.game.mod.getVar("mini");
+
+            this.offsetX = GameSettings.offsetPeteX;
+            this.offsetY = GameSettings.offsetPeteY;
+            this.createMasses(e, i);
+            this.createSprings();
+            this.updateCameraFocalPoint();
+            this.stopSounds();
+            this.propeller = 0;
+            this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData");
+            this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
+            if (s === -1) this.swap();
           }
           createMasses(e, s) {
             this.masses = [];
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const i = new A(),
               n = new X(new t.Z(e.x + 21 * mini + this.offsetX, e.y + 3 + this.offsetY), this),
               r = new X(new t.Z(e.x + -21 * mini + this.offsetX, e.y + 3 + this.offsetY), this);
             i.init(new t.Z(e.x + this.offsetX, e.y - 36 * mini + this.offsetY), this);
               i.drive = this.createRagdoll.bind(this);
-              (r.radius = 11.7 * mini),
-              (n.radius = 11.7 * mini),
-              (i.radius = 14 * mini),
+              r.baseRadius = 11.7;
+              n.baseRadius = 11.7;
+              i.baseRadius = 14;
+              r.radius = 11.7 * mini;
+              n.radius = 11.7 * mini;
+              i.radius = 14 * mini;
               i.vel.equ(s),
               r.vel.equ(s),
               n.vel.equ(s),
@@ -13251,50 +13259,52 @@
           }
           createSprings() {
             this.springs = [];
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const t = new N(this.head, this.rearWheel, this),
               e = new N(this.rearWheel, this.frontWheel, this),
               s = new N(this.frontWheel, this.head, this);
-              (e.lrest = 42 * mini),
-              (e.leff = 42 * mini),
-              (e.springConstant = 0.35),
-              (e.dampConstant = 0.3),
-              (t.lrest = 45 * mini),
-              (t.leff = 45 * mini),
-              (t.springConstant = 0.35),
-              (t.dampConstant = 0.3),
-              (s.lrest = 45 * mini),
-              (s.leff = 45 * mini),
-              (s.springConstant = 0.35),
-              (s.dampConstant = 0.3),
-              this.springs.push(t, e, s),
+            e.baseLrest = 42;
+            e.baseLeff = 42;
+            e.lrest = 42 * mini;
+            e.leff = 42 * mini;
+            e.springConstant = 0.35;
+            e.dampConstant = 0.3;
+
+            t.baseLrest = 45;
+            t.baseLeff = 45;
+            t.lrest = 45 * mini;
+            t.leff = 45 * mini;
+            t.springConstant = 0.35;
+            t.dampConstant = 0.3;
+
+            s.baseLrest = 45;
+            s.baseLeff = 45;
+            s.lrest = 45 * mini;
+            s.leff = 45 * mini;
+            s.springConstant = 0.35;
+            s.dampConstant = 0.3;
+            this.springs.push(t, e, s),
               (this.rearSpring = t),
               (this.chasse = e),
               (this.frontSpring = s);
           }
           updateMasses() {
-            const mini = GameSettings.mini;
-            if (this.scene.game.mod.getVar("mini")) {
+            if (!this.isFirstPlayer) return;
+
+            const mini = this.mini ? GameSettings.mini : 1;
             for (let mass of this.masses) {
-              mass.radius = mass.radius * mini;
-            }}
-            if (!this.scene.game.mod.getVar("mini")) {
-              for (let mass of this.masses) {
-                mass.radius = mass.radius / mini;
-              }}
+              mass.radius = mass.baseRadius * mini;
+            }
           }
+
           updateSprings() {
-            const mini = GameSettings.mini;
-            if (this.scene.game.mod.getVar("mini")) {
+            if (!this.isFirstPlayer) return;
+
+            const mini = this.mini ? GameSettings.mini : 1;
             for (let spring of this.springs) {
-              spring.lrest = spring.lrest * mini;
-              spring.leff = spring.leff * mini;
-            }}
-            if (!this.scene.game.mod.getVar("mini")) {
-              for (let spring of this.springs) {
-                spring.lrest = spring.lrest / mini;
-                spring.leff = spring.leff / mini;
-              }}
+              spring.lrest = spring.baseLrest * mini;
+              spring.leff = spring.baseLeff * mini;
+            }
           }
           createRagdoll() {
             if (!this.scene.game.mod.getVar("invincibility")) {
@@ -13376,10 +13386,13 @@
             if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
               this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
             }
-            if (this.mini !== this.scene.game.mod.getVar("mini")) {
-              this.updateSprings();
-              this.updateMasses();
-              this.mini = this.scene.game.mod.getVar("mini");
+            if (this.isFirstPlayer) {
+              const shouldBeMini = this.scene.game.mod.getVar("mini");
+              if (this.mini !== shouldBeMini) {
+                this.mini = shouldBeMini;
+                this.updateSprings();
+                this.updateMasses();
+              }
             }
             if (
               (this.crashed || (this.updateSound(), this.control()),
@@ -13423,7 +13436,7 @@
               (this.frontSpring.leff = t);
           }
           control() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const t = this.gamepad,
               e = t.isButtonDown("up"),
               s = t.isButtonDown("down"),
@@ -13456,6 +13469,9 @@
                   this.frontWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
                   this.rearWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
               }
+
+            const frontBrake = this.isFirstPlayer && this.scene.game.mod.getVar("frontBrake");
+
   
             (a.motor += ((Math.sqrt(GameSettings.accel) * o - a.motor) / 10) * mini),
               r && !this.swapped && (this.swap(), (this.swapped = !0)),
@@ -13463,7 +13479,7 @@
               e && (this.pedala += this.rearWheel.speed / 5),
               (a.brake = s),
               s && this.frontSpring.contract(-10, 10),
-              (1 === this.dir && (n || this.scene.game.mod.getVar("frontBrake")) && s) || (-1 === this.dir && (i || this.scene.game.mod.getVar("frontBrake")) && s)
+              (1 === this.dir && (n || frontBrake) && s) || (-1 === this.dir && (i || frontBrake) && s)
                 ? (this.frontWheel.brake = !0)
                 : (this.frontWheel.brake = !1);
             let h = i ? 1 : 0;
@@ -13642,7 +13658,7 @@
       }
       };
         drawBikeFrame() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const e = this.scene,
               s = e.game.mod.getVar("crBmx"),
               i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -14829,91 +14845,99 @@
         Dt = Math.random;
       class Et extends q {
         constructor(t, e, s, i) {
-          super(),
-            (this.color = "rgba(0,0,0,1)"),
-            super.init(t),
-            this.offsetX = GameSettings.offsetPeteX;
-            this.offsetY = GameSettings.offsetPeteY;
-            this.createMasses(e, i),
-            this.createSprings(),
-            this.updateCameraFocalPoint(),
-            this.stopSounds(),
-            this.mini = this.scene.game.mod.getVar("mini"),
-            this.propeller = 0,
-            this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData"),
-            this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes"),
-            -1 === s && this.swap();
+          super();
+          this.color = "rgba(0,0,0,1)";
+          super.init(t);
+
+          const pm = this.scene?.playerManager;
+          this.isFirstPlayer = pm && t.id === pm.firstPlayer?.id;
+          this.mini = this.isFirstPlayer && this.scene.game.mod.getVar("mini");
+
+          this.offsetX = GameSettings.offsetPeteX;
+          this.offsetY = GameSettings.offsetPeteY;
+          this.createMasses(e, i);
+          this.createSprings();
+          this.updateCameraFocalPoint();
+          this.stopSounds();
+          this.propeller = 0;
+          this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData");
+          this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
+          if (s === -1) this.swap();
         }
         createMasses(e, s) {
           this.masses = [];
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const i = new A(),
             n = new X(new t.Z(e.x + 23 * mini + this.offsetX, e.y + this.offsetY), this),
             r = new X(new t.Z(e.x + -23 * mini + this.offsetX, e.y + this.offsetY), this);
           i.init(new t.Z(e.x + 2 + this.offsetX, e.y + -38 * mini + this.offsetY), this);
           i.drive = this.createRagdoll.bind(this);
-            (r.radius = 14 * mini),
-            (n.radius = 14 * mini),
-            (i.radius = 14 * mini),
-            i.vel.equ(s),
-            r.vel.equ(s),
-            n.vel.equ(s),
-            this.masses.push(i),
-            this.masses.push(r),
-            this.masses.push(n),
-            (this.head = i),
-            (this.frontWheel = n),
-            (this.rearWheel = r),
-            this.rotor = 0;
+          const baseRadius = 14;
+          r.radius = baseRadius * mini;
+          n.radius = baseRadius * mini;
+          i.radius = baseRadius * mini;
+          r.baseRadius = baseRadius;
+          n.baseRadius = baseRadius;
+          i.baseRadius = baseRadius;
+          i.vel.equ(s);
+          r.vel.equ(s);
+          n.vel.equ(s);
+          this.masses.push(i);
+          this.masses.push(r);
+          this.masses.push(n);
+          this.head = i;
+          this.frontWheel = n;
+          this.rearWheel = r;
+          this.rotor = 0;
         }
+
         createSprings() {
           this.springs = [];
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const t = new N(this.head, this.rearWheel, this),
             e = new N(this.rearWheel, this.frontWheel, this),
             s = new N(this.frontWheel, this.head, this);
-          (e.lrest = 45 * mini),
-            (e.leff = 45 * mini),
-            (e.springConstant = 0.2),
-            (e.dampConstant = 0.3),
-            (t.lrest = 47 * mini),
-            (t.leff = 47 * mini),
-            (t.springConstant = 0.2),
-            (t.dampConstant = 0.3),
-            (s.lrest = 45 * mini),
-            (s.leff = 45 * mini),
-            (s.springConstant = 0.2),
-            (s.dampConstant = 0.3),
-            this.springs.push(t),
-            this.springs.push(e),
-            this.springs.push(s),
-            (this.rearSpring = t),
-            (this.chasse = e),
-            (this.frontSpring = s);
+          e.baseLrest = 45;
+          e.baseLeff = 45;
+          e.lrest = 45 * mini;
+          e.leff = 45 * mini;
+          e.springConstant = 0.2;
+          e.dampConstant = 0.3;
+          t.baseLrest = 47;
+          t.baseLeff = 47;
+          t.lrest = 47 * mini;
+          t.leff = 47 * mini;
+          t.springConstant = 0.2;
+          t.dampConstant = 0.3;
+          s.baseLrest = 45;
+          s.baseLeff = 45;
+          s.lrest = 45 * mini;
+          s.leff = 45 * mini;
+          s.springConstant = 0.2;
+          s.dampConstant = 0.3;
+          this.springs.push(t);
+          this.springs.push(e);
+          this.springs.push(s);
+          this.rearSpring = t;
+          this.chasse = e;
+          this.frontSpring = s;
         }
+
         updateMasses() {
-          const mini = GameSettings.mini;
-          if (this.scene.game.mod.getVar("mini")) {
+          if (!this.isFirstPlayer) return;
+          const mini = this.mini ? GameSettings.mini : 1;
           for (let mass of this.masses) {
-            mass.radius = mass.radius * mini;
-          }}
-          if (!this.scene.game.mod.getVar("mini")) {
-            for (let mass of this.masses) {
-              mass.radius = mass.radius / mini;
-            }}
+            mass.radius = mass.baseRadius * mini;
+          }
         }
+
         updateSprings() {
-          const mini = GameSettings.mini;
-          if (this.scene.game.mod.getVar("mini")) {
+          if (!this.isFirstPlayer) return;
+          const mini = this.mini ? GameSettings.mini : 1;
           for (let spring of this.springs) {
-            spring.lrest = spring.lrest * mini;
-            spring.leff = spring.leff * mini;
-          }}
-          if (!this.scene.game.mod.getVar("mini")) {
-            for (let spring of this.springs) {
-              spring.lrest = spring.lrest / mini;
-              spring.leff = spring.leff / mini;
-            }}
+            spring.lrest = spring.baseLrest * mini;
+            spring.leff = spring.baseLeff * mini;
+          }
         }
         createRagdoll() {
           if (!this.scene.game.mod.getVar("invincibility")) {
@@ -14990,10 +15014,13 @@
           if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
             this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
           }
-          if (this.mini !== this.scene.game.mod.getVar("mini")) {
-            this.updateSprings();
-            this.updateMasses();
-            this.mini = this.scene.game.mod.getVar("mini");
+          if (this.isFirstPlayer) {
+            const shouldBeMini = this.scene.game.mod.getVar("mini");
+            if (this.mini !== shouldBeMini) {
+              this.mini = shouldBeMini;
+              this.updateSprings();
+              this.updateMasses();
+            }
           }
           if (
             (this.crashed || (this.updateSound(), this.control()),
@@ -15046,7 +15073,7 @@
             (this.frontSpring.leff = t);
         }
         control() {
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const t = this.gamepad,
             e = t.isButtonDown("up"),
             s = t.isButtonDown("down"),
@@ -15076,13 +15103,15 @@
                 this.frontWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
                 this.rearWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
             }
+
+            const frontBrake = this.isFirstPlayer && this.scene.game.mod.getVar("frontBrake");
             
           (a.motor += ((Math.sqrt(GameSettings.accel) * o - a.motor) / 10) * mini),
             r && !this.swapped && (this.swap(), (this.swapped = !0)),
             r || (this.swapped = !1),
             e && (this.pedala += this.rearWheel.speed / 5),
             (a.brake = s),
-            (1 === this.dir && (n || this.scene.game.mod.getVar("frontBrake")) && s) || (-1 === this.dir && (i || this.scene.game.mod.getVar("frontBrake")) && s)
+            (1 === this.dir && (n || frontBrake) && s) || (-1 === this.dir && (i || frontBrake) && s)
                 ? (this.frontWheel.brake = !0)
                 : (this.frontWheel.brake = !1);
           let h = i ? 1 : 0;
@@ -15245,7 +15274,7 @@
 }
       };
         drawBikeFrame() {
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const e = this.scene,
             s = e.game.mod.getVar("crMtb"),
             i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -16367,7 +16396,6 @@
                 }
                 if (this._scene.playerManager._players[1]) {
                   if (this._addCheckpoint) {this.checkpointTick = this._scene.ticks; this._addCheckpoint = !1};
-                  console.log(this.checkpointTick);
                 }
               }
             }
@@ -16419,7 +16447,7 @@
                 (this._game.mod.getVar("seeGhost") || !this._ghost) && t.draw();
               for (let t = 0; t < this.deadVehicles.length; t++)
                 this.deadVehicles[t] && this.deadVehicles[t].draw();
-              this.isGhost() && this._game.mod.getVar("seeGhost");
+              this.isGhost() && this.drawName();
             }
             checkKeys() {
               const t = this._gamepad,
@@ -24818,6 +24846,7 @@ showMessage();
             this.stage.update(),
             this.camera.updateZoom(),
             this.updateMainPlayerHotkeys();
+            this.addPlayers();
             (this.game.mod.getVar("oldTimer")) && this.score.update();
               if (this.playerManager.firstPlayer.complete && (this.playerManager.firstPlayer._scene.ticks < this.completedTicks)){
                   this.playerManager.firstPlayer.complete = false;
@@ -25576,45 +25605,49 @@ showMessage();
             this.restartTrack = true;
         }
         addPlayers(raceData) {
-            const races = raceData;
-            const playerManager = this.playerManager;
-            playerManager.clear();
-          
-            let user = [];
-            user = {
-                "u_id": 1082,
-                "u_name": "ness",
-                "d_name": "Pete",
-                "img_url_small": "https:\/\/secure.gravatar.com\/avatar\/c7c31ff913e6990b5c44700b4d34d8ba\/?s=50&d=mm&r=pg",
-                "cosmetics": {
-                    "head": {
-                        "id": "12",
-                        "title": "Green Hat",
-                        "type": "1",
-                        "name": "classic_green",
-                        "cost": "60",
-                        "options": {
-                            "back": "#51B400"
-                        },
-                        "classname": "forward_cap",
-                        "equiped": true,
-                        "spritesheet_id": "4",
-                        "img": "head_icons_4 head_icons_4-classic_green",
-                        "show": true,
-                        "script": "https:\/\/cdn.freeriderhd.com\/free_rider_hd\/assets\/inventory\/head\/scripts\/v5\/forward_cap.js",
-                        "limited": false
-                    }
-                }}
-
-            let n = races.code;
-              "string" == typeof n && (n = JSON.parse(n));
-
-            const player = playerManager.createPlayer(this, user);
-            player.setBaseVehicle(races.vehicle);
-            player.setAsGhost();
-            player.getGamepad().loadPlayback(raceData.code, this.settings.keysToRecord);
-            playerManager.addPlayer(player);
+          if (typeof GameSettings === 'undefined' || !GameSettings.fullRaceData) {
+            return;
           }
+
+          let fullRace;
+          try {
+            let dataToParse = GameSettings.fullRaceData;
+
+            if (typeof dataToParse === 'object' && dataToParse !== null) {
+              dataToParse = JSON.stringify(dataToParse);
+            }
+
+            fullRace = JSON.parse(dataToParse);
+
+          } catch (e) {
+            console.error("Failed to parse GameSettings.fullRaceData:", e);
+            console.error("Failing string:", GameSettings.fullRaceData);
+            return;
+          }
+
+          const playerManager = this.playerManager;
+          playerManager.clear();
+
+          const apiUser = fullRace.user;
+
+          const mappedUser = {
+            "u_id": apiUser.id,
+            "u_name": apiUser.username,
+            "d_name": apiUser.displayName || apiUser.username,
+            "cosmetics": apiUser.cosmetics || {}
+          };
+
+          const ghostData = fullRace.ghost;
+
+          const player = playerManager.createPlayer(this, mappedUser);
+
+          player.setBaseVehicle(ghostData.vehicle);
+          player.setAsGhost();
+          player.getGamepad().loadPlayback(ghostData.code, this.settings.keysToRecord);
+          playerManager.addPlayer(player);
+
+          GameSettings.fullRaceData = null;
+        }
         parseCoordinates(t) {
           const e = t.split("#");
           let s = e[0].split(",");

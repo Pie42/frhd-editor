@@ -718,7 +718,220 @@ function findClosestIds(metadata, id) {
     return { nextId: next, prevId: prev };
 }
 
+
 // dynamic routes
+
+app.get('/frhd/:id/:user', async (req, res) => {
+    const frhdModule = await import('frhdv2');
+    const { getTrackData, getTrackCode, getRace } = frhdModule;
+
+    const { isValid, id: trackId } = validateId(req.params.id);
+    if (!isValid) {
+        return res.status(404).send('invalid id');
+    }
+
+    if (!getTrackData || !getTrackCode || !getRace) {
+        console.error('Server configuration error: Missing required FRHD API functions.');
+        return res.status(500).send('Server configuration error');
+    }
+
+    const userIdOrName = req.params.user;
+    const isDiscussMode = req.query.discuss === 'true';
+    const isJsonMode = req.query.json === 'true';
+    let trackData = {};
+
+    const cacheDir = FRHD_TRACKCODES_ROOT;
+    const cacheFilePath = path.join(cacheDir, `${trackId}.txt`);
+    let code = '';
+    let isCodeCached = false;
+
+    try {
+        code = await fsPromises.readFile(cacheFilePath, 'utf8');
+        code = code.trim();
+        isCodeCached = true;
+        console.log(`[FRHD] Track ${trackId} code loaded from cache.`);
+    } catch (e) {
+        console.log(`[FRHD] Track ${trackId} code not found in cache.`);
+    }
+
+    try {
+        const metadataFields = ['title', 'author', 'descr', 'img', 'p_ts', 'size'];
+
+        const fetchPromises = [
+            getTrackData(trackId, metadataFields),
+        ];
+
+        if (!isCodeCached) {
+            fetchPromises.push(getTrackCode(trackId, ['code']));
+        }
+
+        fetchPromises.push(getRace(trackId, userIdOrName));
+
+        const resolvedResponses = await Promise.all(fetchPromises);
+
+        const metadataResponse = resolvedResponses[0];
+        const codeResponse = isCodeCached ? null : resolvedResponses[1];
+        const raceResponse = resolvedResponses[resolvedResponses.length - 1];
+
+        const metadata = metadataResponse?.track || metadataResponse || {};
+
+        if (!isCodeCached && codeResponse) {
+            const freshCode = codeResponse?.track?.code || codeResponse?.code || codeResponse || '';
+            code = freshCode;
+
+            if (code) {
+                try {
+                    await fsPromises.mkdir(cacheDir, { recursive: true });
+                    await fsPromises.writeFile(cacheFilePath, code, 'utf8');
+                    console.log(`[FRHD Cache] Track ${trackId} code successfully cached to ${cacheFilePath}`);
+                } catch (writeError) {
+                    console.error(`[FRHD Cache] Failed to write track code ${trackId}:`, writeError);
+                }
+            }
+        }
+
+        if (raceResponse) {
+            const raceObject = raceResponse;
+
+            const ghostData = {
+                code: raceObject.data,
+                vehicle: raceObject.vehicle,
+                desktop: raceObject.platform === 'desktop',
+                run_ticks: raceObject.runTicks
+            };
+
+            trackData.ghost = ghostData;
+            trackData.ghoster = raceObject.user.displayName || raceObject.user.username;
+            trackData.ghostTime = raceObject.runTime;
+            trackData.ghostTicks = raceObject.runTicks;
+
+            const fullData = {
+                user: raceObject.user,
+                ghost: ghostData
+            };
+
+            trackData.fullRaceData = JSON.stringify(fullData);
+        }
+
+        const rawAuthor = metadata.author || 'Unknown';
+        const authorName = typeof rawAuthor === 'object' && rawAuthor !== null
+            ? (rawAuthor.name || rawAuthor.username || 'Unknown Author')
+            : rawAuthor;
+
+        trackData = {
+            ...trackData,
+            pageId: `frhd-${trackId}`,
+            id: trackId,
+            name: metadata.title || `FRHD Track #${trackId}`,
+            authors: authorName,
+            code: code,
+            type: 'frhd',
+            sourceUrl: `/frhd/${trackId}`,
+            description: metadata.descr || '',
+            published: metadata.p_ts
+                ? new Date(metadata.p_ts * 1000).toLocaleDateString()
+                : '',
+            forumUrl: '',
+            size: formatSize(metadata.size || code.length),
+            permalink: `https://freerider.app/frhd/${trackId}`
+        };
+
+        let specificThumbnailFound = false;
+        const localThumbnailPath = path.join(__dirname, 'data', 'frhd', 'thumbnails', `${trackId}.png`);
+
+        try {
+            await fsPromises.access(localThumbnailPath);
+            trackData.thumbnail = `/data/frhd/thumbnails/${trackId}.png`;
+            specificThumbnailFound = true;
+        } catch {
+            // File not found locally
+        }
+
+        if (!specificThumbnailFound) {
+            let thumbnail = metadata.img;
+            if (thumbnail) {
+                thumbnail = thumbnail.replace(/(\d+x\d+)/, '768x250');
+            }
+            trackData.thumbnail = thumbnail || '/data/bhr/thumbnails/default.png';
+        }
+
+        const forumLink = await getForumLinkForTrack('frhd', trackId);
+        if (forumLink) {
+            trackData.forumUrl = forumLink.forumUrl;
+        }
+
+    } catch (error) {
+        console.error(`Error fetching FRHD data for ID ${trackId} and user ${userIdOrName}:`, error);
+        trackData = {
+            ...trackData,
+            pageId: `frhd-${trackId}`,
+            id: trackId,
+            name: '',
+            authors: '',
+            code: '',
+            type: 'frhd',
+            sourceUrl: `/frhd/${trackId}`,
+            thumbnail: '/data/bhr/thumbnails/default.png',
+            description: '',
+            published: '',
+            size: '',
+            permalink: `https://freerider.app/frhd/${trackId}`,
+            nextId: '',
+            prevId: ''
+        };
+    }
+
+    if (frhdMetadata.length > 0) {
+        const currentIndex = frhdMetadata.findIndex(t => t.id === trackId);
+        if (currentIndex !== -1) {
+            const nextIndex = (currentIndex + 1) % frhdMetadata.length;
+            const prevIndex = (currentIndex - 1 + frhdMetadata.length) % frhdMetadata.length;
+            trackData.nextId = frhdMetadata[nextIndex].id;
+            trackData.prevId = frhdMetadata[prevIndex].id;
+        }
+        else {
+            const { nextId, prevId } = findClosestIds(frhdMetadata, trackId);
+            trackData.nextId = nextId;
+            trackData.prevId = prevId;
+        }
+    }
+
+    if (req.query.json === 'true') {
+        return res.json({
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type,
+            trackUrl: `/data/frhd/trackcodes/${trackId}.txt`,
+            description: trackData.description,
+            published: trackData.published,
+            size: trackData.size,
+            permalink: `https://freerider.app/frhd/${trackId}`,
+            nextId: trackData.nextId,
+            prevId: trackData.prevId,
+            ghost: trackData.ghost || null,
+            ghoster: trackData.ghoster || null,
+            ghostTime: trackData.ghostTime || null,
+            ghostTicks: trackData.ghostTicks || null
+        });
+    }
+
+    if (isDiscussMode) {
+        const renderedHtml = discussTemplate({
+            track: trackData
+        });
+        return res.status(200).send(renderedHtml);
+    }
+
+    const renderedHtml = trackTemplate({
+        trackId: trackId,
+        trackType: 'frhd',
+        track: trackData
+    });
+
+    res.status(200).send(renderedHtml);
+});
+
 
 app.get('/frhd/random', (req, res) => {
     if (frhdMetadata.length === 0) {
@@ -1114,7 +1327,6 @@ app.get('/cr/:id', async (req, res) => {
     res.status(200).send(renderedHtml);
 });
 
-
 app.get('/frhd/:id', async (req, res) => {
     const frhdModule = await import('frhdv2');
     const getTrackData = frhdModule.getTrackData;
@@ -1198,6 +1410,11 @@ app.get('/frhd/:id', async (req, res) => {
             size: formatSize(metadata.size || code.length),
             permalink: `https://freerider.app/frhd/${trackId}`
         };
+
+        trackData.ghost = '';
+        trackData.ghoster = '';
+        trackData.ghostTime = '';
+        trackData.ghostTicks = '';
 
         let specificThumbnailFound = false;
         const localThumbnailPath = path.join(__dirname, 'data', 'frhd', 'thumbnails', `${trackId}.png`);

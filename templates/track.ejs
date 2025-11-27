@@ -6,6 +6,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
 
+    <% let ogDescription='' ; let twitterDescription='' ; if (track.type==='cr' ) { ogDescription='a Canvas Rider track' ;
+        twitterDescription='a Canvas Rider track' ; } else if (track.type==='bhr' ) {
+        ogDescription='a Black Hat Rider track' ; twitterDescription='a Black Hat Rider track' ; } else { const
+        descriptionText=track.description || 'play now at freerider.app!' ; ogDescription=descriptionText.substring(0, 400);
+        const twitterDefault='track editor v1.1' ; const twitterText=track.description || twitterDefault;
+        twitterDescription=twitterText.substring(0, 400); } %>
+
     <meta name="format-detection" content="telephone=no">
     <meta name="HandheldFriendly" content="true" />
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -25,8 +32,8 @@
     <meta name="author" content="<%= track.authors || 'Ness & Pie42' %>">
     <meta name="description" content="<%= (track.description || 'track editor v1.1').substring(0, 160) %>">
 
-    <meta property="og:title" content="<%= track.name || 'free rider - draw' %>, by <%= track.authors || 'Ness & Pie42' %>">
-    <meta property="og:description" content="<%= (track.description || 'track editor v1.1').substring(0, 200) %>">
+    <meta property="og:title" content="<%= track.name || 'Free Rider' %>, by <%= track.authors || 'Ness & Pie42' %>">
+    <meta property="og:description" content="<%= ogDescription %>">
     <meta property="og:image" content="https://freerider.app/<%= track.type %>/<%= track.id %>.png">
     <meta property="og:url" content="<%= track.permalink || 'https://freerider.app' %>">
     <meta property="og:type" content="website">
@@ -34,7 +41,7 @@
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<%= track.name || 'free rider - draw' %>">
-    <meta name="twitter:description" content="<%= (track.description || 'track editor v1.1').substring(0, 200) %>">
+    <meta name="twitter:description" content="<%= twitterDescription %>">
     <meta name="twitter:image" content="https://freerider.app/<%= track.type %>/<%= track.id %>.png">
 
     <% if (track.authors) { %>
@@ -80,6 +87,10 @@
     GameSettings.size = "<%= track.size || '' %>";
     GameSettings.nextId = "<%= track.nextId || '' %>";
     GameSettings.prevId = "<%= track.prevId || '' %>";
+    GameSettings.ghoster = "<%= track.ghoster || '' %>";
+    GameSettings.ghostTime = "<%= track.ghostTime || 'null' %>";
+    GameSettings.ghostTicks = "<%= track.ghostTicks || 'null' %>";
+    GameSettings.fullRaceData = <%- track.fullRaceData || 'null' %>;
 
     GameSettings.forumUrl = "<%= track.forumUrl || 'https://forum.freerider.app/feed' %>";
     GameSettings.type === 'bhr' ? GameSettings.blackHat = true : false;
