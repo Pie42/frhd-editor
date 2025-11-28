@@ -17,7 +17,10 @@
         ogDescription = 'a Black Hat Rider track';
         twitterDescription = 'a Black Hat Rider track';
     } else {
-        const descriptionText = track.ghoster ? `ghost by ${track.ghoster}` : (track.description || 'play now at freerider.app!');
+        const tas = track.tas ? ' [TAS]' : '';
+        const descriptionText = track.ghoster 
+            ? `ghost by ${track.ghoster} (${track.ghostTime})${tas}` 
+            : (track.description || 'play now at freerider.app!');
         ogDescription = descriptionText.substring(0, 400);
         twitterDescription = descriptionText.substring(0, 400);
     }
@@ -40,7 +43,7 @@
         <%= track.name || 'free rider - draw' %>
     </title>
     <meta name="author" content="<%= track.authors || 'Ness & Pie42' %>">
-    <meta name="description" content="<%= (track.description || 'track editor v1.1').substring(0, 160) %>">
+    <meta name="description" content="<%= ogDescription %>">
 
     <meta property="og:title" content="<%= track.name || 'Free Rider' %>, by <%= track.authors || 'Ness & Pie42' %>">
     <meta property="og:description" content="<%= ogDescription %>">

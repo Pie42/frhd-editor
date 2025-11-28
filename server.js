@@ -797,13 +797,15 @@ app.get('/frhd/:id/:user', async (req, res) => {
                 code: raceObject.data,
                 vehicle: raceObject.vehicle,
                 desktop: raceObject.platform === 'desktop',
-                run_ticks: raceObject.runTicks
+                run_ticks: raceObject.runTicks,
+                tas: raceObject.data.tas || false
             };
 
             trackData.ghost = ghostData;
             trackData.ghoster = raceObject.user.displayName || raceObject.user.username;
             trackData.ghostTime = raceObject.runTime;
             trackData.ghostTicks = raceObject.runTicks;
+            trackData.tas = raceObject.data.tas || false;
 
             const fullData = {
                 user: raceObject.user,
@@ -913,7 +915,8 @@ app.get('/frhd/:id/:user', async (req, res) => {
             ghost: trackData.ghost || null,
             ghoster: trackData.ghoster || null,
             ghostTime: trackData.ghostTime || null,
-            ghostTicks: trackData.ghostTicks || null
+            ghostTicks: trackData.ghostTicks || null,
+            tas: trackData.tas || false
         });
     }
 
