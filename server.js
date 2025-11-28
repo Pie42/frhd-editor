@@ -249,10 +249,10 @@ app.post('/api/forum-link', async (req, res) => {
             });
         }
         
-        const trackMatch = trackUrl.match(/^\/(frhd|bhr|cr|u)\/(.+)$/);
+        const trackMatch = trackUrl.match(/^\/(frhd|bhr|cr|u)\/(.+?)(?:\/(.+))?$/);
         if (!trackMatch) {
             return res.status(400).json({ 
-                error: 'Invalid track URL format. Expected: /frhd/123 or /bhr/456 or /cr/789 or /u/username' 
+                error: 'Invalid track URL format. Expected: /frhd/123 or /frhd/123/username or /bhr/456 or /cr/789 or /u/username' 
             });
         }
         
@@ -264,6 +264,7 @@ app.post('/api/forum-link', async (req, res) => {
         
         const trackType = trackMatch[1];
         const trackId = trackMatch[2];
+        const ghostUser = trackMatch[3];
         
         const links = await loadForumLinks();
         
@@ -275,6 +276,7 @@ app.post('/api/forum-link', async (req, res) => {
             trackUrl,
             trackType,
             trackId,
+            ghostUser: ghostUser || null,
             forumUrl,
             user: user || '',
             createdAt: existingIndex >= 0 ? links[existingIndex].createdAt : new Date().toISOString(),
@@ -296,6 +298,38 @@ app.post('/api/forum-link', async (req, res) => {
         
     } catch (err) {
         console.error('Error creating/updating forum link:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/forum-link/:type/:id/:user - for ghost URLs
+app.get('/api/forum-link/:type/:id/:user', async (req, res) => {
+    try {
+        const { type, id, user } = req.params;
+        
+        if (!['frhd', 'bhr', 'cr', 'u'].includes(type)) {
+            return res.status(400).json({ 
+                error: 'Invalid track type. Must be frhd, bhr, cr, or u' 
+            });
+        }
+        
+        const trackUrl = `/${type}/${id}/${user}`;
+        const links = await loadForumLinks();
+        
+        const link = links.find(l => l.trackUrl === trackUrl);
+        
+        if (!link) {
+            return res.status(404).json({ 
+                error: 'No forum link found for this track' 
+            });
+        }
+        
+        res.status(200).json(link);
+        
+    } catch (err) {
+        console.error('Error fetching forum link:', err);
         res.status(500).json({ 
             error: `Internal Server Error: ${err.message}` 
         });
@@ -383,9 +417,9 @@ app.delete('/api/forum-link/:type/:id', async (req, res) => {
 */
 
 // helper function to get forum link for track metadata
-async function getForumLinkForTrack(trackType, trackId) {
+async function getForumLinkForTrack(trackType, trackId, ghostUser = null) {
     const links = await loadForumLinks();
-    const trackUrl = `/${trackType}/${trackId}`;
+    const trackUrl = ghostUser ? `/${trackType}/${trackId}/${ghostUser}` : `/${trackType}/${trackId}`;
     return links.find(l => l.trackUrl === trackUrl);
 }
 
@@ -857,7 +891,7 @@ app.get('/frhd/:id/:user', async (req, res) => {
             trackData.thumbnail = thumbnail || '/data/bhr/thumbnails/default.png';
         }
 
-        const forumLink = await getForumLinkForTrack('frhd', trackId);
+        const forumLink = await getForumLinkForTrack('frhd', trackId, userIdOrName);
         if (forumLink) {
             trackData.forumUrl = forumLink.forumUrl;
         }
