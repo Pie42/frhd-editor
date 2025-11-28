@@ -33126,10 +33126,16 @@
 
         const url = event.data.url;
 
-        if (this.hasUnsavedChanges()) {
-            const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
-            console.warn(confirmationMessage);
+      if (this.hasUnsavedChanges()) {
+        const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
+        const userConfirmed = confirm(confirmationMessage);
+
+        if (!userConfirmed) {
+          console.log("User cancelled track load due to unsaved changes");
+          return;
         }
+      }
+
 
         try {
             const url = new URL(event.data.url);
