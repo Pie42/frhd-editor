@@ -1675,10 +1675,36 @@ app.get('/u/:id', async (req, res) => {
             return res.status(404).send(`Data not found for user "${userId}".`);
         }
 
+        // fetch created tracks
+        let createdTracks = [];
+        try {
+            const frhdModule = await import('frhdv2');
+            const getUser = frhdModule.getUser;
+            
+            if (getUser) {
+                const userData = await getUser(userId);
+                
+                if (userData && userData.createdTracks && userData.createdTracks.cache) {
+                    createdTracks = Array.from(userData.createdTracks.cache.values()).map(track => ({
+                        id: track.id,
+                        title: track.title || `Track #${track.id}`,
+                        author: track.author?.username || track.author?.displayName || userData.displayName,
+                        url: `https://freerider.app/frhd/${track.id}`,
+                        thumbnail: `https://freerider.app/frhd/${track.id}.png`,
+                    }));
+                    
+                    console.log(`[User ${userId}] Found ${createdTracks.length} created tracks`);
+                }
+            }
+        } catch (apiError) {
+            console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
+        }
+
         // Add discussion-specific fields
         trackData.pageId = userId;
         trackData.userId = userId;
         trackData.sourceUrl = `/u/${userId}`;
+        trackData.createdTracks = createdTracks;
 
         if (json) {
             return res.json({
@@ -1688,7 +1714,8 @@ app.get('/u/:id', async (req, res) => {
                 trackURL: trackData.trackUrl,
                 description: trackData.description,
                 id: userId,
-                type: 'user'
+                type: 'user',
+                createdTracks: createdTracks
             });
         }
 
@@ -1714,7 +1741,6 @@ app.get('/u/:id', async (req, res) => {
     }
 });
 
-// Similar modifications for /u/:userId/:trackSlug
 app.get('/u/:userId/:trackSlug', async (req, res) => {
     const { userId, trackSlug } = req.params;
     const isDiscussMode = req.query.discuss === 'true';
@@ -1727,9 +1753,36 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
             return res.status(404).send(`Track "${trackSlug}" not found for user "${userId}".`);
         }
 
+        // fetch created tracks
+        let createdTracks = [];
+        try {
+            const frhdModule = await import('frhdv2');
+            const getUser = frhdModule.getUser;
+            
+            if (getUser) {
+                const userData = await getUser(userId);
+                
+                if (userData && userData.createdTracks && userData.createdTracks.cache) {
+                    createdTracks = Array.from(userData.createdTracks.cache.values()).map(track => ({
+                        id: track.id,
+                        title: track.title || `Track #${track.id}`,
+                        author: track.author?.username || track.author?.displayName || userData.displayName,
+                        url: `https://freerider.app/frhd/${track.id}`,
+                        thumbnail: `https://freerider.app/frhd/${track.id}.png`,
+                    }));
+                    
+                    console.log(`[User ${userId}] Found ${createdTracks.length} created tracks`);
+                }
+            }
+        } catch (apiError) {
+            console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
+        }
+
         // Add discussion-specific fields
         trackData.pageId = `page-${userId}-${trackSlug}`;
         trackData.sourceUrl = `/u/${userId}/${trackSlug}`;
+        trackData.userId = userId;
+        trackData.createdTracks = createdTracks;
 
         if (json) {
             return res.json({
@@ -1739,7 +1792,8 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                 trackURL: trackData.trackURL,
                 description: trackData.description,
                 id: trackSlug,
-                type: 'page'
+                type: 'page',
+                createdTracks: createdTracks
             });
         }
 
@@ -1750,7 +1804,6 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
             return res.status(200).send(renderedHtml);
         }
 
-        trackData.userId = userId;
         const renderedHtml = trackTemplate({
             trackId: trackSlug,
             trackType: 'page',

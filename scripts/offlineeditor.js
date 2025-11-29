@@ -4011,6 +4011,52 @@
                 }
               }
 
+              const typeIdMatch = e.value.match(/^(frhd|bhr|cr)-(\d+)$/i);
+              if (typeIdMatch) {
+                const trackType = typeIdMatch[1].toLowerCase();
+                const trackId = typeIdMatch[2];
+                const fetchUrl = `https://freerider.app/${trackType}/${trackId}.txt`;
+
+                console.log(`Fetching ${trackType} track #${trackId}`);
+
+                fetch(fetchUrl)
+                  .then((response) => {
+                    if (!response.ok) {
+                      throw new Error(`${trackType.toUpperCase()} track #${trackId} not found`);
+                    }
+                    return response.text();
+                  })
+                  .then((data) => {
+                    this.processTrackData(data);
+                    console.log(`${trackType.toUpperCase()} track #${trackId} loaded`);
+
+                    return fetch(`https://freerider.app/${trackType}/${trackId}?json=true`);
+                  })
+                  .then((response) => response.json())
+                  .then((metadata) => {
+                    console.log("Track metadata fetched:", metadata);
+                    this.updateNowPlaying({
+                      id: trackId,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${trackId}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType,
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId
+                    });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to load ${trackType} track:`, error);
+                    e.value = `Error: ${error.message}`;
+                  });
+
+                return;
+              }
+
               if (e.value === "random") {
                 fetch("assets/tracks/tracklist.json")
                   .then((response) => response.json())
@@ -4034,7 +4080,7 @@
                       .then((data) => {
                         this.processTrackData(data);
                         console.log("track loaded:", trackName);
-                        GameSettings.trackName = `${trackName}.txt`;
+                        //GameSettings.trackName = `${trackName}.txt`;
                         console.log(match);
                       })
                       .catch((error) => {
@@ -4093,7 +4139,7 @@
                         .then((trackData) => {
                           this.processTrackData(trackData);
                           console.log("track loaded:", trackname);
-                          GameSettings.trackName = `${trackname}.txt`;
+                          //GameSettings.trackName = `${trackname}.txt`;
                         });
                       fetch("assets/tracks/tracklist-data.json")
                         .then((res) => res.json())
@@ -4136,7 +4182,7 @@
                   .then((data) => {
                     this.processTrackData(data);
                     console.log("track loaded:", trackName);
-                    GameSettings.trackName = `${trackName}.txt`;
+                    //GameSettings.trackName = `${trackName}.txt`;
                     fetch("assets/tracks/tracklist-data.json")
                       .then((res) => res.json())
                       .then((trackdata) => {
