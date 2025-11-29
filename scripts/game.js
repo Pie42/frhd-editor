@@ -16444,7 +16444,7 @@
               this._tempVehicleTicks > 0 && (t = this._tempVehicle),
                 this._effectTicks > 0 &&
                   this._effect.draw(this._effectTicks / 100),
-                (this._game.mod.getVar("seeGhost") || !this._ghost) && t.draw();
+                t.draw();
               for (let t = 0; t < this.deadVehicles.length; t++)
                 this.deadVehicles[t] && this.deadVehicles[t].draw();
               this.isGhost() && this.drawName();
