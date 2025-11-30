@@ -33520,6 +33520,65 @@
             return;
           }
 
+          // User/page logic
+          if (trackType === 'user' || trackType === 'page') {
+            fetch(`/u/${trackName}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("User page not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("User metadata fetched:", metadata);
+
+                // Fetch the track code
+                return fetch(metadata.trackURL)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("User track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `User: ${trackName}`;
+                    GameSettings.id = metadata.id;
+                    GameSettings.authors = metadata.authors || '';
+
+                    const urlPath = `/u/${trackName}`;
+
+                    history.pushState(
+                      { userId: metadata.id, trackType: 'user' },
+                      metadata.name,
+                      urlPath
+                    );
+
+                    document.title = metadata.name || trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
+                    this.updateNowPlaying({
+                      id: metadata.id,
+                      name: metadata.name,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
+                      type: metadata.type || 'user',
+                      description: metadata.description || '',
+                      permalink: `https://freerider.app/u/${metadata.authors}`,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      userId: trackName,
+                      createdTracks: metadata.createdTracks || []
+                    });
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load user page:", error);
+              });
+            return;
+          }
+
             const fetchUrl = trackType === 'user'
                 ? `/data/page/${trackName}.txt`
                 : `assets/tracks/${trackName}.txt`;

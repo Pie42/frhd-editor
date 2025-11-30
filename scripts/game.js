@@ -24756,7 +24756,7 @@
           const showMessage = () => {
             if (GameSettings.trackName === "track.txt") return;
 
-            let trackName = GameSettings.trackName + " - " + GameSettings.authors;
+            let trackName = GameSettings.trackName ? GameSettings.trackName + " - " + GameSettings.authors : GameSettings.authors;
             trackName = trackName.replace(".txt", "");
             message.show(trackName, !1, "#000000", "#FFFFFF");
             setTimeout(() => {

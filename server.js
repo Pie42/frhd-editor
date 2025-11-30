@@ -761,6 +761,77 @@ function findClosestIds(metadata, id) {
 
 // dynamic routes
 
+// Redirect /user/* to /u/*
+app.use('/user', (req, res) => {
+    const redirectPath = `/u${req.path}`;
+    const queryString = req.url.split('?')[1];
+    const fullRedirect = queryString ? `${redirectPath}?${queryString}` : redirectPath;
+    res.redirect(301, fullRedirect);
+});
+
+// Serve user page trackcode directly at /u/:id.txt
+app.get('/u/:id.txt', async (req, res) => {
+    const userId = req.params.id;
+    const sanitizedUserId = sanitizePath(userId);
+    
+    if (!sanitizedUserId || sanitizedUserId !== userId) {
+        return res.status(404).send('Invalid user ID');
+    }
+
+    try {
+        await initializeUserProfile(userId);
+        const trackData = await getUserTrackData(userId);
+
+        if (!trackData || !trackData.code) {
+            return res.status(404).send('Track code not found');
+        }
+
+        res.type('text/plain').send(trackData.code);
+    } catch (error) {
+        console.error(`Error fetching user track code for ${userId}:`, error);
+        return res.status(500).send('Error fetching track code');
+    }
+});
+
+// Serve user page thumbnail directly at /u/:id.png
+app.get('/u/:id.png', async (req, res) => {
+    const userId = req.params.id;
+    const sanitizedUserId = sanitizePath(userId);
+    
+    if (!sanitizedUserId || sanitizedUserId !== userId) {
+        return res.status(404).send('Invalid user ID');
+    }
+
+    try {
+        await initializeUserProfile(userId);
+        const trackData = await getUserTrackData(userId);
+
+        if (!trackData || !trackData.thumbnail) {
+            const defaultThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', 'default.png');
+            return res.sendFile(defaultThumbnailPath);
+        }
+
+        if (trackData.thumbnail.startsWith('/data/page/')) {
+            const thumbnailPath = path.join(USER_TRACKS_ROOT, trackData.thumbnail.substring('/data/page/'.length));
+            
+            try {
+                await fsPromises.access(thumbnailPath);
+                return res.sendFile(thumbnailPath);
+            } catch {
+                const defaultThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', 'default.png');
+                return res.sendFile(defaultThumbnailPath);
+            }
+        } else {
+            const defaultThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', 'default.png');
+            return res.sendFile(defaultThumbnailPath);
+        }
+    } catch (error) {
+        console.error(`Error fetching user thumbnail for ${userId}:`, error);
+        const defaultThumbnailPath = path.join(__dirname, 'data', 'bhr', 'thumbnails', 'default.png');
+        return res.sendFile(defaultThumbnailPath);
+    }
+});
+
 app.get('/frhd/:id/:user', async (req, res) => {
     const frhdModule = await import('frhdv2');
     const { getTrackData, getTrackCode, getRace } = frhdModule;
@@ -1720,9 +1791,9 @@ app.get('/u/:id', async (req, res) => {
 
         if (json) {
             return res.json({
-                name: trackData.name,
+                name: trackData.name || 'Gallery',
                 authors: trackData.authors,
-                thumbnail: trackData.thumbnail,
+                thumbnail: trackData.thumbnail || '/data/bhr/thumbnails/default.png',
                 trackURL: trackData.trackUrl,
                 description: trackData.description,
                 id: userId,
