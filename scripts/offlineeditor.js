@@ -33536,7 +33536,11 @@
 
           // User/page logic
           if (trackType === 'user' || trackType === 'page') {
-            fetch(`/u/${trackName}?json=true`)
+            const fetchUrl = trackType === 'page'
+              ? `/u/${userId}/${trackName}?json=true`
+              : `/u/${trackName}?json=true`;
+
+            fetch(fetchUrl)
               .then((response) => {
                 if (!response.ok) throw new Error("User page not found");
                 return response.json();
@@ -33544,23 +33548,52 @@
               .then((metadata) => {
                 console.log("User metadata fetched:", metadata);
 
+                // Use trackUrl from metadata
+                const trackCodeUrl = metadata.trackUrl;
+
+                if (!trackCodeUrl) {
+                  throw new Error("No track URL found in metadata");
+                }
+
                 // Fetch the track code
-                return fetch(metadata.trackUrl)
+                return fetch(trackCodeUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
                   })
                   .then((code) => {
+                    // Check if track code is empty or just "..."
+                    if (!code || code.trim() === '' || code.trim() === '...') {
+                      console.log("User track is empty, loading random created track");
+
+                      // Check if user has created tracks
+                      if (metadata.createdTracks && metadata.createdTracks.length > 0) {
+                        // Pick a random track
+                        const randomIndex = Math.floor(Math.random() * metadata.createdTracks.length);
+                        const randomTrack = metadata.createdTracks[randomIndex];
+
+                        console.log(`Loading random track: ${randomTrack.title} (#${randomTrack.id})`);
+
+                        // Redirect to the random FRHD track
+                        window.location.href = randomTrack.url;
+                        return;
+                      } else {
+                        throw new Error("User has no created tracks to load");
+                      }
+                    }
+
                     console.log("User track code fetched:", code);
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `User: ${trackName}`;
                     GameSettings.id = metadata.id;
                     GameSettings.authors = metadata.authors || '';
 
-                    const urlPath = `/u/${trackName}`;
+                    const urlPath = trackType === 'page'
+                      ? `/u/${userId}/${trackName}`
+                      : `/u/${trackName}`;
 
                     history.pushState(
-                      { userId: metadata.id, trackType: 'user' },
+                      { userId: metadata.id, trackType: trackType },
                       metadata.name,
                       urlPath
                     );
@@ -33577,12 +33610,14 @@
                       name: metadata.name,
                       authors: metadata.authors,
                       thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
-                      type: metadata.type || 'user',
+                      type: metadata.type || trackType,
                       description: metadata.description || '',
-                      permalink: `https://freerider.app/u/${metadata.authors}`,
+                      permalink: trackType === 'page'
+                        ? `https://freerider.app/u/${userId}/${trackName}`
+                        : `https://freerider.app/u/${trackName}`,
                       published: metadata.published || '',
                       size: metadata.size || '',
-                      userId: trackName,
+                      userId: userId || trackName,
                       stats: metadata.stats || null,
                       createdTracks: metadata.createdTracks || []
                     });

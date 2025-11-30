@@ -1806,7 +1806,7 @@ app.get('/u/:id', async (req, res) => {
             return res.json({
                 name: trackData.name || 'Gallery',
                 authors: trackData.authors,
-                thumbnail: `https://freerider.app/u/${userId}.txt`,
+                thumbnail: `https://freerider.app/u/${userId}.png`,
                 trackUrl: `https://freerider.app/u/${userId}.txt`,
                 description: trackData.description,
                 id: userId,
