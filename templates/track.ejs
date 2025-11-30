@@ -14,11 +14,11 @@
         ogDescription = 'a Canvas Rider track';
         twitterDescription = 'a Canvas Rider track';
     } else if (track.type === 'bhr') {
-        ogDescription = `${track.authors} gallery` 
-        twitterDescription = `${track.authors} gallery`;
-    } else if (track.type === 'user' || track.type === 'page') {
         ogDescription = 'a Black Hat Rider track';
         twitterDescription = 'a Black Hat Rider track';
+    } else if (track.type === 'user' || track.type === 'page') {
+        ogDescription = `${track.authors} gallery` 
+        twitterDescription = `${track.authors} gallery`;
     } else {
         const tas = track.tas ? ' [TAS]' : '';
         const descriptionText = track.ghoster 

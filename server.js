@@ -22,6 +22,7 @@ const FRHD_TRACKCODES_ROOT = path.join(PERSISTENT_ROOT_DISK, 'frhd', 'trackcodes
 //const FRHD_THUMBNAILS_ROOT = path.join(PERSISTENT_ROOT_DISK, 'frhd', 'thumbnails'); 
 
 const FORUM_LINKS_PATH = path.join(PERSISTENT_ROOT_DISK, 'forum-links.json');
+const USER_ACCOUNTS_PATH = path.join(PERSISTENT_ROOT_DISK, 'user-accounts.json');
 
 app.use('/data/frhd/trackcodes', express.static(FRHD_TRACKCODES_ROOT));
 
@@ -2056,6 +2057,202 @@ app.post('/api/upload-track', async (req, res) => {
         res.status(500).json({ error: `Internal Server Error: Failed to save files (${err.message})` });
     }
 });
+
+async function loadUserAccounts() {
+    try {
+        const data = await fsPromises.readFile(USER_ACCOUNTS_PATH, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            return [];
+        }
+        console.error('Error loading user accounts:', e);
+        return [];
+    }
+}
+
+async function saveUserAccounts(accounts) {
+    try {
+        await fsPromises.writeFile(USER_ACCOUNTS_PATH, JSON.stringify(accounts, null, 2), 'utf8');
+    } catch (e) {
+        console.error('Error saving user accounts:', e);
+        throw e;
+    }
+}
+
+// POST /api/user-account
+app.post('/api/user-account', async (req, res) => {
+    try {
+        const { forumUsername, frhdAccounts } = req.body;
+        
+        if (!forumUsername || !frhdAccounts) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: forumUsername and frhdAccounts' 
+            });
+        }
+
+        if (!Array.isArray(frhdAccounts) || frhdAccounts.length === 0) {
+            return res.status(400).json({ 
+                error: 'frhdAccounts must be a non-empty array' 
+            });
+        }
+
+        const validatedAccounts = frhdAccounts.map(account => {
+            if (!account.username || !account.type) {
+                throw new Error('Each account must have username and type');
+            }
+            if (!['primary', 'secondary'].includes(account.type)) {
+                throw new Error('Account type must be "primary" or "secondary"');
+            }
+            return {
+                username: account.username,
+                type: account.type
+            };
+        });
+
+        const hasPrimary = validatedAccounts.some(acc => acc.type === 'primary');
+        if (!hasPrimary) {
+            return res.status(400).json({ 
+                error: 'At least one account must be marked as primary' 
+            });
+        }
+
+        const accounts = await loadUserAccounts();
+        
+        const existingIndex = accounts.findIndex(
+            acc => acc.forumUsername.toLowerCase() === forumUsername.toLowerCase()
+        );
+        
+        const accountData = {
+            forumUsername,
+            frhdAccounts: validatedAccounts,
+            createdAt: existingIndex >= 0 ? accounts[existingIndex].createdAt : new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+        
+        if (existingIndex >= 0) {
+            accounts[existingIndex] = accountData;
+        } else {
+            accounts.push(accountData);
+        }
+        
+        await saveUserAccounts(accounts);
+        
+        res.status(200).json({ 
+            success: true,
+            account: accountData
+        });
+        
+    } catch (err) {
+        console.error('Error creating/updating user account:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/user-account/:forumUsername - Get user account by forum username
+app.get('/api/user-account/:forumUsername', async (req, res) => {
+    try {
+        const { forumUsername } = req.params;
+        
+        const accounts = await loadUserAccounts();
+        
+        const account = accounts.find(
+            acc => acc.forumUsername.toLowerCase() === forumUsername.toLowerCase()
+        );
+        
+        if (!account) {
+            return res.status(404).json({ 
+                error: 'No account found for this forum username' 
+            });
+        }
+        
+        res.status(200).json(account);
+        
+    } catch (err) {
+        console.error('Error fetching user account:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/user-accounts - Get all user accounts
+app.get('/api/user-accounts', async (req, res) => {
+    try {
+        const accounts = await loadUserAccounts();
+        res.status(200).json({ 
+            accounts,
+            count: accounts.length 
+        });
+    } catch (err) {
+        console.error('Error fetching user accounts:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// GET /api/frhd-account/:frhdUsername - Get forum account by FRHD username
+app.get('/api/frhd-account/:frhdUsername', async (req, res) => {
+    try {
+        const { frhdUsername } = req.params;
+        
+        const accounts = await loadUserAccounts();
+        
+        const account = accounts.find(acc => 
+            acc.frhdAccounts.some(
+                frhd => frhd.username.toLowerCase() === frhdUsername.toLowerCase()
+            )
+        );
+        
+        if (!account) {
+            return res.status(404).json({ 
+                error: 'No forum account found for this FRHD username' 
+            });
+        }
+        
+        res.status(200).json(account);
+        
+    } catch (err) {
+        console.error('Error fetching account by FRHD username:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});
+
+// DELETE /api/user-account/:forumUsername - Delete a user account
+/*app.delete('/api/user-account/:forumUsername', async (req, res) => {
+    try {
+        const { forumUsername } = req.params;
+        
+        const accounts = await loadUserAccounts();
+        const filteredAccounts = accounts.filter(
+            acc => acc.forumUsername.toLowerCase() !== forumUsername.toLowerCase()
+        );
+        
+        if (accounts.length === filteredAccounts.length) {
+            return res.status(404).json({ 
+                error: 'No account found for this forum username' 
+            });
+        }
+        
+        await saveUserAccounts(filteredAccounts);
+        
+        res.status(200).json({ 
+            success: true,
+            message: 'User account deleted successfully' 
+        });
+        
+    } catch (err) {
+        console.error('Error deleting user account:', err);
+        res.status(500).json({ 
+            error: `Internal Server Error: ${err.message}` 
+        });
+    }
+});*/
 
 async function startServer() {
     try {
