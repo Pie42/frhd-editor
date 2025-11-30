@@ -241,7 +241,7 @@ async function saveForumLinks(links) {
 
 app.post('/api/forum-link', async (req, res) => {
     try {
-        const { trackUrl, forumUrl, user} = req.body;
+        const { trackUrl, forumUrl, submittedBy } = req.body;
         
         if (!trackUrl || !forumUrl) {
             return res.status(400).json({ 
@@ -252,7 +252,7 @@ app.post('/api/forum-link', async (req, res) => {
         const trackMatch = trackUrl.match(/^\/(frhd|bhr|cr|u)\/(.+?)(?:\/(.+))?$/);
         if (!trackMatch) {
             return res.status(400).json({ 
-                error: 'Invalid track URL format. Expected: /frhd/123 or /frhd/123/username or /bhr/456 or /cr/789 or /u/username' 
+                error: 'Invalid track URL format. Expected: /frhd/123 or /frhd/123/username or /bhr/456 or /cr/789 or /u/username or /u/username/trackslug' 
             });
         }
         
@@ -264,7 +264,7 @@ app.post('/api/forum-link', async (req, res) => {
         
         const trackType = trackMatch[1];
         const trackId = trackMatch[2];
-        const ghostUser = trackMatch[3];
+        const thirdSegment = trackMatch[3]; // Could be ghostUser for frhd or trackSlug for u
         
         const links = await loadForumLinks();
         
@@ -272,16 +272,22 @@ app.post('/api/forum-link', async (req, res) => {
             link => link.trackUrl === trackUrl
         );
         
-        const linkData = {
+        let linkData = {
             trackUrl,
             trackType,
             trackId,
-            ghostUser: ghostUser || null,
             forumUrl,
-            user: user || '',
+            submittedBy: submittedBy || '',
             createdAt: existingIndex >= 0 ? links[existingIndex].createdAt : new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
+        
+        if (trackType === 'u') {
+            linkData.userId = trackId;
+            linkData.trackSlug = thirdSegment || null;
+        } else if (trackType === 'frhd' || trackType === 'bhr' || trackType === 'cr') {
+            linkData.ghostUser = thirdSegment || null;
+        }
         
         if (existingIndex >= 0) {
             links[existingIndex] = linkData;
@@ -417,9 +423,9 @@ app.delete('/api/forum-link/:type/:id', async (req, res) => {
 */
 
 // helper function to get forum link for track metadata
-async function getForumLinkForTrack(trackType, trackId, ghostUser = null) {
+async function getForumLinkForTrack(trackType, trackId, thirdParam = null) {
     const links = await loadForumLinks();
-    const trackUrl = ghostUser ? `/${trackType}/${trackId}/${ghostUser}` : `/${trackType}/${trackId}`;
+    const trackUrl = thirdParam ? `/${trackType}/${trackId}/${thirdParam}` : `/${trackType}/${trackId}`;
     return links.find(l => l.trackUrl === trackUrl);
 }
 
