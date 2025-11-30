@@ -33203,37 +33203,51 @@
             let trackName = "";
             let trackType = null;
             let trackId = null;
+            let userId = null;
 
             if (hostname === "freerider.app" && hash) {
                 trackName = hash.substring(1);
             } 
 
             else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
-                const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
-                trackType = match[1];
-                const idPart = match[2];
-                
-                if (idPart.match(/^\d+$/)) {
-                    trackId = parseInt(idPart, 10);
-                    trackName = `${trackType}-${trackId}`;
-                } else {
-                    trackId = idPart;
-                    trackName = `${trackType}-${idPart}`;
-                }
-            }
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
+              trackType = match[1];
+              const idPart = match[2];
+
+              if (idPart.match(/^\d+$/)) {
+                trackId = parseInt(idPart, 10);
+                trackName = `${trackType}-${trackId}`;
+              } else {
+                trackId = idPart;
+                trackName = `${trackType}-${idPart}`;
+              }
+            }
 
             else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
               const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/);
-                trackType = match[1];
-                trackId = parseInt(match[2], 10);
+              trackType = match[1];
+              trackId = parseInt(match[2], 10);
               const userName = match[3];
-                trackName = `${trackType}-${trackId}`;
+              trackName = `${trackType}-${trackId}`;
             }
             else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
               const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               trackName = `${trackType}-${trackId}`;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)\/(.+)/)) {
+              const match = pathname.match(/^\/u\/([^\/]+)\/(.+)/);
+              userId = match[1];
+              const trackSlug = match[2];
+              trackType = 'page';
+              trackName = trackSlug;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)/)) {
+              const match = pathname.match(/^\/u\/([^\/]+)/);
+              userId = match[1];
+              trackType = 'user';
+              trackName = userId;
             }
             else if (pathname.startsWith("/t/")) {
                 const parts = pathname.split("/t/")[1].split("-");
@@ -33531,7 +33545,7 @@
                 console.log("User metadata fetched:", metadata);
 
                 // Fetch the track code
-                return fetch(metadata.trackURL)
+                return fetch(metadata.trackUrl)
                   .then(res => {
                     if (!res.ok) throw new Error("Track code not found");
                     return res.text();
@@ -33569,6 +33583,7 @@
                       published: metadata.published || '',
                       size: metadata.size || '',
                       userId: trackName,
+                      stats: metadata.stats || null,
                       createdTracks: metadata.createdTracks || []
                     });
                   });

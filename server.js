@@ -1772,6 +1772,18 @@ app.get('/u/:id', async (req, res) => {
                     
                     console.log(`[User ${userId}] Found ${createdTracks.length} created tracks`);
                 }
+
+                if (userData && userData.stats) {
+                        userStats = {
+                            comments: userData.stats.comments || 0,
+                            completed: userData.stats.completed || 0,
+                            created: userData.stats.created || 0,
+                            headCount: userData.stats.headCount || 0,
+                            rated: userData.stats.rated || 0,
+                            totalHeadCount: userData.stats.totalHeadCount || 0,
+                            totalPoints: userData.stats.totalPoints || 0
+                        };
+                }
             }
         } catch (apiError) {
             console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
@@ -1781,6 +1793,7 @@ app.get('/u/:id', async (req, res) => {
         trackData.userId = userId;
         trackData.sourceUrl = `/u/${userId}`;
         trackData.createdTracks = createdTracks;
+        trackData.stats = userStats;
 
         const forumLink = await getForumLinkForTrack('u', userId);
         if (forumLink) {
@@ -1793,12 +1806,13 @@ app.get('/u/:id', async (req, res) => {
             return res.json({
                 name: trackData.name || 'Gallery',
                 authors: trackData.authors,
-                thumbnail: trackData.thumbnail || '/data/bhr/thumbnails/default.png',
-                trackURL: trackData.trackUrl,
+                thumbnail: `https://freerider.app/u/${userId}.txt`,
+                trackUrl: `https://freerider.app/u/${userId}.txt`,
                 description: trackData.description,
                 id: userId,
                 type: 'user',
                 createdTracks: createdTracks,
+                stats: userStats,
                 forumUrl: trackData.forumUrl
             });
         }
@@ -1857,6 +1871,18 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                     
                     console.log(`[User ${userId}] Found ${createdTracks.length} created tracks`);
                 }
+
+                if (userData && userData.stats) {
+                        userStats = {
+                            comments: userData.stats.comments || 0,
+                            completed: userData.stats.completed || 0,
+                            created: userData.stats.created || 0,
+                            headCount: userData.stats.headCount || 0,
+                            rated: userData.stats.rated || 0,
+                            totalHeadCount: userData.stats.totalHeadCount || 0,
+                            totalPoints: userData.stats.totalPoints || 0
+                        };
+                }
             }
         } catch (apiError) {
             console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
@@ -1866,6 +1892,7 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
         trackData.sourceUrl = `/u/${userId}/${trackSlug}`;
         trackData.userId = userId;
         trackData.createdTracks = createdTracks;
+        trackData.stats = userStats;
 
         const forumLink = await getForumLinkForTrack('u', userId);
         if (forumLink) {
@@ -1879,11 +1906,12 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                 name: trackData.name,
                 authors: trackData.authors,
                 thumbnail: trackData.thumbnail,
-                trackURL: trackData.trackURL,
+                trackUrl: trackData.trackUrl,
                 description: trackData.description,
                 id: trackSlug,
                 type: 'page',
                 createdTracks: createdTracks,
+                stats: userStats,
                 forumUrl: trackData.forumUrl
             });
         }
