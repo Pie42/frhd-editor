@@ -565,7 +565,7 @@ async function getUserTrackData(userId) {
     
     return {
         id: sanitizedUserId,
-        name: metadata.name,
+        //name: metadata.name,
         authors: metadata.authors,
         code: trackCode.trim(),
         type: 'user',
@@ -709,8 +709,8 @@ async function initializeUserProfile(userId) {
         slug: userId,
         name: userId,
         authors: userId, 
-        trackUrl: `/data/page/${userId}/page.txt`,
-        imageUrl: `/data/page/${userId}/page.png`,
+        trackUrl: `/u/${userId}.txt`,
+        imageUrl: `/u/${userId}.png`,
         metadata: {
             description: `The personal gallery page for user ${userId}.`
         },
@@ -1762,7 +1762,7 @@ app.get('/u/:id', async (req, res) => {
                 const userData = await getUser(userId);
 
                 if (userData && userData.displayName) {
-                    trackData.name = `${userData.displayName}`;
+                    trackData.displayName = `${userData.displayName}`;
                     trackData.authors = userData.displayName;
                     trackData.avatar = userData.avatarURL({ size: 50 }) || '';
                 }
@@ -1810,7 +1810,8 @@ app.get('/u/:id', async (req, res) => {
 
         if (json) {
             return res.json({
-                name: trackData.name || 'Gallery',
+                name: '',
+                displayName: trackData.displayName,
                 authors: trackData.authors,
                 thumbnail: '',
                 trackUrl: `https://freerider.app/u/${userId}.txt`,
