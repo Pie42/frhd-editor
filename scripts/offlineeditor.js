@@ -33034,8 +33034,8 @@
                         document.title = metadata.name || `CR Track #${trackId}`;
 
                         this.updateNowPlaying({
-                          id: trackId,
-                          name: metadata.name || `CR Track #${trackId}`,
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                           authors: metadata.authors,
                           thumbnail: metadata.thumbnail,
                           type: trackType,
@@ -33073,8 +33073,8 @@
                         document.title = metadata.name || `BHR Track #${trackId}`;
 
                         this.updateNowPlaying({
-                          id: trackId,
-                          name: metadata.name || `BHR Track #${trackId}`,
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                           authors: metadata.authors,
                           thumbnail: metadata.thumbnail,
                           type: trackType,
@@ -33114,8 +33114,8 @@
                         document.title = metadata.name || `FRHD Track #${trackId}`;
 
                         this.updateNowPlaying({
-                          id: trackId,
-                          name: metadata.name || `FRHD Track #${trackId}`,
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                           authors: metadata.authors,
                           thumbnail: metadata.thumbnail,
                           type: trackType,
@@ -33333,8 +33333,8 @@
                     }
 
                     this.updateNowPlaying({
-                      id: trackId,
-                      name: metadata.name || `CR Track #${trackId}`,
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                       authors: metadata.authors,
                       thumbnail: metadata.thumbnail,
                       type: trackType, // 'cr'
@@ -33397,8 +33397,8 @@
                     }
 
                     this.updateNowPlaying({
-                      id: trackId,
-                      name: metadata.name || `BHR Track #${trackId}`,
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                       authors: metadata.authors,
                       thumbnail: metadata.thumbnail,
                       type: trackType, // 'bhr'
@@ -33511,8 +33511,8 @@
                     }
 
                     this.updateNowPlaying({
-                      id: trackId,
-                      name: metadata.name || `FRHD Track #${trackId}`,
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                       authors: metadata.authors,
                       thumbnail: metadata.thumbnail,
                       type: trackType, // 'frhd'
@@ -33534,7 +33534,6 @@
             return;
           }
 
-          // User/page logic
           // User/page logic
           if (trackType === 'user' || trackType === 'page') {
             const fetchUrl = trackType === 'page'
@@ -33584,7 +33583,7 @@
                             console.log("Random track code fetched, loading into user page context");
                             GameManager.command("import", randomCode, true);
                             // keep user page settings
-                            GameSettings.trackName = metadata.name || `User: ${trackName}`;
+                            GameSettings.trackName = metadata.name || ``;
                             GameSettings.id = metadata.id;
                             GameSettings.authors = metadata.authors || '';
 
