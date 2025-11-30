@@ -33535,6 +33535,7 @@
           }
 
           // User/page logic
+          // User/page logic
           if (trackType === 'user' || trackType === 'page') {
             const fetchUrl = trackType === 'page'
               ? `/u/${userId}/${trackName}?json=true`
@@ -33574,51 +33575,91 @@
 
                         console.log(`Loading random track: ${randomTrack.title} (#${randomTrack.id})`);
 
-                        // Redirect to the random FRHD track
-                        window.location.href = randomTrack.url;
-                        return;
+                        return fetch(`/frhd/${randomTrack.id}.txt`)
+                          .then(res => {
+                            if (!res.ok) throw new Error("Random track code not found");
+                            return res.text();
+                          })
+                          .then((randomCode) => {
+                            console.log("Random track code fetched, loading into user page context");
+                            GameManager.command("import", randomCode, true);
+                            // keep user page settings
+                            GameSettings.trackName = metadata.name || `User: ${trackName}`;
+                            GameSettings.id = metadata.id;
+                            GameSettings.authors = metadata.authors || '';
+
+                            const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
+
+                            history.pushState(
+                              { userId: metadata.id, trackType: 'user' },
+                              metadata.name,
+                              urlPath
+                            );
+
+                            document.title = metadata.name || trackName;
+
+                            if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                              GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                              GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                            }
+
+                            this.updateNowPlaying({
+                              id: metadata.id,
+                              name: metadata.name,
+                              authors: metadata.authors,
+                              thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
+                              type: 'user',
+                              description: metadata.description || '',
+                              permalink: `https://freerider.app/u/${userId || trackName}`,
+                              published: metadata.published || '',
+                              size: metadata.size || '',
+                              userId: userId || trackName,
+                              stats: metadata.stats || null,
+                              createdTracks: metadata.createdTracks || []
+                            });
+                          });
                       } else {
                         throw new Error("User has no created tracks to load");
                       }
+                    } else {
+                      console.log("User track code fetched:", code);
+                      GameManager.command("import", code, true);
+                      GameSettings.trackName = metadata.name || `User: ${trackName}`;
+                      GameSettings.id = metadata.id;
+                      GameSettings.authors = metadata.authors || '';
+
+                      const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
+
+                      history.pushState(
+                        { userId: metadata.id, trackType: 'user' },
+                        metadata.name,
+                        urlPath
+                      );
+
+                      document.title = metadata.name || trackName;
+
+                      if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                        GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                        GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                      }
+
+                      this.updateNowPlaying({
+                        id: metadata.id,
+                        name: metadata.name,
+                        authors: metadata.authors,
+                        thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
+                        type: metadata.type || trackType,
+                        description: metadata.description || '',
+                        permalink: trackType === 'page'
+                          ? `https://freerider.app/u/${userId}/${trackName}`
+                          : `https://freerider.app/u/${trackName}`,
+                        published: metadata.published || '',
+                        size: metadata.size || '',
+                        userId: userId || trackName,
+                        stats: metadata.stats || null,
+                        createdTracks: metadata.createdTracks || []
+                      });
                     }
-
-                    console.log("User track code fetched:", code);
-                    GameManager.command("import", code, true);
-                    GameSettings.trackName = metadata.name || `User: ${trackName}`;
-                    GameSettings.id = metadata.id;
-                    GameSettings.authors = metadata.authors || '';
-
-                    const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
-
-                    history.pushState(
-                      { userId: metadata.id, trackType: 'user' },
-                      metadata.name,
-                      urlPath
-                    );
-
-                    document.title = metadata.name || trackName;
-
-                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                    }
-
-                    this.updateNowPlaying({
-                      id: metadata.id,
-                      name: metadata.name,
-                      authors: metadata.authors,
-                      thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
-                      type: metadata.type || trackType,
-                      description: metadata.description || '',
-                      permalink: trackType === 'page'
-                        ? `https://freerider.app/u/${userId}/${trackName}`
-                        : `https://freerider.app/u/${trackName}`,
-                      published: metadata.published || '',
-                      size: metadata.size || '',
-                      userId: userId || trackName,
-                      stats: metadata.stats || null,
-                      createdTracks: metadata.createdTracks || []
-                    });
                   });
               })
               .catch((error) => {
