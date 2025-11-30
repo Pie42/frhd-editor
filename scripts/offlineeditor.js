@@ -33588,12 +33588,10 @@
                     GameSettings.id = metadata.id;
                     GameSettings.authors = metadata.authors || '';
 
-                    const urlPath = trackType === 'page'
-                      ? `/u/${userId}/${trackName}`
-                      : `/u/${trackName}`;
+                    const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
 
                     history.pushState(
-                      { userId: metadata.id, trackType: trackType },
+                      { userId: metadata.id, trackType: 'user' },
                       metadata.name,
                       urlPath
                     );
