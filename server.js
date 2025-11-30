@@ -1760,6 +1760,12 @@ app.get('/u/:id', async (req, res) => {
             
             if (getUser) {
                 const userData = await getUser(userId);
+
+                if (userData && userData.displayName) {
+                    trackData.name = `${userData.displayName}`;
+                    trackData.authors = userData.displayName;
+                    trackData.avatar = userData.avatarURL({ size: 50 }) || '';
+                }
                 
                 if (userData && userData.createdTracks && userData.createdTracks.cache) {
                     createdTracks = Array.from(userData.createdTracks.cache.values()).map(track => ({
@@ -1806,9 +1812,10 @@ app.get('/u/:id', async (req, res) => {
             return res.json({
                 name: trackData.name || 'Gallery',
                 authors: trackData.authors,
-                thumbnail: `https://freerider.app/u/${userId}.png`,
+                thumbnail: '',
                 trackUrl: `https://freerider.app/u/${userId}.txt`,
                 description: trackData.description,
+                avatar: trackData.avatar || '',
                 id: userId,
                 type: 'user',
                 createdTracks: createdTracks,
