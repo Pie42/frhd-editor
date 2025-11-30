@@ -2224,7 +2224,7 @@ app.get('/api/frhd-account/:frhdUsername', async (req, res) => {
 });
 
 // DELETE /api/user-account/:forumUsername - Delete a user account
-/*app.delete('/api/user-account/:forumUsername', async (req, res) => {
+app.delete('/api/user-account/:forumUsername', async (req, res) => {
     try {
         const { forumUsername } = req.params;
         
@@ -2252,7 +2252,7 @@ app.get('/api/frhd-account/:frhdUsername', async (req, res) => {
             error: `Internal Server Error: ${err.message}` 
         });
     }
-});*/
+});
 
 async function startServer() {
     try {
