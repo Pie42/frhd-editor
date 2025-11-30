@@ -1706,11 +1706,17 @@ app.get('/u/:id', async (req, res) => {
             console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
         }
 
-        // Add discussion-specific fields
         trackData.pageId = userId;
         trackData.userId = userId;
         trackData.sourceUrl = `/u/${userId}`;
         trackData.createdTracks = createdTracks;
+
+        const forumLink = await getForumLinkForTrack('u', userId);
+        if (forumLink) {
+            trackData.forumUrl = forumLink.forumUrl;
+        } else {
+            trackData.forumUrl = '';
+        }
 
         if (json) {
             return res.json({
@@ -1721,7 +1727,8 @@ app.get('/u/:id', async (req, res) => {
                 description: trackData.description,
                 id: userId,
                 type: 'user',
-                createdTracks: createdTracks
+                createdTracks: createdTracks,
+                forumUrl: trackData.forumUrl
             });
         }
 
@@ -1784,11 +1791,17 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
             console.error(`[User ${userId}] Failed to fetch created tracks from FRHD API:`, apiError);
         }
 
-        // Add discussion-specific fields
         trackData.pageId = `page-${userId}-${trackSlug}`;
         trackData.sourceUrl = `/u/${userId}/${trackSlug}`;
         trackData.userId = userId;
         trackData.createdTracks = createdTracks;
+
+        const forumLink = await getForumLinkForTrack('u', userId);
+        if (forumLink) {
+            trackData.forumUrl = forumLink.forumUrl;
+        } else {
+            trackData.forumUrl = '';
+        }
 
         if (json) {
             return res.json({
@@ -1799,7 +1812,8 @@ app.get('/u/:userId/:trackSlug', async (req, res) => {
                 description: trackData.description,
                 id: trackSlug,
                 type: 'page',
-                createdTracks: createdTracks
+                createdTracks: createdTracks,
+                forumUrl: trackData.forumUrl
             });
         }
 
