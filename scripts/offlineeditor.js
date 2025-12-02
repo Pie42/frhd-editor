@@ -2860,6 +2860,7 @@
               e.target.className === this.className &&
                 "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
+              !this.hasShownPromo ? this.hasShownPromo = true : null;
             },
             render: function () {
               var sidebar;
@@ -2871,8 +2872,13 @@
                   sidebar = true;
                   playMode = false;
                 }
-              var e = this.props.data.showDialog,
-                t = this.props.data.dialogOptions,
+              var e = this.props.data.showDialog;
+
+              if (!e && !this.hasShownPromo && !playMode) {
+                e = "offline_editor";
+              }
+
+              var t = this.props.data.dialogOptions,
                 h = {},
                 f = "";
                 h.width = sidebar ? "75%" : "100%";
@@ -5079,7 +5085,7 @@
                   n.createElement(
                     "h1",
                     { className: "editorDialog-content-title" },
-                    "OFFLINE EDITOR"
+                    "freerider.app - track editor 1.1"
                   )
                 ),
                 n.createElement(
@@ -5088,17 +5094,20 @@
                   n.createElement(
                     "p",
                     null,
-                    "Now you can draw and save your tracks without an internet connection with the ",
+                    "If you've been enjoying the freerider.app track editor, please check out the ",
                     n.createElement(
                       "a",
                       {
                         "data-route": "true",
-                        href: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn?utm_source=web_editor_dialog",
+                        href: "https://forum.freerider.app/",
                         target: "_blank",
                       },
-                      "Offline Editor for Chrome"
+                      "freerider.app forum"
                     ),
-                    ". Click the button below to visit the Chrome Web Store and download the official Free Rider HD Offline Editor."
+                    "!",
+                    n.createElement("br", null),
+                    n.createElement("br", null),
+                    "Joining the community and sharing your tracks and ghosts is the best way to support the game."
                   ),
                   n.createElement(
                     "div",
@@ -5106,14 +5115,25 @@
                     n.createElement(
                       "a",
                       {
-                        href: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn?utm_source=web_editor_dialog",
+                        href: "https://forum.freerider.app/",
                         "data-route": "true",
                         target: "_blank",
-                        className: "install",
                       },
                       n.createElement("span", {
                         className:
-                          "icon editorgui_icons editorgui_icons-chrome_download_icon",
+                          "icon editorgui_icons editorgui_icons-helicopter",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-truck",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-balloon",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-blob",
                       }),
                       n.createElement(
                         "div",
@@ -5121,12 +5141,12 @@
                         n.createElement(
                           "h3",
                           null,
-                          "FREE RIDER HD OFFLINE EDITOR"
+                          "Free Rider Community"
                         ),
                         n.createElement(
                           "span",
                           null,
-                          "Download from the Chrome Web Store"
+                          "forum.freerider.app"
                         )
                       )
                     )
@@ -5138,17 +5158,7 @@
                   n.createElement(
                     "p",
                     null,
-                    "Please note that the Free Rider HD Offline Editor requires the ",
-                    n.createElement(
-                      "a",
-                      {
-                        href: "https://www.google.com/chrome/browser/desktop/index.html",
-                        "data-route": "true",
-                        target: "_blank",
-                      },
-                      "Chrome Web Browser"
-                    ),
-                    " to be installed on your computer in order to run"
+                    "Thank you so much for your support! Much love from Ness & Pie42!"
                   )
                 )
               );

@@ -2565,7 +2565,10 @@ html.fullscreen #main_page {
 }
 
 .offlineeditorpromo-dialog {
-    font-family: roboto_medium, Arial, Helvetica, sans-serif
+    font-family: roboto_medium, Arial, Helvetica, sans-serif;
+    top: 50%;
+    max-width: 300px;
+    min-width: 240px;
 }
 
 .offlineeditorpromo-dialog .middle {
