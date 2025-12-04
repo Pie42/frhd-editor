@@ -12313,7 +12313,9 @@
             (this.keymap = {}),
             (this.records = {}),
             (this.numberOfKeysDown = 0),
-            (this.tickNumberOfKeysDown = 0);
+            (this.tickNumberOfKeysDown = 0),
+            (this.chunks = []),
+            (this.hasHeader = false);
         }
         listen() {
           (document.onkeydown = this.handleButtonDown.bind(this)),
@@ -12410,7 +12412,7 @@
             (this.previousTickDownButtons = {}),
             (this.records = {});
         }
-        update() {
+        update(t) {
           this.scene,
             this.replaying,
             (this.previousTickDownButtons = (0, e.merge)(
@@ -12418,8 +12420,11 @@
               this.tickDownButtons
             )),
             (this.tickDownButtons = (0, e.merge)({}, this.downButtons)),
-            (this.tickNumberOfKeysDown = this.numberOfKeysDown),
-            this.recording && this.updateRecording();
+            (this.tickNumberOfKeysDown = this.numberOfKeysDown);
+          if (this.recording) {
+            this.updateRecording();
+            this.encodeFrame(t._tempVehicle || t._baseVehicle);
+          }
         }
         areKeysDown() {
           for (const t in this.downButtons)
@@ -12543,6 +12548,99 @@
             ];
           for (const s of e) t[s] = this[s];
           return t;
+        }
+        createHeader() {
+          if (this.hasHeader) {
+            this.chunks.shift();
+          }
+          let headerBuffer = new ArrayBuffer(40),
+            header = new DataView(headerBuffer),
+            header8 = new Uint8Array(headerBuffer),
+            enc = new TextEncoder();
+          // file header ('CPGH')
+          header.setUint32(0, 1129334600);
+          header.setUint32(4, 1);
+          enc.encodeInto("test user", header8.subarray(8, 28));
+          // will work in a version with tracktype
+          // header.setUint32(28, GameSettings.id);
+          // enc.encodeInto(GameSettings.trackType, header8.subarray(32, 36));
+          header.setUint32(36, this.chunks.length);
+          this.chunks.unshift(headerBuffer);
+          this.hasHeader = true;
+        }
+        encodeFrame(V) {
+          if (this.scene.state.paused || !this.scene.state.playing) return;
+          let masses = V.masses.length,
+            springs = V.springs.length,
+            gravity = ((V.gravAngle % 360) + 360) % 360,
+            vehicle = 0,
+            offset = 4,
+            frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs),
+            frame = new DataView(frameBuffer);
+          switch (V.player._tempVehicleType) {
+            case "HELI":
+              vehicle = 2;
+              break;
+            case "TRUCK":
+              vehicle = 3;
+              break;
+            case "BALLOON":
+              vehicle = 4;
+              break;
+            case "BLOB":
+              vehicle = 5;
+              break;
+            default:
+              if (V.player._baseVehicleType == "BMX") {
+                vehicle = 1;
+              }
+          }
+          frame.setUint8(0, masses | (springs << 4));
+          frame.setUint8(1, gravity >> 1);
+          frame.setUint16(2, (V.alive) |
+                              (!!V.explosion << 1) |
+                            (V.complete << 2) |
+                            ((V.dir == 1) << 3) |
+                            (V.mini << 4) |
+                            (!!V.slow << 5) |
+                            (!!this.scene.game.mod.getVar("propeller") << 6) |
+                            (!!this.scene.game.mod.getVar("crouch") << 7) |
+                            (!!this.isButtonDown("x") << 8) |
+                            (!!this.scene.game.mod.getVar("invincibility") << 9) |
+                            (!!this.scene.game.mod.getVar("noClip") << 10) |
+                            (!!this.isButtonDown("up") << 11) |
+                            (vehicle << 12) |
+                            ((gravity & 1) << 15));
+          for (let M of V.masses) {
+            this.encodeMass(M, frame, offset);
+            offset += 18;
+          }
+          for (let S of V.springs) {
+            this.encodeSpring(S, V.masses, frame, offset);
+            offset += 6;
+          }
+          this.chunks.push(frameBuffer);
+        }
+        encodeMass(M, D, o) {
+          D.setFloat64(o, M.pos.x);
+          D.setFloat64(o + 8, M.pos.y);
+          D.setUint8(o + 16, M.radius * 3 | 0);
+          D.setUint8(o + 17, (M.friction * 20) | (!!M.collide << 5) | (!!M.contact << 6) | (!!M.brake || 7));
+        }
+        encodeSpring(S, M, D, o) {
+          D.setFloat32(o, S.leff);
+          D.setUint8(o + 4, (M.indexOf(S.m1)) | (M.indexOf(S.m2) << 4));
+          D.setUint8(o + 5, (S.dampConstant * 20) | ((S.springConstant * 20) << 4));
+        }
+        export() {
+          this.createHeader();
+          let b = new Blob(this.chunks),
+            u = URL.createObjectURL(b),
+            a = document.createElement('a');
+          a.href = u;
+          a.download = 'ghost.cpgh';
+          a.click();
+          URL.revokeObjectURL(u);
         }
         close() {
           this.unlisten(),
@@ -16200,7 +16298,7 @@
           for (const t of this._players) t.getActiveVehicle().stopSounds();
         }
         updateGamepads() {
-          for (const t of this._players) t._gamepad.update();
+          for (const t of this._players) t._gamepad.update(t);
         }
         createPlayer(e, s) {
           return new (class {
@@ -24757,6 +24855,7 @@
           const t = this.playerManager.createPlayer(this, this.settings.user),
             e = t.getGamepad();
           e.setKeyMap(this.settings.editorHotkeys),
+          e.recordKeys(this.settings.keysToRecord),
             (e.onButtonDown = this.buttonDown.bind(this)),
             e.listen(),
             (this.playerManager.firstPlayer = t),
