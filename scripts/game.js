@@ -29183,7 +29183,7 @@ function load() {
           }
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove || (mode == 'visible' && layer != i.layer))
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
                   if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
