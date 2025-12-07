@@ -12425,6 +12425,14 @@
             this.updateRecording();
             this.encodeFrame(t._tempVehicle || t._baseVehicle);
           }
+          else if (this.replaying && this.scene.ticks < this.chunks.length) {
+            let chunk = this.chunks[this.scene.ticks];
+            if (typeof chunk == 'number') {
+              this.decodeFrame(t, this.ghost, chunk);
+            } else {
+              this.decodeFrame(t, chunk);
+            }
+          }
         }
         areKeysDown() {
           for (const t in this.downButtons)
@@ -12577,6 +12585,9 @@
             offset = 4,
             frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs),
             frame = new DataView(frameBuffer);
+          if (V.gravity.x == 0 && V.gravity.y == 0) {
+            gravity = 511;
+          }
           switch (V.player._tempVehicleType) {
             case "HELI":
               vehicle = 2;
@@ -12624,8 +12635,9 @@
         encodeMass(M, D, o) {
           D.setFloat64(o, M.pos.x);
           D.setFloat64(o + 8, M.pos.y);
+          // note: mini changes the radius, so i might consider using baseRadius instead and applying hardcoded mini factor or adding it to the header
           D.setUint8(o + 16, M.radius * 3 | 0);
-          D.setUint8(o + 17, (M.friction * 20) | (!!M.collide << 5) | (!!M.contact << 6) | (!!M.brake || 7));
+          D.setUint8(o + 17, (M.friction * 20) | (!!M.collide << 5) | (!!M.contact << 6) | (!!M.brake << 7));
         }
         encodeSpring(S, M, D, o) {
           D.setFloat32(o, S.leff);
@@ -12641,6 +12653,138 @@
           a.download = 'ghost.cpgh';
           a.click();
           URL.revokeObjectURL(u);
+        }
+        // this is totally going to need the previous frame, isn't it?
+        // well... actually we could just assume that the current bike state is correct and use the previous frame automagically (would make jumping to a frame necessitate jumping to the frame before it first, or jumping to frame 0 twice, but this is likely a very fast process)
+        // i could possibly also set up a little solver for these things, too - import the previous frame, simulate it to determine values for anything like motor, then backtrack to figure out what motor must've been (could possibly also give better precision on things like springs / allow more to be stored as smaller datatypes - e.g. first mass is float64, rest are float32 offsets or smaller (float16? would be imprecise but should have the range))
+          // crazy idea but i could figure out the raw number of doubles between values and just store that (might not work bc the mantissa is >32 bits) or store uint8 exponent diff and 32bit mantissa diff from msb
+        decodeFrame(P, F, O = 0) {
+          //if (this.scene.state.paused || !this.scene.state.playing) return;
+          let frame = new DataView(F, O),
+            temp;
+          temp = frame.getUint8(0);
+          let masses = temp & 0xf,
+            springs = temp >> 4;
+          temp = frame.getUint8(1);
+          let gravity = temp << 1;
+          temp = frame.getUint16(2);
+          let alive = temp & 0x1,
+            deadState = temp & 0x2,
+            complete = temp & 0x4,
+            dir = temp & 0x8 ? 1 : -1,
+            mini = temp & 0x10,
+            slow = temp & 0x20,
+            propeller = temp & 0x40,
+            crouch = temp & 0x80,
+            xPressed = temp & 0x100,
+            invincible = temp & 0x200,
+            noClip = temp & 0x400,
+            upPressed = temp & 0x800,
+            V = (temp & 0x7000) >> 12,
+            vehicleName = ['MTB', 'BMX', 'HELI', 'TRUCK', 'BALLOON', 'BLOB'][V],
+            vehicle = (V < 2) ? P._baseVehicle : P._tempVehicle || ((P._temp_vehicle_options = undefined), P.createTempVehicle(vehicleName, 100, {x: 0, y: 0}, dir), P._tempVehicle);
+          gravity += (temp >> 15);
+          if (gravity == 511) {
+            vehicle.gravity.x = vehicle.gravity.y = 0;
+          } else {
+            vehicle.gravity.x = parseFloat((-0.3 * Math.sin(gravity)).toFixed(15));
+            vehicle.gravity.y = parseFloat((0.3 * Math.cos(gravity)).toFixed(15));
+          }
+          vehicle.alive = alive;
+          if (deadState) {
+            // create / update explosion
+          } else {
+            // create / update ragdoll
+          }
+          vehicle.dir = dir;
+          vehicle.mini = !!mini;
+          vehicle.slow = !!slow;
+          // set (local versions of) mod settings: propeller, crouch, invincibility, noClip
+          // set x and up down (i don't remember why we're tracking upPressed, maybe for motor and the like?)
+
+          let offset = 4;
+          for (let i = 0; i < masses; i++) {
+            this.decodeMass(vehicle.masses[i], frame, offset);
+            offset += 18;
+          }
+          for (let i = 0; i < springs; i++) {
+            this.decodeSpring(vehicle.springs[i], vehicle.masses, frame, offset);
+            offset += 6;
+          }
+        }
+        decodeMass(M, F, O) {
+          M.pos.x = F.getFloat64(O);
+          M.pos.y = F.getFloat64(O + 8);
+          let radius = (((F.getUint8(O + 16) / 3) * 10) | 0) / 10,
+            flags = F.getUint8(O + 17);
+          M.radius = radius;
+          M.friction = (flags & 0x1f) / 20;
+          M.collide = !!(flags & 0x20);
+          M.contact = !!(flags & 0x40);
+          M.brake = !!(flags & 0x80);
+        }
+        decodeSpring(S, M, F, O) {
+          S.leff = F.getFloat32(O);
+          let masses = F.getUint8(O + 4),
+            constants = F.getUint8(O + 5);
+          S.m1 = M[masses & 0xf];
+          S.m2 = M[masses >> 4];
+          S.dampConstant = (constants & 0xf) / 20;
+          S.springConstant = (constants >> 4) / 20;
+        }
+        import(A) {
+          let view = new DataView(A),
+            A8 = new Uint8Array(A),
+            dec = new TextDecoder(),
+            ft = view.getUint32(0);
+          if (ft != 1129334600) {
+            console.log('invalid ghost! sorry');
+            return;
+          }
+          let version = view.getUint32(4);
+          if (version != 1) {
+            console.log('unsupported version! teehee');
+            return;
+          }
+          this.ghost = A;
+          this.chunks = [];
+          this.replaying = true;
+          this.recording = false;
+          let user = dec.decode(A8.subarray(8, 28)),
+            len = view.getUint32(36),
+            offset = 40,
+            sm;
+          for (let i = 0; i < len; i++) {
+            this.chunks.push(offset);
+            sm = view.getUint8(offset);
+            offset += 8 + (sm & 0xf) * 18 + (sm >> 4) * 6;
+          }
+          console.log(offset);
+        }
+        importFromFile() {
+          let input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.cpgh';
+          input.multiple = false;
+          // Hide without disabling file dialog
+          input.style.position = 'fixed';
+          input.style.left = '-9999px';
+          document.body.appendChild(input);
+          input.addEventListener('change', () => {
+            if (input.files.length != 1) return;
+            let file = input.files[0],
+              reader = new FileReader();
+            reader.addEventListener('load', (e) => {
+              console.log(e.target.result);
+              this.import(e.target.result);
+            })
+            reader.readAsArrayBuffer(file);
+          });
+          function ee() {
+            document.removeEventListener('click', ee);
+            input.click();
+          }
+          document.addEventListener('click', ee);
         }
         close() {
           this.unlisten(),
@@ -12798,6 +12942,7 @@
         constructor(e, s) {
           (this.time = 20),
             (this.gravity = new t.Z(0, 0.3)),
+            (this.gravAngle = 180),
             (this.scene = s),
             this.createMasses(e),
             (this.positionX = e.x),
@@ -12962,6 +13107,7 @@
               (this.gamepad = e._gamepad),
               (this.settings = e._settings),
               (this.gravity = new t.Z((GameSettings.wind * 0.3), (GameSettings.gravity * 0.3))), // can change to 0.15 for moon gravity
+              (this.gravAngle = 180),
               (this.complete = !1),
               (this.alive = !0),
               (this.crashed = !1),
@@ -16388,6 +16534,10 @@
             setAsGhost() {
               this._ghost = !0;
             }
+            testGhosts() {
+              this.setAsGhost();
+              this._gamepad.importFromFile();
+            }
             isGhost() {
               return this._ghost;
             }
@@ -16461,7 +16611,7 @@
                       (t = this._baseVehicle))),
                   this._effectTicks > 0 &&
                     (this._effectTicks--, this._effect.update()),
-                  t.update();
+                  !this.isGhost() && t.update();
                 for (let t = 0; t < this.deadVehicles.length; t++)
                   this.deadVehicles[t] && this.deadVehicles[t].update();
                 if (this._addCheckpoint && !this._game.mod.getVar("rewind")) {
@@ -20762,6 +20912,7 @@
             e.alive &&
             ((e.gravity.x = this.directionX),
             (e.gravity.y = this.directionY),
+            (e.gravAngle = this.angle),
             s.isGhost() ||
               e.ignore ||
               (this.scene.message.show(
