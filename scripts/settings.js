@@ -42,6 +42,7 @@ var GameSettings = {
     "sceneryLineColor": "#AAA",
     "foregroundLineColor": "AAA",
     "hatColor": "rgb(255,255,255)",
+    "hatType": "none",
     "windspeed": 1,
     "propeller" : 1,
     "rotateFactor": 15,

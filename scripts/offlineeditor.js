@@ -1697,7 +1697,7 @@
               return { open: false };
             },
             openOptions: function (e) {
-              if (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")) // remove "play" when you want to have ghost imports
+              if (GameManager.game.currentScene.mod.getVar("mobile")) // remove "play" when you want to have ghost imports
               { this.toggleVehicle();
                 return;
               }
@@ -1708,6 +1708,25 @@
             },
             importGhost: function () {
               "undefined" != typeof GameManager && GameManager.command("dialog", "importGhost");
+            },
+            exportGhost: function (event) {
+              if (typeof GameManager !== "undefined" &&
+                GameManager.game &&
+                GameManager.game.currentScene &&
+                GameManager.game.currentScene.playerManager &&
+                GameManager.game.currentScene.playerManager.firstPlayer) {
+
+                const gamepad = GameManager.game.currentScene.playerManager.firstPlayer.getGamepad();
+
+                if (gamepad && typeof gamepad.export === 'function') {
+                  gamepad.export();
+                  console.log("Ghost exported successfully");
+                } else {
+                  console.error("Export function not available on gamepad");
+                }
+              } else {
+                console.error("GameManager or scene not available");
+              }
             },
             render: function () {
               var e =
@@ -1742,9 +1761,16 @@
                         event.stopPropagation();
                         this.moveVehicle(event);
                       }
-                  }, "SET START POSITION")
+                    }, "SET START POSITION"),
+                    this.state.open && n.createElement("button", {
+                      className: "margin",
+                      onClick: (event) => {
+                        event.stopPropagation();
+                        this.exportGhost(event);
+                      }
+                    }, "EXPORT GHOST")
                   ),
-                  playMode && this.state.open && n.createElement("button", {
+                  this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
@@ -32477,75 +32503,105 @@
                 t = e.getAttribute("data-paste-code"),
                 n = e.value;
               const trackName = e.value.replace(/(\.\.\/)/g, '');
-              const url = `assets/ghosts/${trackName}.json`;
+
+              const isCPGH = trackName.endsWith('.cpgh');
+              const url = isCPGH
+                ? `assets/ghosts/${trackName}`
+                : `assets/ghosts/${trackName}.json`;
 
               if (!e.value.includes('{') && !t) {
-                fetch(url)
-                  .then(response => {
-                    if (!response.ok) {
-                      throw new Error('no ghost found.');
-                    }
-                    return response.json();
-                  })
-                  .then(parsedInput => {
-                    let raceData;
-                    if (Array.isArray(parsedInput)) {
+                if (isCPGH) {
+                  fetch(url)
+                    .then(response => {
+                      if (!response.ok) {
+                        throw new Error('no ghost found.');
+                      }
+                      return response.arrayBuffer();
+                    })
+                    .then(arrayBuffer => {
+                      const header = new DataView(arrayBuffer.slice(0, 40));
+                      const version = header.getUint32(4);
+
+                      const vehicleType = "BMX";
+
+                      const ghostData = {
+                        cpghData: arrayBuffer,
+                        vehicle: vehicleType
+                      };
+
+                      if (typeof GameManager !== "undefined") {
+                        GameManager.command("add race", ghostData, true);
+                      }
+
+                      console.log("CPGH ghost loaded:", trackName);
+                    })
+                    .catch(error => {
+                      console.error(error);
+                    });
+                } else {
+                  // original JSON handling
+                  fetch(url)
+                    .then(response => {
+                      if (!response.ok) {
+                        throw new Error('no ghost found.');
+                      }
+                      return response.json();
+                    })
+                    .then(parsedInput => {
+                      let raceData;
+                      if (Array.isArray(parsedInput)) {
                         raceData = parsedInput[0].race;
-                    } 
-                    else if (parsedInput.data && Array.isArray(parsedInput.data)) {
+                      } else if (parsedInput.data && Array.isArray(parsedInput.data)) {
                         raceData = parsedInput.data[0].race;
-                    } 
-                    else {
+                      } else {
                         raceData = parsedInput.race;
-                    }
-            
-                    const parsedCode = JSON.parse(raceData.code || "{}");
-            
-                    const filteredData = {
+                      }
+
+                      const parsedCode = JSON.parse(raceData.code || "{}");
+
+                      const filteredData = {
                         code: parsedCode,
                         vehicle: raceData.vehicle,
                         desktop: raceData.desktop,
                         run_ticks: raceData.run_ticks
-                    };
+                      };
 
-                    if (typeof GameManager !== "undefined") {
-                      GameManager.command("add race", filteredData, true);
-                    }
-
-                    console.log("ghost loaded:", trackName);
-                  })
-                  .catch(error => {
-                    console.error(error);
-                  });
-              }
-              else {
-                try {
-                    const parsedInput = JSON.parse(n);
-                    let raceData;
-                    if (Array.isArray(parsedInput)) {
-                        raceData = parsedInput[0].race;
-                    } 
-                    else if (parsedInput.data && Array.isArray(parsedInput.data)) {
-                        raceData = parsedInput.data[0].race;
-                    } 
-                    else {
-                        raceData = parsedInput.race;
-                    }
-            
-                    const parsedCode = JSON.parse(raceData.code || "{}");
-            
-                    const filteredData = {
-                        code: parsedCode,
-                        vehicle: raceData.vehicle,
-                        desktop: raceData.desktop,
-                        run_ticks: raceData.run_ticks
-                    };
-            
-                    if (typeof GameManager !== "undefined") {
+                      if (typeof GameManager !== "undefined") {
                         GameManager.command("add race", filteredData, true);
-                    }
+                      }
+
+                      console.log("ghost loaded:", trackName);
+                    })
+                    .catch(error => {
+                      console.error(error);
+                    });
+                }
+              } else {
+                try {
+                  const parsedInput = JSON.parse(n);
+                  let raceData;
+                  if (Array.isArray(parsedInput)) {
+                    raceData = parsedInput[0].race;
+                  } else if (parsedInput.data && Array.isArray(parsedInput.data)) {
+                    raceData = parsedInput.data[0].race;
+                  } else {
+                    raceData = parsedInput.race;
+                  }
+
+                  const parsedCode = JSON.parse(raceData.code || "{}");
+
+                  const filteredData = {
+                    code: parsedCode,
+                    vehicle: raceData.vehicle,
+                    desktop: raceData.desktop,
+                    run_ticks: raceData.run_ticks
+                  };
+
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("add race", filteredData, true);
+                  }
                 } catch (error) {
-                    console.error("failed to parse JSON data and add ghost.", error);
+                  console.error("failed to parse JSON data and add ghost.", error);
                 }
               }
             },
@@ -32558,8 +32614,8 @@
               var t = e.target;
               t.getAttribute("data-ignoredragleave") ||
                 (this.setState({ isDragActive: !1 }),
-                (this.refs.dropFile.getDOMNode().style.display = "none"),
-                (this.refs.placeholder.getDOMNode().style.display = "block"));
+                  (this.refs.dropFile.getDOMNode().style.display = "none"),
+                  (this.refs.placeholder.getDOMNode().style.display = "block"));
             },
             onDragOver: function (e) {
               e.preventDefault(),
@@ -32575,29 +32631,68 @@
                 ? (t = e.dataTransfer.files)
                 : e.target && (t = e.target.files);
               var n = new FileReader();
-              (n.onload = (event) => this.fileDropComplete(event, t[0].name)),
-                (n.onerror = this.fileDropError),
+
+              const fileName = t[0].name;
+              const isCPGH = fileName.endsWith('.cpgh');
+
+              if (isCPGH) {
+                n.onload = (event) => this.cpghDropComplete(event, fileName);
+                n.onerror = this.fileDropError;
+                n.readAsArrayBuffer(t[0]);
+              } else {
+                n.onload = (event) => this.fileDropComplete(event, fileName);
+                n.onerror = this.fileDropError;
                 n.readAsText(t[0]);
-                
+              }
+            },
+            cpghDropComplete: function (e, fileName) {
+              var arrayBuffer = e.target.result;
+
+              try {
+                const header = new DataView(arrayBuffer.slice(0, 40));
+                if (header.getUint32(0) !== 1129334600) {
+                  throw new Error('Invalid CPGH file');
+                }
+
+                const header8 = new Uint8Array(arrayBuffer.slice(0, 40));
+                const dec = new TextDecoder();
+                const username = dec.decode(header8.subarray(8, 28)).replace(/\0/g, '');
+
+                const vehicleType = "BMX";
+
+                const ghostData = {
+                  cpghData: arrayBuffer,
+                  vehicle: vehicleType,
+                  username: username
+                };
+
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("add race", ghostData, true);
+                }
+
+                console.log("CPGH ghost loaded from file:", fileName);
+              } catch (error) {
+                console.error("Error loading CPGH file:", error);
+              }
             },
             fileDropComplete: function (e, fileName) {
               var fileContent = e.target.result;
               var isJsonFile = fileName.endsWith('.json');
               var n = this.refs.code.getDOMNode();
-            
+
               if (isJsonFile) {
                 try {
                   const parsedInput = JSON.parse(fileContent);
                   const raceData = parsedInput.data ? parsedInput.data[0].race : parsedInput;
                   const parsedCode = JSON.parse(raceData.code);
-            
+
                   const filteredData = {
                     code: parsedCode,
                     vehicle: raceData.vehicle,
                     desktop: raceData.desktop,
                     run_ticks: raceData.run_ticks
                   };
-            
+
                   if (typeof GameManager !== "undefined") {
                     GameManager.command("add race", filteredData, true);
                   }
@@ -32621,7 +32716,7 @@
                 e.clipBoardData
                   ? ((t = e.clipboardData), (n = t.getData("text/plain")))
                   : window.clipboardData &&
-                    (n = window.clipboardData.getData("Text"));
+                  (n = window.clipboardData.getData("Text"));
                 var r = n.length,
                   o = n.slice(0, 5e4);
                 r > 5e4 &&
@@ -32669,7 +32764,7 @@
                   ref: "placeholder",
                   "data-ignoredragleave": "true",
                 },
-                "Paste track code, drag and drop text files here, ",
+                "Paste track code, drag and drop .json or .cpgh files here, ",
                 r,
                 " to import"
               );
@@ -32726,7 +32821,7 @@
                     style: { display: "none" },
                     type: "file",
                     ref: "fileInput",
-                    accept: "text/plain",
+                    accept: ".json,.cpgh,text/plain",
                     onChange: this.onDrop,
                   })
                 ),
@@ -32752,7 +32847,7 @@
                     "Cancel"
                   )
                 ),
-                n.createElement(auto, {baseURL: "assets/ghosts/", onInput: this.onInput })
+                n.createElement(auto, { baseURL: "assets/ghosts/", onInput: this.onInput })
               );
             },
           });

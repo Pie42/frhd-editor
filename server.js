@@ -6,6 +6,10 @@ const fsPromises = require('fs').promises;
 const path = require('path');
 const ejs = require('ejs');
 
+const http = require('http');
+const server = http.createServer(app);
+const { setupLiveRacing } = require('./live');
+
 const PORT = 3000;
 const MAX_ID = 1500000;
 const CR_MAX_ID = 1470321;
@@ -2262,11 +2266,14 @@ async function startServer() {
         process.exit(1); 
     }
 
-    app.listen(PORT, () => {
-        console.log(`Minimal server running on http://localhost:${PORT}`);
+    setupLiveRacing(server);
+
+    server.listen(PORT, () => {
+        console.log(`Server with Live Rider running on http://localhost:${PORT}`);
+        console.log(`WebSocket server running on ws://localhost:${PORT}`);
         console.log('Test paths:');
-        console.log(`- http://localhost:${PORT}/frhd/977281 (server-side fetch)`);
-        console.log(`- http://localhost:${PORT}/bhr/10309 (server-side fetch)`);
+        console.log(`- http://localhost:${PORT}/frhd/977281`);
+        console.log(`- http://localhost:${PORT}/bhr/10309`);
     });
 }
 
