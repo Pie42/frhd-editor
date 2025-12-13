@@ -17063,6 +17063,7 @@
                     i.ragdoll && delete i.ragdoll,
                     this._tempVehicle && this._tempVehicle.stopSounds(),
                     (this._baseVehicle = i),
+                    (this._tempVehicle = !1),
                     (this._tempVehicleTicks = 0),
                     (this._tempVehicleType = !1),
                     i.updateCameraFocalPoint();
@@ -17218,7 +17219,9 @@
           return this._players.length;
         }
         reset() {
-          for (const t of this._players) t.reset();
+          for (const t of this._players) {
+            if (!t._liveRider) t.reset();
+          }
         }
         clear() {
           (this._players = []),
@@ -25466,7 +25469,7 @@ showMessage();
             this.playerManager.reset(),
             this.playerManager.getPlayerCount() > 0 &&
               (this.camera.focusIndex = 1),
-            !this.game.mod.getVar("seeGhost") && (this.camera.focusIndex = 0),
+              this.camera.focusIndex = 0,
             this.camera.focusOnPlayer(),
             this.camera.fastforward(),
             this.score.update();
@@ -30470,6 +30473,7 @@ class LiveRiderManager {
     });
 
     ghost._ghost = true;
+    ghost._liveRider = true;
     ghost._hatColor = hatColor;
     ghost._hatType = hatType;
     ghost._baseVehicleType = 'BMX';
