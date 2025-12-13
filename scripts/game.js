@@ -12951,7 +12951,7 @@
         D.setFloat64(o, M.pos.x);
         D.setFloat64(o + 8, M.pos.y);
         D.setUint8(o + 16, M.radius * 3 | 0);
-        D.setUint8(o + 17, (M.friction * 20) | (!!M.collide << 5) | (!!M.contact << 6) | (!!M.brake || 7));
+        D.setUint8(o + 17, (M.friction * 20) | (!!M.collide << 5) | (!!M.contact << 6) | (!!M.brake << 7));
       }
       encodeSpring(S, M, D, o) {
         D.setFloat32(o, S.leff);
@@ -25469,7 +25469,6 @@ showMessage();
             this.playerManager.reset(),
             this.playerManager.getPlayerCount() > 0 &&
               (this.camera.focusIndex = 1),
-              this.camera.focusIndex = 0,
             this.camera.focusOnPlayer(),
             this.camera.fastforward(),
             this.score.update();
