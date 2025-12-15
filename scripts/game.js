@@ -25469,6 +25469,7 @@ showMessage();
             this.playerManager.reset(),
             this.playerManager.getPlayerCount() > 0 &&
               (this.camera.focusIndex = 1),
+              this.camera.focusIndex = 0,
             this.camera.focusOnPlayer(),
             this.camera.fastforward(),
             this.score.update();
@@ -25793,6 +25794,8 @@ showMessage();
             case "importGhost":
               break;
             case "advancedBrush":
+              break;
+            case "dbimport":
               break;
             case "export":
               setTimeout(this.getTrackCode.bind(this), 750);

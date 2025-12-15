@@ -766,6 +766,153 @@ function findClosestIds(metadata, id) {
 
 // dynamic routes
 
+// DB template
+const dbTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/db.ejs'), 'utf8'));
+
+function processTrackData(options) {
+    const { type, query, sortBy, sortOrder, page, perPage } = options;
+    
+    let allTracks = [];
+    
+    if (type === 'all' || type === 'frhd') {
+        allTracks = allTracks.concat(
+            frhdMetadata.map(t => ({ ...t, type: 'frhd' }))
+        );
+    }
+    
+    if (type === 'all' || type === 'bhr') {
+        allTracks = allTracks.concat(
+            bhrMetadata.map(t => ({ ...t, type: 'bhr' }))
+        );
+    }
+    
+    if (type === 'all' || type === 'cr') {
+        allTracks = allTracks.concat(
+            crMetadata.map(t => ({ ...t, type: 'cr' }))
+        );
+    }
+    allTracks = allTracks.map(track => {
+        let authors = track.authors || track.username || 'Unknown';
+        
+        if (typeof authors === 'string' && authors.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(authors.replace(/""/g, '"'));
+                authors = Array.isArray(parsed) ? parsed.join(', ') : authors;
+            } catch (e) {
+                // Keep original string
+            }
+        }
+        
+        return {
+            ...track,
+            authors,
+            name: track.name || `Track #${track.id}`
+        };
+    });
+    
+    if (query) {
+        const lowerQuery = query.toLowerCase();
+        allTracks = allTracks.filter(track => 
+            (track.name && track.name.toLowerCase().includes(lowerQuery)) ||
+            (track.authors && track.authors.toLowerCase().includes(lowerQuery)) ||
+            (track.username && track.username.toLowerCase().includes(lowerQuery)) ||
+            (track.id && track.id.toString().includes(lowerQuery))
+        );
+    }
+    
+    allTracks.sort((a, b) => {
+        let valA, valB;
+
+        switch (sortBy) {
+            case 'name':
+                valA = (a.name || '').toLowerCase();
+                valB = (b.name || '').toLowerCase();
+                return sortOrder === 'asc'
+                    ? valA.localeCompare(valB)
+                    : valB.localeCompare(valA);
+            case 'upvotes':
+                valA = a.upvotes || 0;
+                valB = b.upvotes || 0;
+                break;
+            case 'favorites':
+                valA = a.favorites || 0;
+                valB = b.favorites || 0;
+                break;
+            default: // id
+                valA = parseInt(a.id) || 0;
+                valB = parseInt(b.id) || 0;
+        }
+
+        if (sortOrder === 'asc') {
+            return valA - valB;
+        } else {
+            return valB - valA;
+        }
+    });
+    
+    const totalCount = allTracks.length;
+    const totalPages = Math.ceil(totalCount / perPage);
+    const startIndex = (page - 1) * perPage;
+    const paginatedTracks = allTracks.slice(startIndex, startIndex + perPage);
+    
+    return {
+        tracks: paginatedTracks,
+        totalCount,
+        totalPages
+    };
+}
+
+app.get('/db', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = Math.min(Math.max(parseInt(req.query.perPage) || 24, 1), 100);
+    const type = req.query.type || 'all';
+    const query = req.query.q || '';
+    const sortBy = req.query.sort || 'id';
+    const sortOrder = req.query.order || 'desc';
+    
+    const { tracks, totalCount, totalPages } = processTrackData({
+        type, query, sortBy, sortOrder, page, perPage
+    });
+    
+    const renderedHtml = dbTemplate({
+        title: type === 'all' ? 'All Tracks' : `${type.toUpperCase()} Tracks`,
+        tracks,
+        totalCount,
+        totalPages,
+        page,
+        perPage,
+        type,
+        query,
+        sortBy,
+        sortOrder
+    });
+    
+    res.status(200).send(renderedHtml);
+});
+
+app.get('/api/db', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = Math.min(Math.max(parseInt(req.query.perPage) || 24, 1), 100);
+    const type = req.query.type || 'all';
+    const query = req.query.q || '';
+    const sortBy = req.query.sort || 'id';
+    const sortOrder = req.query.order || 'desc';
+    
+    const { tracks, totalCount, totalPages } = processTrackData({
+        type, query, sortBy, sortOrder, page, perPage
+    });
+    
+    res.json({
+        tracks,
+        pagination: {
+            page,
+            perPage,
+            totalCount,
+            totalPages
+        }
+    });
+});
+
 // Redirect /user/* to /u/*
 app.use('/user', (req, res) => {
     const redirectPath = `/u${req.path}`;
@@ -1265,6 +1412,7 @@ app.get('/cr/:id.png', async (req, res) => {
     }
 
     const localThumbnailPath = path.join(CR_THUMBNAILS_ROOT, `${trackId}.png`);
+    //const localThumbnailPath = path.join(__dirname, 'data', 'cr', 'thumbnails', `${trackId}.png`);
     
     try {
         await fsPromises.access(localThumbnailPath);
@@ -1282,6 +1430,7 @@ app.get('/cr/:id.txt', async (req, res) => {
     }
 
     const codeFilePath = path.join(CR_TRACKCODES_ROOT, `${trackId}.txt`);
+    //const codeFilePath = path.join(__dirname, 'data', 'cr', 'trackcodes', `${trackId}.txt`);
     
     try {
         const code = await fsPromises.readFile(codeFilePath, 'utf8');

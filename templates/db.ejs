@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>
+        <%= title %> - Free Rider Archive
+    </title>
+    <link rel="stylesheet" type="text/css" href="/style-black-o.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+    <style>
+        .sticky-header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px 20px;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .type-filters,
+        .toggle-group,
+        .search-sort-group {
+            flex: 0 0 auto;
+        }
+
+        .type-filters {
+            display: flex;
+            gap: 5px;
+            font-family: Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .search-sort-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            /* margin: auto; */
+            justify-content: center;
+        }
+
+        .search-input {
+            width: 126px;
+            text-align: center;
+            height: 18px;
+            padding: 2px 8px;
+        }
+
+        .sort-select {
+            height: 28px;
+            width: 140px;
+            padding: 2px 8px;
+            background: #fff;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            display: none;
+            /* with the mismatch of id/upvote/publish dates, hidden for now */
+        }
+
+        @media (max-width: 500px) {
+            .controls-row {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        #content {
+            margin: 0 auto;
+            max-width: 95vw;
+        }
+
+        @media (max-width: 600px) {
+            .controls-row {
+                justify-content: center;
+            }
+        }
+
+        .track-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .track-item {
+            width: calc(16.666% - 9px);
+            /* 6 columns */
+            padding: 0;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 1020px) {
+            .track-item {
+                width: calc(20% - 8px);
+                /* 5 columns */
+            }
+        }
+
+        @media (max-width: 860px) {
+            .track-item {
+                width: calc(25% - 8px);
+                /* 4 columns */
+            }
+        }
+
+        @media (max-width: 640px) {
+            .track-item {
+                width: calc(33.333% - 7px);
+                /* 3 columns */
+            }
+        }
+
+        @media (max-width: 560px) {
+            .track-item {
+                width: calc(50% - 5px);
+                /* 2 columns */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .track-item {
+                width: 100%;
+                /* 1 column */
+            }
+        }
+
+        .loading-indicator {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 12px;
+            padding: 20px;
+        }
+
+        .loading-indicator.hidden {
+            display: none;
+        }
+
+
+        .track-thumb {
+            width: 100%;
+            text-align: center;
+        }
+
+        .track-thumb .thumbnail {
+            position: relative;
+            aspect-ratio: 5 / 3;
+            max-width: 250px;
+            max-height: 150px;
+            margin: auto auto 5px auto;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .track-thumb .thumbnail:hover {
+            border: 1px solid #1884cf;
+        }
+
+        .track-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            margin: 0;
+        }
+
+        .track-thumb .desc {
+            font-size: 12px;
+            color: #000;
+            height: 28px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-top: 0;
+            margin-bottom: 0;
+            max-width: 250px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .track-thumb .desc strong {
+            color: #000;
+        }
+
+        .track-thumb .desc .author-link {
+            color: #1884cf;
+            text-decoration: none;
+        }
+
+        .track-thumb .desc .author-link:hover {
+            text-decoration: underline;
+        }
+
+        .type-filter-link {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .type-filter-link:hover {
+            text-decoration: underline;
+        }
+
+        .track-type-filter {
+            margin: 5px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            width: 100%;
+        }
+
+        .no-results h2 {
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .track-count {
+            font: 10px eiven;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        .track-type-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: bold;
+            color: #ffffff;
+            z-index: 10;
+            letter-spacing: 0.5px;
+        }
+
+        .track-type-badge.bhr {
+            background-color: #000000;
+        }
+
+        .track-type-badge.cr {
+            background-color: #aaaaaa;
+            color: #fff;
+        }
+
+        .track-type-badge.frhd {
+            background-color: #1884cf;
+        }
+
+        .track-type-badge.fr {
+            background-color: #4a4a4a;
+        }
+
+        .track-grid.hide-badges .track-type-badge {
+            display: none;
+        }
+
+        .track-grid.hide-titles .desc {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="content" class="container clearfix">
+        <div class="container">
+            <div class="sticky-header">
+                <div class="controls-row">
+                    <div class="type-filters">
+                        <strong>
+                            <span class="track-type-filter" data-type="all"
+                                style="color: <%= type === 'all' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">ALL</span>
+                            </span>
+                            /
+                            <span class="track-type-filter" data-type="frhd"
+                                style="color: <%= type === 'frhd' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">FRHD</span>
+                            </span>
+                            /
+                            <span class="track-type-filter" data-type="bhr"
+                                style="color: <%= type === 'bhr' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">BHR</span>
+                            </span>
+                            /
+                            <span class="track-type-filter" data-type="cr"
+                                style="color: <%= type === 'cr' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">CR</span>
+                            </span>
+                        </strong>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-badges" checked>
+                            Badges
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-titles" checked>
+                            Titles
+                        </label>
+                    </div>
+
+                    <div class="search-sort-group">
+                        <input type="text" id="search-input" class="search-input" placeholder="Search..."
+                            value="<%= query %>" aria-label="Search track archive">
+
+                        <select id="sort-select" class="sort-select">
+                            <option value="id-desc" <%=sortBy==='id' && sortOrder==='desc' ? 'selected' : '' %>>Newest
+                            </option>
+                            <option value="id-asc" <%=sortBy==='id' && sortOrder==='asc' ? 'selected' : '' %>>Oldest
+                            </option>
+                            <option value="name-asc" <%=sortBy==='name' && sortOrder==='asc' ? 'selected' : '' %>>Name
+                                A-Z</option>
+                            <option value="name-desc" <%=sortBy==='name' && sortOrder==='desc' ? 'selected' : '' %>>Name
+                                Z-A</option>
+                            <option value="upvotes-desc" <%=sortBy==='upvotes' && sortOrder==='desc' ? 'selected' : ''
+                                %>>Most Upvotes</option>
+                            <option value="favorites-desc" <%=sortBy==='favorites' && sortOrder==='desc' ? 'selected'
+                                : '' %>>Most Favorites</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="track-grid" class="track-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            type: '<%= type %>',
+            query: '<%= query %>',
+            sortBy: '<%= sortBy %>',
+            sortOrder: '<%= sortOrder %>',
+            page: 1,
+            perPage: 24,
+            hasMore: true,
+            isLoading: false
+        };
+
+        const trackGrid = document.getElementById('track-grid');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const typeFilters = document.querySelectorAll('.track-type-filter');
+
+        function sendToParent(trackUrl, trackName) {
+            if (!trackUrl) return;
+            const message = {
+                action: "linkClicked",
+                url: trackUrl,
+                name: trackName || trackUrl
+            };
+            if (window.self !== window.top) {
+                window.parent.postMessage(message, "*");
+            }
+        }
+
+        function handleThumbnailFallback(img) {
+            img.onerror = null;
+            img.src = '/data/bhr/thumbnails/default.png';
+        }
+        window.handleThumbnailFallback = handleThumbnailFallback;
+
+        function updateURL() {
+            const params = new URLSearchParams();
+            params.set('type', state.type);
+            params.set('sort', state.sortBy);
+            params.set('order', state.sortOrder);
+            if (state.query) params.set('q', state.query);
+
+            const newURL = `/db?${params.toString()}`;
+            history.replaceState(state, '', newURL);
+        }
+
+        function updateFilterStyles() {
+            typeFilters.forEach(filter => {
+                const filterType = filter.dataset.type;
+                filter.style.color = filterType === state.type ? '#000' : '#aaa';
+            });
+        }
+
+        function getBadgeText(type) {
+            const badges = { 'bhr': 'BHR', 'cr': 'CR', 'frhd': 'FRHD', 'fr': 'FR' };
+            return badges[type] || type.toUpperCase();
+        }
+
+        function renderTrackCard(track) {
+            const firstAuthor = track.username || (track.authors ? track.authors.split(',')[0].trim() : 'Unknown');
+            const badgeText = getBadgeText(track.type);
+
+            return `
+        <div class="track-item" data-track-type="${track.type}">
+            <div class="track-thumb">
+                <a href="/${track.type}/${track.id}" class="track-link">
+                    <div class="thumbnail">
+                        <span class="track-type-badge ${track.type}">${badgeText}</span>
+                        <img class="track-thumbnail" 
+                             src="/${track.type}/${track.id}.png" 
+                             alt="${track.name}"
+                             loading="lazy"
+                             onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc" style="margin-bottom: 0px">
+                    <a href="/${track.type}/${track.id}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
+                    by <a href="/u/${firstAuthor}" class="author-link"><strong>${firstAuthor}</strong></a>
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        function createLoadingIndicator() {
+            const loader = document.createElement('div');
+            loader.className = 'loading-indicator';
+            loader.id = 'loading-indicator';
+            loader.innerHTML = 'Loading...';
+            return loader;
+        }
+
+        async function fetchTracks(append = false) {
+            if (state.isLoading) return;
+            if (append && !state.hasMore) return;
+
+            state.isLoading = true;
+
+            let loader = document.getElementById('loading-indicator');
+            if (!loader) {
+                loader = createLoadingIndicator();
+                trackGrid.appendChild(loader);
+            }
+            loader.classList.remove('hidden');
+
+            const params = new URLSearchParams();
+            params.set('type', state.type);
+            params.set('page', state.page);
+            params.set('perPage', state.perPage);
+            params.set('sort', state.sortBy);
+            params.set('order', state.sortOrder);
+            if (state.query) params.set('q', state.query);
+
+            try {
+                const response = await fetch(`/api/db?${params.toString()}`);
+                const data = await response.json();
+
+                state.hasMore = state.page < data.pagination.totalPages;
+
+                loader.remove();
+
+                if (data.tracks.length === 0 && !append) {
+                    trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>No tracks found</h2>
+                    <p>Try a different search term or filter</p>
+                </div>
+            `;
+                } else {
+                    const trackHTML = data.tracks.map(renderTrackCard).join('');
+
+                    if (append) {
+                        trackGrid.insertAdjacentHTML('beforeend', trackHTML);
+                    } else {
+                        trackGrid.innerHTML = trackHTML;
+                    }
+
+                    if (state.hasMore) {
+                        loader = createLoadingIndicator();
+                        loader.classList.add('hidden');
+                        trackGrid.appendChild(loader);
+                    }
+                }
+
+                if (!append) {
+                    updateURL();
+                    updateFilterStyles();
+                }
+
+                if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
+                    state.page++;
+                    state.isLoading = false;
+                    fetchTracks(true);
+                    return;
+                }
+
+            } catch (error) {
+                console.error('Error fetching tracks:', error);
+                if (!append) {
+                    trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>Error loading tracks</h2>
+                    <p>Please try again later</p>
+                </div>
+            `;
+                }
+            }
+
+            state.isLoading = false;
+        }
+
+        function loadMore() {
+            if (state.hasMore && !state.isLoading) {
+                state.page++;
+                fetchTracks(true);
+            }
+        }
+
+        function resetAndFetch() {
+            state.page = 1;
+            state.hasMore = true;
+            trackGrid.innerHTML = '';
+            fetchTracks(false);
+        }
+
+        function handleScroll() {
+            if (state.isLoading || !state.hasMore) return;
+
+            const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+            const needFill = document.documentElement.scrollHeight <= window.innerHeight;
+
+            if (scrollBottom < 1000 || needFill) {
+                loadMore();
+            }
+        }
+
+        function adjustContentPadding() {
+            const header = document.querySelector('.sticky-header');
+            const content = document.getElementById('content');
+            content.style.paddingTop = header.offsetHeight + 'px';
+        }
+
+        window.addEventListener('resize', adjustContentPadding);
+
+        function initializeLinkHijacking() {
+            if (window.self === window.top) {
+                console.log("DB: Running as top window. Links will navigate normally.");
+                return;
+            }
+
+            const trackUrlRegex = /\/(frhd|bhr|cr|u)\/([a-zA-Z0-9_-]+|daily|random)(?:\/([a-zA-Z0-9_-]+))?/i;
+
+            document.getElementById('content').addEventListener('click', function (event) {
+                let targetElement = event.target;
+                while (targetElement && targetElement.tagName !== 'A') {
+                    targetElement = targetElement.parentElement;
+                }
+
+                if (targetElement) {
+                    const href = targetElement.getAttribute('href');
+
+                    if (href && href !== '#' && !href.startsWith('javascript:')) {
+                        const fullUrl = targetElement.href;
+
+                        if (fullUrl.match(trackUrlRegex)) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            event.stopImmediatePropagation();
+
+                            const descElement = targetElement.closest('.track-thumb')?.querySelector('.desc');
+                            const trackName = descElement ? descElement.textContent.trim() : targetElement.textContent.trim() || href;
+
+                            sendToParent(fullUrl, trackName);
+                        }
+                    }
+                }
+            }, true);
+
+            console.log("DB: Track link interception initialized.");
+        }
+
+        function initEventListeners() {
+            typeFilters.forEach(filter => {
+                filter.addEventListener('click', () => {
+                    state.type = filter.dataset.type;
+                    resetAndFetch();
+                });
+            });
+
+            let searchTimeout;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    state.query = e.target.value;
+                    resetAndFetch();
+                }, 300);
+            });
+
+            sortSelect.addEventListener('change', (e) => {
+                const [sortBy, sortOrder] = e.target.value.split('-');
+                state.sortBy = sortBy;
+                state.sortOrder = sortOrder;
+                resetAndFetch();
+            });
+
+            window.addEventListener('scroll', handleScroll);
+        }
+
+        function initToggles() {
+            const toggleBadges = document.getElementById('toggle-badges');
+            const toggleTitles = document.getElementById('toggle-titles');
+
+            toggleBadges.addEventListener('change', (e) => {
+                trackGrid.classList.toggle('hide-badges', !e.target.checked);
+                setTimeout(handleScroll, 100);
+            });
+
+            toggleTitles.addEventListener('change', (e) => {
+                trackGrid.classList.toggle('hide-titles', !e.target.checked);
+                setTimeout(handleScroll, 100);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initEventListeners();
+            initToggles();
+            initializeLinkHijacking();
+            fetchTracks(false);
+            adjustContentPadding();
+        });
+
+    </script>
+</body>
+
+</html>

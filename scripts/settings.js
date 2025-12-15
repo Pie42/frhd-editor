@@ -170,7 +170,8 @@ var GameSettings = {
         "zoom_increase": 187,
         "zoom_decrease": 189,
         "zoom_100": 48,
-        "change_vehicle": 86
+        "change_vehicle": 86,
+        "change_camera": 96
     },
     "editorHotkeys": {
         "up": 38,
@@ -215,7 +216,8 @@ var GameSettings = {
         "scale" : 83,
         "stretchX" : 77,
         "stretchY" : 78,
-        "flip" : 70
+        "flip" : 70,
+        "change_camera": 96
     },
     "keysToRecord": ["up", "down", "left", "right", "enter", "backspace", "z"],
     "user": {

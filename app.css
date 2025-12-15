@@ -1078,7 +1078,7 @@ html.fullscreen #main_page {
 }
 
 .primary-button-blue {
-    background: #1F80C3
+    background: #1884cf
 }
 
 .primary-button-blue:hover {
@@ -2032,8 +2032,8 @@ html.fullscreen #main_page {
     border-right: 0
 }
 
-/*
-@media (max-height: 480px) {
+
+/*@media (max-height: 480px) {
     .leftMenu,
     .rightMenu {
         transform: scale(0.5);
@@ -2064,8 +2064,8 @@ html.fullscreen #main_page {
     .editorGui {
         height: 35px;
     }
-}
-*/
+}*/
+
 
 .editorDialog {
     width: 100%;
@@ -2109,9 +2109,40 @@ html.fullscreen #main_page {
     box-shadow: 0 0 1px #DDD
 }
 
+.editorDialog-fuller {
+    width: 100%;
+    height: calc(100vh - 72px);
+    background: #FFF;
+    position: relative;
+    box-shadow: 0 0 1px #DDD;
+    position: sticky;
+    top: 36px;
+    bottom: 36px;
+}
+
+.editorDialog-db {
+    width: 90%;
+    height: calc(90vh - 25px);
+    background: #FFF;
+    border: 1px solid #C2C2C2;
+    margin: auto;
+    position: sticky;
+    top: 50px;
+    box-shadow: 0 0 1px #DDD;
+}
+
+.editorDialog-bottomBarDB {
+    background: #F8F8F8;
+    border-top: 1px solid #C2C2C2;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    padding: 8px;
+}
+
 .editorDialog-titleBar {
     line-height: 38px;
-    padding: 0 13px;
+    padding: 0 12px;
     border-bottom: 1px solid #C2C2C2;
     color: #2D2D2D
 }
@@ -2176,6 +2207,7 @@ html.fullscreen #main_page {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    display: none;
 }
 
 .importDialog-preview {
@@ -2196,6 +2228,40 @@ html.fullscreen #main_page {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    display: none;
+}
+
+.importDialog-previewDB {
+    position: absolute;
+    top: 54px;
+    left: 12px;
+    width: 95%;
+    height: 30%;
+    max-width: 500px;
+    max-height: 300px;
+    height: auto;
+    /* max-width: 100%; */
+    aspect-ratio: 5 / 3;
+    overflow-y: hidden;
+    z-index: 1;
+    border-radius: 6px;
+    font-size: 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: var(--ht-box-radius, 8px);
+    overflow: hidden;
+    box-shadow: var(--ht-box-shadow, 0 2px 8px rgba(0, 0, 0, 0.1));
+    white-space: normal;
+    text-decoration: none;
+    color: inherit;
+}
+
+.importDialog-previewDB:hover {
+    outline: solid;
+    outline-color: #1884cf;
+    outline-width: 1px;
 }
 
 .importDialog-preview img {
@@ -2210,7 +2276,7 @@ html.fullscreen #main_page {
 }
 
 .importDialog-code{
-    width: 66%;
+    width: 100%; /* was 66% with tracklist and preview */
 }
 
 .exportDialog-code{
@@ -2241,7 +2307,7 @@ html.fullscreen #main_page {
     font-size: 14px;
     padding: 15px;
     position: absolute;
-    width: 60%;
+    width: 85%;
 }
 
 .exportDialog-saveAsFile,
@@ -2511,9 +2577,9 @@ html.fullscreen #main_page {
 
 .editorDialog {
     width: 100%;
-    height: 90%;
+    height: calc(100vh - 72px);
     position: absolute;
-    top: 5%;
+    top: 36px;
     background: rgba(0, 0, 0, 0);
     z-index: 2;
 }
@@ -3152,6 +3218,12 @@ only screen and (min-device-pixel-ratio:3) {
     .editorDialog-content_exportDialog {
         min-width: 400px;
         transform: scale(0.6);
+    }
+}
+
+@media (max-width: 480px) {
+    .editorDialog-content {
+        width: 80vw;
     }
 }
 /*

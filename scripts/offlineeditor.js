@@ -2879,6 +2879,7 @@
           xx = e("./advancedBrush"),
           xxx = e("./importGhost"),
           xxxx = e("./advancedSelect"),
+          db = e("./dbimport"),
           h = n.createClass({
             displayName: "Dialogs",
             className: "editorDialog",
@@ -2950,6 +2951,9 @@
                 case "advancedSelect":
                     f = n.createElement(xxxx, null);
                     break;
+                case "dbimport":
+                    f = n.createElement(db, null);
+                    break;
                 default:
                   h = { display: "none" };
               }
@@ -2977,6 +2981,7 @@
         "./import": 25,
         "./importObject": 925,
         "./advancedBrush": 9925,
+        "./dbimport": 99925,
         "./importGhost": 241,
         "./advancedSelect": 242,
         "./offline_editor_promo": 26,
@@ -4472,6 +4477,22 @@
                     "select a file"
                   )
                 ));
+
+              var x = n.createElement(
+                "span",
+                null,
+                n.createElement(
+                  "span",
+                  {
+                    className: "link",
+                    onClick: function () {
+                      GameManager.command("dialog", "dbimport");
+                    }
+                  },
+                  "browse the database"
+                ),
+                ", "
+              );
               var o = n.createElement(
                 "span",
                 {
@@ -4480,7 +4501,8 @@
                   "data-ignoredragleave": "true",
                 },
                 "Paste track code, drag and drop text files here, ",
-                n.createElement("br"),
+                //n.createElement("br"),
+                x,
                 r,
                 " to import"
               );
@@ -5083,6 +5105,64 @@
         t.exports = r;
       },
       { react: 230, "react-slider": 75 },
+    ],
+    99925: [
+      function (e, t) {
+    var n = e("react"),
+      auto = e("autocomplete"),
+      r = n.createClass({
+        displayName: "DBImportDialog",
+        hasFileAPI: !!(window.File && window.FileList && window.FileReader),
+        closeDialog: function () {
+          "undefined" != typeof GameManager &&
+            GameManager.command("dialog", !1);
+        },
+        getInitialState: function () {
+          return { isDragActive: !1 };
+        },
+        render: function () {
+          var e = this.state.isDragActive,
+            t = "editorDialog-db editorDialog-content_importDialog";
+          e && (t += " editorDialog-content-dragActive");
+          
+          return n.createElement(
+            "div",
+            { className: t },
+            n.createElement(
+              "div",
+              { className: "editorDialog-titleBar" },
+              n.createElement(
+                "span",
+                {
+                  className: "editorDialog-close",
+                  onClick: this.closeDialog,
+                },
+                "×"
+              ),
+              n.createElement(
+                "h1",
+                { className: "editorDialog-content-title" },
+                "IMPORT TRACK"
+              )
+            ),
+            n.createElement("iframe", {
+              src: "/db?perPage=12",  // Change this URL
+              style: {
+                width: "100%",
+                height: "calc(100% - 39px)",  // Subtract titlebar height
+                border: "none",
+                display: "block"
+              }
+            })
+          );
+        },
+      });
+    t.exports = r;
+  },
+  { 
+    react: 230,
+    autocomplete: 240,
+  },
     ],
     26: [
       function (e, t) {
@@ -7700,6 +7780,35 @@
       },
       { react: 230 },
     ],
+    965: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "DBImportTrack",
+            dialogName: "dbimport",
+            openDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", this.dialogName);
+            },
+            render: function () {
+              var e = "topMenu-button topMenu-button_import",
+                t = "editorgui_icons editorgui_icons-icon_import";
+              return n.createElement(
+                "div",
+                {
+                  className: e,
+                  onClick: this.openDialog,
+                  title: "Import Track",
+                },
+                n.createElement("span", { className: t }),
+                n.createElement("span", { className: "text" }, "Import")
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
     66: [
       function (e, t) {
         var n = e("react"),
@@ -7791,6 +7900,7 @@
           p = e("./fullscreen"),
           h = e("./offlineeditor"),
           x = e("./sidebar"),
+          xx = e("./dbimporttrack"),
           f = n.createClass({
             displayName: "TopMenu",
             render: function () {
@@ -7818,6 +7928,7 @@
                 { className: "topMenu unselectable", style: topMenuStyle},
                 !playMode && n.createElement(r, null),
                 !playMode && n.createElement(o, null),
+                playMode && n.createElement(xx, null),
                 !playMode && n.createElement(i, null),
                 !playMode && GameSettings.beta && n.createElement(a, null),
                 !playMode && this.showHelp(),
@@ -7873,6 +7984,7 @@
         "./fullscreen": 63,
         "./help": 64,
         "./importtrack": 65,
+        "./dbimporttrack": 965,
         "./increasezoom": 66,
         "./offlineeditor": 67,
         "./reducezoom": 68,
@@ -33113,7 +33225,7 @@
                   iframe.contentWindow.postMessage({
                     type: 'freerider-track-data',
                     data: trackData
-                  }, 'https://forum.freerider.app');
+                  }, '*');
                 });
               }
             },
@@ -33299,6 +33411,7 @@
                 "frhd.co",
                 "k333892.invisionservice.com",
                 "gofile.io",
+                "localhost"
             ];
 
             if (!validHostnames.includes(hostname)) {
@@ -33314,7 +33427,7 @@
                 trackName = hash.substring(1);
             } 
 
-            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
               const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
               trackType = match[1];
               const idPart = match[2];
@@ -33328,27 +33441,27 @@
               }
             }
 
-            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
               const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               const userName = match[3];
               trackName = `${trackType}-${trackId}`;
             }
-            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
               const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               trackName = `${trackType}-${trackId}`;
             }
-            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)\/(.+)/)) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/u\/([^\/]+)\/(.+)/)) {
               const match = pathname.match(/^\/u\/([^\/]+)\/(.+)/);
               userId = match[1];
               const trackSlug = match[2];
               trackType = 'page';
               trackName = trackSlug;
             }
-            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)/)) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/u\/([^\/]+)/)) {
               const match = pathname.match(/^\/u\/([^\/]+)/);
               userId = match[1];
               trackType = 'user';
@@ -33358,7 +33471,7 @@
                 const parts = pathname.split("/t/")[1].split("-");
                 trackName = parts[0];
             } 
-            else if (hostname === "freerider.app" && pathname.startsWith("/u/")) {
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.startsWith("/u/")) {
                 trackName = pathname.substring(3);
                 trackType = 'user';
             } 
