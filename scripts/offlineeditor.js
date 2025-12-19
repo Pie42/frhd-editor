@@ -6072,6 +6072,7 @@
           c = e("../tools/cameratool"),
           x = e("../tools/circletool"),
           xx = e("../tools/selecttool"),
+          pa = e("../tools/patterntool"),
           //xxx = e("../tools/objecttool"),
           u = n.createClass({
             displayName: "LeftMenu",
@@ -6103,6 +6104,7 @@
                   n.createElement(s, { active: "powerup" === e }),
                   n.createElement(l, { active: "vehiclepowerup" === e }),
                   n.createElement(xx, { active: "select" === e }),
+                  n.createElement(pa, { active: "pattern" === e }),
                   n.createElement(c, { active: "camera" === e })
                 )
               );
@@ -6119,6 +6121,7 @@
         "../tools/erasertool": 44,
         "../tools/poweruptool": 48,
         "../tools/selecttool": 50,
+        "../tools/patterntool": 950,
         "../tools/straightlinetool": 53,
         "../tools/vehicletool": 59,
         react: 230,
@@ -7036,6 +7039,33 @@
             },
             render: function () {
               var e = "sideButton sideButton_selectTool";
+              return (
+                this.props.active && (e += " active"),
+                n.createElement(
+                  "div",
+                  { className: e, onClick: this.changeTool },
+                  n.createElement("span", {
+                    className: "editorgui_icons editorgui_icons-icon_select",
+                  })
+                )
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
+    950: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "PatternTool",
+            changeTool: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("change tool", "pattern");
+            },
+            render: function () {
+              var e = "sideButton sideButton_patternTool";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(

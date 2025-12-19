@@ -155,6 +155,9 @@ var GameSettings = {
             "powerups": true
         }
     },
+    "pattern": {
+        "globalGrid": false,
+    },
     "playHotkeys": {
         "up": [38, 87, 73],
         "down": [40, 83, 75],

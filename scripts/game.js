@@ -12169,6 +12169,7 @@
             this.zoom === this.desiredZoom && this.zoomComplete());
         }
         zoomToPoint(t) {
+          this.scene.toolHandler.tools.pattern.ztp(t);
           const e = this.scene.screen,
             s = this.position,
             i = this.zoomPoint,
@@ -29595,5 +29596,480 @@ var v = window.setInterval(function() {
   if (GameManager != undefined && GameManager.game != undefined) {
       rInterval();
       load();
+      loadPatternTool();
   }
 }, 250)
+
+// we should really rework this + select tool to fit better
+
+// requirements:
+// - parse object to find / connect lines that extend through the edge
+//   - might make some sort of structure like {top: {}, left: {}, right: {}, down: {}} where each inner object is indexed to an array by the other coordinate, each element of which has the angle of the line, a reference to the line (or possibly just the other endpoint), and (optionally) something saying if the other endpoint is also on an edge / wtv
+// - some kind of brush with which to paint the pattern
+//   - can make a CanvasPattern with the rendered object and create a polyline somehow from the brushstrokes and fill that with the CanvasPattern in order to draw the current stroke without creating lines
+//   - might not support objects until later just to be lazy
+//   - to store brush stroke: make an internal grid on every brush stroke; every movement fills in the appropriate part of a boolean array representing every pixel in the cell (if every cell just uses a 2d canvas and draws the shape on it, this could be fairly fast)
+//   - to render brush stroke: store an internal canvas of appropriate size and all of the points of the brush stroke so far (in case the canvas gets moved or something). then, simply render each one so far (try to make sure that this doesn't make the rendering look horrible?)
+//     - could also use the canvas from the internal grid and render a rectangle over everything using source-in (i.e. render entire grid with brushstrokes onto a temp canvas, render rectangle of full pattern over with source-in, then render temp canvas onto normal canvas)
+
+// optional:
+// - easy way to make new brushes (if i can figure out how to get an object's outline, for instance; just square and circle should be good for a lot)
+//   - brushes using just a canvas (or two - one with the outline to be rendered and transparent everywhere else, and the mask)
+//     - might make this the default lol, it seems so much easier (pass in functions to draw these to the right size?)
+// - detect symmetry in patterns and allow for random (seed-based) rotations
+function loadPatternTool() {
+  let zv = GameManager.game.currentScene.camera.position.factor(0),
+      vector = (x = 0, y = 0) => {return zv.factor(0).add({x, y})};
+  
+  function gcd(a, b) {
+    while (b)
+      [a, b] = [b, a % b];
+    return Math.abs(a);
+  }
+  class PatternLine {
+    constructor(x1, y1, x2, y2) {
+      this.p1 = vector(x1, y1);
+      this.p2 = vector(x2, y2);
+      this.pp = this.p2.sub(this.p1);
+      this.len = this.pp.len();
+      this.angle = Math.atan2(this.pp.y, this.pp.x);
+      // desired is segments every 5-20 pixels, but for performance, also have no fewer than 2 and no more than 40 segments
+      // (2 has to be on the outside so the math.min doesn't end up producing 0 segments for short lines)
+      this.segments = Math.max(Math.min(Math.max(gcd(this.pp.x, this.pp.y), this.len / 20 | 0), this.len / 5 | 0, 40), 1);
+      this.segment = this.pp.factor(1 / this.segments);
+      this.pixels = [];
+    }
+
+    getPixels(width) {
+      let start = this.p1.x + this.p1.y * width;
+      this.pixels = [...Array(this.segments)].map(i => {
+        let segment = this.segment.factor(i),
+          offset = Math.floor(segment.x) + Math.floor(segment.y) * width;
+        return start + offset;
+      });
+      this.pixels.push(this.p2.x + this.p2.y * width);
+    }
+
+    testPixels(imageData) {
+      let lines = [],
+        state = false;
+      for (let i = 0; i < this.pixels.length; i++) {
+        if (!!imageData[this.pixels[i] * 4 + 3] != state) {
+          lines.push(i);
+          state = !state;
+        }
+      }
+      lines.push(this.pixels.length - 1);
+      for (let i = 0; i < lines.length - 1; i += 2) {
+        let p1 = this.p1.add(this.segment.factor(lines[i])),
+          p2 = this.p1.add(this.segment.factor(lines[i + 1]));
+        this.addLine(p1, p2);
+      }
+    }
+
+    addLine(p1, p2) {}
+  }
+
+  // idk oop
+  class PatternPhysicsLine extends PatternLine {
+    constructor(x1, y1, x2, y2) {
+      super(x1, y1, x2, y2);
+    }
+  }
+
+  class PatternSceneryLine extends PatternLine {
+    constructor(x1, y1, x2, y2) {
+      super(x1, y1, x2, y2);
+    }
+  }
+
+  // run >= 0
+  // reference point should be on the left wall if possible, or the top wall if not
+  // rise and run should have a gcd of 1
+  class PatternInfLine {
+    constructor(p, rise, run) {
+      this.p = p;
+      this.rise = rise;
+      this.run = run;
+    }
+  }
+
+  class PatternObject {}
+
+  class PatternGridCell {
+    constructor(pattern, origin, x, y) {
+      // figure out if this is actually feasible to determine performance-wise
+      this.full = false;
+      this.x = x;
+      this.y = y;
+      this.width = pattern.width;
+      this.height = pattern.height;
+      this.pos = vector(this.x * this.width, this.y * this.height);
+      // might want to switch to a canvas pool
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.ctx.imageSmoothingEnabled = false;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+    }
+
+    // pos should be the position of the top left of the brush,
+    // even though the mask will track to be centered on the mouse
+    stroke(brush, pos) {
+      let drawPos = pos.sub(this.pos),
+        zoom = GameManager.game.currentScene.camera.zoom;
+      this.ctx.drawImage(brush.mask, drawPos.x, drawPos.y, brush.mask.width * 2, brush.mask.height * 2);
+    }
+
+    draw(ctx, tl, zoom) {
+      let drawPos = this.pos.sub(tl).factor(zoom);
+      ctx.drawImage(this.canvas, drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      GameManager.game.canvas.getContext('2d').strokeRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+    }
+  }
+
+  class PatternGrid {
+    constructor() {
+      this.origin = vector();
+      this.cells = [];
+      this.pattern = undefined;
+      this.brush = undefined;
+    }
+
+    start(pattern, brush, origin) {
+      this.pattern = pattern;
+      this.brush = brush;
+      this.origin = origin;
+      this.cells = [];
+    }
+
+    end() {
+      for (let i in this.cells) {
+        let row = this.cells[i];
+        for (let j in row) {
+          this.pattern.render(row[j]);
+        }
+      }
+    }
+
+    // draw is the temporary fun rendering
+    draw(camera, screen, ctx) {
+      ctx.globalCompositeOperation = 'source-over';
+      let zoom = camera.zoom,
+        tl = vector(camera.position.x - screen.size.x / zoom / 2 - this.origin.x, camera.position.y - screen.size.y / zoom / 2 - this.origin.y),
+        start = vector(Math.floor((camera.position.x - this.origin.x - screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y - screen.size.y / zoom / 2) / this.pattern.height)),
+        end = vector(Math.floor((camera.position.x - this.origin.x + screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y + screen.size.y / zoom / 2) / this.pattern.height));
+      for (let x = start.x; x <= end.x; x++) {
+        let row = this.cells[x];
+        if (!row) continue;
+        for (let y = start.y; y <= end.y; y++) {
+          let cell = row[y];
+          if (!cell) continue;
+          cell.draw(ctx, tl, zoom);
+        }
+      }
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = this.pattern.canvPattern;
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
+    stroke(pos) {
+      pos = pos.sub(this.origin).sub(vector(this.brush.mask.width, this.brush.mask.height));
+      let start = vector(Math.floor(pos.x / this.pattern.width), Math.floor(pos.y / this.pattern.height)),
+        end = vector(Math.floor((pos.x + this.brush.mask.width * 2) / this.pattern.width), Math.floor((pos.y + this.brush.mask.height * 2) / this.pattern.height));
+      for (let x = start.x; x <= end.x; x++) {
+        let row = this.cells[x] || (this.cells[x] = []);
+        for (let y = start.y; y <= end.y; y++) {
+          let cell = row[y] || (row[y] = new PatternGridCell(this.pattern, this.origin, x, y));
+          cell.stroke(this.brush, pos);
+        }
+      }
+    }
+  }
+
+  class Pattern {
+    constructor(name, p) {
+      this.name = name;
+      this.width = 0;
+      this.height = 0;
+      this.min = vector(Infinity, Infinity);
+      this.max = vector(-Infinity, -Infinity);
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+      this.transform = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+      this.parse(p);
+      this.origin = vector();
+      this.scale = 1;
+    }
+
+    parse(p) {
+      // find bounds
+      let h = p.objectPhysics,
+        s = p.objectScenery;
+      for (let i of h) {
+        this.min.x = Math.min(this.min.x, i.x1, i.x2);
+        this.min.y = Math.min(this.min.y, i.y1, i.y2);
+        this.max.x = Math.max(this.max.x, i.x1, i.x2);
+        this.max.y = Math.max(this.max.y, i.y1, i.y2);
+      }
+      for (let i of s) {
+        this.min.x = Math.min(this.min.x, i.x1, i.x2);
+        this.min.y = Math.min(this.min.y, i.y1, i.y2);
+        this.max.x = Math.max(this.max.x, i.x1, i.x2);
+        this.max.y = Math.max(this.max.y, i.y1, i.y2);
+      }
+      this.width = this.max.x - this.min.x;
+      this.height = this.max.y - this.min.y;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      // add in edge parsing and stuff in these loops
+      this.ctx.strokeStyle = '#000';
+      this.ctx.beginPath();
+      for (let i of h) {
+        this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
+        this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+      }
+      this.ctx.stroke();
+      this.ctx.strokeStyle = '#aaa';
+      this.ctx.beginPath();
+      for (let i of s) {
+        this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
+        this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+      }
+      this.ctx.stroke();
+      this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+    }
+
+    setOrigin(x, y, keep = true) {
+      this.transform.e = x;
+      this.transform.f = y;
+      this.canvPattern.setTransform(this.transform);
+      if (keep) this.origin = vector(x, y);
+    }
+
+    setZoom(z, keep = true) {
+      let oldZoom = this.transform.a;
+      this.transform.a = z;
+      this.transform.d = z;
+      //this.transform.e /= oldZoom / z / 2;
+      //this.transform.f /= oldZoom / z / 2;
+      this.canvPattern.setTransform(this.transform);
+      if (keep) this.zoom = z;
+    }
+
+    // takes in a cell (with position information and the pattern mask) 
+    render(cell) {}
+  }
+
+  // store brushes; allow for using a function to detect if a pixel / grid cell touches the brush
+  // icon function takes in ctx, size (brush size; canvas will be initialized to this in both dimensions but this can be changed if so desired), and zoom (for adjusting line width); and should render only an outline of a brush
+  // mask function takes in ctx and size, and should render in a solid color
+  // update: resize function sets everything up; there's one function that assumes a path has been started (although calling beginPath in it again is fine) and DOES NOT call .stroke() or .fill()
+  class PatternBrush {
+    constructor(name, pathFunc, size) {
+      this.name = name;
+      this.pathFunc = pathFunc;
+      this.size = -size - 1;
+      this.icon = document.createElement('canvas');
+      this.ictx = this.icon.getContext('2d');
+      this.mask = document.createElement('canvas');
+      this.mctx = this.mask.getContext('2d');
+      this.mctx.imageSmoothingEnabled = false;
+      this.resize(size);
+    }
+
+    resize(size) {
+      if (this.size != size) {
+        this.size = size;
+        // resizing a canvas clears it
+        this.icon.width = this.icon.height =
+        this.mask.width = this.mask.height = this.size;
+        this.ictx.beginPath();
+        this.pathFunc(this.ictx, this.size);
+        this.ictx.stroke();
+        this.mctx.beginPath();
+        this.pathFunc(this.mctx, this.size);
+        this.mctx.fill();
+      }
+    }
+  }
+
+  class PatternTool {
+    constructor(s) {
+      // new line - since i can't seem to use super anymore, i can accomplish the same thing with a temporary variable
+      let supa = Object.create(GameManager.game.currentScene.toolHandler.tools.straightline.__proto__.__proto__);
+      for (let i in supa) {
+        if (!this[i])
+          this.__proto__[i] = supa[i];
+      }
+        for (let i of Object.getOwnPropertyNames(supa.__proto__)) {
+          if (!this[i])
+            this.__proto__[i] = supa[i];
+        }
+      this.supa = supa;
+      this.toolUpdate = supa.update;
+      supa.init.apply(this, [s]);
+      this.toolHandler = s;
+
+      this.patterns = [];
+      this.brushes = [];
+      // represents the radius / half-width of the brush
+      this.size = 1000;
+      // default rectangle brush
+      this.addBrush('rect', (ctx, s) => ctx.rect(0, 0, s, s));
+      // circular brush
+      this.addBrush('circle', (ctx, s) => ctx.arc(s / 2, s / 2, s / 2, 0, 2 * Math.PI));
+
+      this.name = 'pattern';
+      this.down = false;
+      this.options = s.scene.settings.pattern;
+      this.grid = new PatternGrid();
+
+      this.currentPattern = 0;
+      this.currentBrush = 0;
+      this.mPos = vector();
+      this.cameraPosWhenPressed = vector();
+
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.gameWidth = this.scene.game.width;
+      this.gameHeight = this.scene.game.height;
+      this.canvas.width = this.gameWidth;
+      this.canvas.height = this.gameHeight;
+
+      this.oldMouse = vector();
+    }
+
+    addPattern(name, p) {
+      this.patterns.push(new Pattern(name, p));
+    }
+
+    addBrush(name, pathFunc) {
+      this.brushes.push(new PatternBrush(name, pathFunc, this.size));
+    }
+
+    press() {
+      if (this.patterns.length <= this.currentPattern || this.brushes.length <= this.currentBrush) return;
+      let pattern = this.patterns[this.currentPattern],
+        mPos = this.mouse.touch.real.factor(1);
+      // reset grid
+      this.grid.start(
+        pattern,
+        this.brushes[this.currentBrush],
+        this.options.globalGrid ? 
+          mPos.sub(vector(mPos.x % pattern.width - pattern.width / 2, mPos.y % pattern.height - pattern.height / 2)) : 
+          mPos.sub(vector(pattern.width / 2, pattern.height / 2))
+      );
+      this.placePattern();
+      this.mPos = mPos;
+      this.down = true;
+      this.cameraPosWhenPressed = this.scene.camera.position.factor(1);
+      console.log('cpwp', this.cameraPosWhenPressed);
+    }
+
+    hold() {
+      //let m = this.mouse.touch.real;
+      //if (!this.down || (m.x == this.mPos.x && m.y == this.mPos.y)) return;
+      if (!this.down) return;
+      let zoom = this.scene.camera.zoom,
+        pattern = this.patterns[this.currentPattern],
+        mPos = this.mouse.touch.real;
+      this.grid.stroke(mPos);
+      //this.mPos.equ(this.mouse.touch.real);
+    }
+
+    release() {
+      this.down = false;
+      this.grid.end();
+    }
+
+    drawCursor(t) {
+      let pattern = this.patterns[this.currentPattern],
+        brush = this.brushes[this.currentBrush],
+        zoom = this.camera.zoom,
+        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.icon.width * zoom, y: brush.icon.height * zoom});
+      if (!this.down && pattern) {
+        t.globalCompositeOperation = "source-over";
+        t.drawImage(brush.mask, pos.x, pos.y, brush.mask.width * zoom * 2, brush.mask.height * zoom * 2);
+        t.globalCompositeOperation = "source-in";
+        t.fillStyle = pattern.canvPattern;
+        t.fillRect(0, 0, t.canvas.width, t.canvas.height);
+      }
+      t.globalCompositeOperation = "source-over";
+      t.drawImage(brush.icon, pos.x, pos.y, brush.icon.width * zoom * 2, brush.icon.height * zoom * 2);
+    }
+
+    draw() {
+      this.placePattern();
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.down && this.grid.draw(this.scene.camera, this.scene.screen, this.ctx);
+      this.drawCursor(this.ctx);
+      this.ctx.fillStyle = '#000000';
+      this.ctx.globalCompositeOperation = "source-over";
+      this.scene.game.canvas.getContext('2d').drawImage(this.canvas, 0, 0);
+    }
+
+    // handles updating the proper camera location when zooming with global grid disabled
+    // at some point i'd like to make it nicer but i don't know a better way to detect zooming and accurately determine where the zoom is centered etc.
+    // (does that mean that all of this is to handle the rather pedantic case of zooming after moving the mouse while drawing a pattern? yes)
+    ztp(t) {
+      if (this.options.globalGrid || !this.down) return;
+      let pattern = this.patterns[this.currentPattern];
+      if (!pattern) return;
+      let offset = this.mouse.touch.pos.sub(pattern.origin.sub(vector(pattern.width, pattern.height).factor(pattern.zoom / 2)));
+      let screen = this.scene.screen,
+        p = this.scene.camera.zoomPoint.sub(offset),
+        x = screen.toReal(p.x, 'x'),
+        y = screen.toReal(p.y, 'y'),
+        o = p.x / screen.width,
+        a = p.y / screen.height,
+        h = screen.width / t,
+        l = screen.height / t,
+        n = vector(x - h * o + h / 2, y - l * a + l / 2);
+      this.cameraPosWhenPressed.inc(n.sub(this.scene.camera.position));
+    }
+
+    placePattern() {
+      let pattern = this.patterns[this.currentPattern],
+        zoom = this.scene.camera.zoom;
+      if (pattern) {
+        if (this.options.globalGrid) {
+          let origin = this.scene.screen.center.sub(this.scene.camera.position.sub(vector(pattern.width / 2, pattern.height / 2)).factor(zoom));
+          pattern.setOrigin(origin.x, origin.y);
+        } else if (!this.down) {
+          let origin = this.mouse.touch.pos.add(vector(pattern.width, pattern.height).factor(zoom / 2));
+          pattern.setOrigin(origin.x, origin.y);
+        } else {
+          let origin = pattern.origin.add(vector(pattern.width, pattern.height).factor((zoom - pattern.zoom) / 2)).add(this.cameraPosWhenPressed.sub(this.scene.camera.position).factor(zoom));
+          pattern.setOrigin(origin.x, origin.y, false);
+        }
+        pattern.setZoom(this.scene.camera.zoom, !this.down);
+      }
+    }
+
+    resize() {
+      if (this.scene.game.width != this.gameWidth || this.scene.game.height != this.gameHeight) {
+        this.gameWidth = this.scene.game.width;
+        this.gameHeight = this.scene.game.height;
+        this.canvas.width = this.gameWidth;
+        this.canvas.height = this.gameHeight;
+        this.draw();
+      }
+    }
+
+    update() {
+      this.toolUpdate();
+      this.resize();
+    }
+  }
+
+  let game = GameManager.game,
+    scene = game.currentScene,
+    active = false;
+  
+  scene.toolHandler.registerTool(PatternTool);
+
+  //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01']) 
+  GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['DARKMATTER']) 
+}
