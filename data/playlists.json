@@ -1,0 +1,13 @@
+[
+  {
+    "id": "skateparks",
+    "name": "Skateparks",
+    "description": "a few free rider skateparks",
+    "color": "#FFD700",
+    "tracks": [
+      { "type": "bhr", "id": 4711 },
+      { "type": "bhr", "id": 10309 }
+    ],
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+]

@@ -1,0 +1,108 @@
+[
+  {
+    "canonical": "generation",
+    "name": "GENERATION",
+    "authors": ["Tremulant", "Ness"],
+    "tracks": [
+      { "type": "frhd", "id": 57072 },
+      { "type": "bhr", "id": 4711 }
+    ]
+  },
+    {
+    "canonical": "toronto",
+    "name": "Toronto",
+    "authors": ["Ness", "alexander", "armator"],
+    "tracks": [
+      { "type": "frhd", "id": 215398 },
+      { "type": "bhr", "id": 10309 },
+      { "type": "cr", "id": 44310 }
+    ],
+    "remixOf": [
+      { "type": "cr", "id": 233 }
+    ],
+    "entryFor": "Super Mario Maker Contest (2024)"
+  },
+  {
+    "canonical": "monkie-park",
+    "name": "Monkie Park",
+    "authors": ["thefunkymonkie"],
+    "tracks": [
+      { "type": "frhd", "id": 1082 },
+      { "type": "bhr", "id": 1821 },
+      { "type": "cr", "id": 872089 }
+    ]
+  },
+  {
+    "canonical": "futurerootslv1",
+    "name": "FutureRootsLv1",
+    "authors": ["hawnks"],
+    "tracks": [
+      { "type": "frhd", "id": 993336 },
+      { "type": "cr", "id": 191756 }
+    ]
+  },
+  {
+    "canonical": "futurerootslv2",
+    "name": "FutureRootsLv2",
+    "authors": ["hawnks"],
+    "tracks": [
+      { "type": "frhd", "id": 993337 },
+      { "type": "cr", "id": 208849 }
+    ]
+  },
+  {
+    "canonical": "futurerootslv3.2",
+    "name": "FutureRootsLv3.2",
+    "authors": ["hawnks"],
+    "tracks": [
+      { "type": "frhd", "id": 1069 },
+      { "type": "cr", "id": 250192 }
+    ]
+  },
+  {
+    "canonical": "futurerootslv4",
+    "name": "FutureRootsLv4",
+    "authors": ["hawnks"],
+    "tracks": [
+      { "type": "frhd", "id": 3031 },
+      { "type": "cr", "id": 289568 }
+    ]
+  },
+  {
+    "canonical": "futurerootslv5",
+    "name": "FutureRootsLv5",
+    "authors": ["hawnks"],
+    "tracks": [
+      { "type": "frhd", "id": 11103 },
+      { "type": "cr", "id": 309255 }
+    ]
+  },
+  {
+    "canonical": "whistler-mt",
+    "name": "Whistler mt.",
+    "authors": ["Jon312"],
+    "tracks": [
+      { "type": "frhd", "id": 1002 },
+      { "type": "cr", "id": 360607 }
+    ]
+  },
+  {
+    "canonical": "mtbx-09-round-1",
+    "name": "MTBX 09 Round 1",
+    "authors": ["thefunkymonkie"],
+    "tracks": [
+      { "type": "frhd", "id": 1167 },
+      { "type": "cr", "id": 716092 }
+    ]
+  },
+  {
+    "canonical": "53-azalea-street",
+    "name": "53 Azalea Street",
+    "authors": ["Vapaa"],
+    "tracks": [
+      { "type": "frhd", "id": 992631 },
+      { "type": "bhr", "id": 129 },
+      { "type": "cr", "id": 1337878 }
+    ]
+  }
+]

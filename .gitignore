@@ -6,7 +6,7 @@
 /data/tracks.json
 /data/users.json
 
-/data/*
+!/data/*
 !/data/trackcodes/
 !/data/thumbnails/
 !/data/frhd/

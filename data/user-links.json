@@ -1,0 +1,74 @@
+[
+  {
+    "canonical": "ness",
+    "displayName": "Ness",
+    "aliases": ["ness", "yxkness"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "malishya",
+    "displayName": "malishya",
+    "aliases": ["malishya", "malicia"],
+    "frhd": true,
+    "bhr": false,
+    "cr": false
+  },
+    {
+    "canonical": "mudkip",
+    "displayName": "mudkip",
+    "aliases": ["mudkip", "churro"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  },
+      {
+    "canonical": "seasnails",
+    "displayName": "Seasnails",
+    "aliases": ["Seasnails", "Seaslugs"],
+    "frhd": true,
+    "bhr": false,
+    "cr": false
+  },
+  {
+    "canonical": "octo",
+    "displayName": "octo",
+    "aliases": ["octo", "octopus"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "maple",
+    "displayName": "Maple",
+    "aliases": ["Maple"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  },
+  {
+    "canonical": "nitro",
+    "displayName": "Nitro",
+    "aliases": ["nitro", "nitrogeneric"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  },
+  {
+    "canonical": "thefunkymonkie",
+    "displayName": "thefunkymonkie",
+    "aliases": ["thefunkymonkie", "Dirt Monkie"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "coager",
+    "displayName": "Coager",
+    "aliases": ["Coager", "Coated_Badger"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  }
+]
