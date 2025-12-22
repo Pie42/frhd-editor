@@ -11154,7 +11154,7 @@
               ((this.cached = !0), this.cache_fixed_text());
             var o = e / s.drawFPS;
             //var oo = GameSettings.ghostTicks / s.drawFPS;
-            if (this.scene.game.mod.getVar("slowmo")) {o = o / 2}
+            //if (this.scene.game.mod.getVar("slowmo")) {o = o / 2}
             this.time.text = n(1e3 * o);
             //this.best.text = n(1e3 * oo);
             var a = i.targetCount,
@@ -20914,22 +20914,22 @@
                 const distToEdge = Math.sqrt(eraserRadius * eraserRadius -
                   this.distanceBetweenPoints(closestPoint, this.eraserPoint) ** 2);
 
-                if (distP1ToClosest > (distToEdge + 10)) {
+                if (distP1ToClosest > (distToEdge + 1)) {
                   const newEndpoint1 = {
                     x: p1.x + dirX * (distP1ToClosest - distToEdge),
                     y: p1.y + dirY * (distP1ToClosest - distToEdge)
                   };
-                  if (this.distanceBetweenPoints(p1, newEndpoint1) >= 20) {
+                  if (this.distanceBetweenPoints(p1, newEndpoint1) >= 2) {
                     this.addLine(p1, newEndpoint1, type);
                   }
                 }
 
-                if (distP2ToClosest > (distToEdge + 10)) {
+                if (distP2ToClosest > (distToEdge + 1)) {
                   const newEndpoint2 = {
                     x: p2.x - dirX * (distP2ToClosest - distToEdge),
                     y: p2.y - dirY * (distP2ToClosest - distToEdge)
                   };
-                  if (this.distanceBetweenPoints(newEndpoint2, p2) >= 20) {
+                  if (this.distanceBetweenPoints(newEndpoint2, p2) >= 2) {
                     this.addLine(newEndpoint2, p2, type);
                   }
                 }
@@ -21015,7 +21015,7 @@
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
       }
       addLine(point1, point2, type) {
-        if (this.distanceBetweenPoints(point1, point2) >= 20) {
+        if (this.distanceBetweenPoints(point1, point2) >= 2) {
           let n = !1;
           if (type === 'physics') {
             n = this.scene.track.addPhysicsLine(point1.x, point1.y, point2.x, point2.y);
@@ -25271,7 +25271,7 @@
             this.cleanCode = false;
             this.logged = false;
             this.liveRider = new LiveRiderManager(this);
-            const trackId = GameSettings.id || 'test-track';
+            const trackId = `${GameSettings.type}/${GameSettings.id}`
             const username = GameSettings.user.d_name || 'Player';
 
             const modUi = this.mod.ui?.obj;
@@ -28439,7 +28439,7 @@ showMessage();
                 this.onSidebarChange = this.updateCanvasSize.bind(this);
                 this.addTrackFullscreenListener();
                 this.addSidebarListener();
-                this.startTicker()
+                this.startTicker();
         }
         initCanvas() {
           const t = document.createElement("canvas"),
@@ -30294,6 +30294,22 @@ class LiveRiderManager {
     };
 
     this.ws.onclose = () => { this.connected = false; };
+  }
+
+  reconnect(trackId, username, hatColor, hatType) {
+    if (this.ws) {
+      this.ws.close();
+    }
+
+    for (const [playerId] of this.ghostPlayers) {
+      this.removeGhost(playerId);
+    }
+    this.ghostPlayers.clear();
+
+    this.playerId = null;
+    this.connected = false;
+
+    this.connect(trackId, username, hatColor, hatType);
   }
 
   handleBinary(buffer) {

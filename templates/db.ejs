@@ -10,6 +10,11 @@
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
     <style>
+        #content {
+            margin: 0 auto;
+            max-width: 95vw;
+        }
+
         .sticky-header {
             position: fixed;
             width: 100%;
@@ -28,10 +33,10 @@
             flex-wrap: wrap;
             max-width: 800px;
             margin: 0 auto;
+            user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            user-select: none;
         }
 
         .type-filters,
@@ -47,10 +52,23 @@
             letter-spacing: 1px;
         }
 
+        .type-filter-link {
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .type-filter-link:hover {
+            text-decoration: underline;
+        }
+
+        .track-type-filter {
+            margin: 5px;
+        }
+
         .toggle-group {
             display: flex;
             align-items: center;
-            gap: 0px;
+            gap: 0;
         }
 
         .toggle-label {
@@ -66,44 +84,52 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
-            /* margin: auto; */
             justify-content: center;
         }
 
         .search-input {
             width: 126px;
-            text-align: center;
             height: 18px;
             padding: 2px 8px;
+            text-align: center;
         }
 
         .sort-select {
-            height: 28px;
             width: 140px;
+            height: 28px;
             padding: 2px 8px;
             background: #fff;
             border: 1px solid #ccc;
             cursor: pointer;
-            display: none;
-            /* with the mismatch of id/upvote/publish dates, hidden for now */
         }
 
-        @media (max-width: 500px) {
-            .controls-row {
-                flex-direction: column;
-                align-items: center;
-            }
+        .filter-indicator,
+        .author-filter-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 10px;
+            font-size: 12px;
+            background: #e8f4fc;
+            border: 1px solid #1884cf;
+            border-radius: 4px;
         }
 
-        #content {
-            margin: 0 auto;
-            max-width: 95vw;
+        .filter-indicator .clear-filter,
+        .author-filter-indicator .clear-filter {
+            padding: 0 5px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
         }
 
-        @media (max-width: 600px) {
-            .controls-row {
-                justify-content: center;
-            }
+        .filter-indicator .clear-filter:hover,
+        .author-filter-indicator .clear-filter:hover {
+            color: #c00;
+        }
+
+        .playlist-icon {
+            font-size: 16px;
         }
 
         .track-grid {
@@ -113,65 +139,16 @@
             padding: 10px 0;
         }
 
-        .track-item {
-            width: calc(16.666% - 9px);
-            /* 6 columns */
+        .track-item,
+        .author-item {
+            width: calc(20% - 8px);
             padding: 0;
             margin-bottom: 0;
             box-sizing: border-box;
         }
 
-        @media (max-width: 1020px) {
-            .track-item {
-                width: calc(20% - 8px);
-                /* 5 columns */
-            }
-        }
-
-        @media (max-width: 860px) {
-            .track-item {
-                width: calc(25% - 8px);
-                /* 4 columns */
-            }
-        }
-
-        @media (max-width: 640px) {
-            .track-item {
-                width: calc(33.333% - 7px);
-                /* 3 columns */
-            }
-        }
-
-        @media (max-width: 560px) {
-            .track-item {
-                width: calc(50% - 5px);
-                /* 2 columns */
-            }
-        }
-
-        @media (max-width: 480px) {
-            .track-item {
-                width: 100%;
-                /* 1 column */
-            }
-        }
-
-        .loading-indicator {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 12px;
-            padding: 20px;
-        }
-
-        .loading-indicator.hidden {
-            display: none;
-        }
-
-
-        .track-thumb {
+        .track-thumb,
+        .author-thumb {
             width: 100%;
             text-align: center;
         }
@@ -181,7 +158,7 @@
             aspect-ratio: 5 / 3;
             max-width: 250px;
             max-height: 150px;
-            margin: auto auto 5px auto;
+            margin: 0 auto 5px;
             overflow: hidden;
             border-radius: 4px;
         }
@@ -193,25 +170,22 @@
         .track-thumbnail {
             width: 100%;
             height: 100%;
-            object-fit: cover;
             margin: 0;
+            object-fit: cover;
         }
 
         .track-thumb .desc {
+            max-width: 250px;
+            height: 28px;
+            margin: 0 auto;
             font-size: 12px;
             color: #000;
-            height: 28px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             line-clamp: 2;
             -webkit-box-orient: vertical;
-            margin-top: 0;
-            margin-bottom: 0;
-            max-width: 250px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .track-thumb .desc strong {
@@ -227,76 +201,375 @@
             text-decoration: underline;
         }
 
-        .type-filter-link {
-            text-decoration: none;
-            cursor: pointer;
+        .author-thumb .thumbnail {
+            position: relative;
+            width: calc(100% * 0.6);
+            aspect-ratio: 1;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 0 auto 5px;
+            overflow: hidden;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .type-filter-link:hover {
-            text-decoration: underline;
+        .author-thumb .thumbnail:hover {
+            border: 1px solid #1884cf;
         }
 
-        .track-type-filter {
-            margin: 5px;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 40px 20px;
-            color: #888;
+        .author-thumb .author-avatar {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .no-results h2 {
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .track-count {
-            font: 10px eiven;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+        .author-thumb .author-initial {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 48px;
+            font-weight: bold;
             color: #888;
         }
 
-        .track-type-badge {
+        .author-thumb .desc {
+            max-width: 150px;
+            height: 28px;
+            margin: 0 auto;
+            font-size: 12px;
+            color: #000;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .badge-container {
             position: absolute;
             top: 8px;
             left: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 80%;
+            z-index: 10;
+        }
+
+        .track-type-badge {
+            position: relative;
             padding: 2px 8px;
-            border-radius: 3px;
-            text-transform: uppercase;
-            text-decoration: none;
             font-size: 10px;
             font-weight: bold;
-            color: #ffffff;
-            z-index: 10;
             letter-spacing: 0.5px;
-        }
-
-        .track-type-badge.bhr {
-            background-color: #000000;
-        }
-
-        .track-type-badge.cr {
-            background-color: #aaaaaa;
+            text-transform: uppercase;
+            text-decoration: none;
             color: #fff;
+            border-radius: 3px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
         }
 
         .track-type-badge.frhd {
             background-color: #1884cf;
         }
 
+        .track-type-badge.bhr {
+            background-color: #000;
+        }
+
+        .track-type-badge.cr {
+            background-color: #aaa;
+        }
+
         .track-type-badge.fr {
             background-color: #4a4a4a;
         }
 
-        .track-grid.hide-badges .track-type-badge {
+        .track-type-badge.plus {
+            background-color: #9b59b6;
+        }
+
+        .live-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            background-color: #d12929;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        .special-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #fff;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        .special-badge.daily {
+            background: linear-gradient(135deg, #f2902e, #d12929);
+        }
+
+        .special-badge.random {
+            background: linear-gradient(135deg, #a784c5, #1884cf);
+        }
+
+        .track-grid.hide-badges .track-type-badge,
+        .track-grid.hide-badges .special-badge,
+        .track-grid.hide-badges .ghost-badge,
+        .track-grid.hide-badges .live-badge {
             display: none;
         }
 
         .track-grid.hide-titles .desc {
             display: none;
+        }
+
+        .loading-indicator {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .loading-indicator.hidden {
+            display: none;
+        }
+
+        .no-results {
+            width: 100%;
+            padding: 40px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        .no-results h2 {
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        .track-count {
+            margin-bottom: 10px;
+            font: 10px eiven;
+            letter-spacing: 1px;
+            color: #888;
+        }
+
+        @media (max-width: 1020px) {
+
+            .track-item,
+            .author-item {
+                width: calc(25% - 8px);
+            }
+        }
+
+        @media (max-width: 860px) {
+
+            .track-item,
+            .author-item {
+                width: calc(33.333% - 7px);
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .track-item,
+            .author-item {
+                width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .controls-row {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .track-item,
+            .author-item {
+                width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .controls-row {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+
+            .track-item,
+            .author-item {
+                width: 100%;
+            }
+        }
+
+        /* ===== PLAYLIST CARD ===== */
+        .playlist-item {
+            width: calc(20% - 8px);
+            padding: 0;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        .playlist-thumb {
+            width: 100%;
+            text-align: center;
+        }
+
+        .playlist-thumb .thumbnail {
+            position: relative;
+            aspect-ratio: 5 / 3;
+            max-width: 250px;
+            max-height: 150px;
+            margin: 0 auto 5px;
+            overflow: hidden;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        }
+
+        .playlist-thumb .thumbnail:hover {
+            border: 1px solid #1884cf;
+        }
+
+        .playlist-thumb .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .playlist-thumb .playlist-icon-large {
+            font-size: 48px;
+        }
+
+        .playlist-thumb .desc {
+            max-width: 250px;
+            height: 28px;
+            margin: 0 auto;
+            font-size: 12px;
+            color: #000;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .playlist-count-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        @media (max-width: 1020px) {
+            .playlist-item {
+                width: calc(25% - 8px);
+            }
+        }
+
+        @media (max-width: 860px) {
+            .playlist-item {
+                width: calc(33.333% - 7px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .playlist-item {
+                width: calc(50% - 5px);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .playlist-item {
+                width: 100%;
+            }
+        }
+
+        .ghost-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background-color: #aaa;
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        .ghost-time {
+            font-family: Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .ghost-badge-sprite {
+            display: inline-block;
+            width: 47px;
+            height: 32px;
+            background-image: url('assets/images/gui/editor_gui.png');
+            background-size: 512px 164px;
+            background-repeat: no-repeat;
+            background-position: -47px -132px;
+            transform: scale(0.5);
+            transform-origin: right center;
+            margin: -8px -4px -8px -20px;
+        }
+
+        .ghost-badge:hover .ghost-badge-sprite {
+            background-position: 0 -132px;
         }
     </style>
 </head>
@@ -328,6 +601,30 @@
                                 style="color: <%= type === 'cr' ? '#000' : '#aaa' %>">
                                 <span class="type-filter-link" style="color: inherit;">CR</span>
                             </span>
+                            /
+                            <span class="track-type-filter" data-type="plus"
+                                style="color: <%= type === 'plus' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">+</span>
+                            </span>
+                        </strong>
+                    </div>
+
+                    <div class="type-filters">
+                        <strong>
+                            <span class="track-type-filter" data-mode="tracks"
+                                style="color: <%= type !== 'user' && type !== 'ghosts' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">TRACKS</span>
+                            </span>
+                            /
+                            <span class="track-type-filter" data-mode="ghosts"
+                                style="color: <%= type === 'ghosts' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">GHOSTS</span>
+                            </span>
+                            /
+                            <span class="track-type-filter" data-mode="user"
+                                style="color: <%= type === 'user' ? '#000' : '#aaa' %>">
+                                <span class="type-filter-link" style="color: inherit;">PLAYERS</span>
+                            </span>
                         </strong>
                     </div>
 
@@ -347,6 +644,7 @@
                             value="<%= query %>" aria-label="Search track archive">
 
                         <select id="sort-select" class="sort-select">
+                            <option value="shuffle-desc" <%=sortBy==='shuffle' ? 'selected' : '' %>>Shuffle</option>
                             <option value="id-desc" <%=sortBy==='id' && sortOrder==='desc' ? 'selected' : '' %>>Newest
                             </option>
                             <option value="id-asc" <%=sortBy==='id' && sortOrder==='asc' ? 'selected' : '' %>>Oldest
@@ -357,8 +655,23 @@
                                 Z-A</option>
                             <option value="upvotes-desc" <%=sortBy==='upvotes' && sortOrder==='desc' ? 'selected' : ''
                                 %>>Most Upvotes</option>
-                            <option value="favorites-desc" <%=sortBy==='favorites' && sortOrder==='desc' ? 'selected'
-                                : '' %>>Most Favorites</option>
+                            <option value="downvotes-desc" <%=sortBy==='downvotes' && sortOrder==='desc' ? 'selected'
+                                : '' %>>Most Downvotes
+                            </option>
+                            <option value="size-desc" <%=sortBy==='size' && sortOrder==='desc' ? 'selected' : '' %>
+                                >Largest</option>
+                            <option value="size-asc" <%=sortBy==='size' && sortOrder==='asc' ? 'selected' : '' %>
+                                >Smallest</option>
+                            <option value="plays-desc" <%=sortBy==='plays' && sortOrder==='desc' ? 'selected' : '' %>
+                                >Most Plays</option>
+                            <option value="plays-asc" <%=sortBy==='plays' && sortOrder==='asc' ? 'selected' : '' %>
+                                >Least Plays</option>
+                            <option value="published-desc" <%=sortBy==='published' && sortOrder==='desc' ? 'selected'
+                                : '' %>>Recently Published
+                            </option>
+                            <option value="published-asc" <%=sortBy==='published' && sortOrder==='asc' ? 'selected' : ''
+                                %>>Earliest Published
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -368,298 +681,777 @@
         </div>
     </div>
 
-    <script>
-        const state = {
-            type: '<%= type %>',
-            query: '<%= query %>',
-            sortBy: '<%= sortBy %>',
-            sortOrder: '<%= sortOrder %>',
-            page: 1,
-            perPage: 24,
-            hasMore: true,
-            isLoading: false
-        };
+<script>
+const state = {
+    type: '<%= type %>',
+    mode: '<%= type === "user" ? "user" : (type === "playlist" ? "playlist" : "tracks") %>',
+    query: '<%= query %>',
+    sortBy: '<%= sortBy || "shuffle" %>',
+    sortOrder: '<%= sortOrder %>',
+    page: 1,
+    perPage: 24,
+    hasMore: true,
+    isLoading: false,
+    author: '',
+    playlist: '',
+    authorPlatform: '<%= type === "user" || type === "playlist" ? "all" : type %>',
+    showGhostsOnly: false
+};
 
-        const trackGrid = document.getElementById('track-grid');
-        const searchInput = document.getElementById('search-input');
-        const sortSelect = document.getElementById('sort-select');
-        const typeFilters = document.querySelectorAll('.track-type-filter');
 
-        function sendToParent(trackUrl, trackName) {
-            if (!trackUrl) return;
-            const message = {
-                action: "linkClicked",
-                url: trackUrl,
-                name: trackName || trackUrl
-            };
-            if (window.self !== window.top) {
-                window.parent.postMessage(message, "*");
-            }
+const trackGrid = document.getElementById('track-grid');
+const searchInput = document.getElementById('search-input');
+const sortSelect = document.getElementById('sort-select');
+const typeFilters = document.querySelectorAll('.track-type-filter');
+
+function sendToParent(trackUrl, trackName) {
+    if (!trackUrl) return;
+    const message = {
+        action: "linkClicked",
+        url: trackUrl,
+        name: trackName || trackUrl
+    };
+    if (window.self !== window.top) {
+        window.parent.postMessage(message, "*");
+    }
+}
+
+function handleThumbnailFallback(img) {
+    img.onerror = null;
+    img.src = '/data/bhr/thumbnails/default.png';
+}
+window.handleThumbnailFallback = handleThumbnailFallback;
+
+function updateURL() {
+    const params = new URLSearchParams();
+    params.set('type', state.type);
+    params.set('sort', state.sortBy);
+    params.set('order', state.sortOrder);
+    if (state.query) params.set('q', state.query);
+    if (state.author) params.set('author', state.author);
+    if (state.playlist) params.set('playlist', state.playlist);
+
+    const newURL = `/db?${params.toString()}`;
+    history.replaceState(state, '', newURL);
+}
+
+function updateFilterStyles() {
+    document.querySelectorAll('.track-type-filter').forEach(filter => {
+        const filterType = filter.dataset.type;
+        const mode = filter.dataset.mode;
+
+        if (mode === 'tracks') {
+            filter.style.color = state.mode === 'tracks' ? '#000' : '#aaa';
+        } else if (mode === 'ghosts') {
+            filter.style.color = state.mode === 'ghosts' ? '#000' : '#aaa';
+        } else if (mode === 'user') {
+            filter.style.color = state.mode === 'user' ? '#000' : '#aaa';
+        } else if (mode === 'playlist') {
+            filter.style.color = state.mode === 'playlist' ? '#000' : '#aaa';
+        } else if (filterType) {
+            filter.style.color = filterType === state.authorPlatform ? '#000' : '#aaa';
         }
+    });
+}
 
-        function handleThumbnailFallback(img) {
-            img.onerror = null;
-            img.src = '/data/bhr/thumbnails/default.png';
-        }
-        window.handleThumbnailFallback = handleThumbnailFallback;
+function getBadgeText(type) {
+    const badges = { 'bhr': 'BHR', 'cr': 'CR', 'frhd': 'FRHD', 'fr': 'FR', 'plus': '+' };
+    return badges[type] || type.toUpperCase();
+}
 
-        function updateURL() {
-            const params = new URLSearchParams();
-            params.set('type', state.type);
-            params.set('sort', state.sortBy);
-            params.set('order', state.sortOrder);
-            if (state.query) params.set('q', state.query);
+function getSortValueDisplay(track, sortBy) {
+    switch (sortBy) {
+        case 'upvotes':
+            return track.upvotes ? `(${track.upvotes})` : '';
+        case 'downvotes':
+            return track.downvotes ? `(${track.downvotes})` : '';
+        case 'plays':
+            return track.plays ? `(${track.plays})` : '';
+        case 'size':
+            return track.size ? `(${formatSize(track.size)})` : '';
+        case 'favorites':
+            return track.favorites ? `(${track.favorites})` : '';
+        case 'published':
+            return track.published ? `(${track.published})` : '';
+        default:
+            return '';
+    }
+}
 
-            const newURL = `/db?${params.toString()}`;
-            history.replaceState(state, '', newURL);
-        }
+function formatSize(bytes) {
+    if (bytes >= 1000000) return (bytes / 1000000).toFixed(1) + 'M';
+    if (bytes >= 1000) return (bytes / 1000).toFixed(1) + 'K';
+    return bytes;
+}
 
-        function updateFilterStyles() {
-            typeFilters.forEach(filter => {
-                const filterType = filter.dataset.type;
-                filter.style.color = filterType === state.type ? '#000' : '#aaa';
-            });
-        }
+let liveSessions = {};
 
-        function getBadgeText(type) {
-            const badges = { 'bhr': 'BHR', 'cr': 'CR', 'frhd': 'FRHD', 'fr': 'FR' };
-            return badges[type] || type.toUpperCase();
-        }
+let playlistsData = [];
 
-        function renderTrackCard(track) {
-            const firstAuthor = track.username || (track.authors ? track.authors.split(',')[0].trim() : 'Unknown');
-            const badgeText = getBadgeText(track.type);
+async function fetchPlaylists() {
+    try {
+        const response = await fetch('/api/playlists');
+        const data = await response.json();
+        playlistsData = data.playlists;
+    } catch (error) {
+        console.error('Error fetching playlists:', error);
+    }
+}
 
-            return `
-        <div class="track-item" data-track-type="${track.type}">
-            <div class="track-thumb">
-                <a href="/${track.type}/${track.id}" class="track-link">
-                    <div class="thumbnail">
-                        <span class="track-type-badge ${track.type}">${badgeText}</span>
-                        <img class="track-thumbnail" 
-                             src="/${track.type}/${track.id}.png" 
-                             alt="${track.name}"
-                             loading="lazy"
-                             onerror="handleThumbnailFallback(this)">
-                    </div>
-                </a>
-                <p class="desc" style="margin-bottom: 0px">
-                    <a href="/${track.type}/${track.id}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
-                    by <a href="/u/${firstAuthor}" class="author-link"><strong>${firstAuthor}</strong></a>
-                </p>
+function renderAuthorCard(authorData) {
+    const displayName = authorData.displayName || authorData.canonical || 'Unknown';
+    const initial = displayName[0].toUpperCase();
+    const avatarUrl = authorData.avatar || `/data/users/avatar/${authorData.canonical}.png`;
+
+    return `
+<div class="author-item">
+    <div class="author-thumb">
+        <a href="/db?author=${encodeURIComponent(displayName)}" class="author-link-card">
+            <div class="thumbnail">
+                <img class="author-avatar" 
+                     src="${avatarUrl}" 
+                     alt="${displayName}"
+                     loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span class="author-initial" style="display: none;">${initial}</span>
             </div>
-        </div>
-    `;
+        </a>
+        <p class="desc">
+            <strong>${displayName}</strong>
+        </p>
+    </div>
+</div>
+`;
+}
+
+
+function renderTrackCard(track) {
+    if (track.type === 'user') {
+        return renderAuthorCard(track);
+    }
+    const sortValue = getSortValueDisplay(track, state.sortBy);
+
+    const effectiveType = track.urlType || track.type;
+    const effectiveId = track.urlId || track.slug || track.id;
+    const urlType = effectiveType === 'plus' ? 't' : effectiveType;
+    const trackUrl = `/${urlType}/${effectiveId}`;
+
+    const liveSessionKey = `${effectiveType}/${effectiveId}`;
+    const playerCount = liveSessions[liveSessionKey] || 0;
+    const liveBadge = playerCount > 0
+        ? `<span class="live-badge">LIVE</span>`
+        : '';
+
+    // show when in ghosts mode or when track has ghost data
+    const hasGhost = track.hasGhost || track.ghoster;
+    const ghostBadge = (state.mode === 'ghosts' || hasGhost)
+        ? `<div class="ghost-badge">
+        <span class="ghost-time">${track.ghostTime || '--:--.--'}</span>
+        <span class="ghost-badge-sprite"></span>
+       </div>`
+        : '';
+
+    const badges = track.badges || [track.type];
+    const badgeHtml = badges.map(type => {
+        const badgeText = getBadgeText(type);
+        return `<span class="track-type-badge ${type}">${badgeText}</span>`;
+    }).join('');
+
+    let authorsHtml = '';
+    if (track.authorsArray && track.authorsArray.length > 0) {
+        const filteredAuthors = track.authorsArray.filter(a => a);
+        const maxAuthors = 3;
+        const displayAuthors = filteredAuthors.slice(0, maxAuthors);
+        const remainingCount = filteredAuthors.length - maxAuthors;
+
+        const authorLinks = displayAuthors
+            .map(author => `<a href="/db?author=${encodeURIComponent(author)}" class="author-link"><strong>${author}</strong></a>`)
+            .join(', ');
+
+        authorsHtml = authorLinks;
+
+        if (remainingCount > 0) {
+            authorsHtml += ` <span class="more-authors">+${remainingCount}</span>`;
         }
+    } else {
+        const firstAuthor = track.username || track.authors || 'Unknown';
+        authorsHtml = `<a href="/db?author=${encodeURIComponent(firstAuthor)}" class="author-link"><strong>${firstAuthor}</strong></a>`;
+    }
 
-        function createLoadingIndicator() {
-            const loader = document.createElement('div');
-            loader.className = 'loading-indicator';
-            loader.id = 'loading-indicator';
-            loader.innerHTML = 'Loading...';
-            return loader;
+    return `
+<div class="track-item" data-track-type="${track.type}">
+    <div class="track-thumb">
+        <a href="${trackUrl}" class="track-link">
+            <div class="thumbnail">
+                <div class="badge-container">${badgeHtml}</div>
+                ${liveBadge}
+                ${ghostBadge}
+                <img class="track-thumbnail" 
+                     src="${trackUrl}.png" 
+                     alt="${track.name}"
+                     loading="lazy"
+                     onerror="handleThumbnailFallback(this)">
+            </div>
+        </a>
+        <p class="desc" style="margin-bottom: 0px">
+            ${sortValue ? `<span class="sort-value">${sortValue}</span> ` : ''}<a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
+            by ${authorsHtml}
+        </p>
+    </div>
+</div>
+`;
+}
+
+function renderPlaylistCard(playlist) {
+    const thumbnailContent = playlist.thumbnail
+        ? `<img src="${playlist.thumbnail}" alt="${playlist.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+           <span class="playlist-icon-large" style="display: none;">${playlist.icon || '📋'}</span>`
+        : `<span class="playlist-icon-large">${playlist.icon || '📋'}</span>`;
+
+    return `
+<div class="playlist-item">
+    <div class="playlist-thumb">
+        <a href="#" class="playlist-link" data-playlist-id="${playlist.id}">
+            <div class="thumbnail">
+                ${thumbnailContent}
+                <span class="playlist-count-badge">${playlist.trackCount || 0} tracks</span>
+            </div>
+        </a>
+        <p class="desc">
+            <strong>${playlist.name}</strong>
+        </p>
+    </div>
+</div>
+`;
+}
+
+function createLoadingIndicator() {
+    const loader = document.createElement('div');
+    loader.className = 'loading-indicator';
+    loader.id = 'loading-indicator';
+    loader.innerHTML = 'Loading...';
+    return loader;
+}
+
+let specialTracksCache = {};
+
+async function fetchSpecialTracks(type) {
+    if (type === 'all' || type === 'user' || type === 'playlist') {
+        return { daily: null, random: null };
+    }
+
+    const apiType = type === 'plus' ? 'plus' : type;
+    const cacheKey = apiType;
+
+    if (specialTracksCache[cacheKey]) {
+        return specialTracksCache[cacheKey];
+    }
+
+    try {
+        const [dailyRes, randomRes] = await Promise.all([
+            fetch(`/api/daily/${apiType}`),
+            fetch(`/api/random/${apiType}`)
+        ]);
+
+        const daily = dailyRes.ok ? await dailyRes.json() : null;
+        const random = randomRes.ok ? await randomRes.json() : null;
+
+        specialTracksCache[cacheKey] = { daily, random };
+        return { daily, random };
+    } catch (error) {
+        console.error('Error fetching special tracks:', error);
+        return { daily: null, random: null };
+    }
+}
+
+function renderSpecialTrackCard(track) {
+    if (!track || state.sortBy !== 'shuffle') return '';
+
+    const urlType = track.type === 'plus' ? 't' : track.type;
+    const trackUrl = track.url || `/${urlType}/${track.trackId}`;
+    const badgeText = getBadgeText(track.type);
+    const specialLabel = track.specialType === 'daily' ? 'DAILY' : 'RANDOM';
+
+    let authorsHtml = '';
+    let authors = track.authors;
+    if (typeof authors === 'string' && authors.startsWith('[')) {
+        try {
+            const authorsArray = JSON.parse(authors.replace(/""/g, '"'));
+            authorsHtml = authorsArray.slice(0, 3)
+                .map(a => `<a href="/db?author=${encodeURIComponent(a)}" class="author-link"><strong>${a}</strong></a>`)
+                .join(', ');
+        } catch (e) {
+            authorsHtml = `<strong>${authors}</strong>`;
         }
+    } else if (authors) {
+        authorsHtml = `<a href="/db?author=${encodeURIComponent(authors)}" class="author-link"><strong>${authors}</strong></a>`;
+    } else {
+        authorsHtml = '<strong>Unknown</strong>';
+    }
 
-        async function fetchTracks(append = false) {
-            if (state.isLoading) return;
-            if (append && !state.hasMore) return;
-
-            state.isLoading = true;
-
-            let loader = document.getElementById('loading-indicator');
-            if (!loader) {
-                loader = createLoadingIndicator();
-                trackGrid.appendChild(loader);
-            }
-            loader.classList.remove('hidden');
-
-            const params = new URLSearchParams();
-            params.set('type', state.type);
-            params.set('page', state.page);
-            params.set('perPage', state.perPage);
-            params.set('sort', state.sortBy);
-            params.set('order', state.sortOrder);
-            if (state.query) params.set('q', state.query);
-
-            try {
-                const response = await fetch(`/api/db?${params.toString()}`);
-                const data = await response.json();
-
-                state.hasMore = state.page < data.pagination.totalPages;
-
-                loader.remove();
-
-                if (data.tracks.length === 0 && !append) {
-                    trackGrid.innerHTML = `
-                <div class="no-results">
-                    <h2>No tracks found</h2>
-                    <p>Try a different search term or filter</p>
+    return `
+<div class="track-item" data-track-type="${track.type}" data-special="${track.specialType}">
+    <div class="track-thumb">
+        <a href="${trackUrl}" class="track-link">
+            <div class="thumbnail">
+                <div class="badge-container">
+                    <span class="track-type-badge ${track.type}">${badgeText}</span>
                 </div>
-            `;
+                <span class="special-badge ${track.specialType}">${specialLabel}</span>
+                <img class="track-thumbnail" 
+                     src="${track.thumbnail}" 
+                     alt="${track.name}"
+                     loading="lazy"
+                     onerror="handleThumbnailFallback(this)">
+            </div>
+        </a>
+        <p class="desc" style="margin-bottom: 0px">
+            <a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
+            by ${authorsHtml}
+        </p>
+    </div>
+</div>
+`;
+}
+
+async function getSpecialCards(type) {
+    if (type === 'all' || type === 'user' || type === 'playlist') {
+        return '';
+    }
+
+    const { daily, random } = await fetchSpecialTracks(type);
+
+    let html = '';
+    if (daily) html += renderSpecialTrackCard(daily);
+    if (random) html += renderSpecialTrackCard(random);
+
+    return html;
+}
+
+async function fetchTracks(append = false) {
+    if (state.isLoading) return;
+    if (append && !state.hasMore) return;
+
+    state.isLoading = true;
+
+    let loader = document.getElementById('loading-indicator');
+    if (!loader) {
+        loader = createLoadingIndicator();
+        trackGrid.appendChild(loader);
+    }
+    loader.classList.remove('hidden');
+
+    const params = new URLSearchParams();
+    params.set('page', state.page);
+    params.set('perPage', state.perPage);
+    params.set('sort', state.sortBy);
+    params.set('order', state.sortOrder);
+    if (state.query) params.set('q', state.query);
+    if (state.author) params.set('author', state.author);
+    if (state.playlist) params.set('playlist', state.playlist);
+    if (state.showGhostsOnly) params.set('ghosts', 'true');
+
+
+    let endpoint;
+
+    if (state.mode === 'user') {
+        endpoint = '/api/authors-by-platform';
+        params.set('platform', state.authorPlatform);
+    } else if (state.mode === 'playlist') {
+        endpoint = '/api/playlists';
+    } else {
+        endpoint = '/api/db';
+        params.set('type', state.type);
+    }
+
+    try {
+        const response = await fetch(`${endpoint}?${params.toString()}`);
+        const data = await response.json();
+
+        loader.remove();
+
+        if (state.mode === 'playlist') {
+            const playlists = data.playlists || [];
+
+            let filteredPlaylists = playlists;
+            if (state.query) {
+                const lowerQuery = state.query.toLowerCase();
+                filteredPlaylists = playlists.filter(p =>
+                    p.name.toLowerCase().includes(lowerQuery) ||
+                    (p.description && p.description.toLowerCase().includes(lowerQuery))
+                );
+            }
+
+            state.hasMore = false;
+
+            if (filteredPlaylists.length === 0) {
+                trackGrid.innerHTML = `
+                    <div class="no-results">
+                        <h2>No playlists found</h2>
+                        <p>Try a different search term</p>
+                    </div>
+                `;
+            } else {
+                trackGrid.innerHTML = filteredPlaylists.map(renderPlaylistCard).join('');
+            }
+        } else {
+            const tracks = data.tracks || data.users || [];
+            const pagination = data.pagination;
+
+            state.hasMore = state.page < pagination.totalPages;
+
+            if (tracks.length === 0 && !append) {
+                trackGrid.innerHTML = `
+                    <div class="no-results">
+                        <h2>No ${state.mode === 'user' ? 'authors' : 'tracks'} found</h2>
+                        <p>Try a different search term or filter</p>
+                    </div>
+                `;
+            } else {
+                const trackHTML = tracks.map(renderTrackCard).join('');
+
+                if (append) {
+                    trackGrid.insertAdjacentHTML('beforeend', trackHTML);
                 } else {
-                    const trackHTML = data.tracks.map(renderTrackCard).join('');
-
-                    if (append) {
-                        trackGrid.insertAdjacentHTML('beforeend', trackHTML);
-                    } else {
-                        trackGrid.innerHTML = trackHTML;
+                    let specialCards = '';
+                    if (state.mode === 'tracks' && state.page === 1 && !state.query && !state.author && !state.playlist) {
+                        specialCards = await getSpecialCards(state.type);
                     }
-
-                    if (state.hasMore) {
-                        loader = createLoadingIndicator();
-                        loader.classList.add('hidden');
-                        trackGrid.appendChild(loader);
-                    }
+                    trackGrid.innerHTML = specialCards + trackHTML;
                 }
 
-                if (!append) {
-                    updateURL();
-                    updateFilterStyles();
+                if (state.hasMore) {
+                    loader = createLoadingIndicator();
+                    loader.classList.add('hidden');
+                    trackGrid.appendChild(loader);
                 }
+            }
+        }
 
-                if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
-                    state.page++;
-                    state.isLoading = false;
-                    fetchTracks(true);
-                    return;
-                }
+        if (!append) {
+            updateURL();
+            updateFilterStyles();
+        }
 
-            } catch (error) {
-                console.error('Error fetching tracks:', error);
-                if (!append) {
-                    trackGrid.innerHTML = `
+        if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
+            state.page++;
+            state.isLoading = false;
+            fetchTracks(true);
+            return;
+        }
+
+    } catch (error) {
+        console.error('Error fetching:', error);
+        if (!append) {
+            trackGrid.innerHTML = `
                 <div class="no-results">
-                    <h2>Error loading tracks</h2>
+                    <h2>Error loading content</h2>
                     <p>Please try again later</p>
                 </div>
             `;
-                }
-            }
-
-            state.isLoading = false;
         }
+    }
 
-        function loadMore() {
-            if (state.hasMore && !state.isLoading) {
-                state.page++;
-                fetchTracks(true);
-            }
-        }
+    state.isLoading = false;
+}
 
-        function resetAndFetch() {
-            state.page = 1;
-            state.hasMore = true;
-            trackGrid.innerHTML = '';
-            fetchTracks(false);
-        }
+function showFilterIndicator(html, type) {
+    const indicator = document.createElement('div');
+    indicator.className = 'filter-indicator';
+    indicator.dataset.filterType = type;
+    indicator.innerHTML = `
+        ${html}
+        <span class="clear-filter" onclick="clearFilter('${type}')">×</span>
+    `;
+    document.querySelector('.controls-row').appendChild(indicator);
 
-        function handleScroll() {
-            if (state.isLoading || !state.hasMore) return;
+    requestAnimationFrame(() => {
+        adjustContentPadding();
+    });
+}
 
-            const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
-            const needFill = document.documentElement.scrollHeight <= window.innerHeight;
+function setAuthorFilter(authorName) {
+    state.author = authorName;
+    state.playlist = '';
+    state.mode = 'tracks';
+    clearFilterIndicators();
 
-            if (scrollBottom < 1000 || needFill) {
-                loadMore();
-            }
-        }
-
-        function adjustContentPadding() {
-            const header = document.querySelector('.sticky-header');
-            const content = document.getElementById('content');
-            content.style.paddingTop = header.offsetHeight + 'px';
-        }
-
-        window.addEventListener('resize', adjustContentPadding);
-
-        function initializeLinkHijacking() {
-            if (window.self === window.top) {
-                console.log("DB: Running as top window. Links will navigate normally.");
-                return;
-            }
-
-            const trackUrlRegex = /\/(frhd|bhr|cr|u)\/([a-zA-Z0-9_-]+|daily|random)(?:\/([a-zA-Z0-9_-]+))?/i;
-
-            document.getElementById('content').addEventListener('click', function (event) {
-                let targetElement = event.target;
-                while (targetElement && targetElement.tagName !== 'A') {
-                    targetElement = targetElement.parentElement;
-                }
-
-                if (targetElement) {
-                    const href = targetElement.getAttribute('href');
-
-                    if (href && href !== '#' && !href.startsWith('javascript:')) {
-                        const fullUrl = targetElement.href;
-
-                        if (fullUrl.match(trackUrlRegex)) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            event.stopImmediatePropagation();
-
-                            const descElement = targetElement.closest('.track-thumb')?.querySelector('.desc');
-                            const trackName = descElement ? descElement.textContent.trim() : targetElement.textContent.trim() || href;
-
-                            sendToParent(fullUrl, trackName);
-                        }
-                    }
-                }
-            }, true);
-
-            console.log("DB: Track link interception initialized.");
-        }
-
-        function initEventListeners() {
-            typeFilters.forEach(filter => {
-                filter.addEventListener('click', () => {
-                    state.type = filter.dataset.type;
-                    resetAndFetch();
-                });
-            });
-
-            let searchTimeout;
-            searchInput.addEventListener('input', (e) => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    state.query = e.target.value;
-                    resetAndFetch();
-                }, 300);
-            });
-
-            sortSelect.addEventListener('change', (e) => {
-                const [sortBy, sortOrder] = e.target.value.split('-');
-                state.sortBy = sortBy;
-                state.sortOrder = sortOrder;
-                resetAndFetch();
-            });
-
-            window.addEventListener('scroll', handleScroll);
-        }
-
-        function initToggles() {
-            const toggleBadges = document.getElementById('toggle-badges');
-            const toggleTitles = document.getElementById('toggle-titles');
-
-            toggleBadges.addEventListener('change', (e) => {
-                trackGrid.classList.toggle('hide-badges', !e.target.checked);
-                setTimeout(handleScroll, 100);
-            });
-
-            toggleTitles.addEventListener('change', (e) => {
-                trackGrid.classList.toggle('hide-titles', !e.target.checked);
-                setTimeout(handleScroll, 100);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initEventListeners();
-            initToggles();
-            initializeLinkHijacking();
-            fetchTracks(false);
-            adjustContentPadding();
+    fetch(`/api/user-aliases/${encodeURIComponent(authorName)}`)
+        .then(res => res.json())
+        .then(data => {
+            const aliasText = data.aliases.length > 1
+                ? ` (also: ${data.aliases.filter(a => a.toLowerCase() !== authorName.toLowerCase()).join(', ')})`
+                : '';
+            showFilterIndicator(`<strong>${data.displayName}</strong>${aliasText} (${data.trackCount} tracks)`, 'author');
+        })
+        .catch(() => {
+            showFilterIndicator(`<strong>${authorName}</strong>`, 'author');
         });
 
-    </script>
+    resetAndFetch();
+}
+
+function setPlaylistFilter(playlistId) {
+    const playlist = playlistsData.find(p => p.id === playlistId);
+    if (!playlist) return;
+
+    state.playlist = playlistId;
+    state.author = '';
+    state.mode = 'tracks';
+    state.type = state.authorPlatform;
+
+    clearFilterIndicators();
+    showFilterIndicator(
+        `<span class="playlist-icon">${playlist.icon || '📋'}</span> <strong>${playlist.name}</strong> (${playlist.trackCount || 0} tracks)`,
+        'playlist'
+    );
+    updateFilterStyles();
+    resetAndFetch();
+}
+
+function clearFilterIndicators() {
+    document.querySelectorAll('.filter-indicator').forEach(el => el.remove());
+    requestAnimationFrame(() => {
+        adjustContentPadding();
+    });
+}
+
+function clearFilter(type) {
+    if (type === 'author') {
+        state.author = '';
+    } else if (type === 'playlist') {
+        state.playlist = '';
+    }
+    clearFilterIndicators();
+    updateURL();
+    resetAndFetch();
+}
+
+function loadMore() {
+    if (state.hasMore && !state.isLoading) {
+        state.page++;
+        fetchTracks(true);
+    }
+}
+
+function resetAndFetch() {
+    state.page = 1;
+    state.hasMore = true;
+    trackGrid.innerHTML = '';
+    fetchTracks(false);
+}
+
+function handleScroll() {
+    if (state.isLoading || !state.hasMore) return;
+
+    const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+    const needFill = document.documentElement.scrollHeight <= window.innerHeight;
+
+    if (scrollBottom < 1000 || needFill) {
+        loadMore();
+    }
+}
+
+function adjustContentPadding() {
+    const header = document.querySelector('.sticky-header');
+    const content = document.getElementById('content');
+    content.style.paddingTop = header.offsetHeight + 'px';
+}
+
+window.addEventListener('resize', adjustContentPadding);
+
+function initializeLinkHijacking() {
+    if (window.self === window.top) {
+        console.log("DB: Running as top window. Links will navigate normally.");
+        return;
+    }
+
+    const trackUrlRegex = /\/(frhd|bhr|cr|u|plus|t)\/([a-zA-Z0-9_-]+|daily|random)(?:\/([a-zA-Z0-9_-]+))?/i;
+
+    document.getElementById('content').addEventListener('click', function (event) {
+        let targetElement = event.target;
+        while (targetElement && targetElement.tagName !== 'A') {
+            targetElement = targetElement.parentElement;
+        }
+
+        if (targetElement) {
+            const href = targetElement.getAttribute('href');
+
+            if (href && href !== '#' && !href.startsWith('javascript:')) {
+                const fullUrl = targetElement.href;
+
+                if (fullUrl.match(trackUrlRegex)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+
+                    const descElement = targetElement.closest('.track-thumb')?.querySelector('.desc');
+                    const trackName = descElement ? descElement.textContent.trim() : targetElement.textContent.trim() || href;
+
+                    sendToParent(fullUrl, trackName);
+                }
+            }
+        }
+    }, true);
+
+    console.log("DB: Track link interception initialized.");
+}
+
+function initEventListeners() {
+    document.querySelectorAll('.track-type-filter').forEach(filter => {
+        filter.addEventListener('click', () => {
+            const mode = filter.dataset.mode;
+            const newType = filter.dataset.type;
+
+            if (mode === 'tracks') {
+                state.mode = 'tracks';
+                state.type = state.authorPlatform;
+                state.playlist = '';
+                state.showGhostsOnly = false;
+                clearFilterIndicators();
+            } else if (mode === 'ghosts') {
+                state.mode = 'ghosts';
+                state.type = state.authorPlatform;
+                state.playlist = '';
+                state.showGhostsOnly = true;
+                clearFilterIndicators();
+            } else if (mode === 'user') {
+                state.mode = 'user';
+                state.type = 'user';
+                state.showGhostsOnly = false;
+            } else if (mode === 'playlist') {
+                state.mode = 'playlist';
+                state.type = 'playlist';
+                state.playlist = '';
+                state.showGhostsOnly = false;
+                clearFilterIndicators();
+            } else if (newType) {
+                state.authorPlatform = newType;
+                if (state.mode === 'tracks' || state.mode === 'ghosts') {
+                    state.type = newType;
+                }
+            }
+
+            updateFilterStyles();
+            resetAndFetch();
+        });
+    });
+
+    trackGrid.addEventListener('click', (e) => {
+        const playlistLink = e.target.closest('.playlist-link');
+        if (playlistLink) {
+            e.preventDefault();
+            const playlistId = playlistLink.dataset.playlistId;
+            setPlaylistFilter(playlistId);
+        }
+    });
+
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            state.query = e.target.value;
+            resetAndFetch();
+        }, 300);
+    });
+
+    sortSelect.addEventListener('change', (e) => {
+        const [sortBy, sortOrder] = e.target.value.split('-');
+        state.sortBy = sortBy;
+        state.sortOrder = sortOrder;
+        resetAndFetch();
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const authorParam = urlParams.get('author');
+    const playlistParam = urlParams.get('playlist');
+
+    if (authorParam) {
+        state.author = authorParam;
+        fetch(`/api/user-aliases/${encodeURIComponent(authorParam)}`)
+            .then(res => res.json())
+            .then(data => {
+                const aliasText = data.aliases.length > 1
+                    ? ` (also: ${data.aliases.filter(a => a.toLowerCase() !== authorParam.toLowerCase()).join(', ')})`
+                    : '';
+                showFilterIndicator(`Filtering by: <strong>${data.displayName}</strong>${aliasText} (${data.trackCount} tracks)`, 'author');
+            })
+            .catch(() => {
+                showFilterIndicator(`Filtering by: <strong>${authorParam}</strong>`, 'author');
+            });
+    }
+
+    if (playlistParam && !authorParam) {
+        state.playlist = playlistParam;
+        setTimeout(() => {
+            const playlist = playlistsData.find(p => p.id === playlistParam);
+            if (playlist) {
+                showFilterIndicator(`<span class="playlist-icon">${playlist.icon}</span> <strong>${playlist.name}</strong> (${playlist.trackCount} tracks)`, 'playlist');
+            }
+        }, 200);
+    }
+
+
+    window.addEventListener('scroll', handleScroll);
+}
+
+window.setAuthorFilter = setAuthorFilter;
+window.setPlaylistFilter = setPlaylistFilter;
+window.clearFilter = clearFilter;
+
+
+function clearAuthorFilter() {
+    state.author = '';
+    const params = new URLSearchParams(window.location.search);
+    params.delete('author');
+    window.history.replaceState({}, '', `/db?${params.toString()}`);
+    document.querySelector('.author-filter-indicator')?.remove();
+
+    requestAnimationFrame(() => {
+        adjustContentPadding();
+    });
+
+    resetAndFetch();
+}
+
+
+function initToggles() {
+    const toggleBadges = document.getElementById('toggle-badges');
+    const toggleTitles = document.getElementById('toggle-titles');
+
+    toggleBadges.addEventListener('change', (e) => {
+        trackGrid.classList.toggle('hide-badges', !e.target.checked);
+        setTimeout(handleScroll, 100);
+    });
+
+    toggleTitles.addEventListener('change', (e) => {
+        trackGrid.classList.toggle('hide-titles', !e.target.checked);
+        setTimeout(handleScroll, 100);
+    });
+}
+
+async function fetchLiveSessions() {
+    try {
+        const response = await fetch('/api/live-sessions');
+        liveSessions = await response.json();
+    } catch (error) {
+        console.error('Error fetching live sessions:', error);
+        liveSessions = {};
+    }
+}
+
+setInterval(fetchLiveSessions, 10000);
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchLiveSessions();
+    await fetchPlaylists();
+    initEventListeners();
+    initToggles();
+    initializeLinkHijacking();
+    fetchTracks(false);
+    adjustContentPadding();
+});
+</script>
 </body>
 
 </html>

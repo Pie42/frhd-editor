@@ -51,6 +51,7 @@ function setupLiveRacing(server) {
                 if (msg.type === 'join') {
                     trackId = msg.trackId;
                     username = msg.username || 'Anonymous';
+                    console.log('[Live] Join request for track:', msg.trackId);
                     playerId = generatePlayerId();
 
                     playerIdBuffer = Buffer.alloc(PLAYER_ID_LENGTH);
@@ -100,7 +101,8 @@ function setupLiveRacing(server) {
             }
         });
 
-        ws.on('close', () => {
+        ws.on('close', (code, reason) => {
+            console.log('[Live] Connection closed:', code, reason?.toString());
             if (session && playerId) {
                 session.delete(playerId);
 
@@ -134,4 +136,4 @@ function setupLiveRacing(server) {
     }
 }
 
-module.exports = { setupLiveRacing };
+module.exports = { setupLiveRacing, liveSessions };

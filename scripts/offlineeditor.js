@@ -4048,11 +4048,12 @@
                 }
               }
 
-              const typeIdMatch = e.value.match(/^(frhd|bhr|cr)-(\d+)$/i);
+              const typeIdMatch = e.value.match(/^(frhd|bhr|cr|u|plus|t)-(\d+)$/i);
               if (typeIdMatch) {
                 const trackType = typeIdMatch[1].toLowerCase();
                 const trackId = typeIdMatch[2];
-                const fetchUrl = `https://freerider.app/${trackType}/${trackId}.txt`;
+                const urlType = trackType === 'plus' ? 't' : trackType;
+                const fetchUrl = `https://freerider.app/${urlType}/${trackId}.txt`;
 
                 console.log(`Fetching ${trackType} track #${trackId}`);
 
@@ -4067,7 +4068,7 @@
                     this.processTrackData(data);
                     console.log(`${trackType.toUpperCase()} track #${trackId} loaded`);
 
-                    return fetch(`https://freerider.app/${trackType}/${trackId}?json=true`);
+                    return fetch(`https://freerider.app/${urlType}/${trackId}?json=true`);
                   })
                   .then((response) => response.json())
                   .then((metadata) => {
@@ -5146,7 +5147,7 @@
               )
             ),
             n.createElement("iframe", {
-              src: "/db?perPage=12",  // Change this URL
+              src: "/db",  // Change this URL
               style: {
                 width: "100%",
                 height: "calc(100% - 39px)",  // Subtract titlebar height
@@ -33353,6 +33354,45 @@
                   });
                 return;
               }
+              if (trackType === 'plus' || trackType === 't') {
+                const urlType = 't';
+                fetch(`/${urlType}/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("Plus track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `Plus Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `Plus Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load Plus track ${trackId}:`, error);
+                  });
+                return;
+              }
             },
             addImportListener() {
               window.addEventListener('popstate', (event) => {
@@ -33364,11 +33404,12 @@
                   this.loadTrackFromState(trackType, trackId);
                 } else {
                   const path = window.location.pathname;
-                  const match = path.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+                  const match = path.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/);
 
                   if (match) {
                     const trackType = match[1];
-                    const trackId = parseInt(match[2], 10);
+                    const idPart = match[2];
+                    const trackId = idPart.match(/^\d+$/) ? parseInt(idPart, 10) : idPart;
                     console.log(`[PopState] No state data, loading from URL: ${trackType}/${trackId}`);
                     this.loadTrackFromState(trackType, trackId);
                   } else {
@@ -33427,8 +33468,8 @@
                 trackName = hash.substring(1);
             } 
 
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/);
               trackType = match[1];
               const idPart = match[2];
 
@@ -33441,15 +33482,15 @@
               }
             }
 
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/);
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)\/(.+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)\/(.+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               const userName = match[3];
               trackName = `${trackType}-${trackId}`;
             }
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               trackName = `${trackType}-${trackId}`;
@@ -33529,7 +33570,22 @@
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
                     GameSettings.id = metadata.id;
+                    GameSettings.type = metadata.type;
                     GameSettings.authors = metadata.authors || ``;
+
+                    const scene = GameManager.game.currentScene;
+                    if (scene.liveRider) {
+                      const newTrackId = `${trackType}/${trackId}`;
+                      const username = GameSettings.user.d_name || 'Player';
+
+                      const modUi = scene.mod.ui?.obj;
+                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
+                      const crHead = modUi?.['crHead']?.checkbox?.checked;
+                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
+                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
+                    }
 
                     const fullPermalink = metadata.permalink;
 
@@ -33593,7 +33649,22 @@
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
                     GameSettings.id = metadata.id;
+                    GameSettings.type = metadata.type;
                     GameSettings.authors = metadata.authors || ``;
+
+                    const scene = GameManager.game.currentScene;
+                    if (scene.liveRider) {
+                      const newTrackId = `${trackType}/${trackId}`;
+                      const username = GameSettings.user.d_name || 'Player';
+
+                      const modUi = scene.mod.ui?.obj;
+                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
+                      const crHead = modUi?.['crHead']?.checkbox?.checked;
+                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
+                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
+                    }
 
                     const fullPermalink = metadata.permalink;
 
@@ -33696,7 +33767,22 @@
                     !isSameTrack && (GameManager.command("import", code, true), GameManager.command("clear race"));
                     GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
                     GameSettings.id = metadata.id;
+                    GameSettings.type = metadata.type;
                     GameSettings.authors = metadata.authors || ``;
+
+                    const scene = GameManager.game.currentScene;
+                    if (scene.liveRider) {
+                      const newTrackId = `${trackType}/${trackId}`;
+                      const username = GameSettings.user.d_name || 'Player';
+
+                      const modUi = scene.mod.ui?.obj;
+                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
+                      const crHead = modUi?.['crHead']?.checkbox?.checked;
+                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
+                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
+                    }
 
                     if (ghostData) {
                       GameSettings.ghostData = ghostData;
@@ -33752,6 +33838,86 @@
             return;
           }
 
+          // Plus logic
+          if (trackType === 'plus' || trackType === 't') {
+            console.log("Loading Plus track:", trackId);
+            fetch(`/t/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("Plus track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("Plus metadata fetched:", metadata);
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("Plus Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `Plus Track #${trackId}`;
+                    GameSettings.id = metadata.id;
+                    GameSettings.type = 'plus';
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const scene = GameManager.game.currentScene;
+                    if (scene.liveRider) {
+                      const newTrackId = `${trackType}/${trackId}`;
+                      const username = GameSettings.user.d_name || 'Player';
+
+                      const modUi = scene.mod.ui?.obj;
+                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
+                      const crHead = modUi?.['crHead']?.checkbox?.checked;
+                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
+                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
+                    }
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `Plus Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
+                    this.updateNowPlaying({
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'plus'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
+                    });
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load Plus track:", error);
+              });
+            return;
+          }
+
           // User/page logic
           if (trackType === 'user' || trackType === 'page') {
             const fetchUrl = trackType === 'page'
@@ -33803,6 +33969,7 @@
                             // keep user page settings
                             GameSettings.trackName = metadata.name || ``;
                             GameSettings.id = metadata.id;
+                            GameSettings.type = metadata.type;
                             GameSettings.authors = metadata.authors || '';
 
                             const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
@@ -33843,6 +34010,7 @@
                       GameManager.command("import", code, true);
                       GameSettings.trackName = metadata.name || `User: ${trackName}`;
                       GameSettings.id = metadata.id;
+                      GameSettings.type = metadata.type;
                       GameSettings.authors = metadata.authors || '';
 
                       const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
