@@ -11,6 +11,9 @@ const { setupLiveRacing, liveSessions } = require('./live');
 const { router: forumLinksRouter, getForumLinkForTrack } = require('./forum-links');
 app.use('/api', forumLinksRouter);
 
+const PocketBase = require('pocketbase/cjs');
+const pb = new PocketBase('https://db.freerider.app');
+
 const PORT = 3000;
 
 // persistent disk mount for Render
@@ -574,11 +577,11 @@ function parseNumericValue(val) {
 
 function unparseNumericValue(val) {
     if (val === null || val === undefined) return 0;
-    //if (typeof val === 'number') return val;
+    const num = parseInt(val) || 0;
     
-    if (val < 1000) return val;
-    if (val < 1000000) return (val / 1000).toFixed(1) + 'k';
-    return (val / 1000000).toFixed(1) + 'm';
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'm';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num;
     }
 
 function shuffleArray(array) {
@@ -677,62 +680,73 @@ allTracks = allTracks.map(track => {
     let urlType = track.type;
     let urlId = track.slug || track.id;
     
-    let combinedUpvotes = parseNumericValue(track.upvotes);
+    let combinedUpvotes = track.type === 'cr' 
+        ? parseNumericValue(track.votes) 
+        : parseNumericValue(track.upvotes);
     let combinedDownvotes = parseNumericValue(track.downvotes);
     let combinedPlays = parseNumericValue(track.plays);
     let combinedFavorites = parseNumericValue(track.favorites);
     
     if (linked) {
-    badges = linked.tracks.map(t => t.type);
-    
-    if (linked.authors && linked.authors.length > 0) {
-        authorsArray = [...linked.authors];
-        authors = authorsArray.join(', ');
-    }
-    
-    const typePriority = ['cr', 'bhr', 'frhd', 'plus'];
-    for (const priorityType of typePriority) {
-        const found = linked.tracks.find(t => t.type === priorityType);
-        if (found) {
-            urlType = found.type;
-            let linkedMeta = null;
-            if (found.type === 'plus') {
-                linkedMeta = plusMetadata.find(m => m.id === found.id);
-            }
-            urlId = linkedMeta?.slug || found.id;
-            break;
+        badges = linked.tracks.map(t => t.type);
+        
+        if (linked.authors && linked.authors.length > 0) {
+            authorsArray = [...linked.authors];
+            authors = authorsArray.join(', ');
         }
-    }
+        
+        const typePriority = ['cr', 'bhr', 'frhd', 'plus'];
+        for (const priorityType of typePriority) {
+            const found = linked.tracks.find(t => t.type === priorityType);
+            if (found) {
+                urlType = found.type;
+                let linkedMeta = null;
+                if (found.type === 'plus') {
+                    linkedMeta = plusMetadata.find(m => m.id === found.id);
+                }
+                urlId = linkedMeta?.slug || found.id;
+                break;
+            }
+        }
         
         for (const linkedTrack of linked.tracks) {
-            if (linkedTrack.type === track.type && linkedTrack.id === track.id) {
-                continue;
-            }
-            
-            let linkedMeta = null;
-            if (linkedTrack.type === 'frhd') {
-                linkedMeta = frhdMetadata.find(t => t.id === linkedTrack.id);
-            } else if (linkedTrack.type === 'bhr') {
-                linkedMeta = bhrMetadata.find(t => t.id === linkedTrack.id);
-            } else if (linkedTrack.type === 'cr') {
-                linkedMeta = crMetadata.find(t => t.id === linkedTrack.id);
-            } else if (linkedTrack.type === 'plus') {
-                linkedMeta = plusMetadata.find(t => t.id === linkedTrack.id);
-            }
-            
-            if (linkedMeta) {
-                combinedUpvotes += parseNumericValue(linkedMeta.upvotes);
-                combinedDownvotes += parseNumericValue(linkedMeta.downvotes);
-                combinedPlays += parseNumericValue(linkedMeta.plays);
-                combinedFavorites += parseNumericValue(linkedMeta.favorites);
-            }
+    if (linkedTrack.type === track.type && linkedTrack.id === track.id) {
+        continue;
+    }
+    
+    let linkedMeta = null;
+    if (linkedTrack.type === 'frhd') {
+        linkedMeta = frhdMetadata.find(t => t.id === linkedTrack.id);
+    } else if (linkedTrack.type === 'bhr') {
+        linkedMeta = bhrMetadata.find(t => t.id === linkedTrack.id);
+    } else if (linkedTrack.type === 'cr') {
+        linkedMeta = crMetadata.find(t => t.id === linkedTrack.id);
+    } else if (linkedTrack.type === 'plus') {
+        linkedMeta = plusMetadata.find(t => t.id === linkedTrack.id);
+    }
+    
+    if (!linkedMeta) {
+        const cacheKey = `${linkedTrack.type}-${linkedTrack.id}`;
+        linkedMeta = linkedTrackStatsCache.get(cacheKey);
+    }
+    
+    if (linkedMeta) {
+        if (linkedTrack.type === 'cr') {
+            combinedUpvotes += parseNumericValue(linkedMeta.votes);
+        } else {
+            combinedUpvotes += parseNumericValue(linkedMeta.upvotes);
+        }
+            combinedDownvotes += parseNumericValue(linkedMeta.downvotes);
+            combinedPlays += parseNumericValue(linkedMeta.plays);
+            combinedFavorites += parseNumericValue(linkedMeta.favorites);
         }
     }
+}
 
-     const unparsedUpvotes = unparseNumericValue(combinedUpvotes);
-            const unparsedDownvotes = unparseNumericValue(combinedDownvotes);
-            const unparsedPlays = unparseNumericValue(combinedPlays);
-            const unparsedFavorites = unparseNumericValue(combinedFavorites);
+    const unparsedUpvotes = unparseNumericValue(combinedUpvotes);
+    const unparsedDownvotes = unparseNumericValue(combinedDownvotes);
+    const unparsedPlays = unparseNumericValue(combinedPlays);
+    const unparsedFavorites = unparseNumericValue(combinedFavorites);
     
     return {
         ...track,
@@ -926,6 +940,327 @@ if (query) {
         totalPages
     };
 }
+
+app.get('/api/db/pocketbase', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = Math.min(Math.max(parseInt(req.query.perPage) || 24, 1), 100);
+    const type = req.query.type || 'frhd';
+    const query = req.query.q || '';
+    const sortBy = req.query.sort || 'id';
+    const sortOrder = req.query.order || 'desc';
+    const author = req.query.author || '';
+
+    if (type !== 'bhr' && type !== 'frhd' && type !== 'cr') {
+        return res.status(400).json({ 
+            error: 'Invalid type for PocketBase', 
+            details: 'Only "bhr", "frhd", and "cr" collections are available' 
+        });
+    }
+
+    try {
+        let filterParts = [];
+        
+        if (query) {
+            const escapedQuery = query.replace(/"/g, '\\"');
+            filterParts.push(`(name ~ "${escapedQuery}" || username ~ "${escapedQuery}" || _id ~ "${escapedQuery}")`);
+        }
+        
+        if (author) {
+            const escapedAuthor = author.replace(/"/g, '\\"');
+            const userInfo = findUserAliases(author);
+            
+            if (userInfo.aliases && userInfo.aliases.length > 1) {
+                const aliasConditions = userInfo.aliases.map(alias => {
+                    const escaped = alias.replace(/"/g, '\\"');
+                    return `username = "${escaped}" || authors ~ "\\"${escaped}\\""`;
+                }).join(' || ');
+                filterParts.push(`(${aliasConditions})`);
+            } else {
+                filterParts.push(`(username = "${escapedAuthor}" || authors ~ "\\"${escapedAuthor}\\"")`);
+            }
+        }
+
+        const filterString = filterParts.length > 0 ? filterParts.join(' && ') : '';
+
+        let tracks = [];
+        let totalCount = 0;
+        let totalPages = 0;
+
+        if (author) {
+            tracks = await pb.collection(type).getFullList({
+                filter: filterString || undefined,
+            });
+
+            // Sort
+            if (sortBy === 'shuffle') {
+                for (let i = tracks.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [tracks[i], tracks[j]] = [tracks[j], tracks[i]];
+                }
+            } else {
+                tracks.sort((a, b) => {
+                    let valA, valB;
+                    switch (sortBy) {
+                        case 'name':
+                            valA = (a.name || '').toLowerCase();
+                            valB = (b.name || '').toLowerCase();
+                            return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        case 'upvotes':
+                            // For CR, use votes field
+                            valA = type === 'cr' ? (parseInt(a.votes) || 0) : (parseInt(a.upvotes) || 0);
+                            valB = type === 'cr' ? (parseInt(b.votes) || 0) : (parseInt(b.upvotes) || 0);
+                            break;
+                        case 'downvotes':
+                            // For CR, use negative votes (sort by most negative)
+                            valA = type === 'cr' ? -(parseInt(a.votes) || 0) : (parseInt(a.downvotes) || 0);
+                            valB = type === 'cr' ? -(parseInt(b.votes) || 0) : (parseInt(b.downvotes) || 0);
+                            break;
+                        case 'favorites':
+                            valA = parseInt(a.favorites) || 0;
+                            valB = parseInt(b.favorites) || 0;
+                            break;
+                        case 'plays':
+                            valA = parseInt(a.plays) || 0;
+                            valB = parseInt(b.plays) || 0;
+                            break;
+                        case 'size':
+                            valA = parseInt(a.size) || 0;
+                            valB = parseInt(b.size) || 0;
+                            break;
+                        default:
+                            valA = parseInt(a._id) || 0;
+                            valB = parseInt(b._id) || 0;
+                    }
+                    return sortOrder === 'asc' ? valA - valB : valB - valA;
+                });
+            }
+
+            totalCount = tracks.length;
+            totalPages = 1;
+
+        } else {
+            let sortString = '';
+            
+            let effectiveSortBy = sortBy;
+            if (type === 'cr') {
+                if (sortBy === 'upvotes') effectiveSortBy = 'votes';
+                if (sortBy === 'downvotes') effectiveSortBy = 'votes';
+                if (sortBy === 'favorites' || sortBy === 'published') effectiveSortBy = 'id';
+            }
+            
+            switch (effectiveSortBy) {
+                case 'name':
+                    sortString = sortOrder === 'asc' ? 'name' : '-name';
+                    break;
+                case 'upvotes':
+                    sortString = sortOrder === 'asc' ? 'upvotes' : '-upvotes';
+                    break;
+                case 'downvotes':
+                    sortString = sortOrder === 'asc' ? 'downvotes' : '-downvotes';
+                    break;
+                case 'votes':
+                    if (sortBy === 'downvotes') {
+                        sortString = sortOrder === 'asc' ? '-votes' : 'votes';
+                    } else {
+                        sortString = sortOrder === 'asc' ? 'votes' : '-votes';
+                    }
+                    break;
+                case 'favorites':
+                    sortString = sortOrder === 'asc' ? 'favorites' : '-favorites';
+                    break;
+                case 'plays':
+                    sortString = sortOrder === 'asc' ? 'plays' : '-plays';
+                    break;
+                case 'published':
+                    sortString = sortOrder === 'asc' ? 'published' : '-published';
+                    break;
+                case 'size':
+                    sortString = sortOrder === 'asc' ? 'size' : '-size';
+                    break;
+                case 'shuffle':
+                    sortString = '@random';
+                    break;
+                default:
+                    sortString = sortOrder === 'asc' ? '_id' : '-_id';
+            }
+
+            const resultList = await pb.collection(type).getList(page, perPage, {
+                sort: sortString,
+                filter: filterString || undefined,
+            });
+
+            tracks = resultList.items;
+            totalCount = resultList.totalItems;
+            totalPages = resultList.totalPages;
+        }
+
+        const transformedTracks = tracks.map(record => {
+            let authorsArray = [];
+            if (record.authors) {
+                try {
+                    if (typeof record.authors === 'string') {
+                        authorsArray = JSON.parse(record.authors);
+                    } else if (Array.isArray(record.authors)) {
+                        authorsArray = record.authors;
+                    }
+                } catch (e) {
+                    authorsArray = [record.authors];
+                }
+            }
+
+            let upvotes, downvotes;
+            if (type === 'cr') {
+                const votes = parseInt(record.votes) || 0;
+                upvotes = unparseNumericValue(votes);
+                downvotes = null;
+            } else {
+                upvotes = record.upvotes !== undefined ? unparseNumericValue(record.upvotes) : null;
+                downvotes = record.downvotes !== undefined ? unparseNumericValue(record.downvotes) : null;
+            }
+
+            return {
+                id: record._id,
+                name: record.name || `${type.toUpperCase()} Track #${record._id}`,
+                username: record.username || '',
+                authors: Array.isArray(authorsArray) ? authorsArray.join(', ') : (record.authors || ''),
+                authorsArray: authorsArray,
+                upvotes: upvotes,
+                downvotes: downvotes,
+                votes: type === 'cr' ? unparseNumericValue(record.votes) : null, // Include raw votes for CR
+                favorites: record.favorites !== undefined ? unparseNumericValue(record.favorites) : null,
+                plays: record.plays !== undefined ? unparseNumericValue(record.plays) : null,
+                size: record.size || null,
+                published: record.published || null,
+                type: type,
+                urlType: type,
+                urlId: record._id,
+                badges: [type],
+                canonicalId: `${type}-${record._id}`
+            };
+        });
+
+        res.json({
+            tracks: transformedTracks,
+            pagination: {
+                page: author ? 1 : page,
+                perPage: author ? totalCount : perPage,
+                totalCount,
+                totalPages: author ? 1 : totalPages
+            },
+            source: 'pocketbase',
+            collection: type,
+            allLoaded: !!author
+        });
+
+    } catch (error) {
+        console.error('PocketBase error:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch from PocketBase', 
+            details: error.message,
+            collection: type
+        });
+    }
+});
+
+
+function parseAuthors(authorsStr) {
+    if (!authorsStr) return [];
+    
+    try {
+        let cleaned = authorsStr;
+        if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+            cleaned = cleaned.slice(1, -1);
+        }
+        cleaned = cleaned.replace(/""/g, '"');
+        return JSON.parse(cleaned);
+    } catch (e) {
+        return authorsStr.split(',').map(a => a.trim());
+    }
+}
+
+let linkedTrackStatsCache = new Map();
+
+async function loadLinkedTrackStatsCache() {
+    console.log('Loading stats for linked tracks...');
+    
+    const needed = {
+        frhd: new Set(),
+        bhr: new Set(),
+        cr: new Set()
+    };
+    
+    for (const link of trackLinks) {
+        for (const track of link.tracks) {
+            if (needed[track.type]) {
+                needed[track.type].add(track.id);
+            }
+        }
+    }
+    
+    console.log(`  Need: frhd=${needed.frhd.size}, bhr=${needed.bhr.size}, cr=${needed.cr.size}`);
+    
+    for (const type of ['frhd', 'bhr', 'cr']) {
+        if (needed[type].size === 0) continue;
+        
+        try {
+            const ids = Array.from(needed[type]);
+            
+            for (let i = 0; i < ids.length; i += 100) {
+                const batch = ids.slice(i, i + 100);
+                const filter = batch.map(id => `_id = ${id}`).join(' || ');
+                
+                const records = await pb.collection(type).getFullList({
+                    filter: filter,
+                    fields: '_id,upvotes,downvotes,votes,plays,favorites'
+                });
+                
+                for (const record of records) {
+                    const cacheKey = `${type}-${record._id}`;
+                    linkedTrackStatsCache.set(cacheKey, {
+                        upvotes: record.upvotes,
+                        downvotes: record.downvotes,
+                        votes: record.votes,
+                        plays: record.plays,
+                        favorites: record.favorites
+                    });
+                }
+            }
+            
+            console.log(`  ${type}: cached`);
+        } catch (e) {
+            console.error(`Failed to cache ${type} stats:`, e.message);
+        }
+    }
+    
+    console.log(`Linked track stats cache loaded: ${linkedTrackStatsCache.size} tracks`);
+}
+
+app.get('/api/pocketbase/frhd/:id', async (req, res) => {
+    const trackId = req.params.id;
+
+    try {
+        const record = await pb.collection('frhd').getFirstListItem(`_id = ${trackId}`);
+
+        res.json({
+            id: record._id,
+            name: record.name,
+            username: record.username,
+            authors: record.authors,
+            upvotes: record.upvotes,
+            downvotes: record.downvotes,
+            favorites: record.favorites,
+            type: 'frhd',
+            source: 'pocketbase'
+        });
+
+    } catch (error) {
+        if (error.status === 404) {
+            return res.status(404).json({ error: 'Track not found' });
+        }
+        console.error('PocketBase error:', error);
+        res.status(500).json({ error: 'Failed to fetch from PocketBase' });
+    }
+});
 
 app.get('/db', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -1675,7 +2010,7 @@ app.get('/api/live-sessions', (req, res) => {
 });
 
 async function startServer() {
-
+    await loadLinkedTrackStatsCache();
     setupLiveRacing(server);
 
     server.listen(PORT, () => {

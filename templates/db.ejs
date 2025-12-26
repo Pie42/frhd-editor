@@ -584,7 +584,7 @@
                         <strong>
                             <span class="track-type-filter" data-type="all"
                                 style="color: <%= type === 'all' ? '#000' : '#aaa' %>">
-                                <span class="type-filter-link" style="color: inherit;">ALL</span>
+                                <span class="type-filter-link" style="color: inherit;">DB</span>
                             </span>
                             /
                             <span class="track-type-filter" data-type="frhd"
@@ -695,7 +695,8 @@ const state = {
     author: '',
     playlist: '',
     authorPlatform: '<%= type === "user" || type === "playlist" ? "all" : type %>',
-    showGhostsOnly: false
+    showGhostsOnly: false,
+    usePocketBase: true
 };
 
 
@@ -762,8 +763,14 @@ function getBadgeText(type) {
 function getSortValueDisplay(track, sortBy) {
     switch (sortBy) {
         case 'upvotes':
+            if (track.type === 'cr' && track.votes !== null) {
+                return `(${track.votes})`;
+            }
             return track.upvotes ? `(${track.upvotes})` : '';
         case 'downvotes':
+            if (track.type === 'cr' && track.votes !== null) {
+                return `(${track.votes})`;
+            }
             return track.downvotes ? `(${track.downvotes})` : '';
         case 'plays':
             return track.plays ? `(${track.plays})` : '';
@@ -1051,7 +1058,6 @@ async function fetchTracks(append = false) {
     if (state.playlist) params.set('playlist', state.playlist);
     if (state.showGhostsOnly) params.set('ghosts', 'true');
 
-
     let endpoint;
 
     if (state.mode === 'user') {
@@ -1059,6 +1065,9 @@ async function fetchTracks(append = false) {
         params.set('platform', state.authorPlatform);
     } else if (state.mode === 'playlist') {
         endpoint = '/api/playlists';
+    } else if (state.usePocketBase && (state.type === 'frhd' || state.type === 'bhr' || state.type === 'cr')) {
+        endpoint = '/api/db/pocketbase';
+        params.set('type', state.type);
     } else {
         endpoint = '/api/db';
         params.set('type', state.type);
@@ -1098,7 +1107,11 @@ async function fetchTracks(append = false) {
             const tracks = data.tracks || data.users || [];
             const pagination = data.pagination;
 
-            state.hasMore = state.page < pagination.totalPages;
+            if (data.allLoaded) {
+                state.hasMore = false;
+            } else {
+                state.hasMore = state.page < pagination.totalPages;
+            }
 
             if (tracks.length === 0 && !append) {
                 trackGrid.innerHTML = `
