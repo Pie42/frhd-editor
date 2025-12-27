@@ -29352,7 +29352,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(i.x - zoom * 2, i.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(i.x - zoom * 1, i.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -29378,7 +29378,7 @@ function load() {
                       ctx.beginPath();
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
-                      ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                      ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                       ctx.fill();
                       ctx.stroke();
                   }
@@ -29386,7 +29386,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -29401,7 +29401,7 @@ function load() {
               ctx.beginPath();
               ctx.strokeStyle = '#1884cf';
               ctx.fillStyle = '#1884cf';
-              ctx.rect(rsp.x - zoom * 3, rsp.y - zoom * 3, zoom * 6, zoom * 6);
+              ctx.rect(rsp.x - zoom * 1.5, rsp.y - zoom * 1.5, zoom * 3, zoom * 3);
               ctx.fill();
               ctx.stroke();
           } else {
@@ -29443,7 +29443,7 @@ function load() {
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
                       // Calculate the radius based on the zoom level
-                      const radius = zoom * 3;
+                      const radius = zoom * 1.5;
                       // Draw the circle
                       ctx.arc(i.x, i.y, radius, 0, Math.PI * 2);
                       ctx.fill();
