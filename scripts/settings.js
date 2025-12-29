@@ -124,7 +124,8 @@ var GameSettings = {
             "scenery": true,
             "physics": true,
             "powerups": true
-        }
+        },
+        "mode": "all"
     },
     "circle": {
         "segmentLength": 0.4,
@@ -153,7 +154,8 @@ var GameSettings = {
             "scenery": true,
             "physics": true,
             "powerups": true
-        }
+        },
+        "mode": "all"
     },
     "playHotkeys": {
         "up": [38, 87, 73],

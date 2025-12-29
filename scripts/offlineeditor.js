@@ -349,6 +349,7 @@
           xx = e("./selectbottomtooloptions"),
           xxx = e("./snap"),
           xxxx = e("./object"),
+          L = e("./layer"),
           s = e("./eraserbottomtooloptions"),
           l = e("./camerabottomtooloptions"),
           c = e("./straightlinebottomtooloptions"),
@@ -429,6 +430,7 @@
                     //e !== "select" && n.createElement(vv),
                     n.createElement(r, { vehicle: this.props.data.vehicle }),
                     !playMode && !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
+                    !playMode && !mobile ? n.createElement(L) : null,
                     //e === "select" && n.createElement(vvv),
                     //n.createElement(v),
                     n.createElement("span", { className: "divider" })
@@ -452,6 +454,7 @@
         "./eraserbottomtooloptions": 9,
         "./grid": 10,
         "./object": 910,
+        "./layer": 9910,
         "./powerupbottomtooloptions": 11,
         "./straightlinebottomtooloptions": 12,
         "./vehicle": 13,
@@ -902,7 +905,7 @@
               GameManager.command("dialog", "advancedSelect", this.props.options);
             },
             getInitialState: function() {
-                return { rotateFactor: 15, scaleFactor: 1.25 };
+                return { rotateFactor: 15, scaleFactor: 1.25, layerListOpen: false };
             },
             handleRotateChange: function(rotation) {
                 this.setState({ rotateFactor: rotation });
@@ -1014,6 +1017,61 @@
               GameSettings.customBrush = true;
               !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
           },
+          switchLayer: function(n) {
+            let tool = GameManager.game.currentScene.toolHandler.tools.select,
+              selected = tool.selected,
+              layers = GameManager.game.currentScene.track.layers,
+              newLayer = layers[n];
+            if (!selected?.length) return;
+            if (n < 0 || n >= layers.length) return;
+            for (let object of selected) {
+              if (object.layer == newLayer) continue;
+              if (object.name) {
+                object.layer.objects.delete(object);
+                newLayer.objects.add(object);
+                //newLayer.sectors.add(object.sector);
+              } else {
+                let type = 'highlight' in object ? 'physicsLines' : 'sceneryLines',
+                  l = object.sectors.length;
+                object.layer[type].delete(object);
+                newLayer[type].add(object);
+                /*for (let i of object.sectors) {
+                  if (!i.layers.length) break;
+                  newLayer.sectors.add(i);
+                }*/
+              }
+              object.layer = newLayer;
+            }
+            GameManager.game.currentScene.track.undraw
+            //
+          },
+          modal: function(...children) {
+            return n.createElement("div", {className: "layer-modal hover-events", onClick: this.stopClickPropagation}, ...children);
+          },
+          openLayerList: function() {
+            this.setState({layerListOpen: !this.state.layerListOpen});
+          },
+          renderLayerList: function() {
+            let o = this.state.layerListOpen,
+                l = GameManager.game.currentScene.track.layers,
+                e = GameManager.game.currentScene.track.layerIndex;
+            return n.createElement("span", {},
+            n.createElement("button", {
+              onClick: this.openLayerList,
+              className: "margin"
+            }, "MOVE TO LAYER"),
+          o ? this.modal(
+            ...l.map((i, j) => n.createElement('div', {
+                    onClick: e => {
+                      e.stopPropagation(); 
+                      this.switchLayer(j);
+                    }, 
+                    className: "layer-item" + (j == e ? " current-layer" : "")
+                  }, 
+                  n.createElement('p', {}, i.name)
+                )
+            )) : null);
+          },
             render: function() {
                 var type = GameSettings.copy ? "COPY + PASTE" : "CUT + PASTE";
                 return n.createElement("div", {
@@ -1038,7 +1096,9 @@
                           n.createElement("button", {
                             className: "margin",
                             onClick: this.selectionAsStamp
-                        }, "COPY AS STAMP"))),
+                        }, "COPY AS STAMP"))
+                        , this.renderLayerList()
+                      ),
                     ), 
                     
                     /*n.createElement("div", {
@@ -1614,6 +1674,219 @@
       }, {
         react: 230
       }],
+    9910: [
+      function(e, t) {
+        var n = e("react"),
+          a = n.createClass({
+            displayName: "Layer",
+            getInitialState: function() {
+              return {open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default'};
+            },
+            stopClickPropagation: function (e) {
+              //e.preventDefault();
+              e.stopPropagation();
+            },
+            openOptions: function() {
+              this.setState({open: !this.state.open, layerListOpen: this.state.open ? false : this.state.layerListOpen, settingsOpen: this.state.open ? false : this.state.settingsOpen});
+            },
+            openLayerList: function(e) {
+              e && this.stopClickPropagation(e);
+              this.setState({layerListOpen: !this.state.layerListOpen, settingsOpen: false});
+            },
+            openSettings: function(e) {
+              this.stopClickPropagation(e);
+              this.setState({settingsOpen: !this.state.settingsOpen, layerListOpen: false});
+            },
+            modal: function(...children) {
+              return n.createElement("div", {className: "layer-modal hover-events", onClick: this.stopClickPropagation}, ...children);
+            },
+            renderLayerList: function() {
+              let o = this.state.layerListOpen,
+                  l = GameManager.game.currentScene.track.layers,
+                  e = GameManager.game.currentScene.track.layerIndex;
+              return n.createElement("span", {},
+              n.createElement("button", {
+                onClick: this.openLayerList,
+                className: "margin"
+              }, GameManager.game.currentScene.track.currentLayer?.name || ""),
+            o ? this.modal(
+              ...l.map((i, j) => n.createElement('div', {
+                      onClick: e => {
+                        e.stopPropagation(); 
+                        this.switchLayer(j);
+                      }, 
+                      className: "layer-item" + (j == e ? " current-layer" : "")
+                    }, 
+                    n.createElement('p', {}, i.name)
+                  )
+              )) : null);
+            },
+            fixColor: function(c) {
+              if (/^rgba?/.test(c)) {
+                let d = c.match(/\((\d+), ?(\d+), ?(\d+)/);
+                return `#${('0' + d[1].toString(16)).slice(-2)}${('0' + d[2].toString(16)).slice(-2)}${('0' + d[3].toString(16)).slice(-2)}`;
+              }
+              return /^#[0-9A-Fa-f]{3}$/.test(c) ? c.replaceAll(/([0-9A-Fa-f])/g, '$1$1') : c;
+            },
+            renderSettings: function() {
+              let o = this.state.settingsOpen;
+              let l = GameManager.game.currentScene.track.currentLayer;
+              //this.state.name != l.name && this.setState({name: l.name});
+              return n.createElement("span", {},
+                n.createElement("button", {
+                  onClick: this.openSettings,
+                  className: "margin"
+                }, "Settings"),
+              o ? this.modal(
+                // name
+                // this does not work and i have no idea why; just use the console if you want to change a layer name
+                n.createElement('div', null,
+                //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
+                //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
+                n.createElement('button', {onClick: (e) => {this.stopClickPropagation(e); let n = prompt('What would you like to name this layer?', l.name); if (n) l.name = e.target.innerText = n;}}, l.name)
+                ),
+                // physics line color
+                n.createElement("label", {htmlFor: "layer-physics-color"}, "Physics line color: "),
+                n.createElement("input", {type: "color", id: "layer-physics-color", value: this.fixColor(l.physicsLineColor), onChange: (e) => {let c = e.target.value; l.physicsLineColor = c; l.update();}}),
+                // scenery line color
+                n.createElement("label", {htmlFor: "layer-scenery-color"}, "Scenery line color: "),
+                n.createElement("input", {type: "color", id: "layer-scenery-color", value: this.fixColor(l.sceneryLineColor), onChange: (e) => {let c = e.target.value; l.sceneryLineColor = c; l.update();}}),
+                // uses default colors
+                n.createElement("button", {onClick: l.resetColors.bind(l)}, "Reset colors"),
+                // show/hide
+                n.createElement("button", {
+                  onClick: (e) => {
+                    this.stopClickPropagation(e);
+                    if (!l) return;
+                    l.toggle();
+                    e.target.innerHTML = l.show ? "Hide" : "Show";
+                  }
+                }, GameManager.game.currentScene.track.currentLayer.show ? 'Hide': 'Show')
+                // end modal
+              ) : null);
+            },
+            renderControls: function() {
+              let l = GameManager.game.currentScene.track.layers,
+                c = GameManager.game.currentScene.track.layerIndex,
+                f = c > 0,
+                o = this.state.mergeOpen;
+              return n.createElement("span", {},
+                n.createElement("button", {
+                  onClick: this.createLayer,
+                  className: "margin"
+                }, "Add"), n.createElement("button", {
+                  onClick: this.openMergeModal,
+                  className: "margin",
+                  disabled: !f
+                }, "Merge Into", 
+                o ? this.modal(
+                  ...l.map((i, j) => j == c ? null : n.createElement('div', {
+                          onClick: e => {
+                            e.stopPropagation(); 
+                            this.mergeLayers(j);
+                          }, 
+                          className: "layer-item"
+                        }, 
+                        n.createElement('p', {}, i.name)
+                      )
+                  )) : null),
+                n.createElement("button", {
+                  onClick: this.deleteLayer,
+                  className: "margin",
+                  disabled: !f
+                }, "Delete")
+              );
+            },
+            createLayer: function(e) {
+              e && this.stopClickPropagation(e);
+              GameManager.game.currentScene.track.createLayer();
+              this.setState({name: GameManager.game.currentScene.track.currentLayer.name});
+            },
+            openMergeModal: function(e) {
+              e && this.stopClickPropagation(e);
+              this.setState({mergeOpen: !this.state.mergeOpen});
+            },
+            mergeLayers: function(j) {
+              this.setState({mergeOpen: false});
+              let track = GameManager.game.currentScene.track,
+                l = track.currentLayer,
+                n = track.layers[j];
+              for (let i of l.sectors) {
+                i.layers.delete(l);
+                i.layers.add(n);
+                i.drawn && i.clear();
+              }
+              for (let i of l.physicsLines) {
+                i.layer = n;
+              }
+              for (let i of l.sceneryLines) {
+                i.layer = n;
+              }
+              for (let i of l.objects) {
+                i.layer = n;
+              }
+              n.sectors = n.sectors.union(l.sectors);
+              n.physicsLines = n.physicsLines.union(l.physicsLines);
+              n.sceneryLines = n.sceneryLines.union(l.sceneryLines);
+              n.objects = n.objects.union(l.objects);
+              // delete this if you can verify that there are no more references to l left, but idk how to reference count in js (would much rather replace l with a hanging pointer that would throw an error if you try to reference it so i can debug)
+              l.sectors = new Set();
+              l.physicsLines = new Set();
+              l.sceneryLines = new Set();
+              l.objects = new Set();
+              delete track.layers[track.layerIndex];
+              track.setLayerIndex(j);
+              track.canvasPool.update();
+            },
+            deleteLayer: function(e) {
+              e && this.stopClickPropagation(e);
+              let track = GameManager.game.currentScene.track,
+                l = track.currentLayer;
+              if (confirm(`Are you sure you want to delete ${l.name} with ${l.physicsLines.size} physics lines, ${l.sceneryLines.size} scenery lines, and ${l.objects.size} objects?`)) {
+                l.clear();
+                delete track.layers[track.layerIndex];
+                if (track.layerIndex < track.layers.length - 1) {
+                  track.setLayerIndex(track.layerIndex + 1);
+                } else {
+                  track.setLayerIndex(track.layerIndex - 1);
+                }
+              }
+            },
+            createFolder: function() {
+              //
+            },
+            switchLayer: function(n) {
+              GameManager.game.currentScene.track.setLayerIndex(n);
+              this.setState({name: GameManager.game.currentScene.track.currentLayer.name});
+              this.openLayerList();
+            },
+            render: function() {
+              let e = "bottomMenu-button bottomMenu-button-right bottomMenu-button_layer",
+                t = "layer layer-margin",
+                o = this.state.open ? " : " : "";
+              if (this.props.active) {
+                e += " bottomMenu-button-active";
+              }
+              return n.createElement("div", {
+                className: e,
+                onClick: this.openOptions
+              }, n.createElement("span", {
+                className: t,
+                onClick: (event) => {
+                  event.stopPropagation();
+                }
+              }), n.createElement("span", {
+                className: "name",
+              }, "Layer", o), this.state.open ? 
+            n.createElement("div", {}, this.renderLayerList(),
+          this.renderSettings(), this.renderControls()) : null);
+            }
+          });
+        t.exports = a;
+      }, {
+        react: 230,
+      }
+    ],
     11: [
       function (e, t) {
         var n = e("react"),
@@ -2965,6 +3238,11 @@
           o = e("../utils/filesaver").saveAs,
           i = n.createClass({
             displayName: "ExportDialog",
+            getInitialState: function () {
+              return {
+                flat: false,
+              };
+            },
             closeDialog: function () {
               "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
@@ -3042,6 +3320,27 @@
             selectAllText: function () {
               var e = this.refs.code.getDOMNode();
               e.focus(), e.select();
+            },
+            flattenTrack: function () {
+              var e = this.props.options;
+              if (!this.state.flat) {
+                GameManager.game.currentScene.trackcode = JSON.parse(e.code)
+                .reduce(
+                    (a, b, n) => {
+                        let c = b.code.split('#');
+                        return [
+                            a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
+                            a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
+                            a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
+                        ];
+                    },
+                    ['', '', '']
+                )
+                .join('#');
+              } else {
+                GameManager.game.currentScene.trackcode = e.code;
+              }
+              this.setState({flat: !this.state.flat});
             },
             render: function () {
               var e = this.props.options,
@@ -3179,6 +3478,16 @@
                       },
                       "Clean Track"
                     ),
+                    GameManager?.game?.currentScene?.track?.layers?.length > 1 && this.fileSaverSupport ? n.createElement(
+                      "button",
+                      {
+                        className:
+                          "primary-button primary-button-blue float-right",
+                        onClick: this.flattenTrack,
+                        style: {marginLeft: '5px'}
+                      },
+                      this.state.flat ? "Unflatten" : "Flatten"
+                    ) : null,
                     r
                   )
                 )
@@ -6285,12 +6594,36 @@
                     this.props.options.types
                   ));
               },
+              setMode: function (m) {
+                GameManager && ((this.props.options.mode = m),
+                GameManager.command(
+                  "change tool option",
+                  "mode",
+                  this.props.options.mode
+                ));
+              },
               render: function () {
                 var e = this.props.options,
                   t = "sideButton",
                   r = t + " sideButton_eraserPhysics",
                   o = t + " sideButton_eraserScenery",
-                  i = t + " sideButton_eraserPowerups";
+                  i = t + " sideButton_eraserPowerups",
+                  R = t + " sideButton_eraserLayer",
+                  s = t + " sideButton_eraserVisible",
+                  O = t + " sideButton_eraserAll";
+                switch (e.mode) {
+                  case "layer":
+                    R += " active";
+                    break;
+                  case "visible":
+                    s += " active";
+                    break;
+                  case "all":
+                    O += " active";
+                    break;
+                  default:
+                    console.warn('unrecognized tool mode', e.mode);
+                }
                 return (
                   e.types &&
                     (e.types.physics && (r += " active"),
@@ -6322,7 +6655,35 @@
                         className:
                           "editorgui_icons editorgui_icons-icon_powerups",
                       })
-                    )
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: "sideDivider" }
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: R, onClick: _ => this.setMode("layer"), title: 'current layer' },
+                      n.createElement("span", {
+                        className:
+                          "editorgui_icons editorgui_icons-icon_layer",
+                      })
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: s, onClick: _ => this.setMode("visible"), title: 'visible layers' },
+                      n.createElement("span", {
+                        className:
+                          "editorgui_icons editorgui_icons-icon_visible",
+                      })
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: O, onClick: _ => this.setMode("all"), title: 'all layers' },
+                      n.createElement("span", {
+                        className:
+                          "editorgui_icons editorgui_icons-icon_all",
+                      })
+                    ),
                   )
                 );
               },
@@ -6490,7 +6851,7 @@
                     (u = n.createElement(i, { options: t }));
                   break;
                 case "eraser":
-                  (c.marginTop = -((3 * d) / 2)),
+                  (c.marginTop = -((5.1 * d) / 2)),
                     (u = n.createElement(l, { options: t }));
                   break;
                 case "powerup":
@@ -6502,7 +6863,7 @@
                     (u = n.createElement(s, { options: t }));
                   break;
                 case "select":
-                  (c.marginTop = -((3 * d) / 2)),
+                  (c.marginTop = -((5.1 * d) / 2)),
                     (u = n.createElement(l, { options: t }));
                   break;
                 case "pete":
@@ -32394,6 +32755,10 @@
                 );
             },
             searchData: function(string) {
+              if (string.length > 200) {
+                this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});
+                return;
+              }
               let tracks = this.state.tracks;
               if (!tracks || !tracks?.length) {
                 this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});

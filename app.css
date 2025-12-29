@@ -1266,6 +1266,7 @@ html.fullscreen #main_page {
 
 .cube {
     transform: scale(0.6);
+    filter: opacity(0.7);
     display: inline-block;
     vertical-align: middle;
     overflow: hidden;
@@ -1276,8 +1277,62 @@ html.fullscreen #main_page {
     height: 44px;
 }
 
+.cube:hover {
+    filter: opacity(0.9);
+}
+
 .cube-margin {
     margin-left: -8px;
+}
+
+.layer {
+    background-image: url(assets/images/gui/layers_black.png);
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 45px;
+    height: 44px;
+    transform: scale(0.6);
+    filter: opacity(0.6);
+}
+
+.layer:hover {
+    filter: opacity(0.8);
+}
+
+.layer-margin {
+    margin-left: -8px;
+}
+
+span.editorgui_icons-icon_layer {
+    background-image: url(assets/images/gui/single_layer_black.png);
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 45px;
+    height: 44px;
+    transform: scale(0.8);
+}
+
+span.editorgui_icons-icon_visible {
+    background-image: url(assets/images/gui/layers_gray.png);
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 45px;
+    height: 44px;
+    transform: scale(0.8);
+    filter: opacity(0.8);
+}
+
+span.editorgui_icons-icon_all {
+    background-image: url(assets/images/gui/layers_black.png);
+    background-position: 0px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 45px;
+    height: 44px;
+    transform: scale(0.8);
 }
 
 .editorgui_small {
@@ -1864,7 +1919,7 @@ html.fullscreen #main_page {
     margin-left: 5px
 }
 
-.bottomMenu-button:hover {
+.bottomMenu-button:hover:not(:has(.hover-events:hover)) {
     background: #CCC
 }
 
@@ -3276,4 +3331,32 @@ only screen and (min-device-pixel-ratio:3) {
     flex-grow: 1;
     flex-basis: 0;
     min-width: 50px;
+}
+
+div.layer-modal {
+    position: absolute;
+    bottom: 30px;
+    left: 0px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: #e2e2e2;
+    line-height: 3em;
+}
+
+span:has(div.layer-modal) {
+    position: relative;
+}
+
+div.layer-item {
+    padding-inline: 1em;
+}
+
+div.layer-item:hover {
+    background-color: #d2d2d2;
+}
+
+div.sideDivider {
+    border: 0.5px solid black;
+    width: 80%;
+    margin-inline: 10%;
 }

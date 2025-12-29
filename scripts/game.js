@@ -10223,9 +10223,14 @@
               return s && (e += " " + s.getCode(t)), e;
             }
             checkForConnectedLine(t, e) {
-              const s = t.physicsLines.indexOf(this);
-              if (s + 1 === t.physicsLines.length) return !1;
-              const i = t.physicsLines[s + 1];
+              // should give significant speedups
+              let row = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)];
+              if (!row) return false;
+              let sector = row[Math.floor(e.y / t.settings.drawSectorSize)];
+              if (!sector) return false;
+              const s = sector.physicsLines.indexOf(this);
+              if (s + 1 === sector.physicsLines.length) return !1;
+              const i = sector.physicsLines[s + 1];
               if (t.scene.cleanCode) {
                   if (
                       (i.p1.x === e.x && i.p1.y === e.y && i.p2.x === this.p1.x && i.p2.y === this.p1.y) ||
@@ -10235,7 +10240,7 @@
                       return false;
                   }
               }
-              return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && i;
+              return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && sector.physicsLines[s].layer === i.layer && i;
             }
             addSectorReference(t) {
               this.sectors.push(t);
@@ -10344,9 +10349,14 @@
             return s && (e += " " + s.getCode(t)), e;
           }
           checkForConnectedLine(t, e) {
-            const s = t.sceneryLines.indexOf(this);
-            if (s + 1 === t.sceneryLines.length) return !1;
-            const i = t.sceneryLines[s + 1];
+            // should give significant speedups
+            let row = t.sectors.drawSectors[Math.floor(e.x / t.settings.drawSectorSize)];
+            if (!row) return false;
+            let sector = row[Math.floor(e.y / t.settings.drawSectorSize)];
+            if (!sector) return false;
+            const s = sector.sceneryLines.indexOf(this);
+            if (s + 1 === sector.sceneryLines.length) return !1;
+            const i = sector.sceneryLines[s + 1];
             if (t.scene.cleanCode) {
                 if (
                     (i.p1.x === e.x && i.p1.y === e.y && i.p2.x === this.p1.x && i.p2.y === this.p1.y) ||
@@ -10356,7 +10366,7 @@
                     return false;
                 }
             }
-            return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && i;
+            return i.p1.x === e.x && i.p1.y === e.y && 0 === i.remove && sector.sceneryLines[s].layer === i.layer && i;
           }
           erase(t, e) {
             let s = !1;
@@ -17111,6 +17121,9 @@
                 this._r(drawSector.powerups[object.name + 's'], object);
                 drawSector.hasPowerups = drawSector.powerups.all.length;
                 drawSector.powerupCanvasDrawn = false;
+                object.layer.objects.delete(object);
+            } else {
+                object.layer['highlight' in object ? 'physicsLines' : 'sceneryLines'].delete(object);
             }
             object.markSectorsDirty();
             object.redrawSectors();
@@ -23538,58 +23551,330 @@
         Vi = s(578),
         Hi = s(301),
         Ni = s.n(Hi);
-      function Zi(t, e, s, i, n) {
-        const r = new Set(),
-          o = s - t,
-          a = i - e;
-        if (Math.max(Math.abs(o), Math.abs(a)) >= 500200) return [];
-        const h = Math.sqrt(o * o + a * a),
-          l = t + (-o + a) / h,
-          c = e + (-o - a) / h,
-          u = s + (o + a) / h,
-          d = i + (-o + a) / h,
-          p = [];
-        m(
-          t + (-o - a) / h,
-          e + (o - a) / h,
-          s + (o - a) / h,
-          i + (o + a) / h,
-          n
-        ),
-          m(l, c, u, d, n);
-        let f = Math.floor((t - Math.sign(o) * Math.SQRT1_2) / n),
-          g = Math.floor((e - Math.sign(a) * Math.SQRT1_2) / n);
-        return (
-          r.has(f + "," + g) || (p.push(f, g), r.add(f + "," + g)),
-          (f = Math.floor((s + Math.sign(o) * Math.SQRT1_2) / n)),
-          (g = Math.floor((i + Math.sign(a) * Math.SQRT1_2) / n)),
-          r.has(f + "," + g) || p.push(f, g),
-          p
-        );
-        function m(t, e, s, i, n) {
-          let o =
-              s > t ? (Math.floor(t / n) + 1) * n : (Math.ceil(t / n) - 1) * n,
-            a =
-              i > e ? (Math.floor(e / n) + 1) * n : (Math.ceil(e / n) - 1) * n,
-            h = Math.abs((o - t) / (s - t)),
-            l = Math.abs((a - e) / (i - e));
-          for (; !(s > t ? s <= o : s >= o) || !(i > e ? i <= a : i >= a); ) {
-            (h = Math.abs((o - t) / (s - t))),
-              (l = Math.abs((a - e) / (i - e)));
-            const c = s > t ? Math.floor(o / n) - 1 : Math.floor(o / n),
-              u = i > e ? Math.floor(a / n) - 1 : Math.floor(a / n);
-            r.has(c + "," + u) || (p.push(c, u), r.add(c + "," + u)),
-              l < h
-                ? i > e
-                  ? (a += n)
-                  : (a -= n)
-                : s > t
-                ? (o += n)
-                : (o -= n);
+      // sort points so all lines are going down and right before calling the actual function
+      function Zi(t, e, s, a, h, l) {
+        if (t > s && e > a) {
+          let r = _Zi(-t, -e, -s, -a, h, l);
+          for (let i = 0; i < r; i++)
+            l[i] = -l[i] - 1;
+          return r;
+        }
+        if (t > s) {
+          let r = _Zi(-t, e, -s, a, h, l);
+          for (let i = 0; i < r; i += 2) {
+              l[i] = -l[i] - 1;
           }
-          const c = s > t ? Math.ceil(s / n) - 1 : Math.floor(s / n),
-            u = i > e ? Math.ceil(i / n) - 1 : Math.floor(i / n);
-          r.has(c + "," + u) || (p.push(c, u), r.add(c + "," + u));
+          return r;
+        }
+        if (e > a) {
+            let r = _Zi(t, -e, s, -a, h, l);
+            for (let i = 1; i < r; i += 2) {
+                l[i] = -l[i] - 1;
+            }
+            return r;
+        }
+        return _Zi(t, e, s, a, h, l);
+      }
+      function _Zi(t, e, s, a, h, l) {
+        // rewritten to take in an array reference in l that it overwrites, and returns the number of things it added (= the 'length' of l)
+        // this avoids so many allocations and deallocations
+        var i = Math.round,
+            n = Math.floor,
+            r = Math.ceil,
+            o = Math.pow;
+        let lw = 1,
+          I = 0;
+        var c = t,
+            u = e,
+            d = (a - e) / (s - t),
+            p = s > t ? 1 : -1,
+            f = a > e ? 1 : -1,
+            g = 0;
+        // straight up or straight down lines are degenerate, so handle them by treating them as horizontal
+        if (d == Infinity || d == -Infinity) {
+            let r = Zi(e, t, a, s, h, l),
+                temp;
+            for (let i = 0; i < r; i += 2) {
+                temp = l[i];
+                l[i] = l[i + 1];
+                l[i + 1] = temp;
+            }
+            return r;
+        }
+        l[I++] = t;
+        l[I++] = e;
+        let C = c % h,
+            U = u % h;
+        C < 0 && (C += h);
+        U < 0 && (U += h);
+        // replicates the behavior in polygon's mod
+        if (C < 2 || U < 2) {
+            if (C == 0 && U < 2) {
+              l[I++] = t - h;
+              l[I++] = e - h;
+            }
+            if (C < 2) {
+              l[I++] = t - h;
+              l[I++] = e;
+            }
+            if (U < 2) {
+              l[I++] = t;
+              l[I++] = e - h;
+            }
+        }
+        do {
+            var m = n(c / h) >= n(s / h),
+                v = n(u / h) >= n(a / h);
+            if (m && v) break;
+            var y,
+                w = 0;
+            w = i(n(c / h + p) * h);
+            if (p < 0) w = i(r((c + 1) / h + p) * h) - 1;
+            y = i(e + (w - t) * d);
+            var x,
+                b = 0;
+            b = i(n(u / h + f) * h);
+            if (f < 0) b = i(r((u + 1) / h + f) * h) - 1;
+            x = i(t + (b - e) / d);
+            let erry = o(w - t, 2) + o(y - e, 2),
+                errx = o(x - t, 2) + o(b - e, 2);
+            if (erry < errx) {
+                // detect: y is close to a grid line, and the next cell from x isn't in that direction
+                let m = y % h;
+                m < 0 && (m += h);
+                if (!m) {
+                    if (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) {
+                          l[I++] = w + 1;
+                          l[I++] = y - h / 2;
+                        }
+                    if (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) {
+                          l[I++] = w - 1;
+                          l[I++] = y + h / 2;
+                        }
+                } else if (m <= lw) {
+                    if (n(c / h) != n((w + 1) / h) ||
+                        n(u / h) != n(y / h - 0.8)) {
+                          l[I++] = w + 1;
+                          l[I++] = y - h / 2;
+                        }
+                } else if (m >= h - lw) {
+                    if (n(c / h) != n((w - 1) / h) ||
+                        n(u / h) != n(y / h + 0.8)) {
+                          l[I++] = w - 1;
+                          l[I++] = y + h / 2;
+                        }
+                }
+                c = w;
+                u = y;
+                l[I++] = w;
+                l[I++] = y;
+            } else {
+                let m = x % h;
+                m < 0 && (m += h);
+                // if this one is also used to detect close calls, it will result in overdraws, so we just use it to detect passing in between cells
+                if (!m) {
+                    if (n(c / h) != n(x / h - 0.8) ||
+                        n(u / h) != n((b + 1) / h)) {
+                        l[I++] = x - h / 2;
+                        l[I++] = b + 1;
+                    }
+                    if (n(c / h) != n(x / h + 0.8) ||
+                        n(u / h) != n((b - 1) / h)) {
+                        l[I++] = x + h / 2;
+                        l[I++] = b - 1;
+                      }
+                }
+                c = x;
+                u = b;
+                l[I++] = x;
+                l[I++] = b;
+            }
+        } while (g++ < 5000);
+        C = s % h;
+        C < 0 && (C += h);
+        U = a % h;
+        U < 0 && (U += h);
+        // replicates the behavior in polygon's mod
+        if (C > h - 2 || U > h - 2) {
+            if (C > h - 2) {
+                l[I++] = s + h;
+                l[I++] = a - 1;
+            }
+            if (U > h - 2) {
+              l[I++] = s;
+              l[I++] = a + h;
+            }
+        }
+        return I;
+      }
+      class Layer {
+        constructor(t) {
+          this.track = t;
+          this.scene = t.scene;
+          this.settings = t.settings;
+          this.sectors = new Set();
+          this.physicsLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor;
+          this.sceneryLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor;
+          this.usesDefaultColors = true;
+          this.physicsLines = new Set();
+          this.sceneryLines = new Set();
+          this.objects = new Set();
+          this.show = true;
+          this.name = "";
+        }
+
+        toggle() {
+          this.show = !this.show;
+          this.update();
+        }
+
+        update() {
+          this.doesUseDefaultColors();
+          for (let i of this.sectors) {
+            i.drawn && i.clear();
+          }
+          this.track.canvasPool.update();
+        }
+
+        doesUseDefaultColors() {
+          this.usesDefaultColors = (this.physicsLineColor == (this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor)) &&
+          (this.sceneryLineColor == (this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor));
+        }
+
+        resetColors() {
+          this.physicsLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("lineColor"))
+          : this.settings.physicsLineColor;
+          this.sceneryLineColor = this.track.game.mod.getVar("customColors")
+          ? Q(this.track.game.mod.getVar("sceneryColor"))
+          : this.settings.sceneryLineColor;
+          this.update();
+        }
+
+        clear() {
+          for (let object of this.physicsLines) {
+            remove(object);
+          }
+          for (let object of this.sceneryLines) {
+            remove(object);
+          }
+          for (let object of this.objects) {
+            remove(object);
+          }
+        }
+
+        fixColor(c) {
+          if (/^rgba?/.test(c)) {
+            let d = c.match(/\((\d+), ?(\d+), ?(\d+)/);
+            return `#${('0' + d[1].toString(16)).slice(-2)}${('0' + d[2].toString(16)).slice(-2)}${('0' + d[3].toString(16)).slice(-2)}`;
+          }
+          return /^#[0-9A-Fa-f]{3}$/.test(c) ? c.replaceAll(/([0-9A-Fa-f])/g, '$1$1') : c;
+        }
+
+        getCode() {
+          const t = this.objects,
+            e = this.physicsLines,
+            s = this.sceneryLines;
+          let i = "",
+            n = !1;
+          let toReturn = {
+            name: this.name,
+            show: this.show,
+            defaultColors: this.usesDefaultColors
+          };
+
+          if (!this.usesDefaultColors) {
+            toReturn['physColor'] = this.fixColor(this.physicsLineColor);
+            toReturn['scenColor'] = this.fixColor(this.sceneryLineColor);
+          }
+        
+          const uniquePhysicsLines = new Set();
+          const uniqueSceneryLines = new Set();
+          const uniquePowerups = new Set();
+        
+          for (const t of e) {
+            if (!t.recorded && t.remove === 0) {
+              const code = (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32) + " " + t.getCode(this.track);
+              const codeReversed = t.getCode(this.track) + " " + (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32);
+              if (!this.scene.cleanCode || (!uniquePhysicsLines.has(code) && !uniquePhysicsLines.has(codeReversed))) {
+                uniquePhysicsLines.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          for (const t of e) t.recorded = !1;
+        
+          i += "#";
+          n = !1;
+        
+          for (const t of s) {
+            if (!t.recorded && t.remove === 0) {
+              const code = (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32) + " " + t.getCode(this.track);
+              const codeReversed = t.getCode(this.track) + " " + (t.p1.x - GameSettings.offsetPeteX).toString(32) + " " + (t.p1.y - GameSettings.offsetPeteY).toString(32);
+              if (!this.scene.cleanCode || (!uniqueSceneryLines.has(code) && !uniqueSceneryLines.has(codeReversed))) {
+                uniqueSceneryLines.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          for (const t of s) t.recorded = !1;
+        
+          i += "#";
+          n = !1;
+        
+          for (const e of t) {
+            if (e.remove === 0) {
+              const code = e.getCode();
+              if (code && (!this.scene.cleanCode || !uniquePowerups.has(code))) {
+                uniquePowerups.add(code);
+                n = !0;
+                i += code + ",";
+              }
+            }
+          }
+          n && (i = i.slice(0, -1));
+          toReturn.code = i;
+        
+          return toReturn;
+        }
+
+        static import(l, t) {
+          let layer = new Layer(t),
+            b = new TextEncoder();
+          layer.name = l.name;
+          layer.show = l.show;
+          layer.usesDefaultColors = l.defaultColors;
+          if (!l.defaultColors) {
+            layer.physicsLineColor = l.physColor;
+            layer.sceneryLineColor = l.scenColor;
+          }
+
+          t.setLayerIndex(t.layers.push(layer) - 1);
+
+          let code = l.code,
+            [physics, scenery, objects] = code.split('#');
+          if (physics)
+            t.addLines(b.encode(physics), t.addPhysicsLine.bind(t));
+          if (scenery)
+            t.addLines(b.encode(scenery), t.addSceneryLine.bind(t));
+          if (objects)
+            t.addPowerups(objects.split(','));
+
+          return layer;
         }
       }
       class Ui {
@@ -23628,7 +23913,8 @@
               trucks: [],
               balloons: [],
               blobs: [],
-            });
+            }),
+            (this.layers = new Set());
         }
         addLine(t) {
           t instanceof Wi.Z && this.physicsLines.push(t),
@@ -23698,14 +23984,16 @@
             (this.powerupCanvasDrawn = !1);
         }
         erase(t, e, s) {
-          const i = [];
+          const i = [],
+            l = this.track.currentLayer,
+            r = this.track.settings.eraser.mode;
           if (s.physics)
-            for (const s of this.physicsLines) s.erase(t, e) && i.push(s);
+            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
           if (s.scenery)
-            for (const s of this.sceneryLines) s.erase(t, e) && i.push(s);
+            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
           if (s.powerups)
             for (const s of this.powerups.all) {
-              const n = s.erase(t, e);
+              const n = (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e);
               n && i.push(...n);
             }
           return i;
@@ -23749,24 +24037,40 @@
             (n.height = i),
             r.clearRect(0, 0, n.width, n.height),
             r.save(),
-            r.beginPath(),
-            (r.lineWidth = o),
-            (r.lineCap = "round"),
-            (r.strokeStyle = this.track.game.mod.getVar("customColors")
-              ? Q(this.track.game.mod.getVar("sceneryColor"))
-              : a),
-            this.drawLines(s, t, r),
-            r.stroke(),
-            r.beginPath(),
-            (r.strokeStyle = this.track.game.mod.getVar("customColors")
-              ? Q(this.track.game.mod.getVar("lineColor"))
-              : h),
-            this.drawLines(e, t, r),
-            this.track.game.mod.getVar("lineShadow") &&
-              ((r.shadowOffsetX = r.shadowOffsetY = 2),
-              (r.shadowBlur = Math.max(2, 10 * t)),
-              (r.shadowColor = "#000")),
-            r.stroke();
+            (r.lineWidth = o);
+          let g = {},
+            f = [],
+            d = [...this.layers.values()], l;
+          for (let _l = d.length; --_l >= 0;) {
+            l = d[_l];
+            g[l.sceneryLineColor] = [];
+            g[l.physicsLineColor] = [];
+          }
+          for (let _l = e.length; --_l >= 0;) {
+            l = e[_l];
+            if (l.remove) continue;
+            l.layer.show && g[l.layer.physicsLineColor].push(l);
+          }
+          for (let _l = s.length; --_l >= 0;) {
+            l = s[_l];
+            if (l.remove) continue;
+            l.layer.show && g[l.layer.sceneryLineColor].push(l);
+          }
+          this.drawLines(g, t, r);
+          for (let _l = d.length; --_l >= 0;) {
+            l = d[_l];
+            if (!l.show) continue;
+            // easiest way to be certain that a layer doesn't ahve any lines in a sector
+            // (won't work if all layers are the same color)
+            // todo: assess performance impact of layers not getting removed from sectors
+            // and fix this to be better if need be
+            // this breaks undo / redo in certain cases
+            /*if (g[l.sceneryLineColor].length == 0 &&
+                g[l.physicsLineColor].length == 0) {
+                  this.layers.delete(l);
+                  l.sectors.delete(this);
+                }*/
+          }
             
             (this.settings.developerMode || this.scene.game.mod.getVar("gameData")) &&
             ((r.font = `${Math.max(10, 18 * t)}px Arial`),
@@ -23841,21 +24145,28 @@
             }
           }
         }
-        drawLines(t, e, s) {
+        drawLines(o, e, s) {
           const i = this.x,
             n = this.y;
-          let r, o, a, h, l, c;
-          for (let u = t.length - 1; u >= 0; u--) {
-            const d = t[u];
-            0 === d.remove &&
-              ((r = d.p1),
-              (o = d.p2),
-              (a = (r.x - i) * e),
-              (h = (r.y - n) * e),
-              (l = (o.x - i) * e),
-              (c = (o.y - n) * e),
-              s.moveTo(a, h),
-              s.lineTo(l, c));
+          let t, r, p, a, h, l, c;
+          s.lineCap = s.lineJoin = "round";
+          for (let b in o) {
+            s.strokeStyle = b;
+            t = o[b];
+            s.beginPath();
+            for (let u = t.length - 1; u >= 0; u--) {
+              const d = t[u];
+              0 === d.remove &&
+                ((r = d.p1),
+                (p = d.p2),
+                (a = (r.x - i) * e),
+                (h = (r.y - n) * e),
+                (l = (p.x - i) * e),
+                (c = (p.y - n) * e),
+                s.moveTo(a, h),
+                s.lineTo(l, c));
+            }
+            s.stroke();
           }
         }
         drawPowerups(t, e, s) {
@@ -23864,7 +24175,7 @@
             r = (this.powerupCanvasOffset * e) / 2;
           for (let o = t.length - 1; o >= 0; o--) {
             const a = t[o];
-            if (0 === a.remove) {
+            if (0 === a.remove && a.layer.show) {
               const t = (a.x - i) * e + r,
                 o = (a.y - n) * e + r;
               a.draw(t, o, e, s);
@@ -23983,6 +24294,11 @@
             (this.sectors = {}),
             (this.sectors.drawSectors = []),
             (this.sectors.physicsSectors = []),
+            (this.sectorArray = Array(20012)),
+            (this.layers = [new Layer(this)]),
+            (this.layers[0].name = 'Default'),
+            (this.layerIndex = 0),
+            (this.currentLayer = this.layers[0]),
             (this.totalSectors = []),
             (this.powerups = []),
             (this.powerupsLookupTable = {}),
@@ -24009,22 +24325,42 @@
             on.push(new Si(0, 0, 0, this)),
             on.push(new Li(0, 0, 0, this));
         }
+        createLayer() {
+          this.layers.push(new Layer(this));
+          this.setLayerIndex(this.layers.length - 1);
+          this.currentLayer.name = `Layer ${this.layerIndex}`;
+        }
+        setLayerIndex(i) {
+          if (this.layers[i]) {
+            this.layerIndex = i;
+            this.currentLayer = this.layers[i];
+          }
+        }
         recachePowerups(t) {
           for (const e of on) e.recache(t);
         }
         read(t) {
+          try {
+            let layers = JSON.parse(t);
+            this.layers.shift();
+            for (let i of layers) {
+              Layer.import(i, this);
+            }
+            return;
+          } catch {};
           const e = t.split("#"),
-            s = e[0].split(",");
+            b = new TextEncoder(),
+            s = b.encode(e[0]);
           let i,
             n = [],
             r = [];
           e.length > 3
-            ? ((n = e[1].split(",")), (r = e[2].split(",")), (i = e[3]))
+            ? ((n = b.encode(e[1])), (r = e[2].split(",")), (i = e[3]))
             : e.length > 2
-            ? ((n = e[1].split(",")), (r = e[2].split(",")))
+            ? ((n = b.encode(e[1])), (r = e[2].split(",")))
             : e.length > 1 && (r = e[1].split(",")),
-            this.addLines(s, this.addPhysicsLine),
-            this.addLines(n, this.addSceneryLine),
+            this.addLines(s, this.addPhysicsLine.bind(this)),
+            this.addLines(n, this.addSceneryLine.bind(this)),
             this.addPowerups(r),
             this.scene.selectVehicle(i);
         }
@@ -24114,6 +24450,8 @@
         addPowerup(t) {
           const e = t.x,
             s = t.y;
+          t.layer = this.currentLayer;
+          this.currentLayer.objects.add(t);
           this.addRef(
             e,
             s,
@@ -24139,17 +24477,42 @@
           );
         }
         addLines(t, e) {
-          for (let s = 0; s < t.length; s++) {
-            const i = t[s].split(" ");
-            if (i.length > 3)
-              for (let t = 0; t < i.length - 2; t += 2) {
-                const s = parseInt(i[t], 32),
-                  n = parseInt(i[t + 1], 32),
-                  r = parseInt(i[t + 2], 32),
-                  o = parseInt(i[t + 3], 32);
-                isNaN(s + n + r + o) || e.call(this, s, n, r, o);
-              }
-          }
+            let q, a, b, c, d, m, o, u;
+            for (let s = t.length, i = 0; i < s; i++) {
+                q = a = b = c = d = 0;
+                m = 1;
+                for (; i < s && (o = t[i]) != 44; i++) {
+                    if (o == 32) {
+                        a *= m;
+                        q++;
+                        if (q > 3 && !(q & 1)) {
+                            u = a + b + c + d;
+                            if (u == u) e(d, c, b, a);
+                        }
+                        d = c;
+                        c = b;
+                        b = a;
+                        a = 0;
+                        m = 1;
+                    } else if (o == 45) {
+                        m = -1;
+                    // periods shouldn't appear in track codes, but handle them without breaking a lot if they do (as they're a reasonable thing to get in e.g. generated tracks) (other improper characters will have unexpected results, however, with the severity depending on what character it is and where)
+                    } else if (o == 46) {
+                        for (; i < s && (o = t[i]) != 32 && o != 44; i++);
+                        i--;
+                    } else {
+                        a *= 32;
+                        a += o - 48;
+                        o > 57 && (a -= 39);
+                    }
+                }
+                a *= m;
+                q++;
+                if (q > 3 && !(q & 1)) {
+                    u = a + b + c + d;
+                    if (u == u) e(d, c, b, a);
+                }
+            }
         }
         addPhysicsLine(t, e, s, i) {
           let raw = [t, e, s, i];
@@ -24157,6 +24520,8 @@
           const n = (i = rn(i)) - e;
           if (sn(nn(s - t, 2) + nn(n, 2)) >= 2) {
             const n = new Wi.Z(t, e, s, i, raw);
+            n.layer = this.currentLayer;
+            this.currentLayer.physicsLines.add(n);
             this.addPhysicsLineToTrack(n);
             return n;
           }
@@ -24164,12 +24529,13 @@
         addPhysicsLineToTrack(t) {
           let e = this.settings.drawSectorSize;
           const s = t.p1,
-            i = t.p2;
-          let n = Zi(s.x, s.y, i.x, i.y, e),
+            i = t.p2,
+            arr = this.sectorArray;
+          let n = Zi(s.x, s.y, i.x, i.y, e, arr),
             r = this.sectors.drawSectors;
-          for (let s = 0; n.length > s; s += 2) {
-            const i = n[s] * e,
-              o = n[s + 1] * e,
+          for (let s = 0; n > s; s += 2) {
+            const i = arr[s],
+              o = arr[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
@@ -24189,18 +24555,21 @@
           const n = (i = rn(i)) - e;
           if (sn(nn(s - t, 2) + nn(n, 2)) >= 2) {
             const n = new Vi.Z(t, e, s, i, raw);
+            n.layer = this.currentLayer;
+            this.currentLayer.sceneryLines.add(n);
             return this.addSceneryLineToTrack(n), n;
           }
         }
         addSceneryLineToTrack(t) {
-          const e = this.settings.drawSectorSize,
+          const arr = this.sectorArray,
+            e = this.settings.drawSectorSize,
             s = t.p1,
             i = t.p2,
-            n = Zi(s.x, s.y, i.x, i.y, e),
+            n = Zi(s.x, s.y, i.x, i.y, e, arr),
             r = this.sectors.drawSectors;
-          for (let s = 0; s < n.length; s += 2) {
-            const i = n[s] * e,
-              o = n[s + 1] * e,
+          for (let s = 0; s < n; s += 2) {
+            const i = arr[s],
+              o = arr[s + 1],
               a = this.addRef(i, o, t, 1, r, e);
             !1 !== a && this.totalSectors.push(a);
           }
@@ -24209,18 +24578,26 @@
         addRef(t, e, s, i, n, r) {
           const o = Qi(t / r),
             a = Qi(e / r);
-          let h = !1;
-          switch (
-            (void 0 === n[o] && (n[o] = []),
-            void 0 === n[o][a] &&
-              ((n[o][a] = new Gi(o, a, this)), (h = n[o][a])),
-            i)
-          ) {
+          let h = !1,
+          S, R;
+          if (!(R = n[o])) {
+            n[o] = [];
+            n[o][a] = S = h = new Gi(o, a, this);
+          } else if (!(S = R[a])) {
+            R[a] = S = h = new Gi(o, a, this);
+          }
+          switch (i) {
             case 1:
-              n[o][a].addLine(s), s.addSectorReference(n[o][a]);
+              S.addLine(s);
+              s.sectors.push(S);
               break;
             case 2:
-              n[o][a].addPowerup(s), s.addSectorReference(n[o][a]);
+              S.addPowerup(s);
+              s.sector = S;
+          }
+          if (r == this.settings.drawSectorSize) {
+            s.layer.sectors.add(S);
+            S.layers.add(s.layer);
           }
           return (this.dirty = !0), h;
         }
@@ -24265,8 +24642,15 @@
               (i.sector.powerupCanvasDrawn = !1);
           }
         }
-        getCode() {
+        getCode(flat = false) {
           this.cleanTrack();
+          if (!flat && this.layers.length > 1) {
+            let layers = [];
+            for (let i of this.layers) {
+              layers.push(i.getCode());
+            }
+            return JSON.stringify(layers);
+          }
           const t = this.powerups,
             e = this.physicsLines,
             s = this.sceneryLines;
@@ -24945,8 +25329,8 @@ showMessage();
             this.drawInputDisplay();
             this.drawGameData();
         }
-        trackData() {
-          this.trackcode = GameSettings.object ? this.getObjectCode() : this.track.getCode();
+        trackData(code = '') {
+          this.trackcode = GameSettings.object ? this.getObjectCode() : (code || this.track.getCode(true));
           let trackSize = new Blob([this.trackcode]).size / 1024;
           trackSize = trackSize.toFixed(2);
         
@@ -25216,10 +25600,29 @@ showMessage();
           (this.state.playing = !1), (this.state.showDialog = t);
         }
         getTrackCode() {
-          const trackData = this.trackData();
+          const code = this.track.getCode();
+          const trackData = this.trackData(
+              this.track.layers.length > 1
+                  ? JSON.parse(code)
+                        .reduce(
+                            (a, b, n) => {
+                                let c = b.code.split('#');
+                                return [
+                                    a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
+                                    a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
+                                    a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
+                                ];
+                            },
+                            ['', '', '']
+                        )
+                        .join('#')
+                  : code
+          );
+          this.trackcode = code;
+          console.log(code);
           (this.state.dialogOptions = {}),
             (this.state.dialogOptions.verified = this.verified),
-            (this.state.dialogOptions.code = this.track.getCode()),
+            (this.state.dialogOptions.code = code),
             (this.state.dialogOptions.physicsLineCount = trackData.physicsLineCount),
             (this.state.dialogOptions.sceneryLineCount = trackData.sceneryLineCount),
             (this.state.dialogOptions.powerupCounts = trackData.powerupCounts),
@@ -26810,6 +27213,7 @@ showMessage();
             set(t, e, s) {
               t !== s &&
                 (e && e.currentScene.track.undraw(),
+                e && e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors()),
                 t
                   ? document.head.appendChild(nr)
                   : document.head.removeChild(nr));
@@ -26825,6 +27229,7 @@ showMessage();
             default: [61, 0, 15],
             set(t, e) {
               e.currentScene.track.undraw();
+              e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
             },
           },
           sceneryColor: {
@@ -26832,6 +27237,7 @@ showMessage();
             default: [190, 169, 158],
             set(t, e) {
               e.currentScene.track.undraw();
+              e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
             },
           },
           backgroundColor: {
@@ -27557,7 +27963,7 @@ showMessage();
       }
       let xr = document.createElement("template");
       (xr.innerHTML =
-        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/pie42/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char<br>Renée<br>Maxime<br>Pete</div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
+        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/pie42/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char<br>Renée<br>Maxime<br>Pete<br><span title="created icons for the layer feature">mbcool</span></div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
         (xr = xr.content);
       const br = {
         bool: (t, e, s, i) => new lr(t, s[e], i),
@@ -28567,9 +28973,11 @@ function load() {
       singleHover(mousePos) {
           let minDist = 1000,
               bestLine = undefined,
-              adjustedDist = 2 * HOVER_DIST / this.scene.camera.zoom;
+              adjustedDist = 2 * HOVER_DIST / this.scene.camera.zoom,
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           // selected doesn't exist on the track, so we have to check it separately
-          if (selected) {
+          if (selected && (mode != 'layer' || layer == selected.layer) && (mode != "visible" || selected.layer.hide == false)) {
               let dist = selected.p1 ?
                   linesdf(mousePos.sub(selectOffset), selected) :
                   pointsdf(mousePos.sub(selectOffset), selected);
@@ -28580,6 +28988,8 @@ function load() {
               }
           } else if (this.gamepad.isButtonDown("alt") && isSelectList) {
               for (let i of selectList) {
+                  if (mode == 'layer' && layer != i.layer) continue;
+                  if (mode == 'visible' && i.layer.hide == true) continue;
                   let dist = i.p1 ?
                       linesdf(mousePos.sub(selectOffset), i) :
                       pointsdf(mousePos.sub(selectOffset), i);
@@ -28796,14 +29206,17 @@ function load() {
           let mousePos = this.mouse.touch.real,
               sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y],
               minDist = 1000,
-              bestLine = undefined;
+              bestLine = undefined,
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           if (sector == undefined) {
               return [minDist, bestLine];
           }
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist && i != tempSelect) {
                       minDist = dist;
@@ -28813,8 +29226,9 @@ function load() {
           }
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
                   if (dist < minDist) {
                       minDist = dist;
@@ -28824,8 +29238,9 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer))
                       continue;
+                  if (mode == 'visible' && !i.layer.show) continue;
                   let dist = pointsdf(mousePos, i);
                   if (dist < minDist) {
                       minDist = dist;
@@ -28839,7 +29254,9 @@ function load() {
       testSectorMulti(sectorPos, minVec, maxVec) {
           let sectorSize = this.scene.settings.drawSectorSize,
               sectorTrackPos = {x: sectorPos.x * sectorSize, y: sectorPos.y * sectorSize},
-              sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y];
+              sector = this.scene.track.sectors.drawSectors?.[sectorPos.x]?.[sectorPos.y],
+              layer = this.scene.track.currentLayer,
+              mode = this.scene.settings.select.mode;
           if (sector == undefined)
               return [];
           // see if we can just return the whole sector
@@ -28848,15 +29265,15 @@ function load() {
               maxVec.x >= sectorTrackPos.x + sectorSize &&
               maxVec.y >= sectorTrackPos.y + sectorSize) {
               hoverPhysicsList[sectorPos.x][sectorPos.y] = 
-                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove) : [])
-                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove) : []));
+                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : [])
+                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
               return hoverPhysicsList[sectorPos.x][sectorPos.y]
-                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove) : []));
+                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
           }
           let toReturn = [];
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -28864,7 +29281,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (pointrect(i, minVec, maxVec))
                       toReturn.push(i);
@@ -28873,7 +29290,7 @@ function load() {
           hoverPhysicsList[sectorPos.x][sectorPos.y] = [...toReturn];
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove)
+                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -29285,7 +29702,7 @@ function load() {
                   moveAccumulator += moveSpeed;
                   if (!isSelectIntangible) {
                       isSelectIntangible = true;
-                      tempSelect?.forEach?.(i=>remove(i));
+                      tempSelect?.forEach?.(i => remove(i));
                       tempSelect = undefined;
                       remove(connected);
                   }
@@ -29466,6 +29883,8 @@ function load() {
       }
   });
 
+
+
   function _r(a, b) {
       let i = a.indexOf(b);
       i >= 0 && a.splice(i, 1);
@@ -29473,6 +29892,7 @@ function load() {
 
   function remove(object) {
       if (!object) return;
+      let scene = GameManager.game.currentScene;
       object.remove = true;
       // if you want something done (removing a powerup), you gotta do it yourself
       if (object.name) {
@@ -29493,6 +29913,9 @@ function load() {
           _r(drawSector.powerups[object.name + 's'], object);
           drawSector.hasPowerups = drawSector.powerups.all.length;
           drawSector.powerupCanvasDrawn = false;
+          object.layer.objects.delete(object);
+      } else {
+          object.layer['highlight' in object ? 'physicsLines' : 'sceneryLines'].delete(object);
       }
       object.markSectorsDirty();
       object.redrawSectors();
@@ -29502,7 +29925,8 @@ function load() {
 
   function recreate(object) {
       if (!object) return;
-      let newObject;
+      let newObject,
+          scene = GameManager.game.currentScene;
       if (object.p1) {
           let isPhysics = 'highlight' in object;
           if (isSelectList && (invert >> 1) & 1) isPhysics = !(invert & 1);
@@ -29512,6 +29936,7 @@ function load() {
           } else {
               newObject = scene.track.addSceneryLine(object.p1.x + selectOffset.x, object.p1.y + selectOffset.y, object.p2.x + selectOffset.x, object.p2.y + selectOffset.y);
           }
+          object.layer && (newObject.layer = object.layer);
       } else {
           object.x = object.oldPos.x + selectOffset.x;
           object.y = object.oldPos.y + selectOffset.y;
