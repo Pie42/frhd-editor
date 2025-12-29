@@ -61,13 +61,24 @@
     
     <script>
         window.addEventListener("message", function (event) {
+            /*if (event.data.action === "loggedIn") {
+                GameSettings.beta = true;
+                GameSettings.user = event.data.user;
+            }*/
             if (event.data.action === "importTrack") {
                 const trackData = event.data.content;
-                var title = event.data.title.toLowerCase();
+                var title = event.data.title ? event.data.title.toLowerCase() : null;
                 if (trackData) {
                     console.log("Track data received:", trackData);
                     GameManager.command("import", trackData, true);
                     GameSettings.trackName = title;
+                        fetch('assets/tracks/tracklist-data.json')
+                        .then(res => res.json())
+                        .then(trackdata => {
+                          const match = trackdata.tracks.find(t => t["track-name"] === trackName);
+                          console.log(match)
+                          this.updateNowPlaying(match || { "track-name": trackName });
+                        })
                 } else {
                     console.error("No track data found.");
                 }
@@ -139,8 +150,9 @@
         });
     </script>
     
-    <script>
+    <!--<script>
         window !== window.parent ? GameSettings.beta = false : GameSettings.beta = true;
-    </script>
+    </script>-->
+
 </body>
 </html>

@@ -315,16 +315,18 @@ html {
 input,
 textarea {
     border: none;
-    padding: .2em .2em;
+    padding: .5em;
     margin: 0;
     display: block;
     background: 0 0;
     outline: 0 !important;
-    min-height: 1.4em;
     line-height: 1.4em;
     font-size: 1em;
     width: 100%;
-    -webkit-appearance: none
+    white-space: pre;
+    -webkit-appearance: none;
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 input,
@@ -342,9 +344,10 @@ textarea#color {
     border-color: light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
     border-image: initial;
     border-radius: 0px;
-    width: 100px;
-    height: 21px;
+    width: 60%;
     font-size: 11pt;
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 .coin_icons,
@@ -1016,10 +1019,10 @@ canvas {
     appearance: button;
     -moz-appearance: button;
     -webkit-appearance: button;
-    padding: 8px 25px;
-    border-radius: 30px;
+    padding: 8px 10px;
     background: #FFF;
-    border: 1px solid #C2C2C2
+    border: 1px solid #C2C2C2;
+    border-radius: 11px;
 }
 
 html.fullscreen {
@@ -1270,7 +1273,7 @@ html.fullscreen #main_page {
     background-repeat: no-repeat;
     background-image: url(assets/images/gui/cube.png);
     background-position: 0px 0px;
-    width: 45px;
+    width: 44px;
     height: 44px;
 }
 
@@ -1643,13 +1646,13 @@ span.editorgui_icons-icon_all {
 .editorgui_icons-icon_hotkeys:hover {
     width: 32px;
     height: 32px;
-    background-position: -416px -32px
+    background-position: -416px -31px
 }
 
 .editorgui_icons-icon_hotkeys {
     width: 32px;
     height: 32px;
-    background-position: -412px -96px
+    background-position: -412px -95px
 }
 
 .editorgui_icons-icon_import:hover {
@@ -1682,10 +1685,18 @@ span.editorgui_icons-icon_all {
     background-position: -340px -88px
 }
 
+.editorgui_icons-icon_upload:hover {
+    width: 32px;
+    height: 32px;
+    background-position: -353px -32px;
+    rotate: 270deg;
+}
+
 .editorgui_icons-icon_upload {
-    width: 44px;
-    height: 44px;
-    background-position: -444px -96px
+    width: 32px;
+    height: 32px;
+    background-position: -373px -64px;
+    rotate: 270deg;
 }
 
 .editorgui_icons-icon_select {
@@ -1719,7 +1730,7 @@ span.editorgui_icons-icon_all {
 }
 
 .topMenu {
-    width: 80%;
+    width: 100%;
     height: 45px;
     background: #E2E2E2;
     border-bottom: 1px solid #000;
@@ -1779,12 +1790,12 @@ span.editorgui_icons-icon_all {
     }
 }
 
-@media screen and (max-width: 720px) {
+/*@media screen and (max-width: 720px) {
     .topMenu-button_help,
     .topMenu-button_controls {
         display: none
     }
-}
+}*/
 
 .horizontal-slider-container {
     display: inline-block;
@@ -1998,7 +2009,7 @@ span.editorgui_icons-icon_all {
 }
 
 .brushToolOptions-input_vehiclepoweruptime {
-    width: 40px;
+    width: 50px;
     height: 25px;
     margin-left: 15px;
 }
@@ -2200,7 +2211,8 @@ span.editorgui_icons-icon_all {
     overflow-y: scroll;
     z-index: 2;
     resize: none;
-    background: #F8F8F8
+    background: #F8F8F8;
+    text-wrap: balance;
 }
 
 .importDialog-tracklist {
@@ -2356,7 +2368,8 @@ span.editorgui_icons-icon_all {
 
 .ud-form-text-input {
     border: 1px solid #C2C2C2;
-    border-radius: 11px
+    border-radius: 11px;
+    margin-top: 5px;
 }
 
 .ud-form-vehicles>.ud-form-input {
@@ -2428,7 +2441,7 @@ span.editorgui_icons-icon_all {
 }
 
 .ud-uploading-message>.text {
-    padding-left: 34px;
+    padding-left: 10px;
     font-size: .9em
 }
 
@@ -2607,7 +2620,10 @@ span.editorgui_icons-icon_all {
 }
 
 .offlineeditorpromo-dialog {
-    font-family: roboto_medium, Arial, Helvetica, sans-serif
+    font-family: roboto_medium, Arial, Helvetica, sans-serif;
+    top: 50%;
+    max-width: 300px;
+    min-width: 240px;
 }
 
 .offlineeditorpromo-dialog .middle {
@@ -3105,7 +3121,7 @@ only screen and (min-device-pixel-ratio:3) {
     border: 1px solid transparent
 }
 
-@media (max-height: 1440px) {
+@media (max-height: 800px) {
     .leftMenu,
     .rightMenu {
         transform: scale(0.8);
@@ -3121,7 +3137,7 @@ only screen and (min-device-pixel-ratio:3) {
 
     .topMenu {
         top: -5px;
-        width: 100%;
+        width: 125%;
         transform: scale(0.8);
         transform-origin: left;
     }
@@ -3138,17 +3154,45 @@ only screen and (min-device-pixel-ratio:3) {
     }
 }
 
-@media (max-width: 720px) or (max-height: 600px) {
-    .editorDialog-content {
-        width: 360px;
+@media (min-height: 1440px) {
+    .leftMenu,
+    .rightMenu {
+        transform: scale(1.25);
     }
 
-    .importDialog-placeholder {
-        width: 40%;
+    .leftMenu {
+        left: 5px;
     }
+
+    .rightMenu {
+        right: 5px;
+    }
+
+    .topMenu {
+        top: 5px;
+        width: 125%;
+        transform: scale(1.25);
+        transform-origin: left;
+    }
+
+    .bottomMenu {
+        bottom: 5px;
+        width: 125%;
+        transform: scale(1.25);
+        transform-origin: left;
+    }
+
+    .editorGui {
+        height: 55px;
+    }
+}
+
+@media (max-width: 720px) or (max-height: 600px) {
+    /*.importDialog-placeholder {
+        width: 40%;
+    }*/
 
     .importDialog-code {
-        width: 45%;
         height: 250px;
     }
 
@@ -3246,6 +3290,47 @@ only screen and (min-device-pixel-ratio:3) {
     border-bottom: none;
     border-top: none;
     border-width: 1px;
+}
+
+.collaborators-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 2px;
+    height: auto;
+}
+
+.collaborator-chip {
+    display: flex;
+    align-items: center;
+    background-color: #eee;
+    color: #1883cf;
+    border-radius: 11px;
+    padding: 4px 8px;
+    margin: 4px 4px 4px 2px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+}
+
+.collaborator-chip:hover {
+    background-color: #ccc;
+}
+
+.collaborator-chip .remove-x {
+    margin-left: 5px;
+    font-weight: bold;
+    color: #CC0000;
+}
+
+.collaborator-active-input {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: .5em;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 50px;
 }
 
 div.layer-modal {

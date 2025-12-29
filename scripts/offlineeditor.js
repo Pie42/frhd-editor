@@ -367,11 +367,24 @@
                 t = this.props.data.toolOptions,
                 mobile = GameManager.game && (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")),
                 f = "";
-                var sidebar = GameSettings.sidebar;
-                var width = sidebar ? "70%" : "100%";
+                var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  sidebar = true;
+                  playMode = false;
+                }
+                var width = sidebar ? "75%" : "100%";
                 var mediaWidth = sidebar ? "93.75%" : "125%";
+                var largeMediaWidth = sidebar ? "60%" : "80%";
                 var bottomMenuStyle = {
-                  width: window.innerHeight <= 1440 ? mediaWidth : width,
+                  width: window.innerHeight >= 1440
+                    ? largeMediaWidth
+                    : (window.innerHeight <= 800
+                      ? mediaWidth
+                      : width)
                 };
               switch (e) {
                 case "straightline":
@@ -411,13 +424,13 @@
                     "div",
                     { className: "clearfix" },
                     f,
-                    !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
-                    !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
-                    !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
+                    !playMode && !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
+                    !playMode && !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
+                    !playMode && !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
                     //e !== "select" && n.createElement(vv),
                     n.createElement(r, { vehicle: this.props.data.vehicle }),
-                    !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
-                    !mobile ? n.createElement(L) : null,
+                    !playMode && !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
+                    !playMode && !mobile ? n.createElement(L) : null,
                     //e === "select" && n.createElement(vvv),
                     //n.createElement(v),
                     n.createElement("span", { className: "divider" })
@@ -1957,7 +1970,7 @@
               return { open: false };
             },
             openOptions: function (e) {
-              if (GameManager.game.currentScene.mod.getVar("mobile"))
+              if (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")) // remove "play" when you want to have ghost imports
               { this.toggleVehicle();
                 return;
               }
@@ -1975,6 +1988,12 @@
                 t = "editorgui_icons editorgui_icons-icon_bmx",
                 r = "BMX";
                 var o = this.state.open ? " :" : "";
+
+                if (typeof GameSettings !== 'undefined') {
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  playMode = false;
+                }
               return (
                 this.props.vehicle &&
                   ((r = this.props.vehicle.toLowerCase()),
@@ -1990,7 +2009,7 @@
                     "span",
                     { className: "name" },
                     "",
-                    n.createElement("span", { className: "name" }, r, o), this.state.open && n.createElement("button", {
+                    n.createElement("span", { className: "name" }, r, o), !playMode && this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
@@ -1998,13 +2017,13 @@
                       }
                   }, "SET START POSITION")
                   ),
-                  /*this.state.open && n.createElement("button", {
+                  playMode && this.state.open && n.createElement("button", {
                       className: "margin",
                       onClick: (event) => {
                         event.stopPropagation();
                         this.importGhost(event);
                       }
-                  }, "IMPORT GHOST")*/
+                  }, "IMPORT GHOST")
                   
                 )
               );
@@ -3114,13 +3133,28 @@
               e.target.className === this.className &&
                 "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
+              !this.hasShownPromo ? this.hasShownPromo = true : null;
             },
             render: function () {
-              var e = this.props.data.showDialog,
-                t = this.props.data.dialogOptions,
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  sidebar = true;
+                  playMode = false;
+                }
+              var e = this.props.data.showDialog;
+
+              if (!e && !this.hasShownPromo && !playMode) {
+                e = "offline_editor";
+              }
+
+              var t = this.props.data.dialogOptions,
                 h = {},
                 f = "";
-                h.width = GameSettings.sidebar ? "75%" : "100%";
+                h.width = sidebar ? "75%" : "100%";
               switch (e) {
                 case "import":
                   f = n.createElement(r, null);
@@ -3139,7 +3173,7 @@
                   break;
                 case "upload":
                   f = GameSettings.isStandalone
-                    ? n.createElement(u, { options: t })
+                    ? n.createElement(l, { options: t })
                     : n.createElement(l, { options: t });
                   break;
                 case "info":
@@ -4077,47 +4111,120 @@
             getInitialState: function () {
               return { isDragActive: !1 };
             },
+            updateNowPlaying(trackInfo) {
+              const iframe = document.getElementById("forumIframe");
+              if (!iframe) return;
+
+              const iframeDoc =
+                iframe.contentDocument || iframe.contentWindow.document;
+              const nowPlayingDiv = iframeDoc.getElementById("now-playing");
+              if (!nowPlayingDiv) return;
+
+              let trackName = trackInfo["track-name"] || trackInfo;
+              console.log(trackName)
+              const creator = trackInfo.creator && trackInfo.creator !== "unknown"
+                ? ` <small>by ${trackInfo.creator}</small>`
+                : "";
+
+              let imageUrl = `https://freerider.app/assets/images/tracks/${trackName}.png`;
+
+              if (trackName.endsWith(".txt")) {
+              trackName = trackName.slice(0, -4);
+              imageUrl = 'https://freerider.app/assets/images/tracks/freeriderapp.png';
+              }
+
+              const safeTrackName = trackName.replace(/'/g, "");
+              const trackUrl = `https://freerider.app/#${encodeURIComponent(safeTrackName)}`;
+
+              nowPlayingDiv.style.display = "block";
+              nowPlayingDiv.style.position = "relative";
+
+              nowPlayingDiv.innerHTML = `
+                <img src="${imageUrl}" alt="${trackName}">
+                <div style="
+                  position:absolute;
+                  top:10px;
+                  left:10px;
+                  color:white;
+                  background-color: rgba(0,0,0,0.5);
+                  padding:5px 10px;
+                  border-radius:4px;
+                  max-width:90%;
+                  font-family:sans-serif;
+                ">
+                <strong>${trackName}</strong>
+                <small>${creator}</small>
+                </div>
+                <div id="copy-link-btn" style="
+                position:absolute;
+                bottom:10px;
+                right:10px;
+                background-color: rgba(255,255,255,0.8);
+                color: #000;
+                padding:2px 6px;
+                border-radius:3px;
+                font-size:12px;
+                cursor:pointer;
+                font-family:sans-serif;
+                user-select: none;
+                ">
+                Copy link
+                </div>
+                `;
+              const copyBtn = iframeDoc.getElementById("copy-link-btn");
+              copyBtn.addEventListener("click", () => {
+                navigator.clipboard.writeText(trackUrl).then(() => {
+                  copyBtn.textContent = "Copied!";
+                  setTimeout(() => {
+                    copyBtn.textContent = "Copy Link";
+                  }, 1500);
+                });
+              });
+            },
+
             importTrack: function () {
               var e = this.refs.code.getDOMNode(),
                 t = e.getAttribute("data-paste-code"),
                 n = e.value,
-                trackName = e.value.replace(/(\.\.\/)/g, ''),
+                trackName = e.value.replace(/(\.\.\/)/g, ""),
                 url = `assets/tracks/${trackName}.txt`;
-                ghost = `assets/ghosts/${trackName}.json`;
+              ghost = `assets/ghosts/${trackName}.json`;
 
-              if (e.value.includes('$')) {
-                var commands = e.value.split('$').slice(1);
-                commands.forEach(command => {
-                  var parts = command.trim().split(' ');
-                  var settingPath = parts[0].split('.');
-                  var value = parts.slice(1).join(' ');
+              if (e.value.includes("$")) {
+                var commands = e.value.split("$").slice(1);
+                commands.forEach((command) => {
+                  var parts = command.trim().split(" ");
+                  var settingPath = parts[0].split(".");
+                  var value = parts.slice(1).join(" ");
 
                   if (settingPath.length === 1) {
                     var setting = settingPath[0];
 
-                    if (setting === 'save') {
+                    if (setting === "save") {
                       var commandList = [];
                       var editorHotkeys = GameSettings.editorHotkeys;
 
                       for (var key in editorHotkeys) {
                         if (editorHotkeys.hasOwnProperty(key)) {
-                          commandList.push(`$editorHotkeys.${key} ${editorHotkeys[key]}`);
+                          commandList.push(
+                            `$editorHotkeys.${key} ${editorHotkeys[key]}`
+                          );
                         }
                       }
 
-                      var fileContent = commandList.join('\n');
-                      var blob = new Blob([fileContent], { type: 'text/plain' });
+                      var fileContent = commandList.join("\n");
+                      var blob = new Blob([fileContent], {
+                        type: "text/plain",
+                      });
                       var url = URL.createObjectURL(blob);
-                      var a = document.createElement('a');
+                      var a = document.createElement("a");
                       a.href = url;
-                      a.download = 'editorHotkeys.txt';
+                      a.download = "editorHotkeys.txt";
                       a.click();
                       URL.revokeObjectURL(url);
-                      e.value = '$hotkeys saved';
+                      e.value = "$hotkeys saved";
                       return;
-                    }
-
-                    else if (setting === 'default') {
+                    } else if (setting === "default") {
                       e.value = `
                           $editorHotkeys.up 38
                           $editorHotkeys.down 40
@@ -4161,16 +4268,17 @@
                           $editorHotkeys.scale 83
                           $editorHotkeys.flip 70
                       `;
-                      e.setAttribute('data-paste-code', e.value);
+                      e.setAttribute("data-paste-code", e.value);
                       this.importTrack();
-                  }
-
-                    else if (GameSettings.hasOwnProperty(setting)) {
+                    } else if (GameSettings.hasOwnProperty(setting)) {
                       var parsedValue = parseFloat(value);
                       if (!isNaN(parsedValue)) {
                         GameSettings[setting] = parsedValue;
-                      } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-                        GameSettings[setting] = value.toLowerCase() === 'true';
+                      } else if (
+                        value.toLowerCase() === "true" ||
+                        value.toLowerCase() === "false"
+                      ) {
+                        GameSettings[setting] = value.toLowerCase() === "true";
                       } else {
                         GameSettings[setting] = value;
                       }
@@ -4181,12 +4289,19 @@
                   } else if (settingPath.length === 2) {
                     var parentSetting = settingPath[0];
                     var childSetting = settingPath[1];
-                    if (GameSettings.hasOwnProperty(parentSetting) && GameSettings[parentSetting].hasOwnProperty(childSetting)) {
+                    if (
+                      GameSettings.hasOwnProperty(parentSetting) &&
+                      GameSettings[parentSetting].hasOwnProperty(childSetting)
+                    ) {
                       var parsedValue = parseFloat(value);
                       if (!isNaN(parsedValue)) {
                         GameSettings[parentSetting][childSetting] = parsedValue;
-                      } else if (value.toLowerCase() === 'true' || value.toLowerCase() === 'false') {
-                        GameSettings[parentSetting][childSetting] = value.toLowerCase() === 'true';
+                      } else if (
+                        value.toLowerCase() === "true" ||
+                        value.toLowerCase() === "false"
+                      ) {
+                        GameSettings[parentSetting][childSetting] =
+                          value.toLowerCase() === "true";
                       } else {
                         GameSettings[parentSetting][childSetting] = value;
                       }
@@ -4202,109 +4317,206 @@
               }
 
               if (n.length > 0) {
-                if (!confirm("The current track will be cleared. Are you sure you'd like to import?")) {
+                if (
+                  !confirm(
+                    "The current track will be cleared. Are you sure you'd like to import?"
+                  )
+                ) {
                   return;
                 }
               }
 
-              if (e.value === 'random') {
-                fetch('assets/tracks/tracklist.json')
-                  .then(response => response.json())
-                  .then(data => {
+              const typeIdMatch = e.value.match(/^(frhd|bhr|cr)-(\d+)$/i);
+              if (typeIdMatch) {
+                const trackType = typeIdMatch[1].toLowerCase();
+                const trackId = typeIdMatch[2];
+                const fetchUrl = `https://freerider.app/${trackType}/${trackId}.txt`;
+
+                console.log(`Fetching ${trackType} track #${trackId}`);
+
+                fetch(fetchUrl)
+                  .then((response) => {
+                    if (!response.ok) {
+                      throw new Error(`${trackType.toUpperCase()} track #${trackId} not found`);
+                    }
+                    return response.text();
+                  })
+                  .then((data) => {
+                    this.processTrackData(data);
+                    console.log(`${trackType.toUpperCase()} track #${trackId} loaded`);
+
+                    return fetch(`https://freerider.app/${trackType}/${trackId}?json=true`);
+                  })
+                  .then((response) => response.json())
+                  .then((metadata) => {
+                    console.log("Track metadata fetched:", metadata);
+                    this.updateNowPlaying({
+                      id: trackId,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${trackId}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType,
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId
+                    });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to load ${trackType} track:`, error);
+                    e.value = `Error: ${error.message}`;
+                  });
+
+                return;
+              }
+
+              if (e.value === "random") {
+                fetch("assets/tracks/tracklist.json")
+                  .then((response) => response.json())
+                  .then((data) => {
                     const tracklist = data.tracks;
-                    const randomIndex = Math.floor(Math.random() * tracklist.length);
+                    const randomIndex = Math.floor(
+                      Math.random() * tracklist.length
+                    );
                     trackName = tracklist[randomIndex];
-            
+
                     url = `assets/tracks/${trackName}.txt`;
                     fetch(url)
-                      .then(response => {
+                      .then((response) => {
                         if (!response.ok) {
-                          throw new Error('no track ID found, loading as track code.');
+                          throw new Error(
+                            "no track ID found, loading as track code."
+                          );
                         }
                         return response.text();
                       })
-                      .then(data => {
+                      .then((data) => {
                         this.processTrackData(data);
                         console.log("track loaded:", trackName);
-                        GameSettings.trackName = `${trackName}.txt`;
+                        //GameSettings.trackName = `${trackName}.txt`;
+                        console.log(match);
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         console.error(error);
                       });
                   })
-                  .catch(error => {
-                    console.error('Error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("Error loading tracklist:", error);
                   });
-              }
-              else if (e.value.startsWith('daily')) {
+              } else if (e.value.startsWith("daily")) {
                 let specifiedDate;
-                const parts = e.value.split(' ');
-            
+                const parts = e.value.split(" ");
+
                 if (parts.length === 2) {
-                    specifiedDate = new Date(parts[1]);
+                  specifiedDate = new Date(parts[1]);
                 } else {
-                    specifiedDate = new Date();
+                  specifiedDate = new Date();
                 }
-            
+
                 const formattedDate = specifiedDate.toISOString().slice(0, 10);
 
-                fetch('assets/tracks/trackdata.json')
-                  .then(response => {
+                fetch("assets/tracks/trackdata.json")
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('Failed to load trackdata.json');
+                      throw new Error("Failed to load trackdata.json");
                     }
                     return response.json();
                   })
 
-                  .then(data => {
-                    const trackEntry = data.tracks.find(entry => entry.date === formattedDate);
+                  .then((data) => {
+                    const trackEntry = data.tracks.find(
+                      (entry) => entry.date === formattedDate
+                    );
 
                     if (trackEntry && trackEntry.trackname) {
                       const { trackname, username, collaborators } = trackEntry;
-                      console.log("Loaded track details:", { trackname, username, collaborators });
+                      console.log("Loaded track details:", {
+                        trackname,
+                        username,
+                        collaborators,
+                      });
 
-                      const url = `assets/tracks/${encodeURIComponent(trackname)}.txt`;
+                      const url = `assets/tracks/${encodeURIComponent(
+                        trackname
+                      )}.txt`;
 
                       fetch(url)
-                        .then(response => {
+                        .then((response) => {
                           if (!response.ok) {
-                            throw new Error('track file not found, loading as track code.');
+                            throw new Error(
+                              "track file not found, loading as track code."
+                            );
                           }
                           return response.text();
                         })
-                        .then(trackData => {
+                        .then((trackData) => {
                           this.processTrackData(trackData);
                           console.log("track loaded:", trackname);
-                          GameSettings.trackName = `${trackname}.txt`;
+                          //GameSettings.trackName = `${trackname}.txt`;
+                        });
+                      fetch("assets/tracks/tracklist-data.json")
+                        .then((res) => res.json())
+                        .then((trackdata) => {
+                          const match = trackdata.tracks.find(
+                            (t) => t["track-name"] === trackName
+                          );
+                          console.log(match);
+                          this.updateNowPlaying(
+                            match || { "track-name": trackName }
+                          );
+                          /*this.showTrackInSlideshow(
+                            trackInfo["track-name"] || trackInfo
+                          );*/
                         })
-                        .catch(error => {
-                          console.error('error loading track:', error);
+                        .catch((error) => {
+                          console.error("error loading track:", error);
                         });
                     } else {
                       console.log("no track entry found for today’s date.");
                     }
                   })
-                  .catch(error => {
-                    console.error('error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("error loading tracklist:", error);
                   });
-              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
-            
+              } else if (
+                !e.value.includes("$") &&
+                !e.value.includes("#") &&
+                !t
+              ) {
                 fetch(url)
-                  .then(response => {
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('no track ID found, loading as track code.');
+                      throw new Error(
+                        "no track ID found, loading as track code."
+                      );
                     }
                     return response.text();
                   })
-                  .then(data => {
+                  .then((data) => {
                     this.processTrackData(data);
                     console.log("track loaded:", trackName);
-                    GameSettings.trackName = `${trackName}.txt`;
+                    //GameSettings.trackName = `${trackName}.txt`;
+                    fetch("assets/tracks/tracklist-data.json")
+                      .then((res) => res.json())
+                      .then((trackdata) => {
+                        const match = trackdata.tracks.find(
+                          (t) => t["track-name"] === trackName
+                        );
+                        console.log(match);
+                        this.updateNowPlaying(
+                          match || { "track-name": trackName }
+                        );
+                      })
+                      .catch(() =>
+                        this.updateNowPlaying({ "track-name": trackName })
+                      );
                   })
-                  .catch(error => {
-                    console.error('primary fetch failed.', error);
+                  .catch((error) => {
+                    console.error("primary fetch failed.", error);
 
-                    const script = document.createElement('script');
+                    /*const script = document.createElement("script");
                     script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t)`;
                     script.onerror = () => {
                       console.error("fallback fetch failed.");
@@ -4322,10 +4534,10 @@
                       delete window.t;
                     };
 
-                    document.body.appendChild(script);
+                    document.body.appendChild(script);*/
                   });
 
-                  /*fetch(ghost)
+                /*fetch(ghost)
                   .then(response => {
                     if (!response.ok) {
                       throw new Error('no ghost found.');
@@ -4366,71 +4578,80 @@
 
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                GameManager.command("import", n, !0),
-                GameSettings.trackName = `track.txt`;
+                  GameManager.command("import", n, !0),
+                (GameSettings.trackName = `track.txt`);
             },
             addTrack: function () {
               var e = this.refs.code.getDOMNode(),
                 t = e.getAttribute("data-paste-code"),
                 n = e.value,
-                trackName = e.value.replace(/(\.\.\/)/g, ''),
+                trackName = e.value.replace(/(\.\.\/)/g, ""),
                 url = `assets/tracks/${trackName}.txt`;
-            
-              if (e.value.includes('$')) {
+
+              if (e.value.includes("$")) {
                 e.value = `$use import to change settings`;
                 return;
               }
-            
-              if (e.value === 'random') {
-                fetch('assets/tracks/tracklist.json')
-                  .then(response => response.json())
-                  .then(data => {
+
+              if (e.value === "random") {
+                fetch("assets/tracks/tracklist.json")
+                  .then((response) => response.json())
+                  .then((data) => {
                     const tracklist = data.tracks;
-                    const randomIndex = Math.floor(Math.random() * tracklist.length);
+                    const randomIndex = Math.floor(
+                      Math.random() * tracklist.length
+                    );
                     trackName = tracklist[randomIndex];
-            
+
                     url = `assets/tracks/${trackName}.txt`;
                     fetch(url)
-                      .then(response => {
+                      .then((response) => {
                         if (!response.ok) {
-                          throw new Error('no track ID found, loading as track code.');
+                          throw new Error(
+                            "no track ID found, loading as track code."
+                          );
                         }
                         return response.text();
                       })
-                      .then(data => {
+                      .then((data) => {
                         this.processAddTrackData(data);
                         console.log("track loaded:", trackName);
                         GameSettings.trackName = `track.txt`;
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         console.error(error);
                       });
                   })
-                  .catch(error => {
-                    console.error('Error loading tracklist:', error);
+                  .catch((error) => {
+                    console.error("Error loading tracklist:", error);
                   });
-              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
-            
+              } else if (
+                !e.value.includes("$") &&
+                !e.value.includes("#") &&
+                !t
+              ) {
                 fetch(url)
-                  .then(response => {
+                  .then((response) => {
                     if (!response.ok) {
-                      throw new Error('no track ID found, loading as track code.');
+                      throw new Error(
+                        "no track ID found, loading as track code."
+                      );
                     }
                     return response.text();
                   })
-                  .then(data => {
+                  .then((data) => {
                     this.processAddTrackData(data);
                     console.log("track loaded:", trackName);
                     GameSettings.trackName = `track.txt`;
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                   });
               }
-            
+
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                GameManager.command("add", n, !0);
+                  GameManager.command("add", n, !0);
             },
             processTrackData(data) {
               if ("undefined" != typeof GameManager) {
@@ -4466,13 +4687,12 @@
               (n.onload = (event) => this.fileDropComplete(event, t[0].name)),
                 (n.onerror = this.fileDropError),
                 n.readAsText(t[0]);
-                
             },
             fileDropComplete: function (e, fileName) {
               var fileContent = e.target.result;
-              var isSettingsFile = fileContent.includes('$');
+              var isSettingsFile = fileContent.includes("$");
               var n = this.refs.code.getDOMNode();
-            
+
               if (isSettingsFile) {
                 n.value = fileContent;
                 n.setAttribute("data-paste-code", fileContent);
@@ -4635,10 +4855,10 @@
                     "Cancel"
                   )
                 ),
-                n.createElement(
-                  auto,
-                  {baseURL: 'assets/tracks/', onInput: this.onInput }
-                )
+                n.createElement(auto, {
+                  baseURL: "assets/tracks/",
+                  onInput: this.onInput,
+                })
               );
             },
           });
@@ -5174,7 +5394,7 @@
                   n.createElement(
                     "h1",
                     { className: "editorDialog-content-title" },
-                    "OFFLINE EDITOR"
+                    "freerider.app - track editor 1.1"
                   )
                 ),
                 n.createElement(
@@ -5183,17 +5403,20 @@
                   n.createElement(
                     "p",
                     null,
-                    "Now you can draw and save your tracks without an internet connection with the ",
+                    "If you've been enjoying the freerider.app track editor, please check out the ",
                     n.createElement(
                       "a",
                       {
                         "data-route": "true",
-                        href: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn?utm_source=web_editor_dialog",
+                        href: "https://forum.freerider.app/",
                         target: "_blank",
                       },
-                      "Offline Editor for Chrome"
+                      "freerider.app forum"
                     ),
-                    ". Click the button below to visit the Chrome Web Store and download the official Free Rider HD Offline Editor."
+                    "!",
+                    n.createElement("br", null),
+                    n.createElement("br", null),
+                    "Joining the community and sharing your tracks and ghosts is the best way to support the game."
                   ),
                   n.createElement(
                     "div",
@@ -5201,14 +5424,25 @@
                     n.createElement(
                       "a",
                       {
-                        href: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn?utm_source=web_editor_dialog",
+                        href: "https://forum.freerider.app/",
                         "data-route": "true",
                         target: "_blank",
-                        className: "install",
                       },
                       n.createElement("span", {
                         className:
-                          "icon editorgui_icons editorgui_icons-chrome_download_icon",
+                          "icon editorgui_icons editorgui_icons-helicopter",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-truck",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-balloon",
+                      }),
+                      n.createElement("span", {
+                        className:
+                          "icon editorgui_icons editorgui_icons-blob",
                       }),
                       n.createElement(
                         "div",
@@ -5216,12 +5450,12 @@
                         n.createElement(
                           "h3",
                           null,
-                          "FREE RIDER HD OFFLINE EDITOR"
+                          "Free Rider Community"
                         ),
                         n.createElement(
                           "span",
                           null,
-                          "Download from the Chrome Web Store"
+                          "forum.freerider.app"
                         )
                       )
                     )
@@ -5233,17 +5467,7 @@
                   n.createElement(
                     "p",
                     null,
-                    "Please note that the Free Rider HD Offline Editor requires the ",
-                    n.createElement(
-                      "a",
-                      {
-                        href: "https://www.google.com/chrome/browser/desktop/index.html",
-                        "data-route": "true",
-                        target: "_blank",
-                      },
-                      "Chrome Web Browser"
-                    ),
-                    " to be installed on your computer in order to run"
+                    "Thank you so much for your support! Much love from Ness & Pie42!"
                   )
                 )
               );
@@ -5267,7 +5491,7 @@
                 maxTitleChars: 30,
                 minTitleChars: 3,
                 maxDescChars: 300,
-                minDescChars: 5,
+                minDescChars: 0,
               };
             },
             uploadData: null,
@@ -5278,16 +5502,20 @@
                 descCharCountLeft: this.props.maxDescChars,
                 defaultVehicle: "MTB",
                 vehiclesAllowed: { mtb: !0, bmx: !0 },
-                uploadingEnabled: !1,
+                uploadingEnabled: !0,
                 canClose: !0,
                 errorMsg: "",
                 showErrorMsg: !1,
                 uploading: !1,
                 uploadComplete: !1,
+                copyButtonText: "Copy link",
+                collaborators: [],
+                currentCollaboratorInput: "",
+                trackUrl: "",
               };
             },
             getUser: function () {
-              return Application.User;
+              return GameSettings.user.name || "Unknown";
             },
             onTitleChange: function () {
               var e = this.refs.trackTitle,
@@ -5309,28 +5537,62 @@
                 this.setState({ descCharCountLeft: r }),
                 this.checkEnableUpload();
             },
+            onCollaboratorsChange: function (event) {
+                var rawText = event.target.value;
+                var collaborators = this.state.collaborators.slice();
+                var currentInput = rawText;
+                
+                var lastChars = rawText.slice(-2); 
+
+                if (rawText.length > 2 && lastChars === ", ") {
+                    var name = rawText.substring(0, rawText.length - 2).trim();
+
+                    if (name.length > 0 && collaborators.indexOf(name) === -1) {
+                        collaborators.push(name);
+                    }
+                    
+                    currentInput = ""; 
+                }
+                
+                this.setState({ 
+                    collaborators: collaborators,
+                    currentCollaboratorInput: currentInput
+                });
+            },
+            onRemoveCollaborator: function (name) {
+                var collaborators = this.state.collaborators.filter(function (c) {
+                    return c !== name;
+                });
+                this.setState({ collaborators: collaborators });
+            },
+            onCollaboratorsKeyDown: function (e) {
+                if (e.key === 'Backspace' && e.target.value === '' && this.state.collaborators.length > 0) {
+                    e.preventDefault();
+                    this.onRemoveCollaborator(this.state.collaborators[this.state.collaborators.length - 1]);
+                }
+            },
             checkEnableUpload: function () {
               var e = this.refs,
                 t = this.state,
                 n = this.props,
                 o = e.trackTitle.getDOMNode(),
-                i = e.trackDesc.getDOMNode(),
+                //i = e.trackDesc.getDOMNode(),
                 a = t.vehiclesAllowed.mtb,
                 s = t.vehiclesAllowed.bmx,
                 l = o.value,
-                c = i.value,
+                //c = i.value,
                 u = !0,
                 d = !1;
-              l.length <= n.minTitleChars && (u = !1),
-                c.length <= n.minDescChars && (u = !1),
-                a === !1 && s === !1 && (u = !1),
-                n.options.verified ||
+              //l.length < n.minTitleChars && (u = !1),
+                //c.length <= n.minDescChars && (u = !1),
+                a === !1 && s === !1 && (u = !1);
+                /*n.options.verified ||
                   ((u = !1),
-                  (d = "You must complete your track before uploading"));
-              var p = this.getUser().get("user_stats"),
+                  (d = "You must complete your track before uploading"));*/
+              var p = this.getUser(),
                 h = r.trackUploadCost,
                 f = p.tot_cns;
-              h > f && ((u = !1), (d = "Not enough coins")),
+              //h > f && ((u = !1), (d = "Not enough coins")),
                 this.setState({ uploadingEnabled: u, errorMsg: d });
             },
             closeDialog: function () {
@@ -5348,8 +5610,16 @@
                 this.setState(r),
                 this.checkEnableUpload();
             },
-            uploadTrack: function () {
+            uploadTrack: async function () { 
               var e = this.state;
+              var p = GameSettings.id;
+
+              var t = this.refs,
+                n = t.trackTitle.getDOMNode().value,
+                r = t.trackDesc.getDOMNode().value;
+
+              const pagePath = n.trim() ? `${GameSettings.id}` : "";
+              
               if (e.uploadingEnabled) {
                 this.setState({
                   uploading: !0,
@@ -5358,24 +5628,108 @@
                   loading: !0,
                   showErrorMsg: !1,
                 });
-                var t = this.refs,
-                  n = t.trackTitle.getDOMNode().value,
-                  r = t.trackDesc.getDOMNode().value,
-                  i = e.defaultVehicle,
+                
+                var i = e.defaultVehicle,
                   a = e.vehiclesAllowed.mtb,
                   s = e.vehiclesAllowed.bmx,
                   l = this.props.options,
-                  c = l.code,
-                  u = {
-                    name: n,
-                    desc: r,
-                    default_vehicle: i,
-                    allowed_vehicles: { MTB: a, BMX: s },
-                    code: c,
-                  };
+                  c = l.code;
+
+                let allAuthors = [p].concat(e.collaborators).filter((value, index, self) => self.indexOf(value) === index);
+                const authorsString = allAuthors.join(', ');
+
+                var u = {
+                  name: n,
+                  desc: r,
+                  default_vehicle: i,
+                  allowed_vehicles: { MTB: a, BMX: s },
+                  author: p,
+                  all_authors: authorsString
+                };
                 this.uploadData = u;
-                var d = o.post("create/submit", u);
-                d.done(this.uploadTrackComplete), d.done(this.uploadTrackFail);
+
+                try {
+                    // using track code 'c' as content
+                  const trackBlob = new Blob([c], { type: 'text/plain' });
+                  const base64Content = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result.split(",")[1]);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(trackBlob);
+                  });
+
+                  let base64ImageContent = null;
+                  const imageInput = t.trackImage.getDOMNode();
+                  let finalTrackFileName = null;
+                  let finalImageFileName = null;
+
+                  const trackFileNameBase = (pagePath === '') ? `${GameSettings.id}` : n;
+                  const sanitizedTrackBase = trackFileNameBase
+                    .toLowerCase()
+                    .replace(/\s+/g, '-')
+                    .replace(/[^a-z0-9-]+/g, '')
+                    .replace(/^-+|-+$/g, '');
+                  finalTrackFileName = sanitizedTrackBase + '.txt';
+
+                  if (imageInput && imageInput.files && imageInput.files[0]) {
+                    const imageFile = imageInput.files[0];
+                    const extension = imageFile.name.split('.').pop();
+                    const imageFileNameBase = (pagePath === '') ? `${GameSettings.id}` : n;
+                    const sanitizedImageBase = imageFileNameBase.toLowerCase().replace(/\s+/g, '-');
+                    finalImageFileName = `${sanitizedImageBase}.${extension}`;
+                    base64ImageContent = await new Promise((resolve, reject) => {
+                      const reader = new FileReader();
+                      reader.onload = () => resolve(reader.result.split(",")[1]);
+                      reader.onerror = reject;
+                      reader.readAsDataURL(imageFile);
+                    });
+                  }
+
+                  const defaultImageBase = (n.trim() === '') ? GameSettings.id : n;
+
+                    const res = await fetch("/api/upload-track", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            pagePath: pagePath, 
+                            fileName: finalTrackFileName, 
+                            fileContent: base64Content,
+                            fileType: 'text/plain',
+                            imageContent: base64ImageContent,
+                            imageFileName: finalImageFileName || `${defaultImageBase.toLowerCase()}.jpg`,
+                            trackMetadata: u 
+                        }),
+                    });
+
+                    if (!res.ok) throw new Error(`Proxy upload failed: ${res.statusText}`);
+
+                    const proxyResponse = await res.json();
+                    
+                    const successResponse = {
+                        result: true,
+                        data: {
+                            track: { 
+                                url: proxyResponse.permalink,
+                                title: n,
+                                author: p.display_name || p,
+                                imageUrl: proxyResponse.imageUrl
+                            },
+                            user_stats: { tot_cns: 99999 }
+                        }
+                    };
+
+                    this.uploadTrackComplete(successResponse); 
+
+                } catch (err) {
+                    console.error("Track upload failed:", err);
+                    this.uploadTrackFail({ msg: "Upload Failed: " + err.message });
+                    this.setState({
+                        uploading: !1,
+                        canClose: !0,
+                        errorMsg: "Upload failed! Check console for details.",
+                        showErrorMsg: !0,
+                    });
+                }
               }
             },
             trackEvent: function (e, t, n) {
@@ -5445,9 +5799,10 @@
                     n.createElement(
                       "span",
                       { className: "input-desc" },
-                      "(max ",
+                      "(",
+                      "up to ",
                       t.maxTitleChars,
-                      " characters)"
+                      " characters, leave blank to use in gallery)"
                     ),
                     n.createElement(
                       "span",
@@ -5467,6 +5822,51 @@
                         className: "ud-form-text-input",
                         ref: "trackTitle",
                         name: "track-title",
+                      })
+                    )
+                  ),
+                  n.createElement(
+                    "div",
+                    { className: "ud-form-input" },
+                    n.createElement(
+                      "span",
+                      { className: "title" },
+                      "Collaborators: "
+                    ),
+                    n.createElement(
+                      "span",
+                      { className: "input-desc" },
+                      "(separate names with a comma and a space)"
+                    ),
+                    n.createElement(
+                      "div",
+                      { className: "collaborators-container ud-form-text-input" },
+                      this.state.collaborators.map(function (c) {
+                        return n.createElement(
+                          "span",
+                          {
+                            key: c,
+                            className: "collaborator-chip",
+                            onClick: this.onRemoveCollaborator.bind(this, c)
+                          },
+                          c,
+                          n.createElement("span", { className: "remove-x" }, " \u00D7")
+                        );
+                      }.bind(this)),
+                      n.createElement("input", {
+                        type: "text",
+                        value: this.state.currentCollaboratorInput,
+                        onChange: this.onCollaboratorsChange,
+                        onKeyDown: this.onCollaboratorsKeyDown,
+                        maxLength: 50,
+                        className: "collaborator-active-input",
+                        ref: "activeCollaboratorInput"
+                      }),
+                      n.createElement("input", {
+                        type: "hidden",
+                        value: this.state.collaborators.join(', '),
+                        name: "track-collaborators",
+                        ref: "trackCollaborators"
                       })
                     )
                   ),
@@ -5507,6 +5907,30 @@
                   ),
                   n.createElement(
                     "div",
+                    { className: "ud-form-input" },
+                      n.createElement(
+                        "span",
+                        { className: "title" },
+                        "Track Thumbnail Image: "
+                      ),
+                      n.createElement(
+                        "span",
+                        { className: "input-desc" },
+                        "(optional, JPG/PNG only)"
+                      ),
+                      n.createElement(
+                        "div",
+                        null,
+                        n.createElement("input", {
+                          type: "file",
+                          ref: "trackImage", 
+                          accept: "image/jpeg,image/png",
+                          className: "ud-form-file-input", 
+                        })
+                      )
+                  ),
+                  n.createElement(
+                    "div",
                     { className: "ud-form-vehicles clearfix" },
                     n.createElement(
                       "div",
@@ -5525,13 +5949,13 @@
                         },
                         n.createElement(
                           "option",
-                          { value: "MTB" },
-                          "Mountain Bike"
+                          { value: "BMX" },
+                          "BMX Bike"
                         ),
-                        n.createElement("option", { value: "BMX" }, "BMX Bike")
+                        n.createElement("option", { value: "MTB" }, "Mountain Bike")
                       )
                     ),
-                    n.createElement(
+                    /*n.createElement(
                       "div",
                       { className: "ud-form-input float-right" },
                       n.createElement(
@@ -5547,7 +5971,7 @@
                           "data-vehicle": "mtb",
                           onClick: this.toggleCheckbox,
                         },
-                        n.createElement("span", { className: "checkbox" }, " "),
+                        n.createElement("span", { className: "checkbox" }, " "),
                         n.createElement(
                           "span",
                           { className: "name" },
@@ -5562,14 +5986,14 @@
                           "data-vehicle": "bmx",
                           onClick: this.toggleCheckbox,
                         },
-                        n.createElement("span", { className: "checkbox" }, " "),
+                        n.createElement("span", { className: "checkbox" }, " "),
                         n.createElement(
                           "span",
                           { className: "name" },
                           "BMX Bike"
                         )
                       )
-                    )
+                    )*/
                   ),
                   a
                 )
@@ -5627,36 +6051,37 @@
                 o = e.name,
                 i = t.track.url,
                 a = t.user_stats.tot_cns,
-                s = r.basePlatformUrl + "/t/" + i + "/uploaded";
+                s = i;
+              this.state.trackUrl = i;
               return n.createElement(
                 "div",
                 { className: "ud-upload-complete" },
-                this.getShareData(t),
+                //this.getShareData(t),
                 n.createElement(
                   "div",
                   { className: "ud-upload-complete-message margin-bottom-10" },
                   n.createElement(
                     "a",
                     { href: s, ref: "trackLink", className: "track-title" },
-                    o
+                    o ? o : "Gallery"
                   ),
                   " was successfully uploaded!"
                 ),
-                n.createElement(
+                /*n.createElement(
                   "div",
                   { className: "ud-upload-complete-balance margin-bottom-10" },
                   "Your new coin balance is ",
                   n.createElement("span", { className: "balance" }, a)
-                ),
+                ),*/
                 n.createElement(
                   "div",
                   { className: "ud-upload-complete-share margin-bottom-10" },
-                  n.createElement(
+                  /*n.createElement(
                     "div",
                     { className: "title" },
                     "Share your track"
-                  ),
-                  n.createElement(
+                  ),/*
+                  /*n.createElement(
                     "div",
                     { className: "options" },
                     n.createElement("span", {
@@ -5689,7 +6114,7 @@
                       "data-service": "reddit",
                       onClick: this.shareTrack,
                     })
-                  )
+                  )*/
                 ),
                 n.createElement(
                   "div",
@@ -5722,6 +6147,39 @@
               this.state.uploadComplete &&
                 this.refs.trackLink.getDOMNode().click();
             },
+            copyLinkToClipboard: function() {
+              var trackUrl = this.state.trackUrl;
+              const originalText = "Copy link";
+
+              if (trackUrl) {
+                const doCopy = (text) => {
+                  if (navigator.clipboard) {
+                    return navigator.clipboard.writeText(text);
+                  } else {
+                    console.error('Copy failed: ', err);
+                    return Promise.resolve();
+                  }
+                };
+
+                doCopy(trackUrl)
+                  .then(() => {
+                    console.log('Track link copied to clipboard: ' + trackUrl);
+                    this.setState({ copyButtonText: "Copied!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  })
+                  .catch(err => {
+                    console.error('Copy failed: ', err);
+                    this.setState({ copyButtonText: "Failed!" });
+
+                    setTimeout(() => {
+                      this.setState({ copyButtonText: originalText });
+                    }, 1500);
+                  });
+              }
+            },
             getFooter: function () {
               var e = this.state,
                 t = this.props,
@@ -5740,9 +6198,9 @@
                     {
                       className:
                         "primary-button primary-button-blue float-right margin-0-5",
-                      onClick: this.viewTrack,
+                      onClick: this.copyLinkToClipboard,
                     },
-                    "View Track"
+                    this.state.copyButtonText
                   ))),
                 e.uploadComplete === !1)
               ) {
@@ -5769,8 +6227,8 @@
                 },
                 l
               );
-              if (e.uploading === !1 && e.uploadComplete === !1 && o) {
-                var p = this.getUser().get("user_stats"),
+              /*if (e.uploading === !1 && e.uploadComplete === !1 && o) {
+                var p = this.getUser(),
                   h = r.trackUploadCost,
                   f = p.tot_cns,
                   m = {};
@@ -5797,12 +6255,12 @@
                       n.createElement("span", { className: "num", style: m }, f)
                     )
                   ));
-              }
+              }*/
               e.uploading &&
                 (a = n.createElement(
                   "div",
                   { className: "ud-uploading-message" },
-                  n.createElement("span", { className: "loading-hourglass" }),
+                  //n.createElement("span", { className: "loading-hourglass" }),
                   n.createElement(
                     "span",
                     { className: "text" },
@@ -5877,7 +6335,7 @@
                     n.createElement(
                       "h1",
                       { className: "editorDialog-content-title" },
-                      "PUBLISH TRACK"
+                      "UPLOAD TRACK"
                     )
                   ),
                   i,
@@ -5931,9 +6389,17 @@
                 t = this.props.data.hideMenus,
                 u = 48.6,
                 d = {};
+
+              var playMode;
+              if (typeof GameSettings !== 'undefined') {
+                playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                playMode = false;
+              }
+              
               return (
                 (d.marginTop = -((9 * u) / 2)),
-                t && (d.display = "none"),
+                (t || playMode) && (d.display = "none"),
                 n.createElement(
                   "div",
                   { className: "leftMenu", style: d },
@@ -6350,9 +6816,24 @@
                 d = 48.6,
                 p = this.props.data.hideMenus,
                 fullscreen = GameSettings.editorFullscreen;
-              var sidebar = GameSettings.sidebar;
-              c.right = sidebar ? (window.innerHeight <= 1440 ? "calc(25% - 5px)" : "20%") : (window.innerHeight <= 1440 ? "-5px" : "0");
-              switch ((p && (c.display = "none"), e)) {
+                var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  sidebar = true;
+                  playMode = false;
+                }
+
+                if (playMode || p) {
+                c.display = "none";
+                }
+
+              c.right = sidebar
+                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
+                : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 800 ? "-5px" : "0"));
+              switch (e) {
                 case "straightline":
                   (c.marginTop = -((3 * d) / 2)),
                     (u = n.createElement(r, { options: t }));
@@ -7648,21 +8129,35 @@
           f = n.createClass({
             displayName: "TopMenu",
             render: function () {
-              var sidebar = GameSettings.sidebar;
-              var width = sidebar ? "80%" : "100%";
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                  playMode = GameSettings.trackName !== 'track.txt';
+                } else {
+                  sidebar = true;
+                  playMode = false;
+                }
+              var width = sidebar ? "75%" : "100%";
               var mediaWidth = sidebar ? "93.75%" : "125%";
+              var largeMediaWidth = sidebar ? "60%" : "80%";
               var topMenuStyle = {
-                width: window.innerHeight <= 1440 ? mediaWidth : width,
-              };
+                  width: window.innerHeight >= 1440
+                    ? largeMediaWidth
+                    : (window.innerHeight <= 800
+                      ? mediaWidth
+                      : width)
+                };
               return n.createElement(
                 "div",
                 { className: "topMenu unselectable", style: topMenuStyle},
-                n.createElement(r, null),
-                n.createElement(o, null),
-                n.createElement(i, null),
-                //n.createElement(a, null),
-                this.showHelp(),
-                this.showControls(),
+                !playMode && n.createElement(r, null),
+                !playMode && n.createElement(o, null),
+                !playMode && n.createElement(i, null),
+                !playMode && GameSettings.beta && n.createElement(a, null),
+                !playMode && this.showHelp(),
+                n.createElement(l, null),
+                //this.showControls(),
                 //this.showOfflineEditorIcon(),
                 this.showFullscreen(),
                 n.createElement(x, null),
@@ -7745,10 +8240,10 @@
                 {
                   className: e,
                   onClick: this.openDialog,
-                  title: "Publish Track",
+                  title: "Upload Track",
                 },
                 n.createElement("span", { className: t }),
-                n.createElement("span", { className: "text" }, "Publish")
+                n.createElement("span", { className: "text" }, "Upload")
               );
             },
           });
@@ -32779,134 +33274,840 @@
           r = n.createClass({
             displayName: "Sidebar",
             getInitialState: function () {
-              return { sidebar: false };
+              return { sidebar: true };
             },
+            componentDidMount: function () {
+              this.toggleIframe();
+              this.addImportListener();
+            },
             toggleSidebar: function () {
-              GameSettings.sidebar = !GameSettings.sidebar;
-              this.setState({ sidebar: GameSettings.sidebar });
+              if (typeof GameSettings !== 'undefined') {
+                GameSettings.sidebar = !(GameSettings.sidebar ?? true);
+              } else {
+
+              }
+
+              var newSidebarState = GameSettings.sidebar ?? false;
+
+              this.setState({ sidebar: newSidebarState });
               this.toggleIframe();
               this.addImportListener();
+            },
+            async updateNowPlaying(trackData) {
+              const iframe = document.getElementById("forumIframe");
+              if (iframe && iframe.style.display !== 'none' && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  type: 'freerider-track-data',
+                  data: trackData
+                }, 'https://forum.freerider.app');
+              }
+            },
+
+            getFRHDImage(trackId) {
+              const versions = ["v5", "v6", "v12"];
+              let index = 0;
+
+              return new Promise((resolve) => {
+                function tryNext() {
+                  if (index >= versions.length) {
+                    resolve("");
+                    return;
+                  }
+
+                  const url = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/768x250-${versions[index]}.png`;
+                  const testImg = new Image();
+                  testImg.src = url;
+
+                  testImg.onload = () => resolve(url);
+                  testImg.onerror = () => {
+                    index++;
+                    tryNext();
+                  };
+                }
+                tryNext();
+              });
             },
             toggleIframe: function () {
               let iframe = document.getElementById("forumIframe");
 
+              var sidebar;
+
+                if (typeof GameSettings !== 'undefined') {
+                  sidebar = GameSettings.sidebar ?? true;
+                } else {
+                  sidebar = true;
+                }
+
+
               if (iframe) {
                 iframe.style.display =
-                  iframe.style.display === "none" && GameSettings.sidebar
+                  iframe.style.display === "none" && sidebar
                     ? "block"
                     : "none";
               } else {
                 iframe = document.createElement("iframe");
                 iframe.id = "forumIframe";
-                iframe.src = "https://forum.freerider.app";
-                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads";
+                iframe.src = GameSettings.forumUrl ? GameSettings.forumUrl : (GameSettings.type
+                  ? (GameSettings.type === 'user')
+                    // Case 1: /u/ness
+                    ? `/u/${GameSettings.id}?discuss=true`
+                    // Case 2: /u/ness/track1
+                    : (GameSettings.type === 'page'
+                      ? `/u/${GameSettings.userId}?discuss=true`
+                      // Case 3: other types (frhd, bhr, cr)
+                      : `/${GameSettings.type}/${GameSettings.id}?discuss=true`)
+                  : `discuss.html`);
+                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation";
                 iframe.style.display = "block";
+                iframe.allow="clipboard-write; fullscreen"
                 document.body.appendChild(iframe);
+
+                iframe.addEventListener('load', () => {
+                  const trackData = {
+                    id: GameSettings.id,
+                    name: GameSettings.trackName || '',
+                    authors: GameSettings.authors || '',
+                    thumbnail: GameSettings.thumbnail,
+                    type: GameSettings.type,
+                    description: GameSettings.description || '',
+                    permalink: GameSettings.permalink,
+                    published: GameSettings.published || '',
+                    size: GameSettings.size || '',
+                    nextId: GameSettings.nextId,
+                    prevId: GameSettings.prevId,
+                    ghoster: GameSettings.ghoster,
+                    ghostTime: GameSettings.ghostTime,
+                    ghostTicks: GameSettings.ghostTicks
+                  };
+
+                  iframe.contentWindow.postMessage({
+                    type: 'freerider-track-data',
+                    data: trackData
+                  }, 'https://forum.freerider.app');
+                });
+              }
+            },
+            hasUnsavedChanges() {
+              return (GameManager.game.currentScene.toolHandler.actionTimeline.length > 0);
+            },
+            loadTrackFromState(trackType, trackId) {
+              console.log(`[PopState] Loading track: ${trackType}/${trackId}`);
+
+              if (trackType === 'cr') {
+                fetch(`/cr/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("CR track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `CR Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load CR track ${trackId}:`, error);
+                  });
+                return;
+              }
+
+              if (trackType === 'bhr') {
+                fetch(`/bhr/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("BHR track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `BHR Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load BHR track ${trackId}:`, error);
+                  });
+                return;
+              }
+
+              if (trackType === 'frhd') {
+                fetch(`/frhd/${trackId}?json=true`)
+                  .then((response) => {
+                    if (!response.ok) throw new Error("FRHD track not found");
+                    return response.json();
+                  })
+                  .then((metadata) => {
+                    return fetch(metadata.trackUrl)
+                      .then(res => res.text())
+                      .then((code) => {
+                        GameManager.command("import", code, true);
+                        GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                        GameSettings.id = metadata.id;
+                        GameSettings.type = metadata.type || 'frhd';
+                        GameSettings.authors = metadata.authors || '';
+                        document.title = metadata.name || `FRHD Track #${trackId}`;
+
+                        this.updateNowPlaying({
+                          id: metadata.id,
+                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                          authors: metadata.authors,
+                          thumbnail: metadata.thumbnail,
+                          type: trackType,
+                          description: metadata.description || '',
+                          permalink: metadata.permalink,
+                          published: metadata.published || '',
+                          size: metadata.size || '',
+                          nextId: metadata.nextId,
+                          prevId: metadata.prevId,
+                          ghoster: metadata.ghoster,
+                          ghostTime: metadata.ghostTime,
+                          ghostTicks: metadata.ghostTicks
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    console.error(`Failed to re-load FRHD track ${trackId}:`, error);
+                  });
+                return;
               }
             },
             addImportListener() {
-              window.addEventListener("message", function (event) {
-                if (event.data.action === "linkClicked") {
-                  console.log("clicked link:", event.data.url);
-            
-                  try {
-                    const url = new URL(event.data.url);
-                    const { hostname, pathname, hash } = url;
+              window.addEventListener('popstate', (event) => {
+                console.log('[PopState] Event triggered:', event.state);
 
-                    const validHostnames = [
-                      "freerider.app",
-                      "freeriderhd.com",
-                      "www.freeriderhd.com",
-                      "frhd.co",
-                      "k333892.invisionservice.com",
-                    ];
-                    if (!validHostnames.includes(hostname)) {
-                      console.warn("invalid URL hostname:", hostname);
-                      return;
-                    }
+                if (event.state && event.state.trackId && event.state.trackType) {
+                  const { trackId, trackType } = event.state;
+                  console.log(`[PopState] Loading ${trackType} track ${trackId}`);
+                  this.loadTrackFromState(trackType, trackId);
+                } else {
+                  const path = window.location.pathname;
+                  const match = path.match(/^\/(cr|bhr|frhd)\/(\d+)/);
 
-                    let trackName = "";
-
-                    if (hostname === "freerider.app" && hash) {
-                      trackName = hash.substring(1);
-                    } else if (pathname.startsWith("/t/")) {
-                      const parts = pathname.split("/t/")[1].split("-");
-                      trackName = parts[0];
-                    } else if (hostname === "k333892.invisionservice.com") {
-                      const parts = pathname.split("/free-rider/")[1].split("/");
-                      trackName = parts[0];
-                    } 
-
-                    if (
-                      !trackName ||
-                      trackName.includes("../") ||
-                      trackName.length > 40
-                    ) {
-                      return;
-                    }
-
-                    if (
-                      ![
-                        "1-4",
-                        "covid-19 dreamin",
-                        "demi-goddess demi-diety",
-                      ].includes(trackName)
-                    ) {
-                      trackName = trackName.replace(/-/g, " ");
-                    }
-
-                    trackName = decodeURIComponent(trackName);
-                    GameSettings.trackName = trackName;
-                    GameManager.command("import", trackName, true);
-
-                    const fetchUrl = `assets/tracks/${trackName}.txt`;
-                    fetch(fetchUrl)
-                      .then((response) => {
-                        if (!response.ok)
-                          throw new Error(
-                            "No track ID found, loading as track code."
-                          );
-                        return response.text();
-                      })
-                      .then((data) => {
-                        if (data) {
-                          console.log("Track data fetched:", data);
-                          GameManager.command("import", data, true);
-                          GameSettings.trackName = `${trackName}.txt`;
-                        } else {
-                          console.error("No track data found.");
-                        }
-                      })
-                      .catch((error) => {
-                        console.error("Primary fetch failed.", error);
-                        const script = document.createElement("script");
-                        script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
-
-                        script.onerror = () => {
-                          console.error("Fallback fetch failed.");
-                        };
-
-                        window.t = ({ code, title }) => {
-                          if (code) {
-                            GameSettings.trackName = title;
-                            GameManager.command("import", code, true);
-                            console.log("Track loaded from FRHD.");
-                          } else {
-                            console.error(
-                              "Failed to load track code from FRHD."
-                            );
-                          }
-                          delete window.t;
-                        };
-
-                        document.body.appendChild(script);
-                      });
-                  } catch (error) {
-                    console.error("Error processing URL:", error);
+                  if (match) {
+                    const trackType = match[1];
+                    const trackId = parseInt(match[2], 10);
+                    console.log(`[PopState] No state data, loading from URL: ${trackType}/${trackId}`);
+                    this.loadTrackFromState(trackType, trackId);
+                  } else {
+                    console.log('[PopState] Navigating to default state');
+                    GameManager.command("clear");
+                    GameSettings.trackName = "";
+                    document.title = "Free Rider";
+                    this.updateNowPlaying(null);
                   }
                 }
               });
-            },            
+              window.addEventListener("message", (event) => {
+
+    if (event.data.action === "linkClicked") {
+        console.log("clicked link:", event.data.url, event.data.name);
+
+        let proceedWithImport = true;
+
+        const url = event.data.url;
+
+      if (this.hasUnsavedChanges()) {
+        const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
+        const userConfirmed = confirm(confirmationMessage);
+
+        if (!userConfirmed) {
+          console.log("User cancelled track load due to unsaved changes");
+          return;
+        }
+      }
+
+
+        try {
+            const url = new URL(event.data.url);
+            const { hostname, pathname, hash } = url;
+
+            const validHostnames = [
+                "freerider.app",
+                "freeriderhd.com",
+                "www.freeriderhd.com",
+                "frhd.co",
+                "k333892.invisionservice.com",
+                "gofile.io",
+            ];
+
+            if (!validHostnames.includes(hostname)) {
+                console.warn("invalid URL hostname:", hostname);
+            }
+
+            let trackName = "";
+            let trackType = null;
+            let trackId = null;
+            let userId = null;
+
+            if (hostname === "freerider.app" && hash) {
+                trackName = hash.substring(1);
+            } 
+
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+|daily|random)/);
+              trackType = match[1];
+              const idPart = match[2];
+
+              if (idPart.match(/^\d+$/)) {
+                trackId = parseInt(idPart, 10);
+                trackName = `${trackType}-${trackId}`;
+              } else {
+                trackId = idPart;
+                trackName = `${trackType}-${idPart}`;
+              }
+            }
+
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)\/(.+)/);
+              trackType = match[1];
+              trackId = parseInt(match[2], 10);
+              const userName = match[3];
+              trackName = `${trackType}-${trackId}`;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd)\/(\d+)/);
+              trackType = match[1];
+              trackId = parseInt(match[2], 10);
+              trackName = `${trackType}-${trackId}`;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)\/(.+)/)) {
+              const match = pathname.match(/^\/u\/([^\/]+)\/(.+)/);
+              userId = match[1];
+              const trackSlug = match[2];
+              trackType = 'page';
+              trackName = trackSlug;
+            }
+            else if (hostname === "freerider.app" && pathname.match(/^\/u\/([^\/]+)/)) {
+              const match = pathname.match(/^\/u\/([^\/]+)/);
+              userId = match[1];
+              trackType = 'user';
+              trackName = userId;
+            }
+            else if (pathname.startsWith("/t/")) {
+                const parts = pathname.split("/t/")[1].split("-");
+                trackName = parts[0];
+            } 
+            else if (hostname === "freerider.app" && pathname.startsWith("/u/")) {
+                trackName = pathname.substring(3);
+                trackType = 'user';
+            } 
+            else if (hostname === "k333892.invisionservice.com") {
+                const parts = pathname.split("/free-rider/")[1].split("/");
+                trackName = parts[0];
+            }
+
+          if (hostname.endsWith(".gofile.io")) {
+            console.log("Processing Gofile.io URL directly");
+
+            fetch(event.data.url)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Gofile fetch failed.");
+                }
+                return response.text();
+              })
+              .then((data) => {
+                console.log("Track data fetched from Gofile:", data);
+                GameManager.command("import", data, true);
+                GameSettings.trackName = event.data.name || "untitled";
+                this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
+              })
+              .catch((error) => {
+                console.error("Failed to load Gofile track.", error);
+              });
+
+            return;
+          }
+
+          if (!trackName || trackName.includes("../") || trackName.length > 40) {
+            return;
+          }
+
+          trackName = decodeURIComponent(trackName);
+          GameSettings.trackName = trackName;
+
+          // CR logic
+          if (trackType === 'cr') {
+            fetch(`/cr/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("CR track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("CR metadata fetched:", metadata);
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("CR Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
+                    GameSettings.id = metadata.id;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `CR Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
+                    this.updateNowPlaying({
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'cr'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
+                    });
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load CR track:", error);
+              });
+            return;
+          }
+
+          // BHR logic
+          if (trackType === 'bhr') {
+            fetch(`/bhr/${trackId}?json=true`)
+              .then((response) => {
+                if (!response.ok) throw new Error("BHR track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("BHR metadata fetched:", metadata);
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("BHR Track code fetched:", code);
+                    GameManager.command("import", code, true);
+                    GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
+                    GameSettings.id = metadata.id;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `BHR Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
+                    this.updateNowPlaying({
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'bhr'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
+                    });
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load BHR track:", error);
+              });
+            return;
+          }
+
+          // FRHD logic
+          if (trackType === 'frhd') {
+            const pathMatch = pathname.match(/^\/(frhd)\/(\d+)\/(.+)/);
+            const userName = pathMatch ? pathMatch[3] : null;
+
+            const fetchUrl = userName
+              ? `/frhd/${trackId}/${userName}?json=true`
+              : `/frhd/${trackId}?json=true`;
+
+            const isSameTrack = (
+              GameSettings.id === String(trackId) &&
+              GameSettings.type === trackType
+            );
+            
+            fetch(fetchUrl)
+              .then((response) => {
+                if (!response.ok) throw new Error("FRHD track not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("FRHD metadata fetched:", metadata);
+                let ghostData = null;
+                let fullRaceData = null;
+                let ghoster = metadata.ghoster || '';
+                let ghostTime = metadata.ghostTime || '';
+                let ghostTicks = metadata.ghostTicks || null;
+
+                if (metadata.ghost) {
+                  ghostData = metadata.ghost.code || metadata.ghost;
+                  ghoster = metadata.ghoster || '';
+                  ghostTime = metadata.ghostTime || '';
+                  ghostTicks = metadata.ghostTicks || metadata.ghost.run_ticks || null;
+
+                  fullRaceData = {
+                    user: {
+                      id: userName || ghoster,
+                      username: userName || ghoster,
+                      displayName: ghoster,
+                      cosmetics: {}
+                    },
+                    ghost: {
+                      code: ghostData,
+                      vehicle: metadata.ghost.vehicle || 'BMX',
+                      desktop: metadata.ghost.desktop || true,
+                      run_ticks: ghostTicks
+                    }
+                  };
+                }
+                return fetch(metadata.trackUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    console.log("FRHD Track code fetched:", code);
+                    !isSameTrack && (GameManager.command("import", code, true), GameManager.command("clear race"));
+                    GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
+                    GameSettings.id = metadata.id;
+                    GameSettings.authors = metadata.authors || ``;
+
+                    if (ghostData) {
+                      GameSettings.ghostData = ghostData;
+                      GameSettings.ghoster = ghoster;
+                      GameSettings.ghostTime = ghostTime;
+                      GameSettings.ghostTicks = ghostTicks;
+                      GameSettings.fullRaceData = fullRaceData;
+                      console.log("Ghost data loaded:", { ghoster, ghostTime, ghostTicks });
+
+                      GameManager.command("add race", fullRaceData);
+                    }
+
+                    const fullPermalink = metadata.permalink;
+
+                    const urlPath = new URL(fullPermalink).pathname;
+
+                    const trackName = metadata.name || `FRHD Track #${trackId}`;
+
+                    history.pushState(
+                      { trackId: metadata.id, trackType: metadata.type },
+                      trackName,
+                      urlPath
+                    );
+
+                    document.title = trackName;
+
+                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                    }
+
+                    this.updateNowPlaying({
+                      id: metadata.id,
+                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
+                      authors: metadata.authors,
+                      thumbnail: metadata.thumbnail,
+                      type: trackType, // 'frhd'
+                      description: metadata.description || '',
+                      permalink: metadata.permalink,
+                      published: metadata.published || '',
+                      size: metadata.size || '',
+                      nextId: metadata.nextId,
+                      prevId: metadata.prevId,
+                      ghoster: metadata.ghoster,
+                      ghostTime: metadata.ghostTime,
+                      ghostTicks: metadata.ghostTicks
+                    });
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load FRHD track:", error);
+              });
+            return;
+          }
+
+          // User/page logic
+          if (trackType === 'user' || trackType === 'page') {
+            const fetchUrl = trackType === 'page'
+              ? `/u/${userId}/${trackName}?json=true`
+              : `/u/${trackName}?json=true`;
+
+            fetch(fetchUrl)
+              .then((response) => {
+                if (!response.ok) throw new Error("User page not found");
+                return response.json();
+              })
+              .then((metadata) => {
+                console.log("User metadata fetched:", metadata);
+
+                // Use trackUrl from metadata
+                const trackCodeUrl = metadata.trackUrl;
+
+                if (!trackCodeUrl) {
+                  throw new Error("No track URL found in metadata");
+                }
+
+                // Fetch the track code
+                return fetch(trackCodeUrl)
+                  .then(res => {
+                    if (!res.ok) throw new Error("Track code not found");
+                    return res.text();
+                  })
+                  .then((code) => {
+                    // Check if track code is empty or just "..."
+                    if (!code || code.trim() === '' || code.trim() === '...') {
+                      console.log("User track is empty, loading random created track");
+
+                      // Check if user has created tracks
+                      if (metadata.createdTracks && metadata.createdTracks.length > 0) {
+                        // Pick a random track
+                        const randomIndex = Math.floor(Math.random() * metadata.createdTracks.length);
+                        const randomTrack = metadata.createdTracks[randomIndex];
+
+                        console.log(`Loading random track: ${randomTrack.title} (#${randomTrack.id})`);
+
+                        return fetch(`/frhd/${randomTrack.id}.txt`)
+                          .then(res => {
+                            if (!res.ok) throw new Error("Random track code not found");
+                            return res.text();
+                          })
+                          .then((randomCode) => {
+                            console.log("Random track code fetched, loading into user page context");
+                            GameManager.command("import", randomCode, true);
+                            // keep user page settings
+                            GameSettings.trackName = metadata.name || ``;
+                            GameSettings.id = metadata.id;
+                            GameSettings.authors = metadata.authors || '';
+
+                            const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
+
+                            history.pushState(
+                              { userId: metadata.id, trackType: 'user' },
+                              metadata.name,
+                              urlPath
+                            );
+
+                            document.title = metadata.name || trackName;
+
+                            if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                              GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                              GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                            }
+
+                            this.updateNowPlaying({
+                              id: metadata.id,
+                              name: metadata.name,
+                              authors: metadata.authors,
+                              thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
+                              type: 'user',
+                              description: metadata.description || '',
+                              permalink: `https://freerider.app/u/${userId || trackName}`,
+                              published: metadata.published || '',
+                              size: metadata.size || '',
+                              userId: userId || trackName,
+                              stats: metadata.stats || null,
+                              createdTracks: metadata.createdTracks || []
+                            });
+                          });
+                      } else {
+                        throw new Error("User has no created tracks to load");
+                      }
+                    } else {
+                      console.log("User track code fetched:", code);
+                      GameManager.command("import", code, true);
+                      GameSettings.trackName = metadata.name || `User: ${trackName}`;
+                      GameSettings.id = metadata.id;
+                      GameSettings.authors = metadata.authors || '';
+
+                      const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
+
+                      history.pushState(
+                        { userId: metadata.id, trackType: 'user' },
+                        metadata.name,
+                        urlPath
+                      );
+
+                      document.title = metadata.name || trackName;
+
+                      if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
+                        GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
+                        GameManager.game.currentScene.mod.ui.obj['play'].disable();
+                      }
+
+                      this.updateNowPlaying({
+                        id: metadata.id,
+                        name: metadata.name,
+                        authors: metadata.authors,
+                        thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
+                        type: metadata.type || trackType,
+                        description: metadata.description || '',
+                        permalink: trackType === 'page'
+                          ? `https://freerider.app/u/${userId}/${trackName}`
+                          : `https://freerider.app/u/${trackName}`,
+                        published: metadata.published || '',
+                        size: metadata.size || '',
+                        userId: userId || trackName,
+                        stats: metadata.stats || null,
+                        createdTracks: metadata.createdTracks || []
+                      });
+                    }
+                  });
+              })
+              .catch((error) => {
+                console.error("Failed to load user page:", error);
+              });
+            return;
+          }
+
+            const fetchUrl = trackType === 'user'
+                ? `/data/page/${trackName}.txt`
+                : `assets/tracks/${trackName}.txt`;
+                
+            fetch(fetchUrl)
+                .then((response) => {
+                    if (!response.ok)
+                        throw new Error("No track ID found, loading as track code.");
+                    return response.text();
+                })
+                .then((data) => {
+                    if (data) {
+                        console.log("Track data fetched:", data);
+                        GameManager.command("import", data, true);
+                        GameSettings.trackName = `${trackName}.txt`;
+
+                        return fetch("assets/tracks/tracklist-data.json");
+                    } else {
+                        console.error("No track data found.");
+                    }
+                })
+                .then((res) => (res ? res.json() : null))
+                .then((trackdata) => {
+                    if (trackdata) {
+                        const match = trackdata.tracks.find(
+                            (t) => t["track-name"] === trackName
+                        );
+                        this.updateNowPlaying(match || { "track-name": trackName });
+                    }
+                })
+                .catch((error) => {
+                    console.error("Primary fetch failed, falling back to FRHD.", error);
+                    const script = document.createElement("script");
+                    script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
+
+                    script.onerror = () => {
+                        console.error("Fallback fetch failed.");
+                    };
+
+                    window.t = (trackData) => {
+                        if (trackData && trackData.code) {
+                            GameSettings.trackName = trackData.title;
+                            GameManager.command("import", trackData.code, true);
+                            console.log("Track loaded from FRHD.");
+
+                            this.updateNowPlaying({
+                                "track-name": trackData.title,
+                                creator: trackData.author || "unknown",
+                                description: trackData.descr || "",
+                                id: trackData.id,
+                                url: trackData.url,
+                            });
+                        } else {
+                            console.error("Failed to load track code from FRHD.");
+                        }
+                        delete window.t;
+                    };
+
+                    document.body.appendChild(script);
+                });
+        } catch (error) {
+            console.error("Error processing URL:", error);
+        }
+    }
+});
+            },
             render: function () {
               var e = this.state.sidebar,
                 t = "topMenu-button topMenu-button-right",
@@ -32915,7 +34116,7 @@
                 ? " editorgui_icons-icon_sidebar_close"
                 : " editorgui_icons-icon_sidebar_open";
               return e
-                ? GameSettings.beta && n.createElement(
+                ? n.createElement(
                     "div",
                     {
                       className: t,
@@ -32925,7 +34126,7 @@
                     n.createElement("span", { className: "text" }, "Forum"),
                     n.createElement("span", { className: r })
                   )
-                : GameSettings.beta && n.createElement(
+                : n.createElement(
                     "div",
                     {
                       className: t,

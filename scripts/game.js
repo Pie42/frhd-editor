@@ -9016,7 +9016,7 @@
           o = s.n(r)()(n());
         o.push([
           t.id,
-          "@media (max-height: 1440px) {.mod-icon {\r\n bottom: -6px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
+          "@media (max-height: 800px) {.mod-icon {\r\n bottom: -6px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-icon {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
           "",
           {
             version: 3,
@@ -9025,7 +9025,7 @@
             mappings:
               "AAAA;IACI,eAAe;IACf,OAAO;IACP,SAAS;IACT,WAAW;IACX,uBAAuB;IACvB,uBAAuB;IACvB,iBAAiB;;IAEjB,iBAAiB,EAAE,kCAAkC;IACrD,yBAAyB,EAAE,WAAW;IACtC,wBAAwB,EAAE,mBAAmB;IAC7C,sBAAsB,EAAE,YAAY;IACpC,qBAAqB,EAAE,2BAA2B;AACtD;;AAEA;IACI,uBAAuB;IACvB,eAAe;IACf,kBAAkB;IAClB,UAAU;AACd;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,eAAe;IACf,wDAAwD;IACxD,cAAc;AAClB;AACA;IACI,oCAAoC;AACxC;;AAEA;IACI,eAAe;AACnB;AACA;IACI,YAAY;IACZ,uBAAuB;AAC3B;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;AACjB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,aAAa;IACb,sBAAsB;IACtB,YAAY;IACZ,eAAe;AACnB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,YAAY;AAChB;;;;AAIA;IACI,eAAe;IACf,0BAA0B;IAC1B,WAAW;IACX,WAAW;IACX,WAAW;IACX,YAAY;IACZ,SAAS;IACT,OAAO;AACX;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,WAAW;IACX,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,gCAAgC;IAChC,eAAe;IACf,MAAM;IACN,aAAa;IACb,kBAAkB;IAClB,iBAAiB;IACjB,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,kBAAkB;IAClB,YAAY;AAChB;AACA;IACI,kCAAkC;AACtC;;;;;;AAMA;IACI,UAAU;IACV,WAAW;IACX,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;;IAEpB,kBAAkB;IAClB,MAAM;IACN,OAAO;EACT;;AAEF;IACI,kBAAkB;AACtB;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;AACA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,WAAW;IACX,UAAU;IACV,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,OAAO;IACP,QAAQ;IACR,YAAY;IACZ,iBAAiB;IACjB,eAAe;IACf,kBAAkB;AACtB;;AAEA;IACI,cAAc;IACd,4BAA4B;AAChC;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,6BAA6B;AACjC",
             sourcesContent: [
-              `@media (max-height: 1440px) {.mod-menu-container {\r\n bottom: -5px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}`,
+              `@media (max-height: 800px) {.mod-menu-container {\r\n bottom: -5px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-menu-container {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}`,
             ],
             sourceRoot: "",
           },
@@ -11128,9 +11128,9 @@
               r.y = 100,
 
               g.x = 12,
-              g.y = 171,
+              g.y = 169,
               v.x = 90,
-              v.y = 180,
+              v.y = 178,
               
               i.addChild(r),
               i.addChild(a),
@@ -11163,7 +11163,7 @@
               e > 50 &&
               ((this.cached = !0), this.cache_fixed_text());
             var o = e / s.drawFPS;
-            //var oo = this.scene.runTicks / s.drawFPS;
+            //var oo = GameSettings.ghostTicks / s.drawFPS;
             if (this.scene.game.mod.getVar("slowmo")) {o = o / 2}
             this.time.text = n(1e3 * o);
             //this.best.text = n(1e3 * oo);
@@ -13225,31 +13225,39 @@
         at = Math.min;
         class ht extends q {
           constructor(t, e, s, i) {
-            super(),
-              super.init(t),
-              this.offsetX = GameSettings.offsetPeteX;
-              this.offsetY = GameSettings.offsetPeteY;
-              this.createMasses(e, i),
-              this.createSprings(),
-              this.updateCameraFocalPoint(),
-              this.stopSounds(),
-              this.mini = this.scene.game.mod.getVar("mini"),
-              this.propeller = 0,
-              this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData"),
-              this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes"),
-              -1 === s && this.swap();
+            super();
+            this.color = "rgba(0,0,0,1)";
+            super.init(t);
+
+            const pm = this.scene?.playerManager;
+            this.isFirstPlayer = pm && t.id === pm.firstPlayer?.id;
+            this.mini = this.isFirstPlayer && this.scene.game.mod.getVar("mini");
+
+            this.offsetX = GameSettings.offsetPeteX;
+            this.offsetY = GameSettings.offsetPeteY;
+            this.createMasses(e, i);
+            this.createSprings();
+            this.updateCameraFocalPoint();
+            this.stopSounds();
+            this.propeller = 0;
+            this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData");
+            this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
+            if (s === -1) this.swap();
           }
           createMasses(e, s) {
             this.masses = [];
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const i = new A(),
               n = new X(new t.Z(e.x + 21 * mini + this.offsetX, e.y + 3 + this.offsetY), this),
               r = new X(new t.Z(e.x + -21 * mini + this.offsetX, e.y + 3 + this.offsetY), this);
             i.init(new t.Z(e.x + this.offsetX, e.y - 36 * mini + this.offsetY), this);
               i.drive = this.createRagdoll.bind(this);
-              (r.radius = 11.7 * mini),
-              (n.radius = 11.7 * mini),
-              (i.radius = 14 * mini),
+              r.baseRadius = 11.7;
+              n.baseRadius = 11.7;
+              i.baseRadius = 14;
+              r.radius = 11.7 * mini;
+              n.radius = 11.7 * mini;
+              i.radius = 14 * mini;
               i.vel.equ(s),
               r.vel.equ(s),
               n.vel.equ(s),
@@ -13261,50 +13269,52 @@
           }
           createSprings() {
             this.springs = [];
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const t = new N(this.head, this.rearWheel, this),
               e = new N(this.rearWheel, this.frontWheel, this),
               s = new N(this.frontWheel, this.head, this);
-              (e.lrest = 42 * mini),
-              (e.leff = 42 * mini),
-              (e.springConstant = 0.35),
-              (e.dampConstant = 0.3),
-              (t.lrest = 45 * mini),
-              (t.leff = 45 * mini),
-              (t.springConstant = 0.35),
-              (t.dampConstant = 0.3),
-              (s.lrest = 45 * mini),
-              (s.leff = 45 * mini),
-              (s.springConstant = 0.35),
-              (s.dampConstant = 0.3),
-              this.springs.push(t, e, s),
+            e.baseLrest = 42;
+            e.baseLeff = 42;
+            e.lrest = 42 * mini;
+            e.leff = 42 * mini;
+            e.springConstant = 0.35;
+            e.dampConstant = 0.3;
+
+            t.baseLrest = 45;
+            t.baseLeff = 45;
+            t.lrest = 45 * mini;
+            t.leff = 45 * mini;
+            t.springConstant = 0.35;
+            t.dampConstant = 0.3;
+
+            s.baseLrest = 45;
+            s.baseLeff = 45;
+            s.lrest = 45 * mini;
+            s.leff = 45 * mini;
+            s.springConstant = 0.35;
+            s.dampConstant = 0.3;
+            this.springs.push(t, e, s),
               (this.rearSpring = t),
               (this.chasse = e),
               (this.frontSpring = s);
           }
           updateMasses() {
-            const mini = GameSettings.mini;
-            if (this.scene.game.mod.getVar("mini")) {
+            if (!this.isFirstPlayer) return;
+
+            const mini = this.mini ? GameSettings.mini : 1;
             for (let mass of this.masses) {
-              mass.radius = mass.radius * mini;
-            }}
-            if (!this.scene.game.mod.getVar("mini")) {
-              for (let mass of this.masses) {
-                mass.radius = mass.radius / mini;
-              }}
+              mass.radius = mass.baseRadius * mini;
+            }
           }
+
           updateSprings() {
-            const mini = GameSettings.mini;
-            if (this.scene.game.mod.getVar("mini")) {
+            if (!this.isFirstPlayer) return;
+
+            const mini = this.mini ? GameSettings.mini : 1;
             for (let spring of this.springs) {
-              spring.lrest = spring.lrest * mini;
-              spring.leff = spring.leff * mini;
-            }}
-            if (!this.scene.game.mod.getVar("mini")) {
-              for (let spring of this.springs) {
-                spring.lrest = spring.lrest / mini;
-                spring.leff = spring.leff / mini;
-              }}
+              spring.lrest = spring.baseLrest * mini;
+              spring.leff = spring.baseLeff * mini;
+            }
           }
           createRagdoll() {
             if (!this.scene.game.mod.getVar("invincibility")) {
@@ -13386,10 +13396,13 @@
             if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
               this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
             }
-            if (this.mini !== this.scene.game.mod.getVar("mini")) {
-              this.updateSprings();
-              this.updateMasses();
-              this.mini = this.scene.game.mod.getVar("mini");
+            if (this.isFirstPlayer) {
+              const shouldBeMini = this.scene.game.mod.getVar("mini");
+              if (this.mini !== shouldBeMini) {
+                this.mini = shouldBeMini;
+                this.updateSprings();
+                this.updateMasses();
+              }
             }
             if (
               (this.crashed || (this.updateSound(), this.control()),
@@ -13433,7 +13446,7 @@
               (this.frontSpring.leff = t);
           }
           control() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const t = this.gamepad,
               e = t.isButtonDown("up"),
               s = t.isButtonDown("down"),
@@ -13466,6 +13479,9 @@
                   this.frontWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
                   this.rearWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
               }
+
+            const frontBrake = this.isFirstPlayer && this.scene.game.mod.getVar("frontBrake");
+
   
             (a.motor += ((Math.sqrt(GameSettings.accel) * o - a.motor) / 10) * mini),
               r && !this.swapped && (this.swap(), (this.swapped = !0)),
@@ -13473,7 +13489,7 @@
               e && (this.pedala += this.rearWheel.speed / 5),
               (a.brake = s),
               s && this.frontSpring.contract(-10, 10),
-              (1 === this.dir && (n || this.scene.game.mod.getVar("frontBrake")) && s) || (-1 === this.dir && (i || this.scene.game.mod.getVar("frontBrake")) && s)
+              (1 === this.dir && (n || frontBrake) && s) || (-1 === this.dir && (i || frontBrake) && s)
                 ? (this.frontWheel.brake = !0)
                 : (this.frontWheel.brake = !1);
             let h = i ? 1 : 0;
@@ -13652,7 +13668,7 @@
       }
       };
         drawBikeFrame() {
-            const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+            const mini = this.mini ? GameSettings.mini : 1;
             const e = this.scene,
               s = e.game.mod.getVar("crBmx"),
               i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -13885,7 +13901,7 @@
                     y.stroke();
                   }
               } else {
-                GameInventoryManager.getItem(this.cosmetics.head).draw(y, a.x, a.y, this.drawHeadAngle, v, this.dir);
+                GameInventoryManager.getItem(GameSettings.user.cosmetics.head).draw(y, a.x, a.y, this.drawHeadAngle, v, this.dir);
               }
               y.globalAlpha = 1;
             }
@@ -14265,7 +14281,7 @@
                 g = -o / 2,
                 m = -a / 2,
                 v = -1 === n,
-                y = GameInventoryManager.getItem(this.cosmetics.head),
+                y = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
                 w = this.cockpitAngle;
               y.draw(s, l + i.x, c + i.y, w, 0.7 * h, n),
                 s.translate(l, c),
@@ -14704,7 +14720,7 @@
         drawTruck(t) {
           const e = this.scene,
             s = e.camera.zoom,
-            i = GameInventoryManager.getItem(this.cosmetics.head),
+            i = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
             n = this.drawHeadAngle,
             r = this.dir,
             o = this.frontWheel.pos.toScreen(e),
@@ -14839,91 +14855,99 @@
         Dt = Math.random;
       class Et extends q {
         constructor(t, e, s, i) {
-          super(),
-            (this.color = "rgba(0,0,0,1)"),
-            super.init(t),
-            this.offsetX = GameSettings.offsetPeteX;
-            this.offsetY = GameSettings.offsetPeteY;
-            this.createMasses(e, i),
-            this.createSprings(),
-            this.updateCameraFocalPoint(),
-            this.stopSounds(),
-            this.mini = this.scene.game.mod.getVar("mini"),
-            this.propeller = 0,
-            this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData"),
-            this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes"),
-            -1 === s && this.swap();
+          super();
+          this.color = "rgba(0,0,0,1)";
+          super.init(t);
+
+          const pm = this.scene?.playerManager;
+          this.isFirstPlayer = pm && t.id === pm.firstPlayer?.id;
+          this.mini = this.isFirstPlayer && this.scene.game.mod.getVar("mini");
+
+          this.offsetX = GameSettings.offsetPeteX;
+          this.offsetY = GameSettings.offsetPeteY;
+          this.createMasses(e, i);
+          this.createSprings();
+          this.updateCameraFocalPoint();
+          this.stopSounds();
+          this.propeller = 0;
+          this.shouldDrawMetadata = this.scene.game.mod.getVar("bikeData");
+          this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
+          if (s === -1) this.swap();
         }
         createMasses(e, s) {
           this.masses = [];
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const i = new A(),
             n = new X(new t.Z(e.x + 23 * mini + this.offsetX, e.y + this.offsetY), this),
             r = new X(new t.Z(e.x + -23 * mini + this.offsetX, e.y + this.offsetY), this);
           i.init(new t.Z(e.x + 2 + this.offsetX, e.y + -38 * mini + this.offsetY), this);
           i.drive = this.createRagdoll.bind(this);
-            (r.radius = 14 * mini),
-            (n.radius = 14 * mini),
-            (i.radius = 14 * mini),
-            i.vel.equ(s),
-            r.vel.equ(s),
-            n.vel.equ(s),
-            this.masses.push(i),
-            this.masses.push(r),
-            this.masses.push(n),
-            (this.head = i),
-            (this.frontWheel = n),
-            (this.rearWheel = r),
-            this.rotor = 0;
+          const baseRadius = 14;
+          r.radius = baseRadius * mini;
+          n.radius = baseRadius * mini;
+          i.radius = baseRadius * mini;
+          r.baseRadius = baseRadius;
+          n.baseRadius = baseRadius;
+          i.baseRadius = baseRadius;
+          i.vel.equ(s);
+          r.vel.equ(s);
+          n.vel.equ(s);
+          this.masses.push(i);
+          this.masses.push(r);
+          this.masses.push(n);
+          this.head = i;
+          this.frontWheel = n;
+          this.rearWheel = r;
+          this.rotor = 0;
         }
+
         createSprings() {
           this.springs = [];
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const t = new N(this.head, this.rearWheel, this),
             e = new N(this.rearWheel, this.frontWheel, this),
             s = new N(this.frontWheel, this.head, this);
-          (e.lrest = 45 * mini),
-            (e.leff = 45 * mini),
-            (e.springConstant = 0.2),
-            (e.dampConstant = 0.3),
-            (t.lrest = 47 * mini),
-            (t.leff = 47 * mini),
-            (t.springConstant = 0.2),
-            (t.dampConstant = 0.3),
-            (s.lrest = 45 * mini),
-            (s.leff = 45 * mini),
-            (s.springConstant = 0.2),
-            (s.dampConstant = 0.3),
-            this.springs.push(t),
-            this.springs.push(e),
-            this.springs.push(s),
-            (this.rearSpring = t),
-            (this.chasse = e),
-            (this.frontSpring = s);
+          e.baseLrest = 45;
+          e.baseLeff = 45;
+          e.lrest = 45 * mini;
+          e.leff = 45 * mini;
+          e.springConstant = 0.2;
+          e.dampConstant = 0.3;
+          t.baseLrest = 47;
+          t.baseLeff = 47;
+          t.lrest = 47 * mini;
+          t.leff = 47 * mini;
+          t.springConstant = 0.2;
+          t.dampConstant = 0.3;
+          s.baseLrest = 45;
+          s.baseLeff = 45;
+          s.lrest = 45 * mini;
+          s.leff = 45 * mini;
+          s.springConstant = 0.2;
+          s.dampConstant = 0.3;
+          this.springs.push(t);
+          this.springs.push(e);
+          this.springs.push(s);
+          this.rearSpring = t;
+          this.chasse = e;
+          this.frontSpring = s;
         }
+
         updateMasses() {
-          const mini = GameSettings.mini;
-          if (this.scene.game.mod.getVar("mini")) {
+          if (!this.isFirstPlayer) return;
+          const mini = this.mini ? GameSettings.mini : 1;
           for (let mass of this.masses) {
-            mass.radius = mass.radius * mini;
-          }}
-          if (!this.scene.game.mod.getVar("mini")) {
-            for (let mass of this.masses) {
-              mass.radius = mass.radius / mini;
-            }}
+            mass.radius = mass.baseRadius * mini;
+          }
         }
+
         updateSprings() {
-          const mini = GameSettings.mini;
-          if (this.scene.game.mod.getVar("mini")) {
+          if (!this.isFirstPlayer) return;
+          const mini = this.mini ? GameSettings.mini : 1;
           for (let spring of this.springs) {
-            spring.lrest = spring.lrest * mini;
-            spring.leff = spring.leff * mini;
-          }}
-          if (!this.scene.game.mod.getVar("mini")) {
-            for (let spring of this.springs) {
-              spring.lrest = spring.lrest / mini;
-              spring.leff = spring.leff / mini;
-            }}
+            spring.lrest = spring.baseLrest * mini;
+            spring.leff = spring.baseLeff * mini;
+          }
         }
         createRagdoll() {
           if (!this.scene.game.mod.getVar("invincibility")) {
@@ -15000,10 +15024,13 @@
           if (this.shouldDrawHitboxes !== this.scene.game.mod.getVar("hitboxes")) {
             this.shouldDrawHitboxes = this.scene.game.mod.getVar("hitboxes");
           }
-          if (this.mini !== this.scene.game.mod.getVar("mini")) {
-            this.updateSprings();
-            this.updateMasses();
-            this.mini = this.scene.game.mod.getVar("mini");
+          if (this.isFirstPlayer) {
+            const shouldBeMini = this.scene.game.mod.getVar("mini");
+            if (this.mini !== shouldBeMini) {
+              this.mini = shouldBeMini;
+              this.updateSprings();
+              this.updateMasses();
+            }
           }
           if (
             (this.crashed || (this.updateSound(), this.control()),
@@ -15056,7 +15083,7 @@
             (this.frontSpring.leff = t);
         }
         control() {
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const t = this.gamepad,
             e = t.isButtonDown("up"),
             s = t.isButtonDown("down"),
@@ -15086,13 +15113,15 @@
                 this.frontWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
                 this.rearWheel.pos.y -= this.windspeed * this.head.vel.x * angleX * wind;
             }
+
+            const frontBrake = this.isFirstPlayer && this.scene.game.mod.getVar("frontBrake");
             
           (a.motor += ((Math.sqrt(GameSettings.accel) * o - a.motor) / 10) * mini),
             r && !this.swapped && (this.swap(), (this.swapped = !0)),
             r || (this.swapped = !1),
             e && (this.pedala += this.rearWheel.speed / 5),
             (a.brake = s),
-            (1 === this.dir && (n || this.scene.game.mod.getVar("frontBrake")) && s) || (-1 === this.dir && (i || this.scene.game.mod.getVar("frontBrake")) && s)
+            (1 === this.dir && (n || frontBrake) && s) || (-1 === this.dir && (i || frontBrake) && s)
                 ? (this.frontWheel.brake = !0)
                 : (this.frontWheel.brake = !1);
           let h = i ? 1 : 0;
@@ -15255,7 +15284,7 @@
 }
       };
         drawBikeFrame() {
-          const mini = this.scene.game.mod.getVar("mini") ? GameSettings.mini : 1;
+          const mini = this.mini ? GameSettings.mini : 1;
           const e = this.scene,
             s = e.game.mod.getVar("crMtb"),
             i = e.game.mod.getVar("crHead") || e.game.mod.getVar("mario"),
@@ -15506,7 +15535,7 @@
                 u.closePath()
               }
             else {
-              const t = GameInventoryManager.getItem(this.cosmetics.head),
+              const t = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
                 e = this.drawHeadAngle;
               t.draw(u, z.x, z.y, e, c, this.dir);
             }
@@ -16377,7 +16406,6 @@
                 }
                 if (this._scene.playerManager._players[1]) {
                   if (this._addCheckpoint) {this.checkpointTick = this._scene.ticks; this._addCheckpoint = !1};
-                  console.log(this.checkpointTick);
                 }
               }
             }
@@ -16426,10 +16454,10 @@
               this._tempVehicleTicks > 0 && (t = this._tempVehicle),
                 this._effectTicks > 0 &&
                   this._effect.draw(this._effectTicks / 100),
-                (this._game.mod.getVar("seeGhost") || !this._ghost) && t.draw();
+                t.draw();
               for (let t = 0; t < this.deadVehicles.length; t++)
                 this.deadVehicles[t] && this.deadVehicles[t].draw();
-              this.isGhost() && this._game.mod.getVar("seeGhost");
+              this.isGhost() && this.drawName();
             }
             checkKeys() {
               const t = this._gamepad,
@@ -24700,7 +24728,12 @@
           }
 
           else {
-            //this.game.mod.vars.play = true;
+            if (GameSettings.trackName !== 'track.txt') {
+              if (this.game.mod.ui?.obj?.['play']) {
+                this.game.mod.ui.obj['play'].checkbox.checked = true;
+                this.game.mod.ui.obj['play'].disable();
+              }
+            }
             fetch(`assets/tracks/${GameSettings.trackName}.txt`)
               .then(response => {
                 if (!response.ok) {
@@ -24721,28 +24754,14 @@
                 }
               })
               .catch(error => {
-                console.error('primary fetch failed.', error);
+                console.error('primary fetch failed. using frhdv2', error);
+                var defaultCode = null;
 
-                const script = document.createElement('script');
-                script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${GameSettings.trackName}/track-data-v1.js?callback=t`;
-                script.onerror = () => {
-                  console.error("fallback fetch failed.");
-                };
-
-                // define a temporary global callback for the fallback fetch
-                window.t = ({ code, title }) => {
-                  if (code) {
-                    GameSettings.trackName = title;
-                    console.log(title)
-                    this.read(code);
-                    console.log("track loaded from FRHD.");
-                  } else {
-                    console.error("failed to load track code from FRHD.");
-                  }
-                  delete window.t;
-                };
-
-                document.body.appendChild(script);
+                if (GameSettings && GameSettings.code) {
+                  this.read(GameSettings.code);
+                } else {
+                  console.log("unable to fetch from GameSettings.")
+                }
               });
           }
 
@@ -25118,25 +25137,18 @@
             (this.track = t);
             const message = this.message;
 
-          let iteration = 0;
           const showMessage = () => {
             if (GameSettings.trackName === "track.txt") return;
 
-            let trackName = GameSettings.trackName;
+            let trackName = GameSettings.trackName ? GameSettings.trackName + " - " + GameSettings.authors : GameSettings.authors;
             trackName = trackName.replace(".txt", "");
             message.show(trackName, !1, "#000000", "#FFFFFF");
-
             setTimeout(() => {
               message.hide();
-
-              iteration++;
-              if (iteration < 3) {
-                showMessage();
-              }
-            }, 1500);
+            }, 5000);
           };
 
-          showMessage();
+showMessage();
         }
         updateControls() {
           if (this.controls) {
@@ -25218,6 +25230,7 @@
             this.stage.update(),
             this.camera.updateZoom(),
             this.updateMainPlayerHotkeys();
+            this.addPlayers();
             (this.game.mod.getVar("oldTimer")) && this.score.update();
               if (this.playerManager.firstPlayer.complete && (this.playerManager.firstPlayer._scene.ticks < this.completedTicks)){
                   this.playerManager.firstPlayer.complete = false;
@@ -25892,7 +25905,8 @@
               GameSettings.trackName = "track.txt";
               GameSettings.offsetPeteX = 0;
               GameSettings.offsetPeteY = 0;
-              this.trackUpdated = true
+              this.trackUpdated = true;
+              GameManager.game.currentScene.toolHandler.actionTimeline = [];
               break;
             case "import": {
               let e = t[0];
@@ -25907,6 +25921,7 @@
                 this.command("dialog", !1);
                 this.trackUpdated = true;
                 this.logged = false;
+                GameManager.game.currentScene.toolHandler.actionTimeline = [];
               break;
             }
             case "add": {
@@ -25986,6 +26001,12 @@
               raceData && this.command("dialog", !1);
               break;
             }
+            case "clear race":
+              (this.races = []),
+                (this.restartTrack = !0);
+                const playerManager = this.playerManager;
+                playerManager.clear();
+              break;
           }
         }
         addRaces(raceData) {
@@ -25993,45 +26014,49 @@
             this.restartTrack = true;
         }
         addPlayers(raceData) {
-            const races = raceData;
-            const playerManager = this.playerManager;
-            playerManager.clear();
-          
-            let user = [];
-            user = {
-                "u_id": 1082,
-                "u_name": "ness",
-                "d_name": "Pete",
-                "img_url_small": "https:\/\/secure.gravatar.com\/avatar\/c7c31ff913e6990b5c44700b4d34d8ba\/?s=50&d=mm&r=pg",
-                "cosmetics": {
-                    "head": {
-                        "id": "12",
-                        "title": "Green Hat",
-                        "type": "1",
-                        "name": "classic_green",
-                        "cost": "60",
-                        "options": {
-                            "back": "#51B400"
-                        },
-                        "classname": "forward_cap",
-                        "equiped": true,
-                        "spritesheet_id": "4",
-                        "img": "head_icons_4 head_icons_4-classic_green",
-                        "show": true,
-                        "script": "https:\/\/cdn.freeriderhd.com\/free_rider_hd\/assets\/inventory\/head\/scripts\/v5\/forward_cap.js",
-                        "limited": false
-                    }
-                }}
-
-            let n = races.code;
-              "string" == typeof n && (n = JSON.parse(n));
-
-            const player = playerManager.createPlayer(this, user);
-            player.setBaseVehicle(races.vehicle);
-            player.setAsGhost();
-            player.getGamepad().loadPlayback(raceData.code, this.settings.keysToRecord);
-            playerManager.addPlayer(player);
+          if (typeof GameSettings === 'undefined' || !GameSettings.fullRaceData) {
+            return;
           }
+
+          let fullRace;
+          try {
+            let dataToParse = GameSettings.fullRaceData;
+
+            if (typeof dataToParse === 'object' && dataToParse !== null) {
+              dataToParse = JSON.stringify(dataToParse);
+            }
+
+            fullRace = JSON.parse(dataToParse);
+
+          } catch (e) {
+            console.error("Failed to parse GameSettings.fullRaceData:", e);
+            console.error("Failing string:", GameSettings.fullRaceData);
+            return;
+          }
+
+          const playerManager = this.playerManager;
+          playerManager.clear();
+
+          const apiUser = fullRace.user;
+
+          const mappedUser = {
+            "u_id": apiUser.id,
+            "u_name": apiUser.username,
+            "d_name": apiUser.displayName || apiUser.username,
+            "cosmetics": apiUser.cosmetics || {}
+          };
+
+          const ghostData = fullRace.ghost;
+
+          const player = playerManager.createPlayer(this, mappedUser);
+
+          player.setBaseVehicle(ghostData.vehicle);
+          player.setAsGhost();
+          player.getGamepad().loadPlayback(ghostData.code, this.settings.keysToRecord);
+          playerManager.addPlayer(player);
+
+          GameSettings.fullRaceData = null;
+        }
         parseCoordinates(t) {
           const e = t.split("#");
           let s = e[0].split(",");
@@ -27110,11 +27135,11 @@
           invisibleRider: { default: !1 },
           mini: { default: !1 },
           propeller: { default: !1 },
-          crouch: { default: !1 },
-          seeGhost: { default: !0 },
+          crouch: { default: !0 },
+          seeGhost: { default: !1 },
           slowmo: { default: !1 },
-          rewind: { default: !1 },
-          oldTimer: { default: !1 },
+          rewind: { default: !0 },
+          oldTimer: { default: !0 },
           frontBrake: { default: !1 },
           bikeData: { default: !1 },
           gameData: { default: !1 },
@@ -27938,7 +27963,7 @@
       }
       let xr = document.createElement("template");
       (xr.innerHTML =
-        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/yxkpro/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char<br>Maxime<br>Pete<br><span title="created icons for the layer feature">mbcool</span></div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
+        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/pie42/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char<br>Renée<br>Maxime<br>Pete<br><span title="created icons for the layer feature">mbcool</span></div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
         (xr = xr.content);
       const br = {
         bool: (t, e, s, i) => new lr(t, s[e], i),
@@ -28071,6 +28096,20 @@
           for (const t in this.vars)
             rr[t].hasOwnProperty("initialize") &&
               rr[t].initialize(this.vars[t]);
+          if (typeof GameSettings !== 'undefined' && GameSettings) {
+            if (GameSettings.trackName !== 'track.txt' && this.ui.obj['play']) {
+              this.vars.play = true;
+              this.ui.obj['play'].checkbox.checked = true;
+              this.ui.obj['play'].disable();
+            }
+            else if (GameSettings.trackName === 'track.txt' && this.ui.obj['play']) {
+              this.vars.play = false;
+              this.ui.obj['play'].checkbox.checked = false;
+            }
+
+            this.vars.crouch = true;
+            this.ui.obj['crouch'].checkbox.checked = true;
+          }
         }
         setVar(t, e) {
           if (rr.hasOwnProperty(t)) {
@@ -28218,8 +28257,12 @@
 
           let c = 0;
 
-          if (window.innerHeight <= 1440) {
+          if (window.innerHeight <= 800) {
             c = 20;
+          }
+
+          if (window.innerHeight >= 1440) {
+            c = 40;
           }
 
           this.currentScene &&
@@ -29726,7 +29769,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(i.x - zoom * 2, i.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(i.x - zoom * 1, i.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -29752,7 +29795,7 @@ function load() {
                       ctx.beginPath();
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
-                      ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                      ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                       ctx.fill();
                       ctx.stroke();
                   }
@@ -29760,7 +29803,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -29775,7 +29818,7 @@ function load() {
               ctx.beginPath();
               ctx.strokeStyle = '#1884cf';
               ctx.fillStyle = '#1884cf';
-              ctx.rect(rsp.x - zoom * 3, rsp.y - zoom * 3, zoom * 6, zoom * 6);
+              ctx.rect(rsp.x - zoom * 1.5, rsp.y - zoom * 1.5, zoom * 3, zoom * 3);
               ctx.fill();
               ctx.stroke();
           } else {
@@ -29817,7 +29860,7 @@ function load() {
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
                       // Calculate the radius based on the zoom level
-                      const radius = zoom * 3;
+                      const radius = zoom * 1.5;
                       // Draw the circle
                       ctx.arc(i.x, i.y, radius, 0, Math.PI * 2);
                       ctx.fill();
