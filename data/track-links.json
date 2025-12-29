@@ -1,5 +1,255 @@
 [
   {
+    "canonical": "contest-entry",
+    "name": "Contest Entry",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4135
+      },
+      {
+        "type": "frhd",
+        "id": 11090
+      },
+      {
+        "type": "bhr",
+        "id": 134
+      },
+      {
+        "type": "cr",
+        "id": 718184
+      },
+      {
+        "type": "cr",
+        "id": 1058273
+      },
+      {
+        "type": "cr",
+        "id": 1059091
+      }
+    ]
+  },
+  {
+    "canonical": "ultimate-sprites",
+    "name": "Ultimate sprites",
+    "authors": ["EliBloodthirst"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1146
+      },
+      {
+        "type": "frhd",
+        "id": 2462
+      },
+      {
+        "type": "bhr",
+        "id": 524
+      },
+      {
+        "type": "cr",
+        "id": 839393
+      },
+      {
+        "type": "cr",
+        "id": 1082195
+      }
+    ]
+  },
+  {
+    "canonical": "operation-ellipsis",
+    "name": "Operation Ellipsis",
+    "authors": ["Stig", "Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 336968
+      },
+      {
+        "type": "cr",
+        "id": 451111
+      }
+    ]
+  },
+  {
+    "canonical": "banner-contest-entry",
+    "name": "CONTEST ENTRY",
+    "authors": ["Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1728
+      },
+      {
+        "type": "cr",
+        "id": 719626
+      }
+    ]
+  },
+  {
+    "canonical": "plasticorp-2",
+    "name": "Plasticorp 2",
+    "authors": ["Plastic", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 66854
+      },
+      {
+        "type": "bhr",
+        "id": 13069
+      },
+      {
+        "type": "cr",
+        "id": 859450
+      }
+    ]
+  },
+    {
+    "canonical": "plasticorp-3",
+    "name": "Plasticorp 3",
+    "authors": ["Plastic", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 66855
+      },
+      {
+        "type": "bhr",
+        "id": 13070
+      },
+      {
+        "type": "cr",
+        "id": 979673
+      }
+    ]
+  },
+    {
+    "canonical": "plasticorp-4",
+    "name": "Plasticorp 4",
+    "authors": ["Plastic", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 66857
+      },
+      {
+        "type": "bhr",
+        "id": 13071
+      },
+      {
+        "type": "cr",
+        "id": 1387623
+      }
+    ]
+  },
+  {
+    "canonical": "zen",
+    "name": "Zen",
+    "authors": ["Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1689
+      },
+      {
+        "type": "cr",
+        "id": 1053702
+      }
+    ]
+  },
+  {
+    "canonical": "wind-whisper",
+    "name": "Wind Whisper",
+    "authors": ["LDPrider", "C_Four"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 981532
+      },
+      {
+        "type": "cr",
+        "id": 568132
+      }
+    ]
+  },
+  {
+    "canonical": "newport",
+    "name": "Newport",
+    "authors": ["Alex", "mR..A"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 290532
+      },
+      {
+        "type": "bhr",
+        "id": 11597
+      }
+    ]
+  },
+  {
+    "canonical": "seventh-sea",
+    "name": "Seventh Sea",
+    "authors": ["Alex"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 95778
+      },
+      {
+        "type": "bhr",
+        "id": 7483
+      }
+    ]
+  },
+  {
+    "canonical": "the-ultrapark",
+    "name": "The Ultrapark",
+    "authors": ["Alex"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 88929
+      },
+      {
+        "type": "bhr",
+        "id": 7327
+      }
+    ]
+  },
+  {
+    "canonical": "stiched-up",
+    "name": "Stitched Up",
+    "authors": ["Lust"],
+    "tracks": [
+      {
+        "type": "cr",
+        "id": 555072
+      }
+    ]
+  },
+  {
+    "canonical": "grim-hill",
+    "name": "Grim Hill",
+    "authors": ["_vili"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3396
+      },
+      {
+        "type": "bhr",
+        "id": 427
+      },
+      {
+        "type": "cr",
+        "id": 723116
+      }
+    ]
+  },
+  {
     "canonical": "country-cycling",
     "name": "Country Cycling",
     "authors": ["max007x"],
@@ -48,10 +298,6 @@
       },
       {
         "type": "bhr",
-        "id": 3542
-      },
-      {
-        "type": "bhr",
         "id": 3657
       }
     ]
@@ -72,6 +318,249 @@
       {
         "type": "cr",
         "id": 1430845
+      }
+    ]
+  },
+  {
+    "canonical": "a-trip-to-the-woods",
+    "name": "A Trip to the Woods",
+    "authors": ["max007x"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 167075
+      },
+      {
+        "type": "bhr",
+        "id": 9048
+      }
+    ]
+  },
+  {
+    "canonical": "china-adventure",
+    "name": "china adventure",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1259
+      },
+      {
+        "type": "bhr",
+        "id": 1164
+      },
+      {
+        "type": "cr",
+        "id": 21888
+      }
+    ]
+  },
+  {
+    "canonical": "olympia-ride",
+    "name": "Olympia ride",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1136
+      },
+      {
+        "type": "bhr",
+        "id": 1167
+      },
+      {
+        "type": "cr",
+        "id": 37338
+      }
+    ]
+  },
+  {
+    "canonical": "egyptian-empire",
+    "name": "Egyptian empire",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1019
+      },
+      {
+        "type": "bhr",
+        "id": 1163
+      },
+      {
+        "type": "cr",
+        "id": 48247
+      }
+    ]
+  },
+  {
+    "canonical": "northshore",
+    "name": "northshore",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1266
+      },
+      {
+        "type": "bhr",
+        "id": 1166
+      },
+      {
+        "type": "cr",
+        "id": 49178
+      }
+    ]
+  },
+  {
+    "canonical": "antarctic-slopes",
+    "name": "Antarctic slopes",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1015
+      },
+      {
+        "type": "bhr",
+        "id": 1165
+      },
+      {
+        "type": "cr",
+        "id": 58766
+      }
+    ]
+  },
+  {
+    "canonical": "american-outback",
+    "name": "American Outback",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1172
+      },
+      {
+        "type": "bhr",
+        "id": 1162
+      },
+      {
+        "type": "cr",
+        "id": 309213
+      }
+    ]
+  },
+  {
+    "canonical": "the-secret-valley",
+    "name": "The Secret Valley",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1024
+      },
+      {
+        "type": "bhr",
+        "id": 1161
+      },
+      {
+        "type": "cr",
+        "id": 460934
+      }
+    ]
+  },
+  {
+    "canonical": "neoexperimental-park",
+    "name": "Neoexperimental Park",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6587
+      },
+      {
+        "type": "bhr",
+        "id": 140
+      },
+      {
+        "type": "cr",
+        "id": 747733
+      }
+    ]
+  },
+  {
+    "canonical": "endogenous",
+    "name": "Endogenous",
+    "authors": ["IamRider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1048
+      },
+      {
+        "type": "bhr",
+        "id": 3538
+      },
+      {
+        "type": "cr",
+        "id": 782995
+      }
+    ]
+  },
+  {
+    "canonical": "chillwind-woods",
+    "name": "Chillwind Woods",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1009
+      },
+      {
+        "type": "bhr",
+        "id": 1064
+      },
+      {
+        "type": "cr",
+        "id": 785674
+      }
+    ]
+  },
+  {
+    "canonical": "red-version",
+    "name": "Red version",
+    "authors": ["EliBloodthirst"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1148
+      },
+      {
+        "type": "bhr",
+        "id": 385
+      },
+      {
+        "type": "cr",
+        "id": 1178809
+      }
+    ]
+  },
+  {
+    "canonical": "sector-54",
+    "name": "Sector 54",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2130
+      },
+      {
+        "type": "bhr",
+        "id": 143
+      },
+      {
+        "type": "cr",
+        "id": 1339340
       }
     ]
   },
@@ -100,6 +589,10 @@
         "id": 1082
       },
       {
+        "type": "bhr",
+        "id": 1821
+      },
+      {
         "type": "cr",
         "id": 872089
       }
@@ -117,6 +610,10 @@
       {
         "type": "bhr",
         "id": 1711
+      },
+      {
+        "type": "cr",
+        "id": 1463030
       }
     ]
   },
@@ -132,6 +629,17 @@
       {
         "type": "bhr",
         "id": 795
+      }
+    ]
+  },
+  {
+    "canonical": "graveyard-ghost",
+    "name": "Graveyard Ghost",
+    "authors": ["armator"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 50981
       }
     ]
   },
@@ -256,6 +764,61 @@
     ]
   },
   {
+    "canonical": "uninhabited",
+    "name": "Uninhabited",
+    "authors": ["rationalities", "Eryp"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 667230
+      }
+    ]
+  },
+  {
+    "canonical": "clandestine",
+    "name": "Clandestine",
+    "authors": ["rationalities", "Figured"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 719425
+      }
+    ]
+  },
+  {
+    "canonical": "clandestine-ii",
+    "name": "Clandestine II",
+    "authors": ["Figured", "rationalities"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 721196
+      }
+    ]
+  },
+  {
+    "canonical": "infiltration",
+    "name": "Infiltration",
+    "authors": ["Figured", "rationalities"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 706471
+      }
+    ]
+  },
+  {
+    "canonical": "the-ellie-badge",
+    "name": "The Ellie Badge",
+    "authors": ["Figured", "Doodlenut"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 646153
+      }
+    ]
+  },
+  {
     "canonical": "bhaktan-mountains",
     "name": "Bhaktan Mountains",
     "authors": ["Cataclysm"],
@@ -267,6 +830,10 @@
       {
         "type": "bhr",
         "id": 4855
+      },
+      {
+        "type": "cr",
+        "id": 699233
       }
     ]
   },
@@ -282,6 +849,10 @@
       {
         "type": "bhr",
         "id": 4860
+      },
+      {
+        "type": "cr",
+        "id": 710209
       }
     ]
   },
@@ -316,6 +887,33 @@
       {
         "type": "bhr",
         "id": 2363
+      },
+      {
+        "type": "cr",
+        "id": 737446
+      }
+    ]
+  },
+  {
+    "canonical": "california-redwoods",
+    "name": "California Redwoods",
+    "authors": ["Cataclysm"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 72539
+      },
+      {
+        "type": "frhd",
+        "id": 1047
+      },
+      {
+        "type": "bhr",
+        "id": 2364
+      },
+      {
+        "type": "cr",
+        "id": 1065237
       }
     ]
   },
@@ -485,6 +1083,21 @@
     ]
   },
   {
+    "canonical": "asteroid-escape",
+    "name": "Asteroid Escape",
+    "authors": ["RHINO", "BIGBLU3"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1012
+      },
+      {
+        "type": "cr",
+        "id": 677996
+      }
+    ]
+  },
+  {
     "canonical": "aurora",
     "name": "Aurora",
     "authors": ["Ness"],
@@ -547,7 +1160,7 @@
   {
     "canonical": "jotunheim",
     "name": "Jotunheim",
-    "authors": ["Stig", "stig"],
+    "authors": ["Stig"],
     "tracks": [
       {
         "type": "frhd",
@@ -620,9 +1233,219 @@
     ]
   },
   {
+    "canonical": "omega-2078",
+    "name": "Omega 2078",
+    "authors": ["Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1554
+      },
+      {
+        "type": "cr",
+        "id": 1345982
+      }
+    ]
+  },
+    {
+    "canonical": "ramp-attack",
+    "name": "Ramp Attack",
+    "authors": ["Lust", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 95446
+      },
+      {
+        "type": "cr",
+        "id": 562917
+      }
+    ]
+  },
+      {
+    "canonical": "the-mist",
+    "name": "The Mist",
+    "authors": ["Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 467802
+      },
+      {
+        "type": "bhr",
+        "id": 12943
+      }
+    ]
+  },
+  {
+    "canonical": "medieval-park-2",
+    "name": "Medieval Park 2",
+    "authors": ["Stig", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 85483
+      },
+      {
+        "type": "cr",
+        "id": 549149
+      }
+    ]
+  },
+  {
+    "canonical": "medieval-park",
+    "name": "Medieval Park",
+    "authors": ["Stig", "Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 85482
+      },
+      {
+        "type": "cr",
+        "id": 494288
+      }
+    ]
+  },
+    {
+    "canonical": "fall-from-grace",
+    "name": "Fall From Grace",
+    "authors": ["Foundations"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 63259
+      },
+      {
+        "type": "bhr",
+        "id": 1
+      }
+    ]
+  },
+  {
+    "canonical": "the-mages-lair",
+    "name": "The Mage's Lair",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 222413
+      },
+      {
+        "type": "bhr",
+        "id": 10502
+      }
+    ]
+  },
+  {
+    "canonical": "carvahall",
+    "name": "Carvahall",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 208947
+      },
+      {
+        "type": "bhr",
+        "id": 10140
+      }
+    ]
+  },
+    {
+    "canonical": "hopes-and-dreams",
+    "name": "Hopes and Dreams",
+    "authors": ["WheelieMaker", "EasternBiker, max007x, Ness"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 163592
+      },
+      {
+        "type": "bhr",
+        "id": 8875
+      }
+    ]
+  },
+  {
+    "canonical": "adventure-of-a-lifetime",
+    "name": "△dventure of △ Lifetime",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 278291
+      },
+      {
+        "type": "bhr",
+        "id": 11379
+      }
+    ]
+  },
+    {
+    "canonical": "ataraxy",
+    "name": "Ataraxy",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 462701
+      },
+      {
+        "type": "bhr",
+        "id": 12867
+      }
+    ]
+  },
+  {
+    "canonical": "the-fire-thief",
+    "name": "The Fire Thief",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 217273
+      },
+      {
+        "type": "bhr",
+        "id": 10395
+      }
+    ]
+  },
+    {
+    "canonical": "zen-garden",
+    "name": "Zen Garden",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 245370
+      },
+      {
+        "type": "bhr",
+        "id": 10870
+      }
+    ]
+  },
+  {
+    "canonical": "unconquered-isles",
+    "name": "Unconquered Isles",
+    "authors": ["Volund"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 175378
+      },
+      {
+        "type": "bhr",
+        "id": 9378
+      }
+    ]
+  },
+  {
     "canonical": "super-mario-bros-2",
     "name": "Super Mario Bros. 2",
-    "authors": ["Stig", "stig"],
+    "authors": ["Stig"],
     "tracks": [
       {
         "type": "frhd",
@@ -676,21 +1499,6 @@
       {
         "type": "bhr",
         "id": 8949
-      }
-    ]
-  },
-  {
-    "canonical": "a-trip-to-the-woods",
-    "name": "A Trip to the Woods",
-    "authors": ["max007x"],
-    "tracks": [
-      {
-        "type": "frhd",
-        "id": 167075
-      },
-      {
-        "type": "bhr",
-        "id": 9048
       }
     ]
   },
@@ -877,7 +1685,7 @@
   {
     "canonical": "lets-explore",
     "name": "Lets Explore",
-    "authors": ["WyattStonhouse", "wyattstonhouse"],
+    "authors": ["WyattStonhouse"],
     "tracks": [
       {
         "type": "frhd",
@@ -907,7 +1715,7 @@
   {
     "canonical": "rotate-iii",
     "name": "Rotate III",
-    "authors": ["Backtwice"],
+    "authors": ["Backtwice", "CityShep"],
     "tracks": [
       {
         "type": "frhd",
@@ -946,6 +1754,21 @@
       {
         "type": "bhr",
         "id": 11376
+      }
+    ]
+  },
+  {
+    "canonical": "chaos",
+    "name": "chaos",
+    "authors": ["Cypress"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 491872
+      },
+      {
+        "type": "bhr",
+        "id": 13090
       }
     ]
   },
@@ -1175,6 +1998,28 @@
     ]
   },
   {
+    "canonical": "atlantean-ruins-ft-doodlenut",
+    "name": "Atlantean Ruins ft. Doodlenut",
+    "authors": ["Holystone"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 655315
+      }
+    ]
+  },
+  {
+    "canonical": "mammoth",
+    "name": "Mammoth",
+    "authors": ["mR..A"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 657481
+      }
+    ]
+  },
+  {
     "canonical": "ghost-desert",
     "name": "Ghost Desert",
     "authors": ["nasrani"],
@@ -1186,6 +2031,2688 @@
       {
         "type": "bhr",
         "id": 3386
+      }
+    ]
+  },
+    {
+    "canonical": "ruins-of-arutad",
+    "name": "Ruins of Arutad",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676258
+      },
+      {
+        "type": "bhr",
+        "id": 2406
+      }
+    ]
+  },
+  {
+    "canonical": "terra-incognita",
+    "name": "Terra Incognita",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676042
+      },
+      {
+        "type": "bhr",
+        "id": 148
+      },
+      {
+        "type": "cr",
+        "id": 839356
+      }
+    ]
+  },
+  {
+    "canonical": "a-world-to-discover",
+    "name": "A World To Discover",
+    "authors": ["fried rider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 716868
+      },
+      {
+        "type": "frhd",
+        "id": 11106
+      },
+      {
+        "type": "bhr",
+        "id": 3131
+      },
+      {
+        "type": "cr",
+        "id": 1463042
+      }
+    ]
+  },
+  {
+    "canonical": "10k-sqm",
+    "name": "10k sqm",
+    "authors": ["loge_0"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 967246
+      }
+    ]
+  },
+  {
+    "canonical": "serene",
+    "name": "Serene",
+    "authors": ["moonoomoo"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 978627
+      }
+    ]
+  },
+  {
+    "canonical": "the-abyss",
+    "name": "The Abyss",
+    "authors": ["deadrising2"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 991848
+      }
+    ]
+  },
+  {
+    "canonical": "53-azalea-street",
+    "name": "53 Azalea Street",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 992631
+      },
+      {
+        "type": "bhr",
+        "id": 129
+      },
+      {
+        "type": "cr",
+        "id": 1337878
+      }
+    ]
+  },
+  {
+    "canonical": "overland-expedition",
+    "name": "Overland Expedition",
+    "authors": ["Phil38654"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 958607
+      },
+      {
+        "type": "cr",
+        "id": 513958
+      }
+    ]
+  },
+  {
+    "canonical": "dtof-faf-c-r",
+    "name": "DToF FaF C R",
+    "authors": ["ToxicMahem"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 986524
+      },
+      {
+        "type": "cr",
+        "id": 748649
+      }
+    ]
+  },
+  {
+    "canonical": "killer-teddies",
+    "name": "killer teddies =O",
+    "authors": ["vampyre"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 985262
+      },
+      {
+        "type": "cr",
+        "id": 444346
+      }
+    ]
+  },
+  {
+    "canonical": "tools-of-destruction",
+    "name": "Tools of Destruction",
+    "authors": ["Gräggen", "Stig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 958904
+      },
+      {
+        "type": "cr",
+        "id": 291848
+      }
+    ]
+  },
+    {
+    "canonical": "travel-contest-entry",
+    "name": "Contest Entry",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1010
+      },
+      {
+        "type": "cr",
+        "id": 356286
+      }
+    ]
+  },
+      {
+    "canonical": "pedalling",
+    "name": "Pedalling",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1886
+      },
+      {
+        "type": "cr",
+        "id": 396350
+      }
+    ]
+  },
+        {
+    "canonical": "plain",
+    "name": "Plain",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1688
+      },
+      {
+        "type": "cr",
+        "id": 442099
+      }
+    ]
+  },
+      {
+    "canonical": "layers",
+    "name": "Layers",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1016
+      },
+      {
+        "type": "cr",
+        "id": 409068
+      }
+    ]
+  },
+      {
+    "canonical": "down-the-mountain",
+    "name": "Down the mountain",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5427
+      },
+      {
+        "type": "cr",
+        "id": 291445
+      }
+    ]
+  },
+      {
+    "canonical": "rocky-steppes",
+    "name": "Rocky Steppes",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1007
+      },
+      {
+        "type": "cr",
+        "id": 289066
+      }
+    ]
+  },
+  {
+    "canonical": "break-the-surface-ii",
+    "name": "Break the Surface II",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3306
+      },
+      {
+        "type": "cr",
+        "id": 417138
+      }
+    ]
+  },
+    {
+    "canonical": "break-the-surface",
+    "name": "Break the Surface",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6556
+      },
+      {
+        "type": "cr",
+        "id": 295252
+      }
+    ]
+  },
+    {
+    "canonical": "steep-trail",
+    "name": "Steep Trail",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1049
+      },
+      {
+        "type": "cr",
+        "id": 274254
+      }
+    ]
+  },
+    {
+    "canonical": "crysis",
+    "name": "Crysis",
+    "authors": ["Gräggen"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1311
+      },
+      {
+        "type": "cr",
+        "id": 267389
+      }
+    ]
+  },
+  {
+    "canonical": "the-b3vapaa-factory",
+    "name": "The B3Vapaa Factory",
+    "authors": ["Vapaa", "Joel"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676204
+      },
+      {
+        "type": "bhr",
+        "id": 2574
+      }
+    ]
+  },
+  {
+    "canonical": "day-at-the-skatepark",
+    "name": "Day at the Skatepark",
+    "authors": ["Alex"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 83750
+      },
+      {
+        "type": "bhr",
+        "id": 7215
+      }
+    ]
+  },
+  {
+    "canonical": "the-mansion",
+    "name": "The Mansion",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1120
+      },
+      {
+        "type": "cr",
+        "id": 5
+      }
+    ]
+  },
+  {
+    "canonical": "help-save-xmas",
+    "name": "Help save Xmas",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3137
+      },
+      {
+        "type": "cr",
+        "id": 87
+      }
+    ]
+  },
+  {
+    "canonical": "aqua-marine",
+    "name": "Aqua Marine",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8964
+      },
+      {
+        "type": "cr",
+        "id": 102
+      }
+    ]
+  },
+  {
+    "canonical": "volcano",
+    "name": "Volcano",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4561
+      },
+      {
+        "type": "cr",
+        "id": 1175
+      }
+    ]
+  },
+  {
+    "canonical": "ancient-world",
+    "name": "Ancient World!!!",
+    "authors": ["JoeKeene"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1273
+      },
+      {
+        "type": "cr",
+        "id": 1637
+      }
+    ]
+  },
+  {
+    "canonical": "the-lab",
+    "name": "The Lab",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 7825
+      },
+      {
+        "type": "cr",
+        "id": 2056
+      }
+    ]
+  },
+  {
+    "canonical": "3d-bedroom",
+    "name": "3D Bedroom",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1022
+      },
+      {
+        "type": "cr",
+        "id": 29472
+      }
+    ]
+  },
+  {
+    "canonical": "3d-bathroom",
+    "name": "3D Bathroom",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3982
+      },
+      {
+        "type": "cr",
+        "id": 29473
+      }
+    ]
+  },
+  {
+    "canonical": "3d-kitchen",
+    "name": "3D Kitchen",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1077
+      },
+      {
+        "type": "cr",
+        "id": 29479
+      }
+    ]
+  },
+  {
+    "canonical": "windy-downhill",
+    "name": "Windy Downhill",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1239
+      },
+      {
+        "type": "cr",
+        "id": 29480
+      }
+    ]
+  },
+  {
+    "canonical": "epic-nthshore",
+    "name": "Epic NthShore",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1006
+      },
+      {
+        "type": "cr",
+        "id": 30518
+      }
+    ]
+  },
+  {
+    "canonical": "dino-world",
+    "name": "Dino World",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1020
+      },
+      {
+        "type": "cr",
+        "id": 52215
+      }
+    ]
+  },
+  {
+    "canonical": "sunday-arvo-pedal",
+    "name": "Sunday Arvo Pedal",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3941
+      },
+      {
+        "type": "cr",
+        "id": 58051
+      }
+    ]
+  },
+  {
+    "canonical": "3d-skatepark",
+    "name": "3D Skatepark",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1641
+      },
+      {
+        "type": "cr",
+        "id": 59409
+      }
+    ]
+  },
+  {
+    "canonical": "3d-skatepark-ii",
+    "name": "3D Skatepark II",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1003
+      },
+      {
+        "type": "cr",
+        "id": 61587
+      }
+    ]
+  },
+  {
+    "canonical": "catch-ya-plane",
+    "name": "Catch ya plane",
+    "authors": ["moose_man"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1042
+      },
+      {
+        "type": "cr",
+        "id": 71525
+      }
+    ]
+  },
+  {
+    "canonical": "up-the-mountain",
+    "name": "up the mountain",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3191
+      },
+      {
+        "type": "cr",
+        "id": 82806
+      }
+    ]
+  },
+  {
+    "canonical": "year-3012",
+    "name": "...year 3012...",
+    "authors": ["it-must-be-you"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1084
+      },
+      {
+        "type": "cr",
+        "id": 169715
+      }
+    ]
+  },
+  {
+    "canonical": "futurerootslv32",
+    "name": "FutureRootsLv3.2",
+    "authors": ["hawnks"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1069
+      },
+      {
+        "type": "cr",
+        "id": 250192
+      }
+    ]
+  },
+  {
+    "canonical": "bmx-odyssey",
+    "name": "BMX Odyssey",
+    "authors": ["Dufftron"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2772
+      },
+      {
+        "type": "cr",
+        "id": 250252
+      }
+    ]
+  },
+  {
+    "canonical": "stone-mountain-v2",
+    "name": "Stone Mountain v2",
+    "authors": ["odin333"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1021
+      },
+      {
+        "type": "cr",
+        "id": 260130
+      }
+    ]
+  },
+  {
+    "canonical": "star-wars",
+    "name": "Star Wars",
+    "authors": ["Stig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1014
+      },
+      {
+        "type": "cr",
+        "id": 260223
+      }
+    ]
+  },
+  {
+    "canonical": "bmx-odyssey-2",
+    "name": "BMX Odyssey 2",
+    "authors": ["dufftron"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2274
+      },
+      {
+        "type": "cr",
+        "id": 264088
+      }
+    ]
+  },
+  {
+    "canonical": "futurerootslv4",
+    "name": "FutureRootsLv4",
+    "authors": ["hawnks"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3031
+      },
+      {
+        "type": "cr",
+        "id": 289568
+      }
+    ]
+  },
+  {
+    "canonical": "futurerootslv1",
+    "name": "FutureRootsLv1",
+    "authors": ["hawnks"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 993336
+      },
+      {
+        "type": "cr",
+        "id": 191756
+      }
+    ]
+  },
+  {
+    "canonical": "futurerootslv2",
+    "name": "FutureRootsLv2",
+    "authors": ["hawnks"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 993337
+      },
+      {
+        "type": "cr",
+        "id": 208849
+      }
+    ]
+  },
+  {
+    "canonical": "futurerootslv5",
+    "name": "FutureRootsLv5",
+    "authors": ["hawnks"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11103
+      },
+      {
+        "type": "cr",
+        "id": 309255
+      }
+    ]
+  },
+  {
+    "canonical": "turtle-beach",
+    "name": "Turtle Beach",
+    "authors": ["FUTURE MTNS"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 958489
+      },
+      {
+        "type": "cr",
+        "id": 819064
+      }
+    ]
+  },
+  {
+    "canonical": "forever-falls",
+    "name": "Forever Falls",
+    "authors": ["FUTURE MTNS"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1123
+      },
+      {
+        "type": "cr",
+        "id": 752538
+      }
+    ]
+  },
+  {
+    "canonical": "day-at-the-cottage",
+    "name": "Day At The Cottage",
+    "authors": ["odin333"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11104
+      },
+      {
+        "type": "cr",
+        "id": 304926
+      }
+    ]
+  },
+  {
+    "canonical": "path-of-illumination",
+    "name": "Path of Illumination",
+    "authors": ["artyst"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1270
+      },
+      {
+        "type": "cr",
+        "id": 310927
+      }
+    ]
+  },
+  {
+    "canonical": "this-is-freeride",
+    "name": "This Is Freeride",
+    "authors": ["Phil38654"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1707
+      },
+      {
+        "type": "cr",
+        "id": 311302
+      }
+    ]
+  },
+  {
+    "canonical": "blorks-mountain",
+    "name": "Blorks Mountain",
+    "authors": ["esklate"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1011
+      },
+      {
+        "type": "cr",
+        "id": 314741
+      }
+    ]
+  },
+  {
+    "canonical": "west-49-skatepark",
+    "name": "west-49 skatepark",
+    "authors": ["Jon312"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4659
+      },
+      {
+        "type": "cr",
+        "id": 317542
+      }
+    ]
+  },
+  {
+    "canonical": "contest-entry",
+    "name": "Contest Entry",
+    "authors": ["Kazniti"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1184
+      },
+      {
+        "type": "cr",
+        "id": 353527
+      }
+    ]
+  },
+  {
+    "canonical": "algarvian-coast",
+    "name": "Algarvian Coast",
+    "authors": ["Strobacaxi"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1702
+      },
+      {
+        "type": "cr",
+        "id": 388856
+      }
+    ]
+  },
+  {
+    "canonical": "groundopus",
+    "name": "Groundopus",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1140
+      },
+      {
+        "type": "cr",
+        "id": 443861
+      }
+    ]
+  },
+  {
+    "canonical": "45-degrees",
+    "name": "45 degrees",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8876
+      },
+      {
+        "type": "cr",
+        "id": 483824
+      }
+    ]
+  },
+  {
+    "canonical": "moonlight-ride",
+    "name": "Moonlight Ride",
+    "authors": ["Phil38654"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11101
+      },
+      {
+        "type": "cr",
+        "id": 504890
+      }
+    ]
+  },
+  {
+    "canonical": "skatepark",
+    "name": "Skatepark",
+    "authors": ["Jon312"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4528
+      },
+      {
+        "type": "cr",
+        "id": 513853
+      }
+    ]
+  },
+  {
+    "canonical": "nordsplore",
+    "name": "Nordsplore",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1023
+      },
+      {
+        "type": "cr",
+        "id": 523677
+      }
+    ]
+  },
+  {
+    "canonical": "suburban-flood",
+    "name": "Suburban Flood",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5894
+      },
+      {
+        "type": "cr",
+        "id": 532634
+      }
+    ]
+  },
+  {
+    "canonical": "canyon-slopestyle",
+    "name": "Canyon Slopestyle",
+    "authors": ["C_Four"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6346
+      },
+      {
+        "type": "cr",
+        "id": 535986
+      }
+    ]
+  },
+  {
+    "canonical": "everglades",
+    "name": "Everglades",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8857
+      },
+      {
+        "type": "cr",
+        "id": 547546
+      }
+    ]
+  },
+  {
+    "canonical": "lost-unfound",
+    "name": "lost unfound",
+    "authors": ["BINGBANGBOOM"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6260
+      },
+      {
+        "type": "cr",
+        "id": 550011
+      }
+    ]
+  },
+  {
+    "canonical": "cce",
+    "name": "Cce",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1974
+      },
+      {
+        "type": "cr",
+        "id": 559418
+      }
+    ]
+  },
+  {
+    "canonical": "movie-mania-cce",
+    "name": "Movie Mania CCE",
+    "authors": ["THEPENGUINs"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1031
+      },
+      {
+        "type": "cr",
+        "id": 559890
+      }
+    ]
+  },
+  {
+    "canonical": "pure-nature",
+    "name": "Pure Nature",
+    "authors": ["gongo999"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1037
+      },
+      {
+        "type": "cr",
+        "id": 559965
+      }
+    ]
+  },
+  {
+    "canonical": "jungle-run",
+    "name": "Jungle Run",
+    "authors": ["Helmertz"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5021
+      },
+      {
+        "type": "cr",
+        "id": 561374
+      }
+    ]
+  },
+  {
+    "canonical": "forsaken-forest",
+    "name": "Forsaken Forest",
+    "authors": ["Kazniti"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1017
+      },
+      {
+        "type": "cr",
+        "id": 561613
+      }
+    ]
+  },
+  {
+    "canonical": "rocky-terrain",
+    "name": "Rocky Terrain",
+    "authors": ["Jon312"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3996
+      },
+      {
+        "type": "cr",
+        "id": 676209
+      }
+    ]
+  },
+  {
+    "canonical": "cliffside-trail",
+    "name": "Cliffside Trail",
+    "authors": ["Phil38654"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5450
+      },
+      {
+        "type": "cr",
+        "id": 676484
+      }
+    ]
+  },
+  {
+    "canonical": "alien-invasion-2",
+    "name": "Alien Invasion 2",
+    "authors": ["gongo999"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1018
+      },
+      {
+        "type": "cr",
+        "id": 676487
+      }
+    ]
+  },
+  {
+    "canonical": "preview",
+    "name": "Preview",
+    "authors": ["gongo999"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1036
+      },
+      {
+        "type": "cr",
+        "id": 680331
+      }
+    ]
+  },
+  {
+    "canonical": "fiji",
+    "name": "Fiji",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 10684
+      },
+      {
+        "type": "cr",
+        "id": 684595
+      }
+    ]
+  },
+  {
+    "canonical": "mountain-level",
+    "name": "Mountain Level",
+    "authors": ["RHINO"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1045
+      },
+      {
+        "type": "cr",
+        "id": 688949
+      }
+    ]
+  },
+  {
+    "canonical": "mayan-level",
+    "name": "Mayan Level",
+    "authors": ["guitarslasha"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1095
+      },
+      {
+        "type": "cr",
+        "id": 688953
+      }
+    ]
+  },
+  {
+    "canonical": "fire-temple",
+    "name": "Fire Temple",
+    "authors": ["LDPRider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1139
+      },
+      {
+        "type": "cr",
+        "id": 688954
+      }
+    ]
+  },
+  {
+    "canonical": "goddess-level",
+    "name": "Goddess Level",
+    "authors": ["Cdawgrider133"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1122
+      },
+      {
+        "type": "cr",
+        "id": 688955
+      }
+    ]
+  },
+  {
+    "canonical": "rocky-mountain",
+    "name": "Rocky Mountain",
+    "authors": ["BINGBANGBOOM"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11091
+      },
+      {
+        "type": "cr",
+        "id": 688962
+      }
+    ]
+  },
+  {
+    "canonical": "yellow-stone",
+    "name": "Yellow Stone",
+    "authors": ["Artyst"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1097
+      },
+      {
+        "type": "cr",
+        "id": 688963
+      }
+    ]
+  },
+  {
+    "canonical": "volcan-level",
+    "name": "Volcan Level",
+    "authors": ["max007x"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11092
+      },
+      {
+        "type": "cr",
+        "id": 688964
+      }
+    ]
+  },
+  {
+    "canonical": "last-catacombs",
+    "name": "Last Catacombs",
+    "authors": ["Ravee"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6566
+      },
+      {
+        "type": "cr",
+        "id": 689812
+      }
+    ]
+  },
+  {
+    "canonical": "japanese-forest-ride",
+    "name": "Japanese Forest Ride",
+    "authors": ["Forlorn333"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1414
+      },
+      {
+        "type": "cr",
+        "id": 690356
+      }
+    ]
+  },
+  {
+    "canonical": "calculate",
+    "name": "Calculate",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8850
+      },
+      {
+        "type": "cr",
+        "id": 691294
+      }
+    ]
+  },
+  {
+    "canonical": "critical",
+    "name": "Critical",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8849
+      },
+      {
+        "type": "cr",
+        "id": 691497
+      }
+    ]
+  },
+  {
+    "canonical": "haunted-mansion",
+    "name": "haunted mansion",
+    "authors": ["anaomet"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6111
+      },
+      {
+        "type": "cr",
+        "id": 691706
+      }
+    ]
+  },
+  {
+    "canonical": "world-in-ruins",
+    "name": "World In Ruins",
+    "authors": ["Detailed"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1124
+      },
+      {
+        "type": "cr",
+        "id": 693515
+      }
+    ]
+  },
+  {
+    "canonical": "nailed",
+    "name": "Nailed",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8264
+      },
+      {
+        "type": "cr",
+        "id": 696181
+      }
+    ]
+  },
+  {
+    "canonical": "technical-duality",
+    "name": "Technical Duality",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8848
+      },
+      {
+        "type": "cr",
+        "id": 696536
+      }
+    ]
+  },
+  {
+    "canonical": "chase",
+    "name": "Chase",
+    "authors": ["thefunkymonkie"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1327
+      },
+      {
+        "type": "cr",
+        "id": 700050
+      }
+    ]
+  },
+  {
+    "canonical": "wjp-ntbf",
+    "name": "WJP NTBF",
+    "authors": ["Stig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4360
+      },
+      {
+        "type": "cr",
+        "id": 703176
+      }
+    ]
+  },
+  {
+    "canonical": "cc-iii",
+    "name": "cc III",
+    "authors": ["anaomet"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11098
+      },
+      {
+        "type": "cr",
+        "id": 703830
+      }
+    ]
+  },
+  {
+    "canonical": "aquaroute",
+    "name": "AquaRoute",
+    "authors": ["RHINO"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 4778
+      },
+      {
+        "type": "cr",
+        "id": 706538
+      }
+    ]
+  },
+  {
+    "canonical": "bigblu3-compound",
+    "name": "Bigblu3 Compound",
+    "authors": ["BIGBLU3"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1380
+      },
+      {
+        "type": "cr",
+        "id": 711430
+      }
+    ]
+  },
+  {
+    "canonical": "mtbx-09-round-1",
+    "name": "MTBX 09 Round 1",
+    "authors": ["thefunkymonkie"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1167
+      },
+      {
+        "type": "cr",
+        "id": 716092
+      }
+    ]
+  },
+  {
+    "canonical": "naval",
+    "name": "Naval",
+    "authors": ["Toxicity"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5095
+      },
+      {
+        "type": "cr",
+        "id": 717430
+      }
+    ]
+  },
+  {
+    "canonical": "pastranas-backyard",
+    "name": "Pastranas BackYard",
+    "authors": ["BIGBLU3"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1041
+      },
+      {
+        "type": "cr",
+        "id": 727787
+      }
+    ]
+  },
+  {
+    "canonical": "mtb-inc",
+    "name": "MTB inc",
+    "authors": ["thefunkymonkie"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1110
+      },
+      {
+        "type": "cr",
+        "id": 729757
+      }
+    ]
+  },
+  {
+    "canonical": "groundhog-returns",
+    "name": "Groundhog Returns",
+    "authors": ["Jon312"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5604
+      },
+      {
+        "type": "cr",
+        "id": 750550
+      }
+    ]
+  },
+  {
+    "canonical": "subterra-ulterior",
+    "name": "Subterra Ulterior",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1046
+      },
+      {
+        "type": "cr",
+        "id": 753213
+      }
+    ]
+  },
+  {
+    "canonical": "future-aio",
+    "name": "Future AIO",
+    "authors": ["gongo999"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1054
+      },
+      {
+        "type": "cr",
+        "id": 754926
+      }
+    ]
+  },
+  {
+    "canonical": "vendetta",
+    "name": "Vendetta",
+    "authors": ["BINGBANGBOOM"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1366
+      },
+      {
+        "type": "cr",
+        "id": 755800
+      }
+    ]
+  },
+  {
+    "canonical": "gash",
+    "name": "Gash",
+    "authors": ["BINGBANGBOOM"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11096
+      },
+      {
+        "type": "cr",
+        "id": 772610
+      }
+    ]
+  },
+  {
+    "canonical": "the-gorge",
+    "name": "The Gorge",
+    "authors": ["hewpuck"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1382
+      },
+      {
+        "type": "cr",
+        "id": 793824
+      }
+    ]
+  },
+  {
+    "canonical": "ssce",
+    "name": "SSCE",
+    "authors": ["south"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1092
+      },
+      {
+        "type": "cr",
+        "id": 809977
+      }
+    ]
+  },
+  {
+    "canonical": "cave-troll",
+    "name": "Cave Troll",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1118
+      },
+      {
+        "type": "cr",
+        "id": 813041
+      }
+    ]
+  },
+  {
+    "canonical": "lost-city-of-gods",
+    "name": "lost city of gods",
+    "authors": ["dropkick"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1230
+      },
+      {
+        "type": "cr",
+        "id": 827582
+      }
+    ]
+  },
+  {
+    "canonical": "grid-city",
+    "name": "Grid City",
+    "authors": ["Autoa", "Muramasa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1138
+      },
+      {
+        "type": "bhr",
+        "id": 994
+      },
+      {
+        "type": "cr",
+        "id": 828318
+      }
+    ]
+  },
+  {
+    "canonical": "swamps-of-doom",
+    "name": "Swamps of Doom",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "bhr",
+        "id": 147
+      },
+      {
+        "type": "cr",
+        "id": 835727
+      }
+    ]
+  },
+    {
+    "canonical": "grid-city-2",
+    "name": "Grid City 2",
+    "authors": ["Autoa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676206
+      },
+      {
+        "type": "bhr",
+        "id": 1074
+      },
+      {
+        "type": "cr",
+        "id": 1350944
+      }
+    ]
+  },
+  {
+    "canonical": "sunset-dirt-ride",
+    "name": "sunset dirt ride",
+    "authors": ["dropkick"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1142
+      },
+      {
+        "type": "cr",
+        "id": 836418
+      }
+    ]
+  },
+  {
+    "canonical": "moississure",
+    "name": "Moississure",
+    "authors": ["Cdawgrider133"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1129
+      },
+      {
+        "type": "cr",
+        "id": 845139
+      }
+    ]
+  },
+  {
+    "canonical": "ninja-warrior-rnd-1",
+    "name": "ninja warrior RND 1",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1435
+      },
+      {
+        "type": "cr",
+        "id": 850568
+      }
+    ]
+  },
+  {
+    "canonical": "moab-detailed",
+    "name": "Moab Detailed",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 3784
+      },
+      {
+        "type": "cr",
+        "id": 860905
+      }
+    ]
+  },
+  {
+    "canonical": "parachutedrop",
+    "name": "ParachuteDrop",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1246
+      },
+      {
+        "type": "cr",
+        "id": 866154
+      }
+    ]
+  },
+  {
+    "canonical": "forest-of-september",
+    "name": "Forest of September",
+    "authors": ["Kazniti"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1634
+      },
+      {
+        "type": "cr",
+        "id": 871990
+      }
+    ]
+  },
+  {
+    "canonical": "lonely-thicket",
+    "name": "Lonely Thicket",
+    "authors": ["south"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1267
+      },
+      {
+        "type": "cr",
+        "id": 899707
+      }
+    ]
+  },
+  {
+    "canonical": "aspen-forest",
+    "name": "Aspen Forest",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1222
+      },
+      {
+        "type": "cr",
+        "id": 911929
+      }
+    ]
+  },
+  {
+    "canonical": "preview",
+    "name": "Preview",
+    "authors": ["lolz666"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1038
+      },
+      {
+        "type": "cr",
+        "id": 970120
+      }
+    ]
+  },
+  {
+    "canonical": "ohm-sweet-ohm",
+    "name": "Ohm Sweet Ohm",
+    "authors": ["Vapaa"],
+    "tracks": [
+      {
+        "type": "bhr",
+        "id": 141
+      },
+      {
+        "type": "cr",
+        "id": 836782
+      }
+    ]
+  },
+  {
+    "canonical": "contest-entry",
+    "name": "CONTEST ENTRY",
+    "authors": ["leboulanger"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1074
+      },
+      {
+        "type": "cr",
+        "id": 1000000
+      }
+    ]
+  },
+  {
+    "canonical": "medevil-bike-ride",
+    "name": "medevil bike ride",
+    "authors": ["dropkick"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1116
+      },
+      {
+        "type": "cr",
+        "id": 1037378
+      }
+    ]
+  },
+  {
+    "canonical": "koniec-jest-bliski",
+    "name": "koniec jest bliski",
+    "authors": ["igi_killer"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 6649
+      },
+      {
+        "type": "cr",
+        "id": 1050056
+      }
+    ]
+  },
+  {
+    "canonical": "mini-ninja-cave",
+    "name": "mini NINJA cave",
+    "authors": ["igi_killer"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2787
+      },
+      {
+        "type": "cr",
+        "id": 1052716
+      }
+    ]
+  },
+  {
+    "canonical": "contest-entry",
+    "name": "Contest Entry",
+    "authors": ["010David010"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2619
+      },
+      {
+        "type": "cr",
+        "id": 1055888
+      }
+    ]
+  },
+  {
+    "canonical": "synthetica",
+    "name": "synthetica",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1164
+      },
+      {
+        "type": "cr",
+        "id": 1103774
+      }
+    ]
+  },
+  {
+    "canonical": "fmt-ce",
+    "name": "FMT CE",
+    "authors": ["leboulanger"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1479
+      },
+      {
+        "type": "cr",
+        "id": 1153541
+      }
+    ]
+  },
+  {
+    "canonical": "solace",
+    "name": "Solace",
+    "authors": ["TheCrypt"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1685
+      },
+      {
+        "type": "cr",
+        "id": 1176973
+      }
+    ]
+  },
+  {
+    "canonical": "spelunking",
+    "name": "spelunking",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1079
+      },
+      {
+        "type": "cr",
+        "id": 1194666
+      }
+    ]
+  },
+  {
+    "canonical": "woodland-meadow",
+    "name": "Woodland Meadow",
+    "authors": ["TheCrypt"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 5676
+      },
+      {
+        "type": "cr",
+        "id": 1209099
+      }
+    ]
+  },
+  {
+    "canonical": "wild-china",
+    "name": "Wild China",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1171
+      },
+      {
+        "type": "cr",
+        "id": 1233965
+      }
+    ]
+  },
+  {
+    "canonical": "imperial",
+    "name": "Imperial",
+    "authors": ["MPatriot"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 2581
+      },
+      {
+        "type": "cr",
+        "id": 1243209
+      }
+    ]
+  },
+  {
+    "canonical": "lion-trail",
+    "name": "lion trail",
+    "authors": ["armator"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1112
+      },
+      {
+        "type": "cr",
+        "id": 1248118
+      }
+    ]
+  },
+  {
+    "canonical": "cargo-hold",
+    "name": "Cargo Hold",
+    "authors": ["tsunami"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 9109
+      },
+      {
+        "type": "cr",
+        "id": 1343123
+      }
+    ]
+  },
+  {
+    "canonical": "mint-sauce",
+    "name": "Mint Sauce",
+    "authors": ["Autoa"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 11105
+      },
+      {
+        "type": "cr",
+        "id": 1345673
+      }
+    ]
+  },
+  {
+    "canonical": "city-of-dreams",
+    "name": "City of Dreams",
+    "authors": ["tsunami"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1199
+      },
+      {
+        "type": "frhd",
+        "id": 236426
+      },
+      {
+        "type": "cr",
+        "id": 1349695
+      }
+    ]
+  },
+  {
+    "canonical": "sunrise-tropics",
+    "name": "Sunrise Tropics",
+    "authors": ["tsunami"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 9108
+      },
+      {
+        "type": "cr",
+        "id": 1356862
+      }
+    ]
+  },
+  {
+    "canonical": "beast-tree",
+    "name": "Beast Tree",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 1806
+      },
+      {
+        "type": "cr",
+        "id": 1362738
+      }
+    ]
+  },
+  {
+    "canonical": "build-v1",
+    "name": "Build v1",
+    "authors": ["RIBJ"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 10423
+      },
+      {
+        "type": "cr",
+        "id": 1439575
+      }
+    ]
+  },
+  {
+    "canonical": "western",
+    "name": "Western",
+    "authors": ["DrManBearPig"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8349
+      },
+      {
+        "type": "cr",
+        "id": 1453858
+      }
+    ]
+  },
+  {
+    "canonical": "bats",
+    "name": "Bats",
+    "authors": ["LDPrider"],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 8846
+      },
+      {
+        "type": "cr",
+        "id": 1461115
+      }
+    ]
+  },
+  {
+    "canonical": "generation",
+    "name": "GENERATION",
+    "authors": ["Tremulant", "Ness"],
+    "tracks": [
+      { "type": "frhd", "id": 57072 },
+      { "type": "bhr", "id": 4711 }
+    ]
+  },
+  {
+    "canonical": "an-american-drama",
+    "name": "An American Drama",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676059
+      },
+      {
+        "type": "bhr",
+        "id": 2728
+      }
+    ]
+  },
+    {
+    "canonical": "black-hat-humor",
+    "name": "Black Hat Humor",
+    "authors": [
+      "WM"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708611
+      },
+      {
+        "type": "bhr",
+        "id": 2095
+      }
+    ]
+  },
+  {
+    "canonical": "bioscopia",
+    "name": "Bioscopia",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676064
+      },
+      {
+        "type": "bhr",
+        "id": 132
+      },
+      {
+        "type": "cr",
+        "id": 1152995
+      }
+    ]
+  },
+  {
+    "canonical": "diamond-in-the-rough",
+    "name": "Diamond in the rough",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676066
+      },
+      {
+        "type": "bhr",
+        "id": 135
+      },
+      {
+        "type": "cr",
+        "id": 687141
+      }
+    ]
+  },
+  {
+    "canonical": "a-sovjet-dramar",
+    "name": "A Sovjet Dramar",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676121
+      },
+      {
+        "type": "bhr",
+        "id": 130
+      },
+      {
+        "type": "cr",
+        "id": 971573
+      }
+    ]
+  },
+  {
+    "canonical": "splinter",
+    "name": "Splinter",
+    "authors": [
+      "east"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676198
+      },
+      {
+        "type": "bhr",
+        "id": 7192
+      }
+    ]
+  },
+  {
+    "canonical": "supreme-delight",
+    "name": "Supreme Delight",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676200
+      },
+      {
+        "type": "bhr",
+        "id": 146
+      },
+      {
+        "type": "cr",
+        "id": 1075951
+      }
+    ]
+  },
+  {
+    "canonical": "the-termite-nest",
+    "name": "The Termite Nest",
+    "authors": [
+      "fried"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676208
+      },
+      {
+        "type": "bhr",
+        "id": 2683
+      },
+      {
+        "type": "cr",
+        "id": 750388
+      }
+    ]
+  },
+  {
+    "canonical": "dried-up-dock",
+    "name": "Dried up Dock",
+    "authors": [
+      "nasrani"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676221
+      },
+      {
+        "type": "bhr",
+        "id": 4554
+      }
+    ]
+  },
+  {
+    "canonical": "archive-xviii",
+    "name": "Archive XVIII",
+    "authors": [
+      "Dirt Monkie"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676231
+      },
+      {
+        "type": "bhr",
+        "id": 12485
+      }
+    ]
+  },
+  {
+    "canonical": "unsplored",
+    "name": "UNSPLORED",
+    "authors": [
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676293
+      },
+      {
+        "type": "bhr",
+        "id": 5983
+      }
+    ]
+  },
+  {
+    "canonical": "skyworld",
+    "name": "SKYWORLD",
+    "authors": [
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676297
+      },
+      {
+        "type": "bhr",
+        "id": 6043
+      }
+    ]
+  },
+  {
+    "canonical": "bhr-ghosting-collab-2k15",
+    "name": "BHR GHOSTING COLLAB 2K15",
+    "authors": [
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676621
+      },
+      {
+        "type": "bhr",
+        "id": 8988
+      }
+    ]
+  },
+  {
+    "canonical": "porosity",
+    "name": "Porosity",
+    "authors": [
+      "010David010"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 676624
+      },
+      {
+        "type": "bhr",
+        "id": 5159
+      }
+    ]
+  },
+  {
+    "canonical": "eli-quest-420",
+    "name": "Eli Quest: 420",
+    "authors": [
+      "monkeys"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 691002
+      },
+      {
+        "type": "bhr",
+        "id": 8077
+      }
+    ]
+  },
+  {
+    "canonical": "frigid-mountains",
+    "name": "Frigid Mountains",
+    "authors": [
+      "010David010"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 707889
+      },
+      {
+        "type": "bhr",
+        "id": 4033
+      }
+    ]
+  },
+  {
+    "canonical": "undercover",
+    "name": "Undercover",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 707891
+      },
+      {
+        "type": "bhr",
+        "id": 151
+      },
+      {
+        "type": "cr",
+        "id": 872497
+      }
+    ]
+  },
+  {
+    "canonical": "monker-collab-2015",
+    "name": "Monker Collab 2015",
+    "authors": [
+      "Redemption"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708061
+      },
+      {
+        "type": "bhr",
+        "id": 9908
+      }
+    ]
+  },
+  {
+    "canonical": "the-seventh-floor",
+    "name": "The seventh floor",
+    "authors": [
+      "Joel"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708069
+      },
+      {
+        "type": "bhr",
+        "id": 998
+      },
+      {
+        "type": "cr",
+        "id": 881514
+      }
+    ]
+  },
+  {
+    "canonical": "poe-mans-dream-his-vice",
+    "name": "Poe Man's Dream (His Vice)",
+    "authors": [
+      "WM"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708589
+      },
+      {
+        "type": "bhr",
+        "id": 937
+      }
+    ]
+  },
+  {
+    "canonical": "the-vapaa-factory",
+    "name": "The Vapaa Factory",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708594
+      },
+      {
+        "type": "bhr",
+        "id": 2573
+      },
+      {
+        "type": "cr",
+        "id": 679224
+      }
+    ]
+  },
+  {
+    "canonical": "horizon",
+    "name": "Horizon",
+    "authors": [
+      "east"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708656
+      },
+      {
+        "type": "bhr",
+        "id": 7187
+      }
+    ]
+  },
+  {
+    "canonical": "sfsfsgdfj",
+    "name": "sfsfsgdfj",
+    "authors": [
+      "Maple"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 708946
+      },
+      {
+        "type": "bhr",
+        "id": 13555
+      }
+    ]
+  },
+  {
+    "canonical": "a-i-d-s",
+    "name": "A I D S",
+    "authors": [
+      "Intrepid"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 711969
+      },
+      {
+        "type": "bhr",
+        "id": 8879
+      }
+    ]
+  },
+  {
+    "canonical": "the-vapaa-factory-2",
+    "name": "The Vapaa Factory 2",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 718472
+      },
+      {
+        "type": "bhr",
+        "id": 149
+      },
+      {
+        "type": "cr",
+        "id": 712009
+      }
+    ]
+  },
+  {
+    "canonical": "sulphur-ridge-2",
+    "name": "Sulphur Ridge 2",
+    "authors": [
+      "Vapaa"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 718473
+      },
+      {
+        "type": "bhr",
+        "id": 145
+      },
+      {
+        "type": "cr",
+        "id": 695641
       }
     ]
   }

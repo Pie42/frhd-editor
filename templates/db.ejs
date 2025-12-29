@@ -33,6 +33,7 @@
             flex-wrap: wrap;
             max-width: 800px;
             margin: 0 auto;
+            padding: 0px 10px;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -126,10 +127,6 @@
         .filter-indicator .clear-filter:hover,
         .author-filter-indicator .clear-filter:hover {
             color: #c00;
-        }
-
-        .playlist-icon {
-            font-size: 16px;
         }
 
         .track-grid {
@@ -299,6 +296,10 @@
 
         .track-type-badge.plus {
             background-color: #9b59b6;
+        }
+
+        .track-type-badge.playlist {
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
         .live-badge {
@@ -497,10 +498,12 @@
             bottom: 8px;
             right: 8px;
             padding: 2px 8px;
+            color: #fff;
+            font-family: Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 10px;
             font-weight: bold;
-            color: #fff;
-            background-color: rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.5px;
+            background-color: #aaa;
             border-radius: 3px;
             z-index: 10;
         }
@@ -582,8 +585,8 @@
                 <div class="controls-row">
                     <div class="type-filters">
                         <strong>
-                            <span class="track-type-filter" data-type="all"
-                                style="color: <%= type === 'all' ? '#000' : '#aaa' %>">
+                            <span class="track-type-filter" data-type="db"
+                                style="color: <%= type === 'db' ? '#000' : '#aaa' %>">
                                 <span class="type-filter-link" style="color: inherit;">DB</span>
                             </span>
                             /
@@ -694,9 +697,8 @@ const state = {
     isLoading: false,
     author: '',
     playlist: '',
-    authorPlatform: '<%= type === "user" || type === "playlist" ? "all" : type %>',
-    showGhostsOnly: false,
-    usePocketBase: true
+    authorPlatform: '<%= type === "user" || type === "playlist" ? "db" : type %>',
+    showGhostsOnly: false
 };
 
 
@@ -756,7 +758,7 @@ function updateFilterStyles() {
 }
 
 function getBadgeText(type) {
-    const badges = { 'bhr': 'BHR', 'cr': 'CR', 'frhd': 'FRHD', 'fr': 'FR', 'plus': '+' };
+    const badges = { 'bhr': 'BHR', 'cr': 'CR', 'frhd': 'FRHD', 'fr': 'FR' };
     return badges[type] || type.toUpperCase();
 }
 
@@ -909,27 +911,35 @@ function renderTrackCard(track) {
 `;
 }
 
-function renderPlaylistCard(playlist) {
-    const thumbnailContent = playlist.thumbnail
-        ? `<img src="${playlist.thumbnail}" alt="${playlist.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-           <span class="playlist-icon-large" style="display: none;">${playlist.icon || '📋'}</span>`
-        : `<span class="playlist-icon-large">${playlist.icon || '📋'}</span>`;
-
-    return `
-<div class="playlist-item">
-    <div class="playlist-thumb">
+function renderPlaylistCards() {
+    if (!playlistsData || playlistsData.length === 0) return '';
+    
+    return playlistsData.map(playlist => {
+        const thumbnail = playlist.thumbnail || '/data/default-thumbnail.png';
+        
+        return `
+<div class="track-item playlist-card" data-playlist-id="${playlist.id}">
+    <div class="track-thumb">
         <a href="#" class="playlist-link" data-playlist-id="${playlist.id}">
             <div class="thumbnail">
-                ${thumbnailContent}
-                <span class="playlist-count-badge">${playlist.trackCount || 0} tracks</span>
+                <div class="badge-container">
+                    <span class="track-type-badge playlist" style="background: ${playlist.color || '#666'};">PLAYLIST</span>
+                </div>
+                <span class="playlist-count-badge">${playlist.trackCount} tracks</span>
+                <img class="track-thumbnail" 
+                     src="${thumbnail}" 
+                     alt="${playlist.name}"
+                     loading="lazy"
+                     onerror="handleThumbnailFallback(this)">
             </div>
         </a>
-        <p class="desc">
-            <strong>${playlist.name}</strong>
+        <p class="desc" style="margin-bottom: 0px">
+            <a href="#" class="playlist-link" data-playlist-id="${playlist.id}" style="color: inherit; text-decoration: none;"><strong>${playlist.name}</strong></a>
         </p>
     </div>
 </div>
 `;
+    }).join('');
 }
 
 function createLoadingIndicator() {
@@ -943,12 +953,11 @@ function createLoadingIndicator() {
 let specialTracksCache = {};
 
 async function fetchSpecialTracks(type) {
-    if (type === 'all' || type === 'user' || type === 'playlist') {
+    if (type === 'db' || type === 'all' || type === 'user' || type === 'playlist') {
         return { daily: null, random: null };
     }
 
-    const apiType = type === 'plus' ? 'plus' : type;
-    const cacheKey = apiType;
+    const cacheKey = type;
 
     if (specialTracksCache[cacheKey]) {
         return specialTracksCache[cacheKey];
@@ -956,8 +965,8 @@ async function fetchSpecialTracks(type) {
 
     try {
         const [dailyRes, randomRes] = await Promise.all([
-            fetch(`/api/daily/${apiType}`),
-            fetch(`/api/random/${apiType}`)
+            fetch(`/api/daily/${type}`),
+            fetch(`/api/random/${type}`)
         ]);
 
         const daily = dailyRes.ok ? await dailyRes.json() : null;
@@ -1022,16 +1031,22 @@ function renderSpecialTrackCard(track) {
 }
 
 async function getSpecialCards(type) {
-    if (type === 'all' || type === 'user' || type === 'playlist') {
+    let html = '';
+    
+    if (type === 'user' || type === 'playlist') {
         return '';
     }
-
-    const { daily, random } = await fetchSpecialTracks(type);
-
-    let html = '';
-    if (daily) html += renderSpecialTrackCard(daily);
-    if (random) html += renderSpecialTrackCard(random);
-
+    
+    if (type !== 'db' && type !== 'all') {
+        const { daily, random } = await fetchSpecialTracks(type);
+        if (daily) html += renderSpecialTrackCard(daily);
+        if (random) html += renderSpecialTrackCard(random);
+    }
+    
+    if (type === 'db') {
+        html += renderPlaylistCards();
+    }
+    
     return html;
 }
 
@@ -1053,6 +1068,7 @@ async function fetchTracks(append = false) {
     params.set('perPage', state.perPage);
     params.set('sort', state.sortBy);
     params.set('order', state.sortOrder);
+    params.set('type', state.type);
     if (state.query) params.set('q', state.query);
     if (state.author) params.set('author', state.author);
     if (state.playlist) params.set('playlist', state.playlist);
@@ -1065,12 +1081,8 @@ async function fetchTracks(append = false) {
         params.set('platform', state.authorPlatform);
     } else if (state.mode === 'playlist') {
         endpoint = '/api/playlists';
-    } else if (state.usePocketBase && (state.type === 'frhd' || state.type === 'bhr' || state.type === 'cr')) {
-        endpoint = '/api/db/pocketbase';
-        params.set('type', state.type);
     } else {
         endpoint = '/api/db';
-        params.set('type', state.type);
     }
 
     try {
@@ -1146,15 +1158,21 @@ async function fetchTracks(append = false) {
             updateFilterStyles();
         }
 
+        state.isLoading = false;
+
         if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
-            state.page++;
-            state.isLoading = false;
-            fetchTracks(true);
-            return;
+            setTimeout(() => {
+                if (!state.isLoading && state.hasMore) {
+                    state.page++;
+                    fetchTracks(true);
+                }
+            }, 100);
         }
 
     } catch (error) {
         console.error('Error fetching:', error);
+        state.isLoading = false;
+        
         if (!append) {
             trackGrid.innerHTML = `
                 <div class="no-results">
@@ -1164,8 +1182,6 @@ async function fetchTracks(append = false) {
             `;
         }
     }
-
-    state.isLoading = false;
 }
 
 function showFilterIndicator(html, type) {
@@ -1189,7 +1205,7 @@ function setAuthorFilter(authorName) {
     state.mode = 'tracks';
     clearFilterIndicators();
 
-    fetch(`/api/user-aliases/${encodeURIComponent(authorName)}`)
+    fetch(`/api/user-aliases/${encodeURIComponent(authorName)}?type=${state.type}`)
         .then(res => res.json())
         .then(data => {
             const aliasText = data.aliases.length > 1
@@ -1215,7 +1231,7 @@ function setPlaylistFilter(playlistId) {
 
     clearFilterIndicators();
     showFilterIndicator(
-        `<span class="playlist-icon">${playlist.icon || '📋'}</span> <strong>${playlist.name}</strong> (${playlist.trackCount || 0} tracks)`,
+        `<strong>${playlist.name}</strong> (${playlist.trackCount || 0} tracks)`,
         'playlist'
     );
     updateFilterStyles();
@@ -1279,35 +1295,50 @@ function initializeLinkHijacking() {
         return;
     }
 
-    const trackUrlRegex = /\/(frhd|bhr|cr|u|plus|t)\/([a-zA-Z0-9_-]+|daily|random)(?:\/([a-zA-Z0-9_-]+))?/i;
+    const trackUrlRegex = /\/(frhd|bhr|cr|u)\/([a-zA-Z0-9_-]+|daily|random)(?:\/([a-zA-Z0-9_-]+))?/i;
 
     document.getElementById('content').addEventListener('click', function (event) {
-        let targetElement = event.target;
-        while (targetElement && targetElement.tagName !== 'A') {
-            targetElement = targetElement.parentElement;
-        }
+        const targetElement = event.target.closest('a');
+        
+        if (!targetElement) return;
+        
+        const href = targetElement.getAttribute('href');
 
-        if (targetElement) {
-            const href = targetElement.getAttribute('href');
+        if (href && href !== '#' && !href.startsWith('javascript:')) {
+            const fullUrl = targetElement.href;
 
-            if (href && href !== '#' && !href.startsWith('javascript:')) {
-                const fullUrl = targetElement.href;
+            if (fullUrl.match(trackUrlRegex)) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.stopImmediatePropagation();
 
-                if (fullUrl.match(trackUrlRegex)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
+                const descElement = targetElement.closest('.track-thumb')?.querySelector('.desc');
+                const trackName = descElement ? descElement.textContent.trim() : targetElement.textContent.trim() || href;
 
-                    const descElement = targetElement.closest('.track-thumb')?.querySelector('.desc');
-                    const trackName = descElement ? descElement.textContent.trim() : targetElement.textContent.trim() || href;
-
-                    sendToParent(fullUrl, trackName);
-                }
+                sendToParent(fullUrl, trackName);
             }
         }
     }, true);
 
     console.log("DB: Track link interception initialized.");
+}
+
+function updateAuthorIndicator(authorName, type) {
+    fetch(`/api/user-aliases/${encodeURIComponent(authorName)}?type=${type}`)
+        .then(res => res.json())
+        .then(data => {
+            const existingIndicator = document.querySelector('.filter-indicator[data-filter-type="author"]');
+            if (existingIndicator) {
+                const aliasText = data.aliases.length > 1
+                    ? ` (also: ${data.aliases.filter(a => a.toLowerCase() !== authorName.toLowerCase()).join(', ')})`
+                    : '';
+                existingIndicator.innerHTML = `
+                    <strong>${data.displayName}</strong>${aliasText} (${data.trackCount} tracks)
+                    <span class="clear-filter" onclick="clearFilter('author')">×</span>
+                `;
+            }
+        })
+        .catch(() => {});
 }
 
 function initEventListeners() {
@@ -1340,8 +1371,9 @@ function initEventListeners() {
                 clearFilterIndicators();
             } else if (newType) {
                 state.authorPlatform = newType;
-                if (state.mode === 'tracks' || state.mode === 'ghosts') {
-                    state.type = newType;
+                state.type = newType;
+                if (state.author) {
+                updateAuthorIndicator(state.author, newType);
                 }
             }
 
@@ -1380,18 +1412,18 @@ function initEventListeners() {
     const playlistParam = urlParams.get('playlist');
 
     if (authorParam) {
-        state.author = authorParam;
-        fetch(`/api/user-aliases/${encodeURIComponent(authorParam)}`)
-            .then(res => res.json())
-            .then(data => {
-                const aliasText = data.aliases.length > 1
-                    ? ` (also: ${data.aliases.filter(a => a.toLowerCase() !== authorParam.toLowerCase()).join(', ')})`
-                    : '';
-                showFilterIndicator(`Filtering by: <strong>${data.displayName}</strong>${aliasText} (${data.trackCount} tracks)`, 'author');
-            })
-            .catch(() => {
-                showFilterIndicator(`Filtering by: <strong>${authorParam}</strong>`, 'author');
-            });
+    state.author = authorParam;
+    fetch(`/api/user-aliases/${encodeURIComponent(authorParam)}?type=${state.type}`)
+        .then(res => res.json())
+        .then(data => {
+            const aliasText = data.aliases.length > 1
+                ? ` (also: ${data.aliases.filter(a => a.toLowerCase() !== authorParam.toLowerCase()).join(', ')})`
+                : '';
+            showFilterIndicator(`<strong>${data.displayName}</strong>${aliasText} (${data.trackCount} tracks)`, 'author');
+        })
+        .catch(() => {
+            showFilterIndicator(`<strong>${authorParam}</strong>`, 'author');
+        });
     }
 
     if (playlistParam && !authorParam) {
@@ -1399,7 +1431,7 @@ function initEventListeners() {
         setTimeout(() => {
             const playlist = playlistsData.find(p => p.id === playlistParam);
             if (playlist) {
-                showFilterIndicator(`<span class="playlist-icon">${playlist.icon}</span> <strong>${playlist.name}</strong> (${playlist.trackCount} tracks)`, 'playlist');
+                showFilterIndicator(`<strong>${playlist.name}</strong> (${playlist.trackCount} tracks)`, 'playlist');
             }
         }, 200);
     }

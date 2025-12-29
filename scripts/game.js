@@ -10294,7 +10294,15 @@
                     a = h - c.x * d,
                     u = l - c.y * d;
                   let p = n(r(a, 2) + r(u, 2));
-                  if ((0 === p && (p = 1), i > p || -1 === o)) {
+                  if ((GameSettings.type !== 'bhr' || GameSettings.type !== 'cr') && (0 === p && (p = 1), i > p || -1 === o)) {
+                    const s = (i * o - p) / p;
+                    return (
+                      (e.x += a * s),
+                      (e.y += u * s),
+                      void t.drive(-u / p, a / p)
+                    );
+                  }
+                  if ((GameSettings.type === 'bhr' || GameSettings.type === 'cr') && (i > p || -1 === o) && p !== 0) {
                     const s = (i * o - p) / p;
                     return (
                       (e.x += a * s),
@@ -13078,7 +13086,7 @@
           const t = this.vel,
             e = this.parent.gravity;
           t.inc(e),
-            (0 === e.x && 0 === e.y) || t.factorSelf(0.99),
+            ((GameSettings.type === 'bhr' || GameSettings.type === 'cr') ? t.factorSelf(0.99) : (0 === e.x && 0 === e.y) || t.factorSelf(0.99)),
             this.pos.inc(this.vel);
             const z = this.scene.playerManager.firstPlayer._tempVehicle.vehicleName
             const v = (z === "BALLOON")
@@ -13427,7 +13435,7 @@
             s = this.old,
             i = this.vel;
           i.inc(t),
-            (0 === t.x && 0 === t.y) || i.factorSelf(0.99),
+            ((GameSettings.type === 'bhr' || GameSettings.type === 'cr') ? i.factorSelf(0.99) : (0 === t.x && 0 === t.y) || i.factorSelf(0.99)),
             e.inc(i),
             (this.contact = !1),
             this.collide && this.scene.track.collide(this),
@@ -21107,10 +21115,16 @@
               (this.x = t),
               (this.y = e),
               (this.angle = s);
-            const r = ((this.angle - 180) / 360) * 2 * Math.PI;
-            (this.directionX = parseFloat((-n * Math.sin(r)).toFixed(15))),
-              (this.directionY = parseFloat((n * Math.cos(r)).toFixed(15))),
-              this.init(i);
+              if ((GameSettings.type === 'bhr' || GameSettings.type === 'cr')) {
+              const r = ((this.angle + 180) * Math.PI) / 180;
+                (this.directionX = -n * Math.sin(r));
+                (this.directionY = n * Math.cos(r));
+              } else {
+              const r = ((this.angle - 180) / 360) * 2 * Math.PI;
+                (this.directionX = parseFloat((-n * Math.sin(r)).toFixed(15)));
+                (this.directionY = parseFloat((n * Math.cos(r)).toFixed(15)));
+            }
+            this.init(i);
           }
           draw(t, e, s, i) {
             this.constructor.drawData.dirty && this.recache(s);
@@ -29968,7 +29982,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(i.x - zoom * 2, i.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(i.x - zoom * 1, i.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -29994,7 +30008,7 @@ function load() {
                       ctx.beginPath();
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
-                      ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                      ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                       ctx.fill();
                       ctx.stroke();
                   }
@@ -30002,7 +30016,7 @@ function load() {
                   ctx.beginPath();
                   ctx.strokeStyle = '#1884cf';
                   ctx.fillStyle = '#1884cf';
-                  ctx.rect(rsp.x - zoom * 2, rsp.y - zoom * 2, zoom * 4, zoom * 4);
+                  ctx.rect(rsp.x - zoom * 1, rsp.y - zoom * 1, zoom * 2, zoom * 2);
                   ctx.fill();
                   ctx.stroke();
               }
@@ -30017,7 +30031,7 @@ function load() {
               ctx.beginPath();
               ctx.strokeStyle = '#1884cf';
               ctx.fillStyle = '#1884cf';
-              ctx.rect(rsp.x - zoom * 3, rsp.y - zoom * 3, zoom * 6, zoom * 6);
+              ctx.rect(rsp.x - zoom * 1.5, rsp.y - zoom * 1.5, zoom * 3, zoom * 3);
               ctx.fill();
               ctx.stroke();
           } else {
@@ -30059,7 +30073,7 @@ function load() {
                       ctx.strokeStyle = '#1884cf';
                       ctx.fillStyle = '#1884cf';
                       // Calculate the radius based on the zoom level
-                      const radius = zoom * 3;
+                      const radius = zoom * 1.5;
                       // Draw the circle
                       ctx.arc(i.x, i.y, radius, 0, Math.PI * 2);
                       ctx.fill();

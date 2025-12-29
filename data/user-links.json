@@ -70,5 +70,101 @@
     "frhd": true,
     "bhr": true,
     "cr": false
+  },
+    {
+    "canonical": "deadrising2",
+    "displayName": "deadrising2",
+    "aliases": ["deadrising2", "EliBloodthirst"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "cityshep",
+    "displayName": "CityShep",
+    "aliases": ["CityShep", "thyprith", "ShittyShep"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  },
+  {
+    "canonical": "alexander",
+    "displayName": "alexander",
+    "aliases": ["alexander", "Alex", "tsunami"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+    {
+    "canonical": "cataclysm",
+    "displayName": "Cataclysm",
+    "aliases": ["Cataclysm", "THEPENGUINs"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+      {
+    "canonical": "hawnks",
+    "displayName": "hawnks",
+    "aliases": ["hawnks", "FUTURE MTNS"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "bingbangboom",
+    "displayName": "BINGBANGBOOM",
+    "aliases": ["BINGBANGBOOM", "Joel", "Autoa"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+    {
+    "canonical": "volund",
+    "displayName": "Volund",
+    "aliases": ["Volund", "codrey"],
+    "frhd": true,
+    "bhr": true,
+    "cr": false
+  },
+      {
+    "canonical": "weem",
+    "displayName": "weem",
+    "aliases": ["weem", "WheelieMaker", "WM"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "lust",
+    "displayName": "Lust",
+    "aliases": ["Lust", "Imperceptus"],
+    "frhd": false,
+    "bhr": false,
+    "cr": true
+  },
+  {
+    "canonical": "ion",
+    "displayName": "ion",
+    "aliases": ["MPatriot", "ion"],
+    "frhd": false,
+    "bhr": true,
+    "cr": true
+  },
+  {
+    "canonical": "char",
+    "displayName": "Char",
+    "aliases": ["Char"],
+    "frhd": true,
+    "bhr": false,
+    "cr": false
+  },
+  {
+    "canonical": "fried rider",
+    "displayName": "fried rider",
+    "aliases": ["fried rider", "fried_rider", "fried"],
+    "frhd": true,
+    "bhr": true,
+    "cr": true
   }
 ]
