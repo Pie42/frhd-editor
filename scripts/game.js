@@ -24647,6 +24647,7 @@
           if (!flat && this.layers.length > 1) {
             let layers = [];
             for (let i of this.layers) {
+              if (!i) continue;
               layers.push(i.getCode());
             }
             return JSON.stringify(layers);
