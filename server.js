@@ -2254,6 +2254,33 @@ app.delete('/api/user-account/:forumUsername', async (req, res) => {
     }
 });
 
+app.post('/api/admin/upload-track-code', (req, res) => {
+    const adminKey = req.headers['x-admin-key'];
+    
+    if (adminKey !== process.env.ADMIN_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const { type, id, code } = req.body;
+    
+    if (!type || !id || !code) {
+        return res.status(400).json({ error: 'Missing type, id, or code' });
+    }
+    
+    const trackDir = `/var/data/${type}/trackcodes`;
+    
+    if (!fs.existsSync(trackDir)) {
+        fs.mkdirSync(trackDir, { recursive: true });
+    }
+    
+    const filePath = path.join(trackDir, `${id}.txt`);
+    fs.writeFileSync(filePath, code, 'utf8');
+    
+    console.log(`[Admin] Saved ${type} track ${id} (${code.length} bytes)`);
+    
+    res.json({ success: true, path: filePath });
+});
+
 async function startServer() {
     try {
         await ensurePersistentRootExists();
