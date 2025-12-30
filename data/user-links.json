@@ -3,6 +3,7 @@
     "canonical": "ness",
     "displayName": "Ness",
     "aliases": ["ness", "yxkness"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -11,6 +12,7 @@
     "canonical": "malishya",
     "displayName": "malishya",
     "aliases": ["malishya", "malicia"],
+    "showProfile": true,
     "frhd": true,
     "bhr": false,
     "cr": false
@@ -19,6 +21,7 @@
     "canonical": "mudkip",
     "displayName": "mudkip",
     "aliases": ["mudkip", "churro"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -27,6 +30,7 @@
     "canonical": "seasnails",
     "displayName": "Seasnails",
     "aliases": ["Seasnails", "Seaslugs"],
+    "showProfile": false,
     "frhd": true,
     "bhr": false,
     "cr": false
@@ -35,6 +39,7 @@
     "canonical": "octo",
     "displayName": "octo",
     "aliases": ["octo", "octopus"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -43,6 +48,7 @@
     "canonical": "maple",
     "displayName": "Maple",
     "aliases": ["Maple"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -51,6 +57,7 @@
     "canonical": "nitro",
     "displayName": "Nitro",
     "aliases": ["nitro", "nitrogeneric"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -58,7 +65,17 @@
   {
     "canonical": "thefunkymonkie",
     "displayName": "thefunkymonkie",
-    "aliases": ["thefunkymonkie", "Dirt Monkie"],
+    "aliases": ["thefunkymonkie", "Dirt Monkie", "TFM"],
+    "showProfile": true,
+    "frhd": true,
+    "bhr": true,
+    "cr": true
+  },
+    {
+    "canonical": "richibuildjumps",
+    "displayName": "RichIBuildJumps",
+    "aliases": ["RichIBuildJumps", "RIBJ", "RichhIBuildJumps"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -67,6 +84,7 @@
     "canonical": "coager",
     "displayName": "Coager",
     "aliases": ["Coager", "Coated_Badger"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -75,6 +93,7 @@
     "canonical": "deadrising2",
     "displayName": "deadrising2",
     "aliases": ["deadrising2", "EliBloodthirst"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -82,7 +101,8 @@
   {
     "canonical": "cityshep",
     "displayName": "CityShep",
-    "aliases": ["CityShep", "thyprith", "ShittyShep"],
+    "aliases": ["CityShep", "thyprith", "Cypress", "ShittyShep"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -91,6 +111,7 @@
     "canonical": "alexander",
     "displayName": "alexander",
     "aliases": ["alexander", "Alex", "tsunami"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -99,6 +120,7 @@
     "canonical": "cataclysm",
     "displayName": "Cataclysm",
     "aliases": ["Cataclysm", "THEPENGUINs"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -107,6 +129,7 @@
     "canonical": "hawnks",
     "displayName": "hawnks",
     "aliases": ["hawnks", "FUTURE MTNS"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -115,6 +138,7 @@
     "canonical": "bingbangboom",
     "displayName": "BINGBANGBOOM",
     "aliases": ["BINGBANGBOOM", "Joel", "Autoa"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -123,6 +147,7 @@
     "canonical": "volund",
     "displayName": "Volund",
     "aliases": ["Volund", "codrey"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": false
@@ -131,6 +156,7 @@
     "canonical": "weem",
     "displayName": "weem",
     "aliases": ["weem", "WheelieMaker", "WM"],
+    "showProfile": true,
     "frhd": true,
     "bhr": true,
     "cr": true
@@ -139,6 +165,7 @@
     "canonical": "lust",
     "displayName": "Lust",
     "aliases": ["Lust", "Imperceptus"],
+    "showProfile": false,
     "frhd": false,
     "bhr": false,
     "cr": true
@@ -147,6 +174,7 @@
     "canonical": "ion",
     "displayName": "ion",
     "aliases": ["MPatriot", "ion"],
+    "showProfile": false,
     "frhd": false,
     "bhr": true,
     "cr": true
@@ -155,6 +183,7 @@
     "canonical": "char",
     "displayName": "Char",
     "aliases": ["Char"],
+    "showProfile": true,
     "frhd": true,
     "bhr": false,
     "cr": false
@@ -163,8 +192,36 @@
     "canonical": "fried rider",
     "displayName": "fried rider",
     "aliases": ["fried rider", "fried_rider", "fried"],
+    "showProfile": false,
     "frhd": true,
     "bhr": true,
     "cr": true
+  },
+  {
+    "canonical": "ishu",
+    "displayName": "ishu",
+    "aliases": ["ishu", "mtt2"],
+    "showProfile": false,
+    "frhd": true,
+    "bhr": false,
+    "cr": false
+  },
+  {
+    "canonical": "baltic",
+    "displayName": "Baltic",
+    "aliases": ["Baltic", "dzemas"],
+    "showProfile": false,
+    "frhd": true,
+    "bhr": false,
+    "cr": false
+  },
+    {
+    "canonical": "rayb25",
+    "displayName": "Rayb25",
+    "aliases": ["Rayb25", "Holystone"],
+    "showProfile": true,
+    "frhd": true,
+    "bhr": false,
+    "cr": false
   }
 ]

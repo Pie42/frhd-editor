@@ -661,7 +661,7 @@
   {
     "canonical": "gg-intro",
     "name": "GG: Intro",
-    "authors": ["WheelieMaker", "WM"],
+    "authors": ["WheelieMaker"],
     "tracks": [
       {
         "type": "frhd",
@@ -1010,7 +1010,7 @@
   {
     "canonical": "psychosis",
     "name": "Psychosis",
-    "authors": ["crane", "Crane"],
+    "authors": ["crane"],
     "tracks": [
       {
         "type": "frhd",
@@ -1115,7 +1115,7 @@
   {
     "canonical": "vermilion-cliffs",
     "name": "Vermilion Cliffs",
-    "authors": ["CityShep", "Cypress"],
+    "authors": ["CityShep"],
     "tracks": [
       {
         "type": "frhd",
@@ -1130,7 +1130,7 @@
   {
     "canonical": "dysphoria",
     "name": "Dysphoria",
-    "authors": ["CityShep", "Cypress"],
+    "authors": ["CityShep"],
     "tracks": [
       {
         "type": "frhd",
@@ -1190,7 +1190,7 @@
   {
     "canonical": "kykotsmovi-mesa",
     "name": "Kykotsmovi Mesa",
-    "authors": ["CityShep", "Cypress"],
+    "authors": ["CityShep"],
     "tracks": [
       {
         "type": "frhd",
@@ -1503,9 +1503,9 @@
     ]
   },
   {
-    "canonical": "haven-ft-cityshep",
-    "name": "Haven ft. CityShep",
-    "authors": ["mR..A"],
+    "canonical": "haven",
+    "name": "Haven",
+    "authors": ["mR..A", "CityShep"],
     "tracks": [
       {
         "type": "frhd",
@@ -1668,9 +1668,9 @@
     ]
   },
   {
-    "canonical": "voyager-ft-ness",
-    "name": "Voyager ft. Ness",
-    "authors": ["max007x"],
+    "canonical": "voyager",
+    "name": "Voyager",
+    "authors": ["max007x", "Ness"],
     "tracks": [
       {
         "type": "frhd",
@@ -1803,9 +1803,9 @@
     ]
   },
   {
-    "canonical": "the-second-empire-ft-stig",
-    "name": "The Second Empire ft. Stig",
-    "authors": ["mR..A"],
+    "canonical": "the-second-empire",
+    "name": "The Second Empire",
+    "authors": ["mR..A", "Stig"],
     "tracks": [
       {
         "type": "frhd",
@@ -1998,9 +1998,9 @@
     ]
   },
   {
-    "canonical": "atlantean-ruins-ft-doodlenut",
-    "name": "Atlantean Ruins ft. Doodlenut",
-    "authors": ["Holystone"],
+    "canonical": "atlantean-ruins",
+    "name": "Atlantean Ruins",
+    "authors": ["Holystone", "Doodlenut"],
     "tracks": [
       {
         "type": "frhd",
@@ -4126,6 +4126,10 @@
         "id": 11105
       },
       {
+        "type": "bhr",
+        "id": 1000
+      },
+      {
         "type": "cr",
         "id": 1345673
       }
@@ -4713,6 +4717,571 @@
       {
         "type": "cr",
         "id": 695641
+      }
+    ]
+  },
+  {
+    "canonical": "wjp-follow-the-light",
+    "name": "WJP Follow the light",
+    "authors": [
+      "Stig"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 774367
+      },
+      {
+        "type": "frhd",
+        "id": 3785
+      },
+      {
+        "type": "cr",
+        "id": 687124
+      }
+    ]
+  },
+  {
+    "canonical": "indoor-jam",
+    "name": "Indoor Jam",
+    "authors": [
+      "Stig"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 938166
+      },
+      {
+        "type": "frhd",
+        "id": 10738
+      },
+      {
+        "type": "cr",
+        "id": 515990
+      }
+    ]
+  },
+  {
+    "canonical": "mountain-mission",
+    "name": "Mountain Mission",
+    "authors": [
+      "Stig"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 773698
+      },
+      {
+        "type": "frhd",
+        "id": 1032
+      },
+      {
+        "type": "cr",
+        "id": 549118
+      }
+    ]
+  },
+  {
+    "canonical": "chromium",
+    "name": "Chromium",
+    "authors": [
+      "cky199",
+      "zwinxz"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 773687
+      },
+      {
+        "type": "bhr",
+        "id": 11654
+      }
+    ]
+  },
+  {
+    "canonical": "crank-palace",
+    "name": "Crank Palace",
+    "authors": [
+      "Holystone"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 956718
+      },
+      {
+        "type": "frhd",
+        "id": 837125
+      }
+    ]
+  },
+  {
+    "canonical": "the-lost-island",
+    "name": "The Lost Island",
+    "authors": [
+      "jaketocake"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 938431
+      },
+      {
+        "type": "frhd",
+        "id": 714532
+      }
+    ]
+  },
+  {
+    "canonical": "dreamskate",
+    "name": "Dreamskate",
+    "authors": [
+      "mR..A"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 938167
+      },
+      {
+        "type": "frhd",
+        "id": 212124
+      }
+    ]
+  },
+  {
+    "canonical": "dreamskate-24",
+    "name": "Dreamskate '24",
+    "authors": [
+      "mR..A",
+      "Ness",
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 975686
+      }
+    ]
+  },
+  {
+    "canonical": "like-really",
+    "name": "like, really",
+    "authors": [
+      "mudkip"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 473065
+      }
+    ]
+  },
+  {
+    "canonical": "it-me",
+    "name": "it me",
+    "authors": [
+      "mudkip"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 352718
+      },
+      {
+        "type": "bhr",
+        "id": 12173
+      }
+    ]
+  },
+  {
+    "canonical": "the-office",
+    "name": "The Office",
+    "authors": [
+      "Qwerty McKay"
+    ],
+    "tracks": [
+      {
+        "type": "bhr",
+        "id": 3829
+      },
+      {
+        "type": "cr",
+        "id": 697065
+      }
+    ]
+  },
+  {
+    "canonical": "not-now",
+    "name": "Not Now",
+    "authors": [
+      "Flying_T_Rex",
+      "Sltg28"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 994796
+      }
+    ]
+  },
+  {
+    "canonical": "skateyard-gravepark",
+    "name": "SKATEYARD GRAVEPARK",
+    "authors": [
+      "nasrani",
+      "ness"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 985358
+      }
+    ]
+  },
+    {
+    "canonical": "fox-revolution",
+    "name": "Fox Revolution",
+    "authors": [
+      "- Firefox -"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 958751
+      },
+            {
+        "type": "cr",
+        "id": 423055
+      }
+    ]
+  },
+  {
+    "canonical": "sukter",
+    "name": "Sükter",
+    "authors": [
+      "THEend"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 212588
+      },
+      {
+        "type": "bhr",
+        "id": 10224
+      }
+    ]
+  },
+  {
+    "canonical": "rubell",
+    "name": "Rübell",
+    "authors": [
+      "THEend"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 218023
+      },
+      {
+        "type": "bhr",
+        "id": 10415
+      }
+    ]
+  },
+    {
+    "canonical": "yxk4evr",
+    "name": "YXK4EVR",
+    "authors": [
+      "C_Four",
+      "Cronus88"
+    ],
+    "tracks": [
+      {
+        "type": "cr",
+        "id": 757997
+      }
+    ]
+  },
+    {
+    "canonical": "oblivion-ii",
+    "name": "Oblivion II",
+    "authors": [
+      "TeamPhantom",
+      "Nitrogeneric"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 725944
+      }
+    ]
+  },
+    {
+    "canonical": "poh-01",
+    "name": "POH.01",
+    "authors": [
+      "Stig",
+      "Jon312"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 682493
+      }
+    ]
+  },
+    {
+    "canonical": "aquatic-adventure",
+    "name": "Aquatic Adventure",
+    "authors": [
+      "max007x",
+      "ToxicMahem"
+    ],
+    "tracks": [
+      {
+        "type": "cr",
+        "id": 676221
+      }
+    ]
+  },
+    {
+    "canonical": "marshlands-retreat",
+    "name": "Marshlands Retreat",
+    "authors": [
+      "max007x",
+      "zwinxz"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 659234
+      }
+    ]
+  },
+      {
+    "canonical": "kano-mining-company",
+    "name": "Kano Mining Company",
+    "authors": [
+      "zwinxz",
+      "max007x"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 654028
+      }
+    ]
+  },
+      {
+    "canonical": "vainishing",
+    "name": "Marshlands Retreat",
+    "authors": [
+      "DblU",
+      "MikeWi"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 556324
+      }
+    ]
+  },
+  {
+    "canonical": "costa-concordia",
+    "name": "Costa Concordia",
+    "authors": [
+      "WyattStonhouse",
+      "deadrising2"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 517429
+      }
+    ]
+  },
+      {
+    "canonical": "super-mario-universe",
+    "name": "Super Mario Universe",
+    "authors": [
+      "Stig",
+      "Helmertz"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 516809
+      }
+    ]
+  },
+  {
+    "canonical": "woodland",
+    "name": "woodland",
+    "authors": [
+      "xwinx",
+      "Wave"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 461867
+      },
+      {
+        "type": "bhr",
+        "id": 12859
+      }
+    ]
+  },
+  {
+    "canonical": "demon-universe",
+    "name": "Demon Universe",
+    "authors": [
+      "Stig",
+      "lolz666"
+    ],
+    "tracks": [
+      {
+        "type": "cr",
+        "id": 294536
+      }
+    ]
+  },
+    {
+    "canonical": "mangystau",
+    "name": "Mangystau",
+    "authors": [
+      "CityShep",
+      "darksmoke11"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 243349
+      }
+    ]
+  },
+      {
+    "canonical": "city-run",
+    "name": "City Run",
+    "authors": [
+      "moose_man",
+      "lolz666"
+    ],
+    "tracks": [
+      {
+        "type": "cr",
+        "id": 71535
+      }
+    ]
+  },
+  {
+    "canonical": "oblivions",
+    "name": "Oblivions",
+    "authors": [
+      "Hashplant",
+      "Foundations"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 50285
+      },
+      {
+        "type": "bhr",
+        "id": 1872
+      }
+    ]
+  },
+  {
+    "canonical": "co3",
+    "name": "CO₃",
+    "authors": [
+      "pssst",
+      "Mickey_Mouse_Inc"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 239108
+      },
+      {
+        "type": "bhr",
+        "id": 8551
+      }
+    ]
+  },
+  {
+    "canonical": "ithaka",
+    "name": "Ithaka",
+    "authors": [
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 105961
+      },
+      {
+        "type": "bhr",
+        "id": 7637
+      }
+    ]
+  },
+    {
+    "canonical": "olympus",
+    "name": "Olympus",
+    "authors": [
+      "Alex"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 213610
+      },
+      {
+        "type": "bhr",
+        "id": 10246
+      }
+    ]
+  },
+  {
+    "canonical": "ezbolaids",
+    "name": "EzBOLAIDS",
+    "authors": [
+      "Noob",
+      "CityShep"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 329452
+      },
+      {
+        "type": "bhr",
+        "id": 12033
+      }
+    ]
+  },
+  {
+    "canonical": "black-magic",
+    "name": "Black Magic",
+    "authors": [
+      "Maple",
+      "Stig"
+    ],
+    "tracks": [
+      {
+        "type": "frhd",
+        "id": 127165
+      },
+      {
+        "type": "bhr",
+        "id": 8297
       }
     ]
   }

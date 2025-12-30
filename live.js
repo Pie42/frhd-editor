@@ -51,6 +51,7 @@ function setupLiveRacing(server) {
                 if (msg.type === 'join') {
                     trackId = msg.trackId;
                     username = msg.username || 'Anonymous';
+                    if (trackId === 'frhd/undefined') return;
                     console.log('[Live] Join request for track:', msg.trackId);
                     playerId = generatePlayerId();
 

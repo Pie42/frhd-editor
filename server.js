@@ -506,6 +506,7 @@ app.get('/api/playlists', (req, res) => {
             return {
                 id: p.id,
                 name: p.name,
+                username: p.username,
                 description: p.description,
                 color: p.color,
                 trackCount: p.tracks.length,
@@ -526,74 +527,105 @@ app.get('/api/playlist/:id', (req, res) => {
 
 app.get('/api/daily/:type', async (req, res) => {
     const type = req.params.type;
-    
+
     if (!['frhd', 'bhr', 'cr'].includes(type)) {
         return res.status(400).json({ error: 'Invalid type' });
     }
-    
+
     try {
+        if (dbTracksCache[type] && dbTracksCache[type].length > 0) {
+            const track = dailyTrackFromCache(type);
+            if (track) {
+                return res.json({
+                    ...track,
+                    specialType: 'daily',
+                    trackId: track.id,
+                    thumbnail: `/${track.urlType || type}/${track.urlId || track.id}.png`,
+                    url: `/${track.urlType || type}/${track.urlId || track.id}`
+                });
+            }
+        }
+
         const seed = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
-        const total = await pb.collection(type).getList(1, 1, { filter: 'show = true' });
-        
-        if (total.totalItems === 0) {
+        const countResult = await pb.collection(type).getList(1, 1, {
+            filter: 'show = true',
+            requestKey: `daily-count-${type}-${Date.now()}`
+        });
+
+        const total = countResult.totalItems;
+        if (total === 0) {
             return res.status(404).json({ error: 'No tracks available' });
         }
-        
-        const offset = seed % total.totalItems;
-        const result = await pb.collection(type).getList(offset + 1, 1, { 
+
+        const index = seed % total;
+        const result = await pb.collection(type).getList(index + 1, 1, {
             filter: 'show = true',
-            sort: '_id' 
+            requestKey: `daily-${type}-${Date.now()}`
         });
-        
-        const track = result.items[0];
-        
+
+        if (result.items.length === 0) {
+            return res.status(404).json({ error: 'Track not found' });
+        }
+
+        const record = result.items[0];
+        const track = transformRecord(record, type);
+
         res.json({
-            id: track._id,
-            trackId: track._id,
-            name: track.name || `Track #${track._id}`,
-            authors: track.username || 'Unknown',
-            thumbnail: `/${type}/${track._id}.png`,
-            url: `/${type}/${track._id}`,
-            type: type,
-            specialType: 'daily'
+            ...track,
+            specialType: 'daily',
+            trackId: track.id,
+            thumbnail: `/${type}/${track.id}.png`,
+            url: `/${type}/${track.id}`
         });
-    } catch (e) {
-        console.error('Daily track error:', e);
+    } catch (error) {
+        console.error('Daily track error:', error);
         res.status(500).json({ error: 'Failed to get daily track' });
     }
 });
 
 app.get('/api/random/:type', async (req, res) => {
     const type = req.params.type;
-    
+
     if (!['frhd', 'bhr', 'cr'].includes(type)) {
         return res.status(400).json({ error: 'Invalid type' });
     }
-    
+
     try {
-        const result = await pb.collection(type).getList(1, 1, { 
+        if (dbTracksCache[type] && dbTracksCache[type].length > 0) {
+            const track = randomTrackFromCache(type);
+            if (track) {
+                return res.json({
+                    ...track,
+                    specialType: 'random',
+                    trackId: track.id,
+                    thumbnail: `/${track.urlType || type}/${track.urlId || track.id}.png`,
+                    url: `/${track.urlType || type}/${track.urlId || track.id}`
+                });
+            }
+        }
+
+        const result = await pb.collection(type).getList(1, 1, {
             filter: 'show = true',
-            sort: '@random' 
+            sort: '@random',
+            requestKey: `random-${type}-${Date.now()}`
         });
-        
+
         if (result.items.length === 0) {
             return res.status(404).json({ error: 'No tracks available' });
         }
-        
-        const track = result.items[0];
-        
+
+        const record = result.items[0];
+        const track = transformRecord(record, type);
+
         res.json({
-            id: track._id,
-            trackId: track._id,
-            name: track.name || `Track #${track._id}`,
-            authors: track.username || 'Unknown',
-            thumbnail: `/${type}/${track._id}.png`,
-            url: `/${type}/${track._id}`,
-            type: type,
-            specialType: 'random'
+            ...track,
+            specialType: 'random',
+            trackId: track.id,
+            thumbnail: `/${type}/${track.id}.png`,
+            url: `/${type}/${track.id}`
         });
-    } catch (e) {
-        console.error('Random track error:', e);
+    } catch (error) {
+        console.error('Random track error:', error);
         res.status(500).json({ error: 'Failed to get random track' });
     }
 });
@@ -826,6 +858,7 @@ app.get('/api/db', async (req, res) => {
             const playlistInfo = {
                 id: playlistData.id,
                 name: playlistData.name,
+                username: playlistData.username,
                 description: playlistData.description
             };
 
@@ -1040,15 +1073,14 @@ app.get('/db', async (req, res) => {
 });
 
 app.get('/api/authors-by-platform', (req, res) => {
-    const platform = req.query.platform || 'all';
-    const page = parseInt(req.query.page) || 1;
-    const perPage = parseInt(req.query.perPage) || 24;
+    const platform = req.query.platform || 'db';
     const query = req.query.q || '';
     const sortBy = req.query.sort || 'name';
     const sortOrder = req.query.order || 'asc';
     
     let users = userLinks
         .filter(user => {
+            if (user.showProfile !== true) return false;
             if (platform === 'all' || platform === 'db') return true;
             return user[platform] === true;
         })
@@ -1081,14 +1113,9 @@ app.get('/api/authors-by-platform', (req, res) => {
         });
     }
     
-    const totalCount = users.length;
-    const totalPages = Math.ceil(totalCount / perPage);
-    const startIndex = (page - 1) * perPage;
-    const paginatedUsers = users.slice(startIndex, startIndex + perPage);
-    
     res.json({
-        users: paginatedUsers,
-        pagination: { page, perPage, totalCount, totalPages }
+        users: users,
+        allLoaded: true
     });
 });
 
@@ -1309,35 +1336,49 @@ function filterCachedTracks(tracks, query, author) {
 }
 
 function randomTrackFromCache(type) {
-    return (req, res) => {
-        const tracks = dbTracksCache[type];
-        if (!tracks || tracks.length === 0) {
-            return res.status(404).send('No tracks available');
-        }
-        const randomIndex = Math.floor(Math.random() * tracks.length);
-        const track = tracks[randomIndex];
-        res.redirect(302, `/${type}/${track.id}${req.query.json === 'true' ? '?json=true' : ''}`);
-    };
+    const tracks = dbTracksCache[type];
+    if (!tracks || tracks.length === 0) {
+        return null;
+    }
+    const randomIndex = Math.floor(Math.random() * tracks.length);
+    return tracks[randomIndex];
 }
 
 function dailyTrackFromCache(type) {
+    const tracks = dbTracksCache[type];
+    if (!tracks || tracks.length === 0) {
+        return null;
+    }
+    const seed = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
+    return tracks[seed % tracks.length];
+}
+
+function randomTrackRedirect(type) {
     return (req, res) => {
-        const tracks = dbTracksCache[type];
-        if (!tracks || tracks.length === 0) {
+        const track = randomTrackFromCache(type);
+        if (!track) {
             return res.status(404).send('No tracks available');
         }
-        const seed = parseInt(new Date().toISOString().split('T')[0].replace(/-/g, ''));
-        const track = tracks[seed % tracks.length];
         res.redirect(302, `/${type}/${track.id}${req.query.json === 'true' ? '?json=true' : ''}`);
     };
 }
 
-app.get('/cr/random', randomTrackFromCache('cr'));
-app.get('/cr/daily', dailyTrackFromCache('cr'));
-app.get('/bhr/random', randomTrackFromCache('bhr'));
-app.get('/bhr/daily', dailyTrackFromCache('bhr'));
-app.get('/frhd/random', randomTrackFromCache('frhd'));
-app.get('/frhd/daily', dailyTrackFromCache('frhd'));
+function dailyTrackRedirect(type) {
+    return (req, res) => {
+        const track = dailyTrackFromCache(type);
+        if (!track) {
+            return res.status(404).send('No tracks available');
+        }
+        res.redirect(302, `/${type}/${track.id}${req.query.json === 'true' ? '?json=true' : ''}`);
+    };
+}
+
+app.get('/cr/random', randomTrackRedirect('cr'));
+app.get('/cr/daily', dailyTrackRedirect('cr'));
+app.get('/bhr/random', randomTrackRedirect('bhr'));
+app.get('/bhr/daily', dailyTrackRedirect('bhr'));
+app.get('/frhd/random', randomTrackRedirect('frhd'));
+app.get('/frhd/daily', dailyTrackRedirect('frhd'));
 
 async function frhdTxtFallback(trackId, filePath) {
     try {
