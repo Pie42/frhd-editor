@@ -23988,12 +23988,12 @@
             l = this.track.currentLayer,
             r = this.track.settings.eraser.mode;
           if (s.physics)
-            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
+            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
           if (s.scenery)
-            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e) && i.push(s);
+            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
           if (s.powerups)
             for (const s of this.powerups.all) {
-              const n = (r != "layer" || s.layer == l) && (r != "visible" || s.layer.hide == false) && s.erase(t, e);
+              const n = (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e);
               n && i.push(...n);
             }
           return i;
@@ -29932,12 +29932,14 @@ function load() {
           let isPhysics = 'highlight' in object;
           if (isSelectList && (invert >> 1) & 1) isPhysics = !(invert & 1);
           else isPhysics ^= invert & 1;
+          let layer = scene.track.layerIndex;
+          scene.track.currentLayer = object.layer;
           if (isPhysics) {
               newObject = scene.track.addPhysicsLine(object.p1.x + selectOffset.x, object.p1.y + selectOffset.y, object.p2.x + selectOffset.x, object.p2.y + selectOffset.y);
           } else {
               newObject = scene.track.addSceneryLine(object.p1.x + selectOffset.x, object.p1.y + selectOffset.y, object.p2.x + selectOffset.x, object.p2.y + selectOffset.y);
           }
-          object.layer && (newObject.layer = object.layer);
+          scene.track.setLayerIndex(layer);
       } else {
           object.x = object.oldPos.x + selectOffset.x;
           object.y = object.oldPos.y + selectOffset.y;
