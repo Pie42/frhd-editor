@@ -50,161 +50,50 @@ app.use((req, res, next) => {
     next();
 });
 
-// server.js
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const NODEBB_URL = process.env.NODEBB_URL || 'https://forum.freerider.app';
 const JWT_SECRET = process.env.JWT_SECRET;
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '.freerider.app';
-const cookieParser = require('cookie-parser');
+
 app.use(cookieParser());
 
-const loginTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/login.ejs'), 'utf8'));
 
 app.get('/login', (req, res) => {
-    const renderedHtml = loginTemplate({
-        forumUrl: NODEBB_URL
-    });
-    res.send(renderedHtml);
-});
-
-app.post('/api/auth/login', async (req, res) => {
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password required' });
-    }
-    
-    try {
-        const loginResponse = await fetch(`${NODEBB_URL}/api/v3/utilities/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        });
-        
-        if (!loginResponse.ok) {
-            const errorData = await loginResponse.json().catch(() => ({}));
-            return res.status(401).json({ 
-                error: errorData.status?.message || 'Invalid username or password' 
-            });
-        }
-        
-        const loginData = await loginResponse.json();
-        
-        const userResponse = await fetch(`${NODEBB_URL}/api/user/${username}`);
-        const userData = userResponse.ok ? await userResponse.json() : {};
-        
-        const payload = {
-            id: loginData.response?.uid || userData.uid,
-            username: username,
-            email: userData.email || ''
-        };
-        
-        console.log('[Auth] Creating JWT with payload:', payload);
-        
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-        
-        const isProduction = process.env.NODE_ENV === 'production';
-
-        res.cookie('freeriderapp_session', token, {
-            domain: isProduction ? '.freerider.app' : undefined,
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
-        
-        res.json({
-            success: true,
-            token,
-            user: {
-                id: payload.id,
-                username: username,
-                email: userData.email || ''
-            }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed. Please try again.' });
-    }
-});
-
-app.get('/api/auth/debug', (req, res) => {
-    const token = req.cookies['freeriderapp_session'];
-    
-    if (!token) {
-        return res.json({ error: 'No cookie found' });
-    }
-    
-    const decoded = jwt.decode(token);
-    console.log('Token payload:', decoded);
-    
-    try {
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
-        res.json({ decoded, verified, secret: process.env.JWT_SECRET?.substring(0, 2) + '...' });
-    } catch (error) {
-        res.json({ decoded, error: error.message, secret: process.env.JWT_SECRET?.substring(0, 2) + '...' });
-    }
+    const redirect = req.query.redirect || 'https://freerider.app';
+    res.redirect(`${NODEBB_URL}/login`);
 });
 
 app.get('/api/auth/me', (req, res) => {
-    const token = req.cookies['freeriderapp_session'] || 
-                  req.headers['authorization']?.replace('Bearer ', '');
+    const nbbToken = req.cookies['nbb_token'];
     
-    if (!token) {
+    if (!nbbToken) {
         return res.json({ loggedIn: false });
     }
     
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(nbbToken, JWT_SECRET);
         res.json({
             loggedIn: true,
             user: {
                 uid: decoded.uid,
-                username: decoded.username,
-                displayName: decoded.displayName,
-                avatar: decoded.avatar
+                username: decoded.username
             }
         });
     } catch (error) {
+        console.log('[Auth] Invalid nbb_token:', error.message);
         res.json({ loggedIn: false });
     }
 });
 
-// Logout
-app.post('/api/auth/logout', (req, res) => {
-    res.clearCookie('freeriderapp_session', {
-        domain: COOKIE_DOMAIN
-    });
-    res.json({ success: true });
-});
-
 app.get('/logout', (req, res) => {
-    res.clearCookie('freeriderapp_session', {
-        domain: COOKIE_DOMAIN
-    });
-    res.redirect('/');
+    res.redirect(`${NODEBB_URL}/logout`);
 });
 
-// Auth middleware for protected routes
-function requireAuth(req, res, next) {
-    const token = req.cookies['freeriderapp_session'] || 
-                  req.headers['authorization']?.replace('Bearer ', '');
-    
-    if (!token) {
-        return res.status(401).json({ error: 'Please log in' });
-    }
-    
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(401).json({ error: 'Session expired. Please log in again.' });
-    }
-}
+app.get('/login', (req, res) => {
+    const redirect = req.query.redirect || 'https://freerider.app';
+    res.redirect(`https://forum.freerider.app/login?returnTo=${encodeURIComponent(redirect)}`);
+});
 
 const trackTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/track.ejs'), 'utf8'));
 const discussTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/discuss.ejs'), 'utf8'));
