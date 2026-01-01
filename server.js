@@ -1369,14 +1369,40 @@ function filterCachedTracks(tracks, query, author) {
         }
         else {
             const lowerQuery = query.toLowerCase();
-            filtered = filtered.filter(t => 
-                t.name?.toLowerCase().includes(lowerQuery) ||
-                t.username?.toLowerCase().includes(lowerQuery) ||
-                t.authors?.toLowerCase().includes(lowerQuery) ||
-                t.description?.toLowerCase().includes(lowerQuery) ||
-                t.id?.toString().includes(query) ||
-                t.canonicalId?.toLowerCase().includes(lowerQuery)
-            );
+            const userInfo = findUserAliases(query);
+            const isUserSearch = userInfo.aliases.length > 1 || 
+                userLinks.some(u => u.aliases?.some(a => a.toLowerCase() === lowerQuery));
+            
+            if (isUserSearch) {
+                const aliasesToSearch = userInfo.aliases.map(a => a.toLowerCase());
+                filtered = filtered.filter(t => {
+                    if (t.username && aliasesToSearch.includes(t.username.toLowerCase())) return true;
+                    if (t.authorsArray) {
+                        for (const a of t.authorsArray) {
+                            if (a && aliasesToSearch.includes(a.toLowerCase())) return true;
+                        }
+                    }
+                    if (t.authors) {
+                        for (const alias of aliasesToSearch) {
+                            if (t.authors.toLowerCase().includes(alias)) return true;
+                        }
+                    }
+                    if (t.name?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.description?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.id?.toString().includes(query)) return true;
+                    if (t.canonicalId?.toLowerCase().includes(lowerQuery)) return true;
+                    return false;
+                });
+            } else {
+                filtered = filtered.filter(t => 
+                    t.name?.toLowerCase().includes(lowerQuery) ||
+                    t.username?.toLowerCase().includes(lowerQuery) ||
+                    t.authors?.toLowerCase().includes(lowerQuery) ||
+                    t.description?.toLowerCase().includes(lowerQuery) ||
+                    t.id?.toString().includes(query) ||
+                    t.canonicalId?.toLowerCase().includes(lowerQuery)
+                );
+            }
         }
     }
     

@@ -578,6 +578,56 @@
         .ghost-badge:hover .ghost-badge-sprite {
             background-position: 0 -132px;
         }
+
+        .order-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .order-toggle:hover {
+            background: #f0f0f0;
+        }
+
+        .order-toggle .order-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+        }
+
+        .order-toggle .order-icon.desc::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #333;
+        }
+
+        .order-toggle .order-icon.asc::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 8px solid #333;
+        }
+
+        .order-toggle .order-icon.shuffle::before {
+            content: '⤭';
+            font-size: 16px;
+            color: #333;
+        }
     </style>
 </head>
 
@@ -647,39 +697,22 @@
                     </div>
 
                     <div class="search-sort-group">
-                        <input type="text" id="search-input" class="search-input" placeholder="Search..."
-                            value="<%= query %>" aria-label="Search track archive">
-
+                        <input type="text" id="search-input" class="search-input" placeholder="Search..." value="<%= query %>"
+                            aria-label="Search track archive">
+                    
                         <select id="sort-select" class="sort-select">
-                            <option value="shuffle-desc" <%=sortBy==='shuffle' ? 'selected' : '' %>>Shuffle</option>
-                            <option value="id-desc" <%=sortBy==='id' && sortOrder==='desc' ? 'selected' : '' %>>Newest
-                            </option>
-                            <option value="id-asc" <%=sortBy==='id' && sortOrder==='asc' ? 'selected' : '' %>>Oldest
-                            </option>
-                            <option value="name-asc" <%=sortBy==='name' && sortOrder==='asc' ? 'selected' : '' %>>Name
-                                A-Z</option>
-                            <option value="name-desc" <%=sortBy==='name' && sortOrder==='desc' ? 'selected' : '' %>>Name
-                                Z-A</option>
-                            <option value="upvotes-desc" <%=sortBy==='upvotes' && sortOrder==='desc' ? 'selected' : ''
-                                %>>Most Upvotes</option>
-                            <option value="downvotes-desc" <%=sortBy==='downvotes' && sortOrder==='desc' ? 'selected'
-                                : '' %>>Most Downvotes
-                            </option>
-                            <option value="size-desc" <%=sortBy==='size' && sortOrder==='desc' ? 'selected' : '' %>
-                                >Largest</option>
-                            <option value="size-asc" <%=sortBy==='size' && sortOrder==='asc' ? 'selected' : '' %>
-                                >Smallest</option>
-                            <option value="plays-desc" <%=sortBy==='plays' && sortOrder==='desc' ? 'selected' : '' %>
-                                >Most Plays</option>
-                            <option value="plays-asc" <%=sortBy==='plays' && sortOrder==='asc' ? 'selected' : '' %>
-                                >Least Plays</option>
-                            <option value="published-desc" <%=sortBy==='published' && sortOrder==='desc' ? 'selected'
-                                : '' %>>Recently Published
-                            </option>
-                            <option value="published-asc" <%=sortBy==='published' && sortOrder==='asc' ? 'selected' : ''
-                                %>>Earliest Published
-                            </option>
+                            <option value="shuffle" <%=sortBy==='shuffle' ? 'selected' : '' %>>Shuffle</option>
+                            <option value="id" <%=sortBy==='id' ? 'selected' : '' %>>ID</option>
+                            <option value="name" <%=sortBy==='name' ? 'selected' : '' %>>Name</option>
+                            <option value="upvotes" <%=sortBy==='upvotes' ? 'selected' : '' %>>Votes</option>
+                            <option value="size" <%=sortBy==='size' ? 'selected' : '' %>>Size</option>
+                            <option value="plays" <%=sortBy==='plays' ? 'selected' : '' %>>Plays</option>
+                            <option value="published" <%=sortBy==='published' ? 'selected' : '' %>>Date</option>
                         </select>
+                    
+                        <button id="order-toggle" class="order-toggle" title="Toggle sort order">
+                            <span class="order-icon <%= sortBy === 'shuffle' ? 'shuffle' : (sortOrder === 'asc' ? 'asc' : 'desc') %>"></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -760,6 +793,20 @@ function updateFilterStyles() {
             filter.style.color = filterType === state.authorPlatform ? '#000' : '#aaa';
         }
     });
+}
+
+const orderToggle = document.getElementById('order-toggle');
+
+function updateOrderToggle() {
+    const icon = orderToggle.querySelector('.order-icon');
+    
+    if (state.sortBy === 'shuffle') {
+        icon.className = 'order-icon shuffle';
+        orderToggle.title = 'Reshuffle';
+    } else {
+        icon.className = `order-icon ${state.sortOrder}`;
+        orderToggle.title = state.sortOrder === 'desc' ? 'Descending (click for ascending)' : 'Ascending (click for descending)';
+    }
 }
 
 function getBadgeText(type) {
@@ -1449,10 +1496,19 @@ function initEventListeners() {
     });
 
     sortSelect.addEventListener('change', (e) => {
-        const [sortBy, sortOrder] = e.target.value.split('-');
-        state.sortBy = sortBy;
-        state.sortOrder = sortOrder;
+        state.sortBy = e.target.value;
+        updateOrderToggle();
         resetAndFetch();
+    });
+
+    orderToggle.addEventListener('click', () => {
+        if (state.sortBy === 'shuffle') {
+            resetAndFetch();
+        } else {
+            state.sortOrder = state.sortOrder === 'desc' ? 'asc' : 'desc';
+            updateOrderToggle();
+            resetAndFetch();
+        }
     });
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -1545,6 +1601,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await fetchPlaylists();
     initEventListeners();
     initToggles();
+    updateOrderToggle();
     initializeLinkHijacking();
     fetchTracks(false);
     adjustContentPadding();
