@@ -49,6 +49,142 @@ app.use((req, res, next) => {
     next();
 });
 
+// server.js
+const jwt = require('jsonwebtoken');
+
+const NODEBB_URL = process.env.NODEBB_URL || 'https://forum.freerider.app';
+const JWT_SECRET = process.env.JWT_SECRET;
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '.freerider.app';
+
+const loginTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/login.ejs'), 'utf8'));
+
+app.get('/login', (req, res) => {
+    const renderedHtml = loginTemplate({
+        forumUrl: NODEBB_URL
+    });
+    res.send(renderedHtml);
+});
+
+app.post('/api/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password required' });
+    }
+    
+    try {
+        const loginResponse = await fetch(`${NODEBB_URL}/api/v3/utilities/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+        
+        if (!loginResponse.ok) {
+            const errorData = await loginResponse.json().catch(() => ({}));
+            return res.status(401).json({ 
+                error: errorData.status?.message || 'Invalid username or password' 
+            });
+        }
+        
+        const loginData = await loginResponse.json();
+        
+        const userResponse = await fetch(`${NODEBB_URL}/api/user/${username}`);
+        const userData = userResponse.ok ? await userResponse.json() : {};
+        
+        const token = jwt.sign(
+            {
+                uid: loginData.response?.uid || userData.uid,
+                username: username,
+                displayName: userData.displayname || username,
+                avatar: userData.picture || `/avatars/${username}.png`
+            },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+        
+        res.cookie('freerider_token', token, {
+            domain: COOKIE_DOMAIN,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+        
+        res.json({
+            success: true,
+            token,
+            user: {
+                uid: loginData.response?.uid || userData.uid,
+                username: username,
+                displayName: userData.displayname || username,
+                avatar: userData.picture || `/avatars/${username}.png`
+            }
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Login failed. Please try again.' });
+    }
+});
+
+app.get('/api/auth/me', (req, res) => {
+    const token = req.cookies['freeriderapp_session'] || 
+                  req.headers['authorization']?.replace('Bearer ', '');
+    
+    if (!token) {
+        return res.json({ loggedIn: false });
+    }
+    
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        res.json({
+            loggedIn: true,
+            user: {
+                uid: decoded.uid,
+                username: decoded.username,
+                displayName: decoded.displayName,
+                avatar: decoded.avatar
+            }
+        });
+    } catch (error) {
+        res.json({ loggedIn: false });
+    }
+});
+
+// Logout
+app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('freeriderapp_session', {
+        domain: COOKIE_DOMAIN
+    });
+    res.json({ success: true });
+});
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('freeriderapp_session', {
+        domain: COOKIE_DOMAIN
+    });
+    res.redirect('/');
+});
+
+// Auth middleware for protected routes
+function requireAuth(req, res, next) {
+    const token = req.cookies['freeriderapp_session'] || 
+                  req.headers['authorization']?.replace('Bearer ', '');
+    
+    if (!token) {
+        return res.status(401).json({ error: 'Please log in' });
+    }
+    
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ error: 'Session expired. Please log in again.' });
+    }
+}
+
 const trackTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/track.ejs'), 'utf8'));
 const discussTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/discuss.ejs'), 'utf8'));
 
