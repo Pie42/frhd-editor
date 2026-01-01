@@ -15,6 +15,7 @@
     "cookie-parser": "^1.4.7",
     "csv-parse": "^4.8.8",
     "csv-stringify": "^5.3.6",
+    "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "frhdv2": "^0.0.31",

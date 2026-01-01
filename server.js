@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 app.set('view cache', false);
@@ -95,21 +96,22 @@ app.post('/api/auth/login', async (req, res) => {
         const userResponse = await fetch(`${NODEBB_URL}/api/user/${username}`);
         const userData = userResponse.ok ? await userResponse.json() : {};
         
-        const token = jwt.sign(
-            {
-                id: loginData.response?.uid || userData.uid,
-                username: username,
-                email: userData.email || '',
-                picture: userData.picture || `/avatars/${username}.png`
-            },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        const payload = {
+            id: loginData.response?.uid || userData.uid,
+            username: username,
+            email: userData.email || ''
+        };
         
+        console.log('[Auth] Creating JWT with payload:', payload);
+        
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+        
+        const isProduction = process.env.NODE_ENV === 'production';
+
         res.cookie('freeriderapp_session', token, {
-            domain: COOKIE_DOMAIN,
+            domain: isProduction ? '.freerider.app' : undefined,
             httpOnly: true,
-            secure: true,
+            secure: isProduction,
             sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
@@ -118,15 +120,32 @@ app.post('/api/auth/login', async (req, res) => {
             success: true,
             token,
             user: {
-                uid: loginData.response?.uid || userData.uid,
+                id: payload.id,
                 username: username,
-                displayName: userData.displayname || username,
-                avatar: userData.picture || `/avatars/${username}.png`
+                email: userData.email || ''
             }
         });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Login failed. Please try again.' });
+    }
+});
+
+app.get('/api/auth/debug', (req, res) => {
+    const token = req.cookies['freeriderapp_session'];
+    
+    if (!token) {
+        return res.json({ error: 'No cookie found' });
+    }
+    
+    const decoded = jwt.decode(token);
+    console.log('Token payload:', decoded);
+    
+    try {
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        res.json({ decoded, verified, secret: process.env.JWT_SECRET?.substring(0, 2) + '...' });
+    } catch (error) {
+        res.json({ decoded, error: error.message, secret: process.env.JWT_SECRET?.substring(0, 2) + '...' });
     }
 });
 
