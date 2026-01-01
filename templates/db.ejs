@@ -130,6 +130,9 @@
         }
 
         .track-grid {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
@@ -702,6 +705,7 @@ const state = {
     showGhostsOnly: false
 };
 
+let currentFetchController = null;
 
 const trackGrid = document.getElementById('track-grid');
 const searchInput = document.getElementById('search-input');
@@ -811,7 +815,7 @@ async function fetchPlaylists() {
 function renderAuthorCard(authorData) {
     const displayName = authorData.displayName || authorData.canonical || 'Unknown';
     const initial = displayName[0].toUpperCase();
-    const avatarUrl = authorData.avatar || `/data/users/avatar/${authorData.canonical}.png`;
+    const avatarUrl = `/avatars/${authorData.canonical}.png`;
 
     return `
 <div class="author-item">
@@ -1054,10 +1058,18 @@ async function getSpecialCards(type) {
 }
 
 async function fetchTracks(append = false) {
-    if (state.isLoading) return;
+    if (state.isLoading && !append) {
+        if (currentFetchController) {
+            currentFetchController.abort();
+        }
+    }
+    
     if (append && !state.hasMore) return;
 
     state.isLoading = true;
+    
+    currentFetchController = new AbortController();
+    const signal = currentFetchController.signal;
 
     let loader = document.getElementById('loading-indicator');
     if (!loader) {
@@ -1089,7 +1101,12 @@ async function fetchTracks(append = false) {
     }
 
     try {
-        const response = await fetch(`${endpoint}?${params.toString()}`);
+        const response = await fetch(`${endpoint}?${params.toString()}`, { signal });
+        
+        if (signal.aborted) {
+            return;
+        }
+        
         const data = await response.json();
 
         loader.remove();
@@ -1129,7 +1146,6 @@ async function fetchTracks(append = false) {
                 state.hasMore = false;
             }
 
-
             if (tracks.length === 0 && !append) {
                 trackGrid.innerHTML = `
                     <div class="no-results">
@@ -1164,6 +1180,7 @@ async function fetchTracks(append = false) {
         }
 
         state.isLoading = false;
+        currentFetchController = null;
 
         if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
             setTimeout(() => {
@@ -1175,8 +1192,14 @@ async function fetchTracks(append = false) {
         }
 
     } catch (error) {
+        if (error.name === 'AbortError') {
+            console.log('Fetch aborted');
+            return;
+        }
+        
         console.error('Error fetching:', error);
         state.isLoading = false;
+        currentFetchController = null;
         
         if (!append) {
             trackGrid.innerHTML = `
@@ -1274,8 +1297,14 @@ function loadMore() {
 }
 
 function resetAndFetch() {
+    if (currentFetchController) {
+        currentFetchController.abort();
+        currentFetchController = null;
+    }
+    
     state.page = 1;
     state.hasMore = true;
+    state.isLoading = false;
     trackGrid.innerHTML = '';
     fetchTracks(false);
 }

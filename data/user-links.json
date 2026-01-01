@@ -4,224 +4,204 @@
     "displayName": "Ness",
     "aliases": ["ness", "yxkness"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["ness"],
+    "bhr": ["ness"],
+    "cr": ["ness", "yxkness"]
   },
   {
     "canonical": "malishya",
     "displayName": "malishya",
     "aliases": ["malishya", "malicia"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "frhd": ["malishya", "malicia"]
   },
     {
     "canonical": "mudkip",
     "displayName": "mudkip",
     "aliases": ["mudkip", "churro"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "frhd": ["mudkip", "churro"],
+    "bhr": ["mudkip", "churro"]
   },
       {
     "canonical": "seasnails",
     "displayName": "Seasnails",
     "aliases": ["Seasnails", "Seaslugs"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "frhd": ["Seasnails", "Seaslugs"]
   },
   {
     "canonical": "octo",
     "displayName": "octo",
     "aliases": ["octo", "octopus"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["octo", "octopus"],
+    "bhr": ["octo", "octopus"],
+    "cr": ["octo", "octopus"]
   },
   {
     "canonical": "maple",
     "displayName": "Maple",
     "aliases": ["Maple"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "frhd": ["Maple"],
+    "bhr": ["Maple"]
   },
   {
     "canonical": "nitro",
     "displayName": "Nitro",
     "aliases": ["nitro", "nitrogeneric"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "frhd": ["nitro", "nitrogeneric"],
+    "bhr": ["nitro", "nitrogeneric"]
   },
   {
     "canonical": "thefunkymonkie",
     "displayName": "thefunkymonkie",
     "aliases": ["thefunkymonkie", "Dirt Monkie", "TFM"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["thefunkymonkie", "Dirt Monkie", "TFM"],
+    "bhr": ["thefunkymonkie", "Dirt Monkie", "TFM"],
+    "cr": ["thefunkymonkie", "Dirt Monkie", "TFM"]
   },
     {
     "canonical": "richibuildjumps",
     "displayName": "RichIBuildJumps",
     "aliases": ["RichIBuildJumps", "RIBJ", "RichhIBuildJumps"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["RichIBuildJumps", "RIBJ", "RichhIBuildJumps"],
+    "bhr": ["RichIBuildJumps", "RIBJ", "RichhIBuildJumps"],
+    "cr": ["RichIBuildJumps", "RIBJ", "RichhIBuildJumps"]
   },
   {
     "canonical": "coager",
     "displayName": "Coager",
     "aliases": ["Coager", "Coated_Badger"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "frhd": ["Coager", "Coated_Badger"],
+    "bhr": ["Coager", "Coated_Badger"]
   },
     {
     "canonical": "deadrising2",
     "displayName": "deadrising2",
     "aliases": ["deadrising2", "EliBloodthirst"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["deadrising2", "EliBloodthirst"],
+    "bhr": ["deadrising2", "EliBloodthirst"],
+    "cr": ["deadrising2", "EliBloodthirst"]
   },
   {
     "canonical": "cityshep",
     "displayName": "CityShep",
     "aliases": ["CityShep", "thyprith", "Cypress", "ShittyShep"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "frhd": ["CityShep", "thyprith", "Cypress", "ShittyShep"],
+    "bhr": ["CityShep", "thyprith", "Cypress", "ShittyShep"]
   },
   {
     "canonical": "alexander",
     "displayName": "alexander",
     "aliases": ["alexander", "Alex", "tsunami"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["alexander", "Alex", "tsunami"],
+    "bhr": ["alexander", "Alex", "tsunami"],
+    "cr": ["alexander", "Alex", "tsunami"]
   },
     {
     "canonical": "cataclysm",
     "displayName": "Cataclysm",
     "aliases": ["Cataclysm", "THEPENGUINs"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["Cataclysm", "THEPENGUINs"],
+    "bhr": ["Cataclysm", "THEPENGUINs"],
+    "cr": ["Cataclysm", "THEPENGUINs"]
   },
       {
     "canonical": "hawnks",
     "displayName": "hawnks",
     "aliases": ["hawnks", "FUTURE MTNS"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["hawnks", "FUTURE MTNS"],
+    "bhr": ["hawnks", "FUTURE MTNS"],
+    "cr": ["hawnks", "FUTURE MTNS"]
   },
   {
     "canonical": "bingbangboom",
     "displayName": "BINGBANGBOOM",
     "aliases": ["BINGBANGBOOM", "Joel", "Autoa"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["BINGBANGBOOM", "Joel", "Autoa"],
+    "bhr": ["BINGBANGBOOM", "Joel", "Autoa"],
+    "cr": ["BINGBANGBOOM", "Joel", "Autoa"]
   },
     {
     "canonical": "volund",
     "displayName": "Volund",
     "aliases": ["Volund", "codrey"],
-    "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": false
+    "showProfile": false,
+    "frhd": ["Volund", "codrey"],
+    "bhr": ["Volund", "codrey"]
   },
       {
     "canonical": "weem",
     "displayName": "weem",
     "aliases": ["weem", "WheelieMaker", "WM"],
-    "showProfile": true,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "showProfile": false,
+    "frhd": ["weem", "WheelieMaker", "WM"],
+    "bhr": ["weem", "WheelieMaker", "WM"],
+    "cr": ["weem", "WheelieMaker", "WM"]
   },
   {
     "canonical": "lust",
     "displayName": "Lust",
     "aliases": ["Lust", "Imperceptus"],
     "showProfile": false,
-    "frhd": false,
-    "bhr": false,
-    "cr": true
+    "bhr": ["Lust", "Imperceptus"],
+    "cr": ["Lust", "Imperceptus"]
   },
   {
     "canonical": "ion",
     "displayName": "ion",
     "aliases": ["MPatriot", "ion"],
     "showProfile": false,
-    "frhd": false,
-    "bhr": true,
-    "cr": true
+    "bhr": ["MPatriot", "ion"],
+    "cr": ["MPatriot", "ion"]
   },
   {
     "canonical": "char",
     "displayName": "Char",
     "aliases": ["Char"],
     "showProfile": true,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "frhd": ["Char"]
   },
   {
     "canonical": "fried rider",
     "displayName": "fried rider",
     "aliases": ["fried rider", "fried_rider", "fried"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": true,
-    "cr": true
+    "frhd": ["fried rider", "fried_rider", "fried"],
+    "bhr": ["fried rider", "fried_rider", "fried"],
+    "cr": ["fried rider", "fried_rider", "fried"]
   },
   {
     "canonical": "ishu",
     "displayName": "ishu",
     "aliases": ["ishu", "mtt2"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "frhd": ["ishu", "mtt2"]
   },
   {
     "canonical": "baltic",
     "displayName": "Baltic",
     "aliases": ["Baltic", "dzemas"],
     "showProfile": false,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "frhd": ["Baltic", "dzemas"]
   },
     {
     "canonical": "rayb25",
     "displayName": "Rayb25",
     "aliases": ["Rayb25", "Holystone"],
-    "showProfile": true,
-    "frhd": true,
-    "bhr": false,
-    "cr": false
+    "showProfile": false,
+    "frhd": ["Rayb25", "Holystone"]
   }
 ]

@@ -31,6 +31,8 @@ const LOCAL_ROOT = USE_LOCAL_FILES
     app.use(`/data/${type}/thumbnails`, express.static(path.join(LOCAL_ROOT, type, 'thumbnails')));
 });
 
+app.use('/avatars', express.static(path.join(LOCAL_ROOT, 'avatars')));
+
 app.use(express.static(path.join(__dirname, '/')));
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -78,25 +80,34 @@ function findPlaylist(playlistId) {
 
 // user links for aliased usernames
 let userLinks = [];
-const USER_LINKS_PATH = path.join(__dirname, 'data', 'user-links.json');
 
-function loadUserLinks() {
+async function loadUserLinksFromDb() {
+    console.log('Loading user links from PocketBase...');
+    
     try {
-        const data = fs.readFileSync(USER_LINKS_PATH, 'utf8');
-        userLinks = JSON.parse(data);
-        console.log(`Loaded ${userLinks.length} user links`);
+        const records = await pb.collection('players').getFullList({
+            requestKey: `user-links-${Date.now()}`
+        });
+        
+        userLinks = records.map(record => ({
+            canonical: record.canonical,
+            displayName: record.name,
+            aliases: record.aliases || [],
+            showProfile: record.show || false,
+            frhd: record.frhd_ids?.length > 0,
+            bhr: record.bhr_ids?.length > 0,
+            cr: record.cr_ids?.length > 0,
+            frhd_usernames: record.frhd_ids || [],
+            bhr_usernames: record.bhr_ids || [],
+            cr_usernames: record.cr_ids || []
+        }));
+        
+        console.log(`  Loaded ${userLinks.length} user links from PocketBase`);
     } catch (e) {
-        if (e.code === 'ENOENT') {
-            console.log('No user-links.json found, starting with empty array');
-            userLinks = [];
-        } else {
-            console.error('Error loading user links:', e);
-            userLinks = [];
-        }
+        console.error('Failed to load user links from PocketBase:', e.message);
+        userLinks = [];
     }
 }
-
-loadUserLinks();
 
 function normalizeAuthorName(name) {
     return name?.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
@@ -106,21 +117,36 @@ function findUserAliases(username) {
     const normalizedInput = normalizeAuthorName(username);
     
     for (const user of userLinks) {
-        const matchesAlias = user.aliases.some(alias => 
+        // Check aliases
+        const matchesAlias = user.aliases?.some(alias => 
             normalizeAuthorName(alias) === normalizedInput
         );
         
-        if (matchesAlias) {
+        // Check platform-specific usernames
+        const matchesFrhd = user.frhd_usernames?.some(u => 
+            normalizeAuthorName(u) === normalizedInput
+        );
+        const matchesBhr = user.bhr_usernames?.some(u => 
+            normalizeAuthorName(u) === normalizedInput
+        );
+        const matchesCr = user.cr_usernames?.some(u => 
+            normalizeAuthorName(u) === normalizedInput
+        );
+        
+        if (matchesAlias || matchesFrhd || matchesBhr || matchesCr) {
             return {
                 canonical: user.canonical,
                 displayName: user.displayName,
-                aliases: user.aliases,
-                normalizedAliases: user.aliases.map(a => normalizeAuthorName(a)),
+                aliases: user.aliases || [],
+                normalizedAliases: (user.aliases || []).map(a => normalizeAuthorName(a)),
                 platforms: {
                     frhd: user.frhd === true,
                     bhr: user.bhr === true,
                     cr: user.cr === true
-                }
+                },
+                frhd_usernames: user.frhd_usernames || [],
+                bhr_usernames: user.bhr_usernames || [],
+                cr_usernames: user.cr_usernames || []
             };
         }
     }
@@ -130,40 +156,75 @@ function findUserAliases(username) {
         displayName: username,
         aliases: [username],
         normalizedAliases: [normalizedInput],
-        platforms: { frhd: false, bhr: false, cr: false }
+        platforms: { frhd: false, bhr: false, cr: false },
+        frhd_usernames: [],
+        bhr_usernames: [],
+        cr_usernames: []
     };
 }
 
 // track links for cross-platform tracks
 let trackLinks = [];
-const TRACK_LINKS_PATH = path.join(__dirname, 'data', 'track-links.json');
+let trackLinksLookup = new Map();
 
-function loadTrackLinks() {
+async function loadTrackLinksFromDb() {
+    console.log('Loading track links from PocketBase...');
+    
     try {
-        const data = fs.readFileSync(TRACK_LINKS_PATH, 'utf8');
-        trackLinks = JSON.parse(data);
-        console.log(`Loaded ${trackLinks.length} track links`);
-    } catch (e) {
-        if (e.code === 'ENOENT') {
-            console.log('No track-links.json found, starting with empty array');
-            trackLinks = [];
-        } else {
-            console.error('Error loading track links:', e);
-            trackLinks = [];
+        const records = await pb.collection('db').getFullList({
+            expand: 'frhd_id,bhr_id,cr_id',
+            requestKey: `track-links-${Date.now()}`
+        });
+        
+        trackLinks = records.map(record => {
+            const tracks = [];
+            
+            if (record.expand?.frhd_id) {
+                for (const t of record.expand.frhd_id) {
+                    tracks.push({ type: 'frhd', id: t._id });
+                }
+            }
+            
+            if (record.expand?.bhr_id) {
+                for (const t of record.expand.bhr_id) {
+                    tracks.push({ type: 'bhr', id: t._id });
+                }
+            }
+            
+            if (record.expand?.cr_id) {
+                for (const t of record.expand.cr_id) {
+                    tracks.push({ type: 'cr', id: t._id });
+                }
+            }
+            
+            return {
+                canonical: record.canonical,
+                name: record.name,
+                authors: record.authors || [],
+                tracks: tracks
+            };
+        });
+        
+        trackLinksLookup.clear();
+        for (const link of trackLinks) {
+            for (const track of link.tracks) {
+                const key = `${track.type}-${track.id}`;
+                trackLinksLookup.set(key, link);
+            }
         }
+        
+        console.log(`  Loaded ${trackLinks.length} track links (${trackLinksLookup.size} tracks)`);
+    } catch (e) {
+        console.error('Failed to load track links from PocketBase:', e.message);
+        trackLinks = [];
+        trackLinksLookup.clear();
     }
 }
 
-loadTrackLinks();
 
 function findLinkedTracks(type, id) {
-    for (const link of trackLinks) {
-        const match = link.tracks.find(t => t.type === type && t.id === id);
-        if (match) {
-            return link;
-        }
-    }
-    return null;
+    const key = `${type}-${id}`;
+    return trackLinksLookup.get(key) || null;
 }
 
 function formatSize(bytes) {
@@ -708,8 +769,8 @@ app.get('/api/users', (req, res) => {
     let users = userLinks.map(user => ({
         canonical: user.canonical,
         displayName: user.displayName,
-        aliases: user.aliases,
-        avatar: `/data/users/avatars/${user.canonical}.png`,
+        aliases: user.aliases || [],
+        avatar: `/avatars/${user.canonical}.png`,
         platforms: {
             frhd: user.frhd === true,
             bhr: user.bhr === true,
@@ -720,9 +781,9 @@ app.get('/api/users', (req, res) => {
     if (query) {
         const lowerQuery = query.toLowerCase();
         users = users.filter(user => 
-            user.displayName.toLowerCase().includes(lowerQuery) ||
-            user.canonical.toLowerCase().includes(lowerQuery) ||
-            user.aliases.some(a => a.toLowerCase().includes(lowerQuery))
+            user.displayName?.toLowerCase().includes(lowerQuery) ||
+            user.canonical?.toLowerCase().includes(lowerQuery) ||
+            user.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
         );
     }
     
@@ -1089,7 +1150,7 @@ app.get('/api/authors-by-platform', (req, res) => {
             canonical: user.canonical,
             displayName: user.displayName,
             aliases: user.aliases,
-            avatar: `/data/users/avatars/${user.canonical}.png`,
+            avatar: `/avatars/${user.canonical}.png`,
             platforms: {
                 frhd: user.frhd === true,
                 bhr: user.bhr === true,
@@ -1100,15 +1161,15 @@ app.get('/api/authors-by-platform', (req, res) => {
     if (query) {
         const lowerQuery = query.toLowerCase();
         users = users.filter(user => 
-            user.displayName.toLowerCase().includes(lowerQuery) ||
-            user.canonical.toLowerCase().includes(lowerQuery) ||
-            user.aliases.some(a => a.toLowerCase().includes(lowerQuery))
+            user.displayName?.toLowerCase().includes(lowerQuery) ||
+            user.canonical?.toLowerCase().includes(lowerQuery) ||
+            user.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
         );
     }
     
     if (sortBy === 'name') {
         users.sort((a, b) => {
-            const cmp = a.displayName.localeCompare(b.displayName);
+            const cmp = (a.displayName || '').localeCompare(b.displayName || '');
             return sortOrder === 'asc' ? cmp : -cmp;
         });
     }
@@ -1614,17 +1675,22 @@ const CACHE_REFRESH_INTERVAL = 15 * 60 * 1000;
 async function refreshCaches() {
     try {
         console.log('Auto-refreshing caches...');
+        await loadUserLinksFromDb();
+        await loadTrackLinksFromDb();
         await loadLinkedTrackStatsCache();
         await loadDbTracksCache();
-        console.log(`Cache refreshed: ${dbTracksCache.all.length} tracks`);
+        console.log(`Cache refreshed: ${dbTracksCache.all.length} tracks, ${userLinks.length} users, ${trackLinks.length} track links`);
     } catch (error) {
         console.error('Auto-refresh failed:', error);
     }
 }
 
 async function startServer() {
+    await loadUserLinksFromDb();
+    await loadTrackLinksFromDb();
     await loadLinkedTrackStatsCache();
     await loadDbTracksCache();
+
     setupLiveRacing(server);
 
     setInterval(refreshCaches, CACHE_REFRESH_INTERVAL);
