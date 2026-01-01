@@ -97,10 +97,10 @@ app.post('/api/auth/login', async (req, res) => {
         
         const token = jwt.sign(
             {
-                uid: loginData.response?.uid || userData.uid,
+                id: loginData.response?.uid || userData.uid,
                 username: username,
-                displayName: userData.displayname || username,
-                avatar: userData.picture || `/avatars/${username}.png`
+                email: userData.email || '',
+                picture: userData.picture || `/avatars/${username}.png`
             },
             JWT_SECRET,
             { expiresIn: '7d' }
