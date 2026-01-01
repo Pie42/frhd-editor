@@ -55,6 +55,8 @@ const jwt = require('jsonwebtoken');
 const NODEBB_URL = process.env.NODEBB_URL || 'https://forum.freerider.app';
 const JWT_SECRET = process.env.JWT_SECRET;
 const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '.freerider.app';
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 const loginTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/login.ejs'), 'utf8'));
 
@@ -104,7 +106,7 @@ app.post('/api/auth/login', async (req, res) => {
             { expiresIn: '7d' }
         );
         
-        res.cookie('freerider_token', token, {
+        res.cookie('freeriderapp_session', token, {
             domain: COOKIE_DOMAIN,
             httpOnly: true,
             secure: true,
