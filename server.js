@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 app.set('view cache', false);
@@ -10,6 +11,14 @@ const server = http.createServer(app);
 const { setupLiveRacing, liveSessions } = require('./live');
 const { router: forumLinksRouter, getForumLinkForTrack } = require('./forum-links');
 app.use('/api', forumLinksRouter);
+
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
+const NODEBB_URL = process.env.NODEBB_URL || 'https://forum.freerider.app';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+app.use(cookieParser());
 
 const PocketBase = require('pocketbase/cjs');
 const pb = new PocketBase('https://db.freerider.app');
@@ -46,6 +55,33 @@ app.use((req, res, next) => {
         return res.sendStatus(200);
     }
     next();
+});
+
+app.get('/login', (req, res) => {
+    const redirect = req.query.redirect || 'https://freerider.app';
+    res.redirect(`${NODEBB_URL}/login`);
+});
+
+app.get('/api/auth/me', (req, res) => {
+    const nbbToken = req.cookies['nbb_token'];
+    
+    if (!nbbToken) {
+        return res.json({ loggedIn: false });
+    }
+    
+    try {
+        const decoded = jwt.verify(nbbToken, JWT_SECRET);
+        res.json({
+            loggedIn: true,
+            user: {
+                uid: decoded.uid,
+                username: decoded.username
+            }
+        });
+    } catch (error) {
+        console.log('[Auth] Invalid nbb_token:', error.message);
+        res.json({ loggedIn: false });
+    }
 });
 
 // templates
@@ -220,7 +256,6 @@ async function loadTrackLinksFromDb() {
         trackLinksLookup.clear();
     }
 }
-
 
 function findLinkedTracks(type, id) {
     const key = `${type}-${id}`;
@@ -1695,6 +1730,13 @@ app.get('/api/live-sessions', (req, res) => {
     }
     res.json(sessions);
 });
+
+const ghostsRouter = require('./ghosts');
+app.use('/api/ghosts', (req, res, next) => {
+    req.trackLinksLookup = trackLinksLookup;
+    req.findUserAliases = findUserAliases;
+    next();
+}, ghostsRouter);
 
 const CACHE_REFRESH_INTERVAL = 15 * 60 * 1000;
 

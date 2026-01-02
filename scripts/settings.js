@@ -88,7 +88,7 @@ var GameSettings = {
     "snapCursor": true,
     "sidebar": true,
     "beta": false,
-    "forumUrl": "/db",
+    "forumUrl": "https://forum.freerider.app",
     "blackHat": false,
     "ghostTicks": 0,
     "type": "frhd",

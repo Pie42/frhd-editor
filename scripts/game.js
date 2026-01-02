@@ -12365,6 +12365,15 @@
           else e[t[s]] = s;
         this.keymap = e;
       }
+      loadKeyPlayback(keyData) {
+        this.keyPlayback = keyData;
+        this.keysToPlay = Object.keys(keyData)
+          .filter(k => k.endsWith('_down') || k.endsWith('_up'))
+          .map(k => k.replace(/_down$|_up$/, ''))
+          .filter((v, i, a) => a.indexOf(v) === i);
+
+        console.log('[Gamepad] Loaded key playback, keys:', this.keysToPlay);
+      }
       handleButtonDown(t, e = !1) {
         const s = this.getInternalCode(t.keyCode);
         "string" != typeof s || e || t.preventDefault(),
@@ -12548,7 +12557,7 @@
           const firstByte = new Uint8Array(arrayBuffer.slice(offset, offset + 1))[0];
           const massCount = firstByte & 0x0F;
           const springCount = (firstByte & 0xF0) >> 4;
-          const frameSize = 8 + 18 * massCount + 6 * springCount + 4;
+          const frameSize = 8 + 18 * massCount + 6 * springCount;
 
           const frameBuffer = arrayBuffer.slice(offset, offset + frameSize);
           chunks.push(this.decodeFrame(frameBuffer));
@@ -12571,6 +12580,26 @@
         }
 
         const frameData = this.playbackFrames[currentTick];
+        if (!frameData || !frameData.masses) return;
+
+        if (this.keyPlayback && this.keysToPlay) {
+          for (const key of this.keysToPlay) {
+            const downKey = key + "_down";
+            const upKey = key + "_up";
+
+            if (this.keyPlayback[downKey] &&
+              Array.isArray(this.keyPlayback[downKey]) &&
+              this.keyPlayback[downKey].includes(currentTick)) {
+              this.setButtonDown(key, true);
+            }
+
+            if (this.keyPlayback[upKey] &&
+              Array.isArray(this.keyPlayback[upKey]) &&
+              this.keyPlayback[upKey].includes(currentTick)) {
+              this.setButtonUp(key);
+            }
+          }
+        }
 
         let ghostPlayer = null;
         for (let i = 0; i < this.scene.playerManager._players.length; i++) {
@@ -12893,7 +12922,7 @@
           gravity = ((V.gravAngle % 360) + 360) % 360,
           vehicle = 0,
           offset = 8,
-          frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs + 4),
+          frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs),
           frame = new DataView(frameBuffer);
         switch (V.player._tempVehicleType) {
           case "HELI":
@@ -13011,6 +13040,61 @@
         URL.revokeObjectURL(u);
 
         console.log('Ghost exported as:', safeFileName + '.cpgh');
+      }
+
+      async uploadGhost(gamepad) {
+        const drawFPS = this.settings.drawFPS || 25;
+        const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
+        const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
+
+        gamepad.createHeader();
+
+        const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
+
+        // Convert blob to base64 using FileReader
+        const ghostBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            // Remove "data:application/octet-stream;base64," prefix
+            resolve(dataUrl.split(',')[1]);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(ghostBlob);
+        });
+
+        try {
+          const response = await fetch('/api/ghosts/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              trackType: GameSettings.type,
+              trackId: GameSettings.id,
+              timeTicks: this.completedTicks,
+              timeFormatted: timeFormatted,
+              vehicle: vehicleType,
+              ghostData: ghostBase64,
+              keyData: gamepad.records
+            })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            console.log(`[Ghost] Uploaded${result.isGuest ? ' as Guest' : ''}: ${timeFormatted}`);
+          } else {
+            console.log(`[Ghost] ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Ghost] Upload failed:', error);
+        }
+      }
+
+      formatTime(ticks, fps = 30) {
+        const totalSeconds = ticks / fps;
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toFixed(2).padStart(5, '0')}`;
       }
         clone() {
           const t = new _(this.scene),
@@ -25483,11 +25567,11 @@ showMessage();
             this.playerManager.reset(),
             this.playerManager.getPlayerCount() > 0 &&
               (this.camera.focusIndex = 1),
-              this.camera.focusIndex = 0,
             this.camera.focusOnPlayer(),
             this.camera.fastforward(),
             this.score.update();
             this.logged = false;
+            this.ghostUploadPrompted = false;
         }
         buttonDown(t) {
           const e = this.camera;
@@ -26005,11 +26089,100 @@ showMessage();
           this.verified = !this.track.dirty;
           this.completedTicks = this.playerManager.firstPlayer._scene.ticks;
           this.logTrackComplete();
+
+          if (!this.ghostUploadPrompted) {
+            const gamepad = this.playerManager.firstPlayer._gamepad;
+            if (gamepad && gamepad.recording && GameSettings.type && GameSettings.id) {
+              this.ghostUploadPrompted = true;
+              this.promptGhostUpload(gamepad);
+            }
+          }
         }
+
+        async promptGhostUpload(gamepad) {
+          const drawFPS = this.settings.drawFPS || 30;
+          const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
+
+          let isLoggedIn = false;
+          try {
+            const authResponse = await fetch('/api/auth/me');
+            const authData = await authResponse.json();
+            isLoggedIn = authData.loggedIn;
+          } catch (e) {
+            // fetch failed, continue as guest
+          }
+
+          const message = isLoggedIn
+            ? `Track completed in ${timeFormatted}!\n\nUpload ghost to leaderboard?`
+            : `Track completed in ${timeFormatted}!\n\nUpload ghost as Guest?`;
+
+          const shouldUpload = confirm(message);
+
+          if (shouldUpload) {
+            await this.uploadGhost(gamepad);
+          }
+        }
+
+        async uploadGhost(gamepad) {
+        const drawFPS = this.settings.drawFPS || 25;
+        const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
+        const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
+
+        gamepad.createHeader();
+
+        const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
+
+        // Convert blob to base64 using FileReader
+        const ghostBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            // Remove "data:application/octet-stream;base64," prefix
+            resolve(dataUrl.split(',')[1]);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(ghostBlob);
+        });
+
+        try {
+          const response = await fetch('/api/ghosts/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              trackType: GameSettings.type,
+              trackId: GameSettings.id,
+              timeTicks: this.completedTicks,
+              timeFormatted: timeFormatted,
+              vehicle: vehicleType,
+              ghostData: ghostBase64,
+              keyData: gamepad.records
+            })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            console.log(`[Ghost] Uploaded${result.isGuest ? ' as Guest' : ''}: ${timeFormatted}`);
+          } else {
+            console.log(`[Ghost] ${result.message}`);
+          }
+        } catch (error) {
+          console.error('[Ghost] Upload failed:', error);
+        }
+      }
+
+        formatGhostTime(ticks, fps = 25) {
+          const totalSeconds = ticks / fps;
+          const minutes = Math.floor(totalSeconds / 60);
+          const seconds = totalSeconds % 60;
+          return `${minutes.toString().padStart(2, '0')}:${seconds.toFixed(2).padStart(5, '0')}`;
+        }
+
         logTrackComplete() {
           if (this.logged || !this.trackUpdated || GameSettings.trackName === 'track.txt') return;
+
           let completedTracks = JSON.parse(localStorage.getItem("completedTracks") || "[]");
-      
+
           let trackData = {
               trackName: this.game.settings.trackName.replace(/\.txt$/, "") || "track.txt",
               slowmo: this.game.mod.getVar("slowmo") || false,
@@ -26017,12 +26190,12 @@ showMessage();
               rewind: this.game.mod.getVar("rewind") || false,
               ticks: this.ticks || 0,
           };
-      
+
           completedTracks.push(trackData);
           localStorage.setItem("completedTracks", JSON.stringify(completedTracks));
-          //console.log((localStorage.getItem("completedTracks")))
+
           this.logged = true;
-      }
+        }
         hideControlPlanel() {}
         showControlPlanel() {}
         command(...t) {
@@ -26219,7 +26392,7 @@ showMessage();
         addPlayers(raceData) {
           const playerManager = this.playerManager;
 
-          // Handle CPGH format (from file upload)
+          // Handle CPGH format (from file upload or ghost card)
           if (raceData && raceData.cpghData) {
             const mappedUser = {
               "u_id": 999,
@@ -26229,12 +26402,19 @@ showMessage();
             };
 
             const player = playerManager.createPlayer(this, mappedUser);
+            const gamepad = player.getGamepad();
 
             // Load CPGH first to decode the header
-            player.getGamepad().loadCPGHPlayback(raceData.cpghData);
+            gamepad.loadCPGHPlayback(raceData.cpghData);
+
+            // Also load key data for button presses if available
+            if (raceData.keyData) {
+              gamepad.loadKeyPlayback(raceData.keyData);
+              console.log("CPGH ghost loaded with key data");
+            }
 
             // Get vehicle type from the loaded CPGH header
-            const vehicleType = player.getGamepad().vehicleType || "BMX";
+            const vehicleType = gamepad.vehicleType || raceData.vehicle || "BMX";
             player.setBaseVehicle(vehicleType);
             player.setAsGhost();
             playerManager.addPlayer(player);
@@ -30393,13 +30573,15 @@ class LiveRiderManager {
     const slow = !!(flags & 32);
     const propeller = !!(flags & 64);
     const crouch = !!(flags & 128);
+    const xButton = !!(flags & 256);
+    const upButton = !!(flags & 2048);
     const vehicleCode = (flags >> 12) & 7;
 
     const Vehicles = window.GameVehicles;
     const tempType = { 2: 'HELI', 3: 'TRUCK', 4: 'BALLOON', 5: 'BLOB' }[vehicleCode];
 
-    const x = f.getFloat64(8);
-    const y = f.getFloat64(16);
+    const x = massCount > 0 ? f.getFloat64(8) : 0;
+    const y = massCount > 0 ? f.getFloat64(16) : 0;
 
     if (vehicleCode === 0 || vehicleCode === 1) {
       const baseType = vehicleCode === 1 ? 'BMX' : 'MTB';
@@ -30440,8 +30622,8 @@ class LiveRiderManager {
 
     switch (vehicleCode) {
       case 2: // HELI
-        v.rotor = f.getUint16(4) / 10000;
-        v.rotor2 = f.getUint16(6) / 10000;
+        if (v.rotor !== undefined) v.rotor = f.getUint16(4) / 10000;
+        if (v.rotor2 !== undefined) v.rotor2 = f.getUint16(6) / 10000;
         break;
       case 3: // TRUCK
         if (v.frontWheel) v.frontWheel.angle = f.getInt16(4) / 1000;
@@ -30453,32 +30635,43 @@ class LiveRiderManager {
 
     let offset = 8;
     for (let i = 0; i < massCount && i < v.masses.length; i++) {
-      v.masses[i].pos.x = v.masses[i].old.x = f.getFloat64(offset);
-      v.masses[i].pos.y = v.masses[i].old.y = f.getFloat64(offset + 8);
+    const mass = v.masses[i];
+      mass.pos.x = f.getFloat64(offset);
+      mass.pos.y = f.getFloat64(offset + 8);
+      mass.old.x = mass.pos.x;
+      mass.old.y = mass.pos.y;
+      mass.radius = f.getUint8(offset + 16) / 3;
+      const flags = f.getUint8(offset + 17);
+      mass.friction = (flags & 0x1F) / 20;
+      mass.collide = false;
+      mass.contact = !!(flags & 64);
+      mass.brake = !!(flags & 128);
       offset += 18;
     }
 
     for (let i = 0; i < springCount && i < v.springs.length; i++) {
-      v.springs[i].leff = f.getFloat32(offset);
+      const spring = v.springs[i];
+      spring.leff = f.getFloat32(offset);
+      const indices = f.getUint8(offset + 4);
+      const springFlags = f.getUint8(offset + 5);
+      spring.dampConstant = (springFlags & 0x0F) / 20;
+      spring.springConstant = ((springFlags & 0xF0) >> 4) / 20;
       offset += 6;
     }
 
-    // drawHeadAngle
-    if (vehicleCode === 0 || vehicleCode === 1 || vehicleCode === 3 && v.frontWheel && v.rearWheel) {
+    if ((vehicleCode === 0 || vehicleCode === 1 || vehicleCode === 3) && v.frontWheel && v.rearWheel) {
       v.drawHeadAngle = -(Math.atan2(
         v.frontWheel.pos.x - v.rearWheel.pos.x,
         v.frontWheel.pos.y - v.rearWheel.pos.y
       ) - Math.PI / 2);
     }
-
-    else if (vehicleCode === 2) {
+    else if (vehicleCode === 2 && v.masses.length >= 4) {
       v.cockpitAngle = -(Math.atan2(
         v.masses[0].pos.x - v.masses[3].pos.x,
         v.masses[0].pos.y - v.masses[3].pos.y
       ) - Math.PI / 2);
     }
-
-    if (vehicleCode === 5 && v.head && v.masses.length >= 4) {
+    else if (vehicleCode === 5 && v.head && v.masses.length >= 4) {
       let sumX = 0, sumY = 0;
       for (const m of v.masses) {
         sumX += m.pos.x;
@@ -30490,6 +30683,20 @@ class LiveRiderManager {
     }
 
     v.updateCameraFocalPoint?.();
+
+    const gamepad = ghost._gamepad;
+    if (gamepad) {
+      if (upButton) {
+        gamepad.setButtonDown("up");
+      } else {
+        gamepad.setButtonUp("up");
+      }
+      if (xButton) {
+        gamepad.setButtonDown("x");
+      } else {
+        gamepad.setButtonUp("x");
+      }
+    }
   }
 
   createGhost(playerId, username, hatColor, hatType) {

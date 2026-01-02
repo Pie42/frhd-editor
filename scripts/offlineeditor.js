@@ -33233,7 +33233,7 @@
             hasUnsavedChanges() {
               return (GameManager.game.currentScene.toolHandler.actionTimeline.length > 0);
             },
-            loadTrackFromState(trackType, trackId) {
+            loadTrackFromState(trackType, trackId, ghostInfo = null) {
               console.log(`[PopState] Loading track: ${trackType}/${trackId}`);
 
               if (trackType === 'cr') {
@@ -33246,10 +33246,24 @@
                     return fetch(metadata.trackUrl)
                       .then(res => res.text())
                       .then((code) => {
+                        GameManager.command("clear race");
                         GameManager.command("import", code, true);
                         GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
                         GameSettings.authors = metadata.authors || '';
                         document.title = metadata.name || `CR Track #${trackId}`;
+
+                        const ghost = ghostInfo || {
+                          ghostUrl: metadata.ghostUrl,
+                          keyUrl: metadata.keyUrl,
+                          vehicle: metadata.ghostVehicle,
+                          time: metadata.ghostTime,
+                          ticks: metadata.ghostTicks,
+                          username: metadata.ghoster
+                        };
+
+                        if (ghost && (ghost.url || ghost.ghostUrl)) {
+                          this.loadGhostFromUrl(ghost);
+                        }
 
                         this.updateNowPlaying({
                           id: metadata.id,
@@ -33285,10 +33299,24 @@
                     return fetch(metadata.trackUrl)
                       .then(res => res.text())
                       .then((code) => {
+                        GameManager.command("clear race");
                         GameManager.command("import", code, true);
                         GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
                         GameSettings.authors = metadata.authors || '';
                         document.title = metadata.name || `BHR Track #${trackId}`;
+
+                        const ghost = ghostInfo || {
+                          ghostUrl: metadata.ghostUrl,
+                          keyUrl: metadata.keyUrl,
+                          vehicle: metadata.ghostVehicle,
+                          time: metadata.ghostTime,
+                          ticks: metadata.ghostTicks,
+                          username: metadata.ghoster
+                        };
+
+                        if (ghost && (ghost.url || ghost.ghostUrl)) {
+                          this.loadGhostFromUrl(ghost);
+                        }
 
                         this.updateNowPlaying({
                           id: metadata.id,
@@ -33324,12 +33352,24 @@
                     return fetch(metadata.trackUrl)
                       .then(res => res.text())
                       .then((code) => {
+                        GameManager.command("clear race");
                         GameManager.command("import", code, true);
                         GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
-                        GameSettings.id = metadata.id;
-                        GameSettings.type = metadata.type || 'frhd';
                         GameSettings.authors = metadata.authors || '';
                         document.title = metadata.name || `FRHD Track #${trackId}`;
+
+                        const ghost = ghostInfo || {
+                          ghostUrl: metadata.ghostUrl,
+                          keyUrl: metadata.keyUrl,
+                          vehicle: metadata.ghostVehicle,
+                          time: metadata.ghostTime,
+                          ticks: metadata.ghostTicks,
+                          username: metadata.ghoster
+                        };
+
+                        if (ghost && (ghost.url || ghost.ghostUrl)) {
+                          this.loadGhostFromUrl(ghost);
+                        }
 
                         this.updateNowPlaying({
                           id: metadata.id,
@@ -33365,6 +33405,7 @@
                     return fetch(metadata.trackUrl)
                       .then(res => res.text())
                       .then((code) => {
+                        GameManager.command("clear race");
                         GameManager.command("import", code, true);
                         GameSettings.trackName = metadata.name || `Plus Track #${trackId}`;
                         GameSettings.authors = metadata.authors || '';
@@ -33392,6 +33433,72 @@
                     console.error(`Failed to re-load Plus track ${trackId}:`, error);
                   });
                 return;
+              }
+            },
+            async loadGhostFromUrl(ghostInfo) {
+              try {
+                const ghostUrl = ghostInfo.url || ghostInfo.ghostUrl;
+                const keyUrl = ghostInfo.keyUrl;
+
+                if (!ghostUrl) {
+                  console.log('[Ghost] No ghost URL provided');
+                  return;
+                }
+
+                console.log('[Ghost] Loading from URL:', ghostUrl);
+
+                const isCPGH = ghostUrl.endsWith('.cpgh') || ghostUrl.includes('ghost_data');
+
+                if (isCPGH) {
+                  const response = await fetch(ghostUrl);
+                  if (!response.ok) throw new Error('Failed to fetch ghost');
+                  const arrayBuffer = await response.arrayBuffer();
+
+                  let keyData = null;
+                  if (keyUrl) {
+                    try {
+                      const keyResponse = await fetch(keyUrl);
+                      if (keyResponse.ok) {
+                        keyData = await keyResponse.json();
+                        console.log('[Ghost] Loaded key data:', keyData);
+                      }
+                    } catch (e) {
+                      console.warn('[Ghost] Failed to load key data:', e);
+                    }
+                  }
+
+                  const ghostData = {
+                    cpghData: arrayBuffer,
+                    keyData: keyData,
+                    vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || 'BMX',
+                    username: ghostInfo.username || ghostInfo.ghoster || 'Ghost'
+                  };
+
+                  GameManager.command("add race", ghostData, true);
+                  console.log("[Ghost] CPGH ghost loaded from URL");
+
+                } else if (keyUrl) {
+                  const keyResponse = await fetch(keyUrl);
+                  if (!keyResponse.ok) throw new Error('Failed to fetch ghost keys');
+                  const keyData = await keyResponse.json();
+
+                  const ghostData = {
+                    code: keyData,
+                    vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || 'BMX',
+                    run_ticks: ghostInfo.ticks || ghostInfo.ghostTicks || null
+                  };
+
+                  GameManager.command("add race", ghostData, true);
+                  console.log("[Ghost] JSON ghost loaded from key URL");
+                }
+
+                GameSettings.ghostData = true;
+                GameSettings.ghoster = ghostInfo.username || ghostInfo.ghoster || '';
+                GameSettings.ghostTime = ghostInfo.time || ghostInfo.ghostTime || '';
+                GameSettings.ghostTicks = ghostInfo.ticks || ghostInfo.ghostTicks || null;
+
+              } catch (error) {
+                console.error("[Ghost] Failed to load ghost:", error);
               }
             },
             addImportListener() {
@@ -33567,6 +33674,7 @@
                   })
                   .then((code) => {
                     console.log("CR Track code fetched:", code);
+                    GameManager.command("clear race");
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
                     GameSettings.id = metadata.id;
@@ -33592,6 +33700,19 @@
                     const urlPath = new URL(fullPermalink).pathname;
 
                     const trackName = metadata.name || `CR Track #${trackId}`;
+
+                    const ghostInfo = event.data.ghost || {
+                        ghostUrl: metadata.ghostUrl,
+                        keyUrl: metadata.keyUrl,
+                        vehicle: metadata.ghostVehicle,
+                        time: metadata.ghostTime,
+                        ticks: metadata.ghostTicks,
+                        username: metadata.ghoster
+                    };
+
+                    if (ghostInfo && (ghostInfo.url || ghostInfo.ghostUrl)) {
+                        this.loadGhostFromUrl(ghostInfo);
+                    }
 
                     history.pushState(
                       { trackId: metadata.id, trackType: metadata.type },
@@ -33646,6 +33767,7 @@
                   })
                   .then((code) => {
                     console.log("BHR Track code fetched:", code);
+                    GameManager.command("clear race");
                     GameManager.command("import", code, true);
                     GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
                     GameSettings.id = metadata.id;
@@ -33671,6 +33793,19 @@
                     const urlPath = new URL(fullPermalink).pathname;
 
                     const trackName = metadata.name || `BHR Track #${trackId}`;
+
+                    const ghostInfo = event.data.ghost || {
+                        ghostUrl: metadata.ghostUrl,
+                        keyUrl: metadata.keyUrl,
+                        vehicle: metadata.ghostVehicle,
+                        time: metadata.ghostTime,
+                        ticks: metadata.ghostTicks,
+                        username: metadata.ghoster
+                    };
+
+                    if (ghostInfo && (ghostInfo.url || ghostInfo.ghostUrl)) {
+                        this.loadGhostFromUrl(ghostInfo);
+                    }
 
                     history.pushState(
                       { trackId: metadata.id, trackType: metadata.type },
@@ -33722,7 +33857,9 @@
               GameSettings.id === String(trackId) &&
               GameSettings.type === trackType
             );
-            
+
+            const messageGhost = event.data.ghost;
+
             fetch(fetchUrl)
               .then((response) => {
                 if (!response.ok) throw new Error("FRHD track not found");
@@ -33730,13 +33867,19 @@
               })
               .then((metadata) => {
                 console.log("FRHD metadata fetched:", metadata);
+                console.log("Ghost from message:", messageGhost);
+
+                if (messageGhost && (messageGhost.url || messageGhost.ghostUrl)) {
+                  console.log("[Ghost] Loading ghost from message data");
+                }
+
                 let ghostData = null;
                 let fullRaceData = null;
                 let ghoster = metadata.ghoster || '';
                 let ghostTime = metadata.ghostTime || '';
                 let ghostTicks = metadata.ghostTicks || null;
 
-                if (metadata.ghost) {
+                if (!messageGhost && metadata.ghost) {
                   ghostData = metadata.ghost.code || metadata.ghost;
                   ghoster = metadata.ghoster || '';
                   ghostTime = metadata.ghostTime || '';
@@ -33784,21 +33927,28 @@
                       scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
                     }
 
-                    if (ghostData) {
+                    if (messageGhost && (messageGhost.url || messageGhost.ghostUrl)) {
+                      console.log("[Ghost] Loading CPGH ghost from db card");
+                      this.loadGhostFromUrl(messageGhost);
+
+                      GameSettings.ghostData = true;
+                      GameSettings.ghoster = messageGhost.username || '';
+                      GameSettings.ghostTime = messageGhost.time || '';
+                      GameSettings.ghostTicks = messageGhost.ticks || null;
+                    }
+                    else if (ghostData && fullRaceData) {
                       GameSettings.ghostData = ghostData;
                       GameSettings.ghoster = ghoster;
                       GameSettings.ghostTime = ghostTime;
                       GameSettings.ghostTicks = ghostTicks;
                       GameSettings.fullRaceData = fullRaceData;
-                      console.log("Ghost data loaded:", { ghoster, ghostTime, ghostTicks });
+                      console.log("Ghost data loaded from metadata:", { ghoster, ghostTime, ghostTicks });
 
                       GameManager.command("add race", fullRaceData);
                     }
 
                     const fullPermalink = metadata.permalink;
-
                     const urlPath = new URL(fullPermalink).pathname;
-
                     const trackName = metadata.name || `FRHD Track #${trackId}`;
 
                     history.pushState(
@@ -33819,16 +33969,16 @@
                       name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
                       authors: metadata.authors,
                       thumbnail: metadata.thumbnail,
-                      type: trackType, // 'frhd'
+                      type: trackType,
                       description: metadata.description || '',
                       permalink: metadata.permalink,
                       published: metadata.published || '',
                       size: metadata.size || '',
                       nextId: metadata.nextId,
                       prevId: metadata.prevId,
-                      ghoster: metadata.ghoster,
-                      ghostTime: metadata.ghostTime,
-                      ghostTicks: metadata.ghostTicks
+                      ghoster: messageGhost?.username || metadata.ghoster,
+                      ghostTime: messageGhost?.time || metadata.ghostTime,
+                      ghostTicks: messageGhost?.ticks || metadata.ghostTicks
                     });
                   });
               })
@@ -34134,7 +34284,7 @@
                       onClick: this.toggleSidebar,
                       title: "Forum",
                     },
-                    n.createElement("span", { className: "text" }, "Forum"),
+                    n.createElement("span", { className: "text" }, "Sidebar"),
                     n.createElement("span", { className: r })
                   )
                 : n.createElement(
