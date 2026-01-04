@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title><%= title %> - Free Rider Archive</title>
+    <title>Free Rider Archive</title>
     <link rel="stylesheet" type="text/css" href="/style-black-o.css">
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
@@ -16,7 +16,7 @@
                     <!-- type filters -->
                     <div class="type-filters">
                         <strong>
-                            <% const types = ['db', 'frhd', 'bhr', 'cr', 'plus']; %>
+                            <% const types = ['db', 'frhd', 'bhr', 'cr', 'tm', 'plus']; %>
                             <% types.forEach((t, i) => { %>
                                 <span class="track-type-filter" data-type="<%= t %>">
                                     <span class="type-filter-link"><%= t === 'plus' ? '+' : t.toUpperCase() %></span>
@@ -34,7 +34,7 @@
                             <span class="track-type-filter" data-mode="ghosts">
                                 <span class="type-filter-link">GHOSTS</span>
                             </span> /
-                            <span class="track-type-filter" data-mode="user">
+                            <span class="track-type-filter" data-mode="players">
                                 <span class="type-filter-link">PLAYERS</span>
                             </span>
                         </strong>
@@ -54,10 +54,12 @@
                     <div class="search-sort-group">
                         <input type="text" id="search-input" class="search-input" 
                                placeholder="Search..." value="<%= query %>">
-                        <select id="sort-select" class="sort-select"></select>
-                        <button id="order-toggle" class="order-toggle" title="Toggle sort order">
-                            <span class="order-icon"></span>
-                        </button>
+                        <div class="sort-group">
+                            <select id="sort-select" class="sort-select"></select>
+                            <button id="order-toggle" class="order-toggle" title="Toggle sort order">
+                                <span class="order-icon"></span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,9 +71,9 @@
 <script>
 const state = {
     // current view mode
-    mode: 'tracks',        // 'tracks' | 'ghosts' | 'user' | 'playlist'
-    type: '<%= type %>',   // 'db' | 'frhd' | 'bhr' | 'cr' | 'plus'
-    ghostType: 'all',      // For ghost mode filtering
+    mode: 'tracks',        // 'tracks' | 'ghosts' | 'players'
+    type: '<%= type %>',   // 'db' | 'frhd' | 'bhr' | 'cr' | 'tm' | 'plus'
+    playerPlatform: '<%= type === "user" || type === "playlist" ? "db" : type %>',
     
     // search and sort
     query: '<%= query %>',
@@ -85,9 +87,8 @@ const state = {
     isLoading: false,
     
     // filters
-    author: '',
-    playlist: '',
-    authorPlatform: '<%= type === "user" || type === "playlist" ? "db" : type %>'
+    player: '',
+    playlist: ''
 };
 
 let currentFetchController = null;
@@ -120,29 +121,32 @@ function handleThumbnailFallback(img) {
 }
 window.handleThumbnailFallback = handleThumbnailFallback;
 
-function updateURL() {
+function updateURL(push = false) {
     const params = new URLSearchParams();
     
     if (state.mode === 'ghosts') {
         params.set('mode', 'ghosts');
-        if (state.ghostType && state.ghostType !== 'all') {
-            params.set('type', state.ghostType);
-        }
-    } else if (state.mode === 'user') {
-        params.set('type', 'user');
-    } else if (state.mode === 'playlist') {
-        params.set('type', 'playlist');
-    } else {
+    } else if (state.mode === 'players') {
+        params.set('mode', 'players');
+    }
+    
+    if (state.type && state.type !== 'db') {
         params.set('type', state.type);
     }
     
     params.set('sort', state.sortBy);
     params.set('order', state.sortOrder);
     if (state.query) params.set('q', state.query);
-    if (state.author) params.set('author', state.author);
+    if (state.player) params.set('player', state.player);
     if (state.playlist) params.set('playlist', state.playlist);
 
-    history.replaceState(state, '', `/db?${params.toString()}`);
+    const newURL = `/db?${params.toString()}`;
+    
+    if (push) {
+        history.pushState({...state}, '', newURL);
+    } else {
+        history.replaceState({...state}, '', newURL);
+    }
 }
 
 function parseURLParams() {
@@ -150,15 +154,32 @@ function parseURLParams() {
     
     if (params.get('mode') === 'ghosts') {
         state.mode = 'ghosts';
-        state.ghostType = params.get('type') || 'all';
+    } else if (params.get('mode') === 'players') {
+        state.mode = 'players';
     }
     
-    if (params.get('author')) {
-        state.author = params.get('author');
+    if (params.get('type')) {
+        state.type = params.get('type');
+    }
+    
+    if (params.get('player')) {
+        state.player = params.get('player');
     }
     
     if (params.get('playlist')) {
         state.playlist = params.get('playlist');
+    }
+    
+    if (params.get('sort')) {
+        state.sortBy = params.get('sort');
+    }
+    
+    if (params.get('order')) {
+        state.sortOrder = params.get('order');
+    }
+    
+    if (params.get('q')) {
+        state.query = params.get('q');
     }
 }
 
@@ -170,7 +191,7 @@ function updateSortOptions() {
             { value: 'name', label: 'Player' },
             { value: 'published', label: 'Date' }
         ],
-        user: [
+        players: [
             { value: 'shuffle', label: 'Shuffle' },
             { value: 'name', label: 'Name' }
         ],
@@ -191,6 +212,28 @@ function updateSortOptions() {
     ).join('');
 }
 
+function getSortValueDisplay(track) {
+    switch (state.sortBy) {
+        case 'upvotes':
+            if (track.type === 'cr' && track.votes !== null) {
+                return track.votes;
+            }
+            return track.upvotes || null;
+        case 'id':
+            return track.id || null;
+        case 'plays':
+            return track.plays || null;
+        case 'size':
+            return track.size ? formatSize(track.size) : null;
+        case 'published':
+            return track.published || null;
+        case 'favorites':
+            return track.favorites || null;
+        default:
+            return null;
+    }
+}
+
 function updateFilterStyles() {
     document.querySelectorAll('.track-type-filter').forEach(filter => {
         const filterType = filter.dataset.type;
@@ -200,9 +243,7 @@ function updateFilterStyles() {
         if (filterMode) {
             isActive = state.mode === filterMode;
         } else if (filterType) {
-            if (state.mode === 'tracks') isActive = filterType === state.type;
-            else if (state.mode === 'ghosts') isActive = filterType === state.ghostType;
-            else if (state.mode === 'user') isActive = filterType === state.authorPlatform;
+            isActive = filterType === state.type;
         }
 
         filter.style.color = isActive ? '#000' : '#aaa';
@@ -242,15 +283,22 @@ function clearFilterIndicators() {
     requestAnimationFrame(adjustContentPadding);
 }
 
-function updateAuthorIndicatorForMode() {
-    if (!state.author) return;
+function updatePlayerIndicatorForMode() {
+    if (!state.player) return;
     
-    const indicator = document.querySelector('.filter-indicator[data-filter-type="author"]');
+    const indicator = document.querySelector('.filter-indicator[data-filter-type="player"]');
     if (!indicator) return;
 
-    const endpoint = state.mode === 'ghosts'
-        ? `/api/ghosts?player=${encodeURIComponent(state.author)}&perPage=1`
-        : `/api/user-aliases/${encodeURIComponent(state.author)}?type=${state.type}`;
+    let endpoint;
+    if (state.mode === 'ghosts') {
+        let ghostParams = `player=${encodeURIComponent(state.player)}&perPage=1`;
+        if (state.type && !['db', 'all'].includes(state.type)) {
+            ghostParams += `&type=${state.type}`;
+        }
+        endpoint = `/api/ghosts?${ghostParams}`;
+    } else {
+        endpoint = `/api/user-aliases/${encodeURIComponent(state.player)}?type=${state.type}`;
+    }
 
     fetch(endpoint)
         .then(res => res.json())
@@ -258,28 +306,29 @@ function updateAuthorIndicatorForMode() {
             let text;
             if (state.mode === 'ghosts') {
                 const count = data.pagination?.totalItems || 0;
-                text = `<strong>${state.author}</strong> (${pluralize(count, 'ghost')})`;
+                text = `<strong>${state.player}</strong> (${pluralize(count, 'ghost')})`;
             } else {
-                text = `<strong>${state.author}</strong>`;
+                text = `<strong>${state.player}</strong>`;
                 const otherNames = data.aliases?.filter(a => 
-                    a.toLowerCase() !== state.author.toLowerCase()
+                    a.toLowerCase() !== state.player.toLowerCase()
                 ) || [];
                 if (otherNames.length > 0) {
                     text += ` (also: ${otherNames.join(', ')})`;
                 }
                 text += ` (${pluralize(data.trackCount, 'track')})`;
             }
-            indicator.innerHTML = `${text} <span class="clear-filter" onclick="clearFilter('author')">×</span>`;
+            indicator.innerHTML = `${text} <span class="clear-filter" onclick="clearFilter('player')">×</span>`;
         })
         .catch(() => {});
 }
 
-function setAuthorFilter(authorName) {
-    state.author = authorName;
+function setPlayerFilter(playerName) {
+    state.player = playerName;
     state.playlist = '';
     clearFilterIndicators();
-    updateAuthorIndicatorForMode();
-    showFilterIndicator(`<strong>${authorName}</strong>`, 'author');
+    showFilterIndicator(`<strong>${playerName}</strong>`, 'player');
+    updatePlayerIndicatorForMode();
+    updateURL(true);
     resetAndFetch();
 }
 
@@ -288,9 +337,10 @@ function setPlaylistFilter(playlistId) {
     if (!playlist) return;
 
     state.playlist = playlistId;
-    state.author = '';
+    state.player = '';
     state.mode = 'tracks';
-    state.type = state.authorPlatform;
+    // or reset to 'db' to show all playlist tracks initially:
+    // state.type = 'db';
 
     clearFilterIndicators();
     showFilterIndicator(
@@ -298,19 +348,52 @@ function setPlaylistFilter(playlistId) {
         'playlist'
     );
     updateFilterStyles();
+    updateURL(true);
     resetAndFetch();
+}
+
+function updatePlaylistIndicator() {
+    if (!state.playlist) return;
+    
+    const indicator = document.querySelector('.filter-indicator[data-filter-type="playlist"]');
+    if (!indicator) return;
+    
+    const playlist = playlistsData.find(p => p.id === state.playlist);
+    if (!playlist) return;
+    
+    const params = new URLSearchParams({
+        playlist: state.playlist,
+        type: state.type,
+        perPage: 1
+    });
+    
+    fetch(`/api/db?${params}`)
+        .then(res => res.json())
+        .then(data => {
+            const filteredCount = data.pagination?.totalCount || 0;
+            const totalCount = playlist.trackCount || 0;
+            
+            let text;
+            if (state.type !== 'db' && filteredCount !== totalCount) {
+                text = `<strong>${playlist.name}</strong> (${filteredCount}/${totalCount} tracks)`;
+            } else {
+                text = `<strong>${playlist.name}</strong> (${pluralize(totalCount, 'track')})`;
+            }
+            indicator.innerHTML = `${text} <span class="clear-filter" onclick="clearFilter('playlist')">×</span>`;
+        })
+        .catch(() => {});
 }
 
 function clearFilter(type) {
-    if (type === 'author') state.author = '';
+    if (type === 'player') state.player = '';
     else if (type === 'playlist') state.playlist = '';
     
     clearFilterIndicators();
-    updateURL();
+    updateURL(true);
     resetAndFetch();
 }
 
-window.setAuthorFilter = setAuthorFilter;
+window.setPlayerFilter = setPlayerFilter;
 window.setPlaylistFilter = setPlaylistFilter;
 window.clearFilter = clearFilter;
 
@@ -327,7 +410,7 @@ function renderAuthorsHtml(authorsArray, fallbackAuthor) {
         const remaining = filtered.length - 3;
         
         let html = display
-            .map(a => `<a href="/db?author=${encodeURIComponent(a)}" class="author-link"><strong>${a}</strong></a>`)
+            .map(a => `<a href="#" class="player-link" data-player="${a}"><strong>${a}</strong></a>`)
             .join(', ');
         
         if (remaining > 0) {
@@ -337,18 +420,18 @@ function renderAuthorsHtml(authorsArray, fallbackAuthor) {
     }
     
     const author = fallbackAuthor || 'Unknown';
-    return `<a href="/db?author=${encodeURIComponent(author)}" class="author-link"><strong>${author}</strong></a>`;
+    return `<a href="#" class="player-link" data-player="${author}"><strong>${author}</strong></a>`;
 }
 
 function renderTrackCard(track) {
-    if (track.type === 'user') return renderAuthorCard(track);
-    
     const urlType = (track.urlType || track.type) === 'plus' ? 't' : (track.urlType || track.type);
     const urlId = track.urlId || track.slug || track.id;
     const trackUrl = `/${urlType}/${urlId}`;
     const badges = track.badges || [track.type];
     const liveKey = `${track.urlType || track.type}/${urlId}`;
     const liveBadge = liveSessions[liveKey] > 0 ? '<span class="live-badge">LIVE</span>' : '';
+    const sortValue = getSortValueDisplay(track);
+    const sortValueHtml = sortValue ? `<br><small style="color: #888;">${sortValue}</small>` : '';
     
     return `
         <div class="track-item" data-track-type="${track.type}">
@@ -364,6 +447,7 @@ function renderTrackCard(track) {
                 <p class="desc">
                     <a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
                     by ${renderAuthorsHtml(track.authorsArray, track.username || track.authors)}
+                    ${sortValueHtml}
                 </p>
             </div>
         </div>
@@ -407,19 +491,19 @@ function renderGhostCard(ghost) {
     `;
 }
 
-function renderAuthorCard(authorData) {
-    const displayName = authorData.displayName || authorData.canonical || 'Unknown';
+function renderAuthorCard(playerData) {
+    const displayName = playerData.displayName || playerData.canonical || 'Unknown';
     const initial = displayName[0].toUpperCase();
-    const avatarUrl = `/avatars/${authorData.canonical}.png`;
+    const avatarUrl = `/avatars/${playerData.canonical}.png`;
 
     return `
-        <div class="author-item">
-            <div class="author-thumb">
-                <a href="/db?author=${encodeURIComponent(displayName)}" class="author-link-card">
+        <div class="player-item">
+            <div class="player-thumb">
+                <a href="#" class="player-link-card" data-player="${displayName}">
                     <div class="thumbnail">
-                        <img class="author-avatar" src="${avatarUrl}" alt="${displayName}"
+                        <img class="player-avatar" src="${avatarUrl}" alt="${displayName}"
                              loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <span class="author-initial" style="display: none;">${initial}</span>
+                        <span class="player-initial" style="display: none;">${initial}</span>
                     </div>
                 </a>
                 <p class="desc"><strong>${displayName}</strong></p>
@@ -448,7 +532,7 @@ function renderPlaylistCard(playlist) {
                 <p class="desc">
                     <a href="#" class="playlist-link" data-playlist-id="${playlist.id}" 
                        style="color: inherit; text-decoration: none;"><strong>${playlist.name}</strong></a>
-                    by <a href="/db?author=${encodeURIComponent(username)}" class="author-link"><strong>${username}</strong></a>
+                    by <a href="#" class="player-link" data-player="${username}"><strong>${username}</strong></a>
                 </p>
             </div>
         </div>
@@ -476,25 +560,21 @@ function getEndpointAndParams() {
     switch (state.mode) {
         case 'ghosts':
             endpoint = '/api/ghosts';
-            if (state.ghostType && !['all', 'db'].includes(state.ghostType)) {
-                params.set('type', state.ghostType);
+            if (state.type && !['db', 'all'].includes(state.type)) {
+                params.set('type', state.type);
             }
-            if (state.author) params.set('player', state.author);
+            if (state.player) params.set('player', state.player);
             break;
             
-        case 'user':
+        case 'players':
             endpoint = '/api/authors-by-platform';
-            params.set('platform', state.authorPlatform);
-            break;
-            
-        case 'playlist':
-            endpoint = '/api/playlists';
+            params.set('platform', state.type);
             break;
             
         default: // tracks
             endpoint = '/api/db';
             params.set('type', state.type);
-            if (state.author) params.set('author', state.author);
+            if (state.player) params.set('author', state.player);
             break;
     }
     
@@ -533,18 +613,11 @@ async function fetchTracks(append = false) {
         if (state.mode === 'ghosts') {
             items = data.ghosts || [];
             html = items.map(renderGhostCard).join('');
-        } else if (state.mode === 'playlist') {
-            items = data.playlists || [];
-            if (state.query) {
-                const q = state.query.toLowerCase();
-                items = items.filter(p => 
-                    p.name.toLowerCase().includes(q) || 
-                    p.description?.toLowerCase().includes(q)
-                );
-            }
-            html = items.map(renderPlaylistCard).join('');
+        } else if (state.mode === 'players') {
+            items = data.players || [];
+            html = items.map(renderAuthorCard).join('');
         } else {
-            items = data.tracks || data.users || [];
+            items = data.tracks || [];
             html = items.map(renderTrackCard).join('');
         }
         
@@ -553,7 +626,7 @@ async function fetchTracks(append = false) {
             : !data.allLoaded;
         
         if (items.length === 0 && !append) {
-            const typeLabel = state.mode === 'ghosts' ? 'ghosts' : state.mode === 'user' ? 'players' : 'tracks';
+            const typeLabel = state.mode === 'ghosts' ? 'ghosts' : state.mode === 'players' ? 'players' : 'tracks';
             trackGrid.innerHTML = `
                 <div class="no-results">
                     <h2>No ${typeLabel} found</h2>
@@ -564,7 +637,7 @@ async function fetchTracks(append = false) {
             trackGrid.insertAdjacentHTML('beforeend', html);
         } else {
             let prefix = '';
-            if (state.mode === 'tracks' && state.page === 1 && !state.query && !state.author && !state.playlist) {
+            if (state.mode === 'tracks' && state.page === 1 && !state.player && !state.playlist) {
                 prefix = await getSpecialCards();
             }
             trackGrid.innerHTML = prefix + html;
@@ -624,12 +697,23 @@ function resetAndFetch() {
 }
 
 async function getSpecialCards() {
-    if (state.type === 'user' || state.type === 'playlist') return '';
+    if (state.mode !== 'tracks') return '';
     
     let html = '';
     
     if (state.type === 'db') {
-        html += playlistsData.map(renderPlaylistCard).join('');
+        let filteredPlaylists = playlistsData;
+        
+        if (state.query) {
+            const q = state.query.toLowerCase();
+            filteredPlaylists = playlistsData.filter(p => 
+                p.name?.toLowerCase().includes(q) || 
+                p.description?.toLowerCase().includes(q) ||
+                p.username?.toLowerCase().includes(q)
+            );
+        }
+        
+        html += filteredPlaylists.map(renderPlaylistCard).join('');
     } else if (['frhd', 'bhr', 'cr'].includes(state.type)) {
         if (!specialTracksCache[state.type]) {
             try {
@@ -644,8 +728,8 @@ async function getSpecialCards() {
         }
         
         const { daily, random } = specialTracksCache[state.type];
-        if (daily && state.sortBy === 'shuffle') html += renderSpecialTrackCard(daily, 'daily');
-        if (random && state.sortBy === 'shuffle') html += renderSpecialTrackCard(random, 'random');
+        if (daily && state.sortBy === 'shuffle' && !state.query) html += renderSpecialTrackCard(daily, 'daily');
+        if (random && state.sortBy === 'shuffle' && !state.query) html += renderSpecialTrackCard(random, 'random');
     }
     
     return html;
@@ -688,17 +772,56 @@ function handleFilterClick(e) {
 
     if (mode) {
         state.mode = mode;
-        updateAuthorIndicatorForMode();
+        updatePlayerIndicatorForMode();
     } else if (newType) {
-        if (state.mode === 'tracks') state.type = newType;
-        else if (state.mode === 'ghosts') state.ghostType = newType;
-        else if (state.mode === 'user') state.authorPlatform = newType;
+        state.type = newType;
+        if (state.player) {
+            updatePlayerIndicatorForMode();
+        }
+        if (state.playlist) {
+            updatePlaylistIndicator();
+        }
     }
 
     updateSortOptions();
     updateFilterStyles();
+    updateURL(true);
     resetAndFetch();
 }
+
+window.addEventListener('popstate', (event) => {
+    if (event.state) {
+        Object.assign(state, event.state);
+    } else {
+        state.mode = 'tracks';
+        state.type = 'db';
+        state.query = '';
+        state.sortBy = 'shuffle';
+        state.sortOrder = 'desc';
+        state.player = '';
+        state.playlist = '';
+        parseURLParams();
+    }
+    searchInput.value = state.query;
+    clearFilterIndicators();
+    if (state.player) {
+        showFilterIndicator(`<strong>${state.player}</strong>`, 'player');
+        updatePlayerIndicatorForMode();
+    }
+    if (state.playlist) {
+        const playlist = playlistsData.find(p => p.id === state.playlist);
+        if (playlist) {
+            showFilterIndicator(
+                `<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount, 'track')})`,
+                'playlist'
+            );
+        }
+    }
+    updateSortOptions();
+    updateFilterStyles();
+    updateOrderToggle();
+    resetAndFetch();
+});
 
 function handleSearch(e) {
     clearTimeout(handleSearch.timeout);
@@ -739,6 +862,25 @@ function handleGridClick(e) {
     if (playlistLink) {
         e.preventDefault();
         setPlaylistFilter(playlistLink.dataset.playlistId);
+        return;
+    }
+    
+    const playerCardLink = e.target.closest('.player-link-card');
+    if (playerCardLink && playerCardLink.dataset.player) {
+        e.preventDefault();
+        if (state.mode === 'players') {
+            state.mode = 'tracks';
+            updateSortOptions();
+        }
+        setPlayerFilter(playerCardLink.dataset.player);
+        return;
+    }
+    
+    const playerLink = e.target.closest('.player-link');
+    if (playerLink && playerLink.dataset.player) {
+        e.preventDefault();
+        setPlayerFilter(playerLink.dataset.player);
+        return;
     }
 }
 
@@ -823,19 +965,19 @@ function initEventListeners() {
 }
 
 function initAuthorFromURL() {
-    if (!state.author) return;
+    if (!state.player) return;
     
-    const endpoint = `/api/user-aliases/${encodeURIComponent(state.author)}?type=${state.type}`;
+    const endpoint = `/api/user-aliases/${encodeURIComponent(state.player)}?type=${state.type}`;
     fetch(endpoint)
         .then(r => r.json())
         .then(data => {
-            let text = `<strong>${state.author}</strong>`;
-            const others = data.aliases?.filter(a => a.toLowerCase() !== state.author.toLowerCase()) || [];
+            let text = `<strong>${state.player}</strong>`;
+            const others = data.aliases?.filter(a => a.toLowerCase() !== state.player.toLowerCase()) || [];
             if (others.length) text += ` (also: ${others.join(', ')})`;
             text += ` (${pluralize(data.trackCount, 'track')})`;
-            showFilterIndicator(text, 'author');
+            showFilterIndicator(text, 'player');
         })
-        .catch(() => showFilterIndicator(`<strong>${state.author}</strong>`, 'author'));
+        .catch(() => showFilterIndicator(`<strong>${state.player}</strong>`, 'player'));
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

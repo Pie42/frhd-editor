@@ -10730,6 +10730,12 @@ legend body,
   flex: 0 0 auto;
 }
 
+.sort-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
 .type-filters {
   display: flex;
   gap: 5px;
@@ -10747,6 +10753,7 @@ legend body,
 }
 
 .track-type-filter {
+  color: rgb(170, 170, 170);
   margin: 5px;
 }
 
@@ -10773,14 +10780,14 @@ legend body,
 }
 
 .search-input {
-  width: 126px;
-  height: 18px;
-  padding: 2px 8px;
+  width: 106px;
+  height: 22px !important;
+  padding: 2px 8px !important;
   text-align: center;
 }
 
 .sort-select {
-  width: 140px;
+  width: 86px;
   height: 28px;
   padding: 2px 8px;
   background: #fff;
@@ -10789,7 +10796,7 @@ legend body,
 }
 
 .filter-indicator,
-.author-filter-indicator {
+.player-filter-indicator {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -10801,7 +10808,7 @@ legend body,
 }
 
 .filter-indicator .clear-filter,
-.author-filter-indicator .clear-filter {
+.player-filter-indicator .clear-filter {
   padding: 0 5px;
   font-weight: bold;
   color: #666;
@@ -10809,7 +10816,7 @@ legend body,
 }
 
 .filter-indicator .clear-filter:hover,
-.author-filter-indicator .clear-filter:hover {
+.player-filter-indicator .clear-filter:hover {
   color: #c00;
 }
 
@@ -10824,7 +10831,7 @@ legend body,
 }
 
 .track-item,
-.author-item,
+.player-item,
 .ghost-item {
   width: calc(20% - 8px);
   padding: 0;
@@ -10833,7 +10840,7 @@ legend body,
 }
 
 .track-thumb,
-.author-thumb {
+.player-thumb {
   width: 100%;
   text-align: center;
 }
@@ -10877,16 +10884,16 @@ legend body,
   color: #000;
 }
 
-.track-thumb .desc .author-link {
+.track-thumb .desc .player-link {
   color: #1884cf;
   text-decoration: none;
 }
 
-.track-thumb .desc .author-link:hover {
+.track-thumb .desc .player-link:hover {
   text-decoration: underline;
 }
 
-.author-thumb .thumbnail {
+.player-thumb .thumbnail {
   position: relative;
   width: calc(100% * 0.6);
   aspect-ratio: 1;
@@ -10901,11 +10908,11 @@ legend body,
   justify-content: center;
 }
 
-.author-thumb .thumbnail:hover {
+.player-thumb .thumbnail:hover {
   border: 1px solid #1884cf;
 }
 
-.author-thumb .author-avatar {
+.player-thumb .player-avatar {
   position: absolute;
   top: 0;
   left: 0;
@@ -10914,7 +10921,7 @@ legend body,
   object-fit: cover;
 }
 
-.author-thumb .author-initial {
+.player-thumb .player-initial {
   display: none;
   align-items: center;
   justify-content: center;
@@ -10925,7 +10932,7 @@ legend body,
   color: #888;
 }
 
-.author-thumb .desc {
+.player-thumb .desc {
   max-width: 150px;
   height: 28px;
   margin: 0 auto;
@@ -10987,7 +10994,7 @@ legend body,
 }
 
 .track-type-badge.playlist {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: #a784c5
 }
 
 .live-badge {
@@ -11076,7 +11083,7 @@ legend body,
 @media (max-width: 1020px) {
 
   .track-item,
-  .author-item {
+  .player-item {
     width: calc(25% - 8px);
   }
 }
@@ -11084,7 +11091,7 @@ legend body,
 @media (max-width: 860px) {
 
   .track-item,
-  .author-item {
+  .player-item {
     width: calc(33.333% - 7px);
   }
 }
@@ -11092,7 +11099,7 @@ legend body,
 @media (max-width: 640px) {
 
   .track-item,
-  .author-item {
+  .player-item {
     width: calc(50% - 5px);
   }
 }
@@ -11106,7 +11113,7 @@ legend body,
 @media (max-width: 560px) {
 
   .track-item,
-  .author-item {
+  .player-item {
     width: calc(50% - 5px);
   }
 }
@@ -11121,7 +11128,7 @@ legend body,
 @media (max-width: 400px) {
 
   .track-item,
-  .author-item {
+  .player-item {
     width: 100%;
   }
 }
@@ -11151,7 +11158,7 @@ legend body,
   align-items: center;
   justify-content: center;
   font-size: 64px;
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  background: #a784c5;
 }
 
 .playlist-thumb .thumbnail:hover {
@@ -11317,6 +11324,7 @@ legend body,
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 1px; /* maybe unnecessary for other shuffle icons */
   width: 14px;
   height: 14px;
 }
@@ -11343,4 +11351,9 @@ legend body,
   content: '⤭';
   font-size: 16px;
   color: #333;
+}
+
+.sort-value {
+    color: #888;
+    font-size: 11px;
 }

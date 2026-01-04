@@ -89,43 +89,104 @@ const trackTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'template
 const dbTemplate = ejs.compile(fs.readFileSync(path.join(__dirname, 'templates/db.ejs'), 'utf8'));
 
 // playlists
-let playlists = [];
-const PLAYLISTS_PATH = path.join(__dirname, 'data', 'playlists.json');
+let playlistsCache = [];
 
-function loadPlaylists() {
+async function loadPlaylistsFromDb() {
+    console.log('Loading playlists from PocketBase...');
+    
     try {
-        const data = fs.readFileSync(PLAYLISTS_PATH, 'utf8');
-        playlists = JSON.parse(data);
-        console.log(`Loaded ${playlists.length} playlists`);
+        const records = await pb.collection('playlists').getFullList({
+            sort: '-created',
+            expand: 'frhd_track,bhr_track,cr_track',
+            requestKey: `playlists-${Date.now()}`
+        });
+        
+        console.log(`  Found ${records.length} playlist records`);
+        
+        playlistsCache = records.map(record => {
+            const tracks = [];
+            
+            if (record.expand?.frhd_track) {
+                const frhdTracks = Array.isArray(record.expand.frhd_track) 
+                    ? record.expand.frhd_track 
+                    : [record.expand.frhd_track];
+                for (const track of frhdTracks) {
+                    tracks.push({
+                        type: 'frhd',
+                        id: track._id,
+                        name: track.name,
+                        recordId: track.id
+                    });
+                }
+            }
+            
+            if (record.expand?.bhr_track) {
+                const bhrTracks = Array.isArray(record.expand.bhr_track) 
+                    ? record.expand.bhr_track 
+                    : [record.expand.bhr_track];
+                for (const track of bhrTracks) {
+                    tracks.push({
+                        type: 'bhr',
+                        id: track._id,
+                        name: track.name,
+                        recordId: track.id
+                    });
+                }
+            }
+            
+            if (record.expand?.cr_track) {
+                const crTracks = Array.isArray(record.expand.cr_track) 
+                    ? record.expand.cr_track 
+                    : [record.expand.cr_track];
+                for (const track of crTracks) {
+                    tracks.push({
+                        type: 'cr',
+                        id: track._id,
+                        name: track.name,
+                        recordId: track.id
+                    });
+                }
+            }
+            
+            console.log(`  Playlist "${record.name}": ${tracks.length} tracks`);
+            
+            return {
+                id: record.id,
+                canonical: record.canonical,
+                name: record.name || 'Untitled Playlist',
+                username: record.username || 'Unknown',
+                description: record.description || '',
+                tracks: tracks,
+                trackCount: tracks.length,
+                created: record.created,
+                updated: record.updated
+            };
+        });
+        
+        console.log(`  Loaded ${playlistsCache.length} playlists from PocketBase`);
     } catch (e) {
-        if (e.code === 'ENOENT') {
-            console.log('No playlists.json found, starting with empty array');
-            playlists = [];
-        } else {
-            console.error('Error loading playlists:', e);
-            playlists = [];
-        }
+        console.error('Failed to load playlists from PocketBase:', e.message);
+        console.error('Full error:', e);
+        playlistsCache = [];
     }
 }
 
-loadPlaylists();
-
 function findPlaylist(playlistId) {
-    return playlists.find(p => p.id === playlistId);
+    return playlistsCache.find(p => p.id === playlistId || p.canonical === playlistId);
 }
 
-// user links for aliased usernames
-let userLinks = [];
+// player links for aliased usernames
+let playerLinks = [];
 
-async function loadUserLinksFromDb() {
-    console.log('Loading user links from PocketBase...');
+async function loadPlayerLinksFromDb() {
+    console.log('Loading player links from PocketBase...');
     
     try {
         const records = await pb.collection('players').getFullList({
-            requestKey: `user-links-${Date.now()}`
+            requestKey: `player-links-${Date.now()}`
         });
         
-        userLinks = records.map(record => ({
+        playerLinks = records.map(record => ({
             canonical: record.canonical,
             displayName: record.name,
             aliases: record.aliases || [],
@@ -138,10 +199,10 @@ async function loadUserLinksFromDb() {
             cr_usernames: record.cr_ids || []
         }));
         
-        console.log(`  Loaded ${userLinks.length} user links from PocketBase`);
+        console.log(`  Loaded ${playerLinks.length} player links from PocketBase`);
     } catch (e) {
-        console.error('Failed to load user links from PocketBase:', e.message);
-        userLinks = [];
+        console.error('Failed to load player links from PocketBase:', e.message);
+        playerLinks = [];
     }
 }
 
@@ -149,40 +210,38 @@ function normalizeAuthorName(name) {
     return name?.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
 }
 
-function findUserAliases(username) {
+function findPlayerAliases(username) {
     const normalizedInput = normalizeAuthorName(username);
     
-    for (const user of userLinks) {
-        // Check aliases
-        const matchesAlias = user.aliases?.some(alias => 
+    for (const player of playerLinks) {
+        const matchesAlias = player.aliases?.some(alias => 
             normalizeAuthorName(alias) === normalizedInput
         );
         
-        // Check platform-specific usernames
-        const matchesFrhd = user.frhd_usernames?.some(u => 
+        const matchesFrhd = player.frhd_usernames?.some(u => 
             normalizeAuthorName(u) === normalizedInput
         );
-        const matchesBhr = user.bhr_usernames?.some(u => 
+        const matchesBhr = player.bhr_usernames?.some(u => 
             normalizeAuthorName(u) === normalizedInput
         );
-        const matchesCr = user.cr_usernames?.some(u => 
+        const matchesCr = player.cr_usernames?.some(u => 
             normalizeAuthorName(u) === normalizedInput
         );
         
         if (matchesAlias || matchesFrhd || matchesBhr || matchesCr) {
             return {
-                canonical: user.canonical,
-                displayName: user.displayName,
-                aliases: user.aliases || [],
-                normalizedAliases: (user.aliases || []).map(a => normalizeAuthorName(a)),
+                canonical: player.canonical,
+                displayName: player.displayName,
+                aliases: player.aliases || [],
+                normalizedAliases: (player.aliases || []).map(a => normalizeAuthorName(a)),
                 platforms: {
-                    frhd: user.frhd === true,
-                    bhr: user.bhr === true,
-                    cr: user.cr === true
+                    frhd: player.frhd === true,
+                    bhr: player.bhr === true,
+                    cr: player.cr === true
                 },
-                frhd_usernames: user.frhd_usernames || [],
-                bhr_usernames: user.bhr_usernames || [],
-                cr_usernames: user.cr_usernames || []
+                frhd_usernames: player.frhd_usernames || [],
+                bhr_usernames: player.bhr_usernames || [],
+                cr_usernames: player.cr_usernames || []
             };
         }
     }
@@ -525,9 +584,9 @@ function buildFilterString(options) {
     }
     
     if (author) {
-        const userInfo = findUserAliases(author);
-        if (userInfo.aliases && userInfo.aliases.length > 1) {
-            const aliasConditions = userInfo.aliases.map(alias => {
+        const playerInfo = findPlayerAliases(author);
+        if (playerInfo.aliases && playerInfo.aliases.length > 1) {
+            const aliasConditions = playerInfo.aliases.map(alias => {
                 const escaped = alias.replace(/"/g, '\\"');
                 return `username = "${escaped}" || authors ~ "\\"${escaped}\\""`;
             }).join(' || ');
@@ -593,7 +652,7 @@ function sortTracks(tracks, sortBy, sortOrder) {
 
 app.get('/api/playlists', (req, res) => {
     res.json({
-        playlists: playlists.map(p => {
+        playlists: playlistsCache.map(p => {
             const lastTrack = p.tracks[p.tracks.length - 1];
             const thumbnail = lastTrack 
                 ? `/${lastTrack.type}/${lastTrack.id}.png`
@@ -601,10 +660,10 @@ app.get('/api/playlists', (req, res) => {
             
             return {
                 id: p.id,
+                canonical: p.canonical,
                 name: p.name,
                 username: p.username,
                 description: p.description,
-                color: p.color,
                 trackCount: p.tracks.length,
                 thumbnail: thumbnail,
                 lastTrack: lastTrack
@@ -729,17 +788,17 @@ app.get('/api/random/:type', async (req, res) => {
 app.get('/api/user-aliases/:name', async (req, res) => {
     const username = req.params.name;
     const type = req.query.type || 'db';
-    const userInfo = findUserAliases(username);
+    const playerInfo = findPlayerAliases(username);
     
     let trackCount = 0;
     
     if (type === 'db') {
-        const userCanonical = userInfo.canonical;
+        const playerCanonical = playerInfo.canonical;
         trackCount = dbTracksCache.all.filter(t => {
-            if (t.username && findUserAliases(t.username).canonical === userCanonical) return true;
+            if (t.username && findPlayerAliases(t.username).canonical === playerCanonical) return true;
             if (t.authorsArray) {
                 for (const a of t.authorsArray) {
-                    if (a && findUserAliases(a).canonical === userCanonical) return true;
+                    if (a && findPlayerAliases(a).canonical === playerCanonical) return true;
                 }
             }
             return false;
@@ -756,7 +815,7 @@ app.get('/api/user-aliases/:name', async (req, res) => {
             
             const result = await pb.collection(type).getList(1, 1, {
                 filter: filterString || undefined,
-                requestKey: `user-count-${type}-${username}-${Date.now()}`
+                requestKey: `player-count-${type}-${username}-${Date.now()}`
             });
             
             trackCount = result.totalItems;
@@ -777,7 +836,7 @@ app.get('/api/user-aliases/:name', async (req, res) => {
                 
                 const result = await pb.collection(collectionType).getList(1, 1, {
                     filter: filterString || undefined,
-                    requestKey: `user-count-all-${collectionType}-${username}-${Date.now()}`
+                    requestKey: `player-count-all-${collectionType}-${username}-${Date.now()}`
                 });
                 
                 trackCount += result.totalItems;
@@ -788,47 +847,47 @@ app.get('/api/user-aliases/:name', async (req, res) => {
     }
     
     res.json({
-        canonical: userInfo.canonical,
-        displayName: userInfo.displayName,
-        aliases: userInfo.aliases,
-        platforms: userInfo.platforms,
+        canonical: playerInfo.canonical,
+        displayName: playerInfo.displayName,
+        aliases: playerInfo.aliases,
+        platforms: playerInfo.platforms,
         trackCount: trackCount
     });
 });
 
-app.get('/api/users', (req, res) => {
+app.get('/api/players', (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const perPage = parseInt(req.query.perPage) || 24;
     const query = req.query.q || '';
     
-    let users = userLinks.map(user => ({
-        canonical: user.canonical,
-        displayName: user.displayName,
-        aliases: user.aliases || [],
-        avatar: `/avatars/${user.canonical}.png`,
+    let players = playerLinks.map(player => ({
+        canonical: player.canonical,
+        displayName: player.displayName,
+        aliases: player.aliases || [],
+        avatar: `/avatars/${player.canonical}.png`,
         platforms: {
-            frhd: user.frhd === true,
-            bhr: user.bhr === true,
-            cr: user.cr === true
+            frhd: player.frhd === true,
+            bhr: player.bhr === true,
+            cr: player.cr === true
         }
     }));
     
     if (query) {
         const lowerQuery = query.toLowerCase();
-        users = users.filter(user => 
-            user.displayName?.toLowerCase().includes(lowerQuery) ||
-            user.canonical?.toLowerCase().includes(lowerQuery) ||
-            user.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
+        players = players.filter(player => 
+            player.displayName?.toLowerCase().includes(lowerQuery) ||
+            player.canonical?.toLowerCase().includes(lowerQuery) ||
+            player.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
         );
     }
     
-    const totalCount = users.length;
+    const totalCount = players.length;
     const totalPages = Math.ceil(totalCount / perPage);
     const startIndex = (page - 1) * perPage;
-    const paginatedUsers = users.slice(startIndex, startIndex + perPage);
+    const paginatedPlayers = players.slice(startIndex, startIndex + perPage);
     
     res.json({
-        users: paginatedUsers,
+        players: paginatedPlayers,
         pagination: { page, perPage, totalCount, totalPages }
     });
 });
@@ -899,8 +958,13 @@ app.get('/api/db', async (req, res) => {
                 });
             }
 
+            let playlistTracks = playlistData.tracks;
+            if (type && type !== 'db' && ['frhd', 'bhr', 'cr'].includes(type)) {
+                playlistTracks = playlistTracks.filter(t => t.type === type);
+            }
+
             const tracksByType = { frhd: [], bhr: [], cr: [] };
-            playlistData.tracks.forEach(t => {
+            playlistTracks.forEach(t => {
                 if (tracksByType[t.type]) {
                     tracksByType[t.type].push(t.id);
                 }
@@ -908,15 +972,15 @@ app.get('/api/db', async (req, res) => {
 
             const fetchedTracks = new Map();
 
-            for (const [type, ids] of Object.entries(tracksByType)) {
+            for (const [trackType, ids] of Object.entries(tracksByType)) {
                 if (ids.length === 0) continue;
 
                 try {
                     const uncachedIds = [];
                     ids.forEach(id => {
-                        const cached = dbTracksCache[type]?.find(t => t.id == id);
+                        const cached = dbTracksCache[trackType]?.find(t => t.id == id);
                         if (cached) {
-                            fetchedTracks.set(`${type}-${id}`, cached);
+                            fetchedTracks.set(`${trackType}-${id}`, cached);
                         } else {
                             uncachedIds.push(id);
                         }
@@ -924,23 +988,23 @@ app.get('/api/db', async (req, res) => {
 
                     if (uncachedIds.length > 0) {
                         const filter = uncachedIds.map(id => `_id = ${id}`).join(' || ');
-                        const records = await pb.collection(type).getFullList({
+                        const records = await pb.collection(trackType).getFullList({
                             filter: filter,
-                            requestKey: `playlist-batch-${type}-${Date.now()}`
+                            requestKey: `playlist-batch-${trackType}-${Date.now()}`
                         });
 
                         records.forEach(record => {
-                            const transformed = transformRecord(record, type);
-                            fetchedTracks.set(`${type}-${record._id}`, transformed);
+                            const transformed = transformRecord(record, trackType);
+                            fetchedTracks.set(`${trackType}-${record._id}`, transformed);
                         });
                     }
                 } catch (e) {
-                    console.error(`Failed to fetch ${type} playlist tracks:`, e.message);
+                    console.error(`Failed to fetch ${trackType} playlist tracks:`, e.message);
                 }
             }
 
-            let allTracks = [];
-            playlistData.tracks.forEach(trackRef => {
+            allTracks = [];
+            playlistTracks.forEach(trackRef => {
                 const key = `${trackRef.type}-${trackRef.id}`;
                 const track = fetchedTracks.get(key);
                 if (track) {
@@ -953,9 +1017,11 @@ app.get('/api/db', async (req, res) => {
 
             const playlistInfo = {
                 id: playlistData.id,
+                canonical: playlistData.canonical,
                 name: playlistData.name,
                 username: playlistData.username,
-                description: playlistData.description
+                description: playlistData.description,
+                totalTracks: playlistData.tracks.length
             };
 
             return res.json({
@@ -971,12 +1037,11 @@ app.get('/api/db', async (req, res) => {
             });
         }
         
-        if (type === 'db') {
-            allTracks = filterCachedTracks(dbTracksCache.all, query, author);
-            
-            if (author) {
+        if (author) {
+            if (type === 'db') {
+                allTracks = filterCachedTracks(dbTracksCache.all, query, author);
                 allTracks = sortTracks(allTracks, sortBy, sortOrder);
-                
+
                 return res.json({
                     tracks: allTracks,
                     pagination: {
@@ -989,7 +1054,56 @@ app.get('/api/db', async (req, res) => {
                     allLoaded: true
                 });
             }
-            
+
+            const collections = ['frhd', 'bhr', 'cr'].includes(type) ? [type] : ['frhd', 'bhr', 'cr'];
+
+            for (const collectionType of collections) {
+                const filterString = buildFilterString({
+                    type: collectionType,
+                    query,
+                    author,
+                    showOnly: false
+                });
+
+                try {
+                    const records = await pb.collection(collectionType).getFullList({
+                        filter: filterString || undefined,
+                        requestKey: `author-${collectionType}-${author}-${Date.now()}`
+                    });
+                    allTracks = allTracks.concat(records.map(r => transformRecord(r, collectionType)));
+                } catch (e) {
+                    console.error(`Failed to fetch ${collectionType}:`, e.message);
+                }
+            }
+
+            allTracks = allTracks.map(processTrackWithLinks);
+
+            if (!['frhd', 'bhr', 'cr'].includes(type)) {
+                const seenCanonical = new Set();
+                allTracks = allTracks.filter(track => {
+                    if (seenCanonical.has(track.canonicalId)) return false;
+                    seenCanonical.add(track.canonicalId);
+                    return true;
+                });
+            }
+
+            allTracks = sortTracks(allTracks, sortBy, sortOrder);
+
+            return res.json({
+                tracks: allTracks,
+                pagination: {
+                    page: 1,
+                    perPage: allTracks.length,
+                    totalCount: allTracks.length,
+                    totalPages: 1
+                },
+                playlist: null,
+                allLoaded: true
+            });
+        }
+
+        if (type === 'db') {
+            allTracks = filterCachedTracks(dbTracksCache.all, query, '');
             allTracks = sortTracks(allTracks, sortBy, sortOrder);
             
             const totalCount = allTracks.length;
@@ -1001,56 +1115,6 @@ app.get('/api/db', async (req, res) => {
                 tracks: paginatedTracks,
                 pagination: { page, perPage, totalCount, totalPages },
                 playlist: null
-            });
-        }
-        
-        if (author) {
-            const collections = type === 'all' ? ['frhd', 'bhr', 'cr'] : [type];
-            
-            for (const collectionType of collections) {
-                if (!['frhd', 'bhr', 'cr'].includes(collectionType)) continue;
-                
-                const filterString = buildFilterString({ 
-                    type: collectionType, 
-                    query, 
-                    author, 
-                    showOnly: false 
-                });
-                
-                try {
-                    const records = await pb.collection(collectionType).getFullList({
-                        filter: filterString || undefined,
-                        requestKey: `author-${collectionType}-${author}-${Date.now()}`
-                    });
-                    allTracks = allTracks.concat(records.map(r => transformRecord(r, collectionType)));
-                } catch (e) {
-                    console.error(`Failed to fetch ${collectionType}:`, e.message);
-                }
-            }
-            
-            allTracks = allTracks.map(processTrackWithLinks);
-            
-            if (type === 'all') {
-                const seenCanonical = new Set();
-                allTracks = allTracks.filter(track => {
-                    if (seenCanonical.has(track.canonicalId)) return false;
-                    seenCanonical.add(track.canonicalId);
-                    return true;
-                });
-            }
-            
-            allTracks = sortTracks(allTracks, sortBy, sortOrder);
-            
-            return res.json({
-                tracks: allTracks,
-                pagination: {
-                    page: 1,
-                    perPage: allTracks.length,
-                    totalCount: allTracks.length,
-                    totalPages: 1
-                },
-                playlist: null,
-                allLoaded: true
             });
         }
         
@@ -1174,43 +1238,43 @@ app.get('/api/authors-by-platform', (req, res) => {
     const sortBy = req.query.sort || 'name';
     const sortOrder = req.query.order || 'asc';
     
-    let users = userLinks
-        .filter(user => {
-            if (user.showProfile !== true) return false;
+    let players = playerLinks
+        .filter(player => {
+            if (player.showProfile !== true) return false;
             if (platform === 'all' || platform === 'db') return true;
-            return user[platform] === true;
+            return player[platform] === true;
         })
-        .map(user => ({
-            type: 'user',
-            canonical: user.canonical,
-            displayName: user.displayName,
-            aliases: user.aliases,
-            avatar: `/avatars/${user.canonical}.png`,
+        .map(player => ({
+            type: 'player',
+            canonical: player.canonical,
+            displayName: player.displayName,
+            aliases: player.aliases,
+            avatar: `/avatars/${player.canonical}.png`,
             platforms: {
-                frhd: user.frhd === true,
-                bhr: user.bhr === true,
-                cr: user.cr === true
+                frhd: player.frhd === true,
+                bhr: player.bhr === true,
+                cr: player.cr === true
             }
         }));
     
     if (query) {
         const lowerQuery = query.toLowerCase();
-        users = users.filter(user => 
-            user.displayName?.toLowerCase().includes(lowerQuery) ||
-            user.canonical?.toLowerCase().includes(lowerQuery) ||
-            user.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
+        players = players.filter(player => 
+            player.displayName?.toLowerCase().includes(lowerQuery) ||
+            player.canonical?.toLowerCase().includes(lowerQuery) ||
+            player.aliases?.some(a => a.toLowerCase().includes(lowerQuery))
         );
     }
     
     if (sortBy === 'name') {
-        users.sort((a, b) => {
+        players.sort((a, b) => {
             const cmp = (a.displayName || '').localeCompare(b.displayName || '');
             return sortOrder === 'asc' ? cmp : -cmp;
         });
     }
     
     res.json({
-        users: users,
+        players: players,
         allLoaded: true
     });
 });
@@ -1285,9 +1349,9 @@ function buildFilterString(options) {
     }
     
     if (author) {
-        const userInfo = findUserAliases(author);
-        if (userInfo.aliases && userInfo.aliases.length > 1) {
-            const aliasConditions = userInfo.aliases.map(alias => {
+        const playerInfo = findPlayerAliases(author);
+        if (playerInfo.aliases && playerInfo.aliases.length > 1) {
+            const aliasConditions = playerInfo.aliases.map(alias => {
                 const escaped = alias.replace(/"/g, '\\"');
                 return `username = "${escaped}" || authors ~ "\\"${escaped}\\""`;
             }).join(' || ');
@@ -1404,12 +1468,12 @@ function filterCachedTracks(tracks, query, author) {
         }
         else {
             const lowerQuery = query.toLowerCase();
-            const userInfo = findUserAliases(query);
-            const isUserSearch = userInfo.aliases.length > 1 || 
-                userLinks.some(u => u.aliases?.some(a => a.toLowerCase() === lowerQuery));
+            const playerInfo = findPlayerAliases(query);
+            const isPlayerSearch = playerInfo.aliases.length > 1 || 
+                playerLinks.some(u => u.aliases?.some(a => a.toLowerCase() === lowerQuery));
             
-            if (isUserSearch) {
-                const aliasesToSearch = userInfo.aliases.map(a => a.toLowerCase());
+            if (isPlayerSearch) {
+                const aliasesToSearch = playerInfo.aliases.map(a => a.toLowerCase());
                 filtered = filtered.filter(t => {
                     if (t.username && aliasesToSearch.includes(t.username.toLowerCase())) return true;
                     if (t.authorsArray) {
@@ -1442,12 +1506,12 @@ function filterCachedTracks(tracks, query, author) {
     }
     
     if (author) {
-        const userInfo = findUserAliases(author);
+        const playerInfo = findPlayerAliases(author);
         filtered = filtered.filter(t => {
-            if (t.username && findUserAliases(t.username).canonical === userInfo.canonical) return true;
+            if (t.username && findPlayerAliases(t.username).canonical === playerInfo.canonical) return true;
             if (t.authorsArray) {
                 for (const a of t.authorsArray) {
-                    if (a && findUserAliases(a).canonical === userInfo.canonical) return true;
+                    if (a && findPlayerAliases(a).canonical === playerInfo.canonical) return true;
                 }
             }
             return false;
@@ -1734,7 +1798,7 @@ app.get('/api/live-sessions', (req, res) => {
 const ghostsRouter = require('./ghosts');
 app.use('/api/ghosts', (req, res, next) => {
     req.trackLinksLookup = trackLinksLookup;
-    req.findUserAliases = findUserAliases;
+    req.findPlayerAliases = findPlayerAliases;
     next();
 }, ghostsRouter);
 
@@ -1743,21 +1807,23 @@ const CACHE_REFRESH_INTERVAL = 15 * 60 * 1000;
 async function refreshCaches() {
     try {
         console.log('Auto-refreshing caches...');
-        await loadUserLinksFromDb();
+        await loadPlayerLinksFromDb();
         await loadTrackLinksFromDb();
         await loadLinkedTrackStatsCache();
         await loadDbTracksCache();
-        console.log(`Cache refreshed: ${dbTracksCache.all.length} tracks, ${userLinks.length} users, ${trackLinks.length} track links`);
+        await loadPlaylistsFromDb();
+        console.log(`Cache refreshed: ${dbTracksCache.all.length} tracks, ${playerLinks.length} players, ${trackLinks.length} track links, ${playlistsCache.length} playlists`);
     } catch (error) {
         console.error('Auto-refresh failed:', error);
     }
 }
 
 async function startServer() {
-    await loadUserLinksFromDb();
+    await loadPlayerLinksFromDb();
     await loadTrackLinksFromDb();
     await loadLinkedTrackStatsCache();
     await loadDbTracksCache();
+    await loadPlaylistsFromDb();
 
     setupLiveRacing(server);
 

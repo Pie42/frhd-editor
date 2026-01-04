@@ -13051,61 +13051,6 @@
 
         console.log('Ghost exported as:', safeFileName + '.cpgh');
       }
-
-      async uploadGhost(gamepad) {
-        const drawFPS = this.settings.drawFPS || 25;
-        const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
-        const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
-
-        gamepad.createHeader();
-
-        const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
-
-        // Convert blob to base64 using FileReader
-        const ghostBase64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const dataUrl = reader.result;
-            // Remove "data:application/octet-stream;base64," prefix
-            resolve(dataUrl.split(',')[1]);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(ghostBlob);
-        });
-
-        try {
-          const response = await fetch('/api/ghosts/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              trackType: GameSettings.type,
-              trackId: GameSettings.id,
-              timeTicks: this.completedTicks,
-              timeFormatted: timeFormatted,
-              vehicle: vehicleType,
-              ghostData: ghostBase64,
-              keyData: gamepad.records
-            })
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            console.log(`[Ghost] Uploaded${result.isGuest ? ' as Guest' : ''}: ${timeFormatted}`);
-          } else {
-            console.log(`[Ghost] ${result.message}`);
-          }
-        } catch (error) {
-          console.error('[Ghost] Upload failed:', error);
-        }
-      }
-
-      formatTime(ticks, fps = 30) {
-        const totalSeconds = ticks / fps;
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${seconds.toFixed(2).padStart(5, '0')}`;
-      }
         clone() {
           const t = new _(this.scene),
             e = [
@@ -26508,74 +26453,89 @@ showMessage();
           const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
 
           let isLoggedIn = false;
+          let loggedInUsername = null;
+
           try {
             const authResponse = await fetch('/api/auth/me');
             const authData = await authResponse.json();
             isLoggedIn = authData.loggedIn;
+            if (isLoggedIn) {
+              loggedInUsername = authData.user.username;
+            }
           } catch (e) {
             // fetch failed, continue as guest
           }
 
-          const message = isLoggedIn
-            ? `Track completed in ${timeFormatted}!\n\nUpload ghost to leaderboard?`
-            : `Track completed in ${timeFormatted}!\n\nUpload ghost as Guest?`;
+          let guestUsername = null;
 
-          const shouldUpload = confirm(message);
+          if (isLoggedIn) {
+            const shouldUpload = confirm(`Track completed in ${timeFormatted}!\n\nUpload ghost to leaderboard?`);
+            if (!shouldUpload) return;
+          } else {
+            const name = prompt(
+              `Track completed in ${timeFormatted}!\n\nEnter a name to upload your ghost (or cancel to skip):`,
+              'Guest'
+            );
 
-          if (shouldUpload) {
-            await this.uploadGhost(gamepad);
+            if (name === null) {
+              console.log('[Ghost] Upload cancelled by user');
+              return;
+            }
+
+            guestUsername = name.trim() || 'Guest';
           }
+
+          await this.uploadGhost(gamepad, guestUsername);
         }
 
-        async uploadGhost(gamepad) {
-        const drawFPS = this.settings.drawFPS || 25;
-        const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
-        const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
+        async uploadGhost(gamepad, guestUsername = null) {
+          const drawFPS = this.settings.drawFPS || 30;
+          const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
+          const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
 
-        gamepad.createHeader();
+          gamepad.createHeader();
 
-        const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
-
-        // Convert blob to base64 using FileReader
-        const ghostBase64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const dataUrl = reader.result;
-            // Remove "data:application/octet-stream;base64," prefix
-            resolve(dataUrl.split(',')[1]);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(ghostBlob);
-        });
-
-        try {
-          const response = await fetch('/api/ghosts/upload', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              trackType: GameSettings.type,
-              trackId: GameSettings.id,
-              timeTicks: this.completedTicks,
-              timeFormatted: timeFormatted,
-              vehicle: vehicleType,
-              ghostData: ghostBase64,
-              keyData: gamepad.records
-            })
+          const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
+          const ghostBase64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const dataUrl = reader.result;
+              resolve(dataUrl.split(',')[1]);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(ghostBlob);
           });
 
-          const result = await response.json();
+          try {
+            const response = await fetch('/api/ghosts/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                trackType: GameSettings.type,
+                trackId: GameSettings.id,
+                timeTicks: this.completedTicks,
+                timeFormatted: timeFormatted,
+                vehicle: vehicleType,
+                ghostData: ghostBase64,
+                keyData: gamepad.records,
+                guestUsername: guestUsername
+              })
+            });
 
-          if (result.success) {
-            console.log(`[Ghost] Uploaded${result.isGuest ? ' as Guest' : ''}: ${timeFormatted}`);
-          } else {
-            console.log(`[Ghost] ${result.message}`);
+            const result = await response.json();
+
+            if (result.success) {
+              const displayName = result.username || guestUsername || 'Guest';
+              console.log(`[Ghost] Uploaded${result.isGuest ? ` as "${displayName}"` : ''}: ${timeFormatted}`);
+            } else {
+              console.log(`[Ghost] ${result.message}`);
+            }
+          } catch (error) {
+            console.error('[Ghost] Upload failed:', error);
           }
-        } catch (error) {
-          console.error('[Ghost] Upload failed:', error);
         }
-      }
 
-        formatGhostTime(ticks, fps = 25) {
+        formatGhostTime(ticks, fps = 30) {
           const totalSeconds = ticks / fps;
           const minutes = Math.floor(totalSeconds / 60);
           const seconds = totalSeconds % 60;

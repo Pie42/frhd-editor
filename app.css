@@ -1290,7 +1290,7 @@ html.fullscreen #main_page {
     background-position: 0px 0px;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 45px;
+    width: 44px;
     height: 44px;
     transform: scale(0.6);
     filter: opacity(0.6);
@@ -1309,7 +1309,7 @@ span.editorgui_icons-icon_layer {
     background-position: 0px 0px;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 45px;
+    width: 44px;
     height: 44px;
     transform: scale(0.8);
 }
@@ -1319,7 +1319,7 @@ span.editorgui_icons-icon_visible {
     background-position: 0px 0px;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 45px;
+    width: 44px;
     height: 44px;
     transform: scale(0.8);
     filter: opacity(0.8);
@@ -1330,7 +1330,7 @@ span.editorgui_icons-icon_all {
     background-position: 0px 0px;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 45px;
+    width: 44px;
     height: 44px;
     transform: scale(0.8);
 }
@@ -1944,7 +1944,9 @@ span.editorgui_icons-icon_all {
 }
 
 .bottomMenu-button_vehicle {
-    min-width: 95px
+    min-width: 92px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .bottomMenu-button_moveVehicle {
@@ -3428,7 +3430,13 @@ div.layer-item:hover {
 }
 
 div.sideDivider {
-    border: 0.5px solid black;
+    border: 0.5px solid #aaa;
     width: 80%;
     margin-inline: 10%;
+}
+
+.bottomMenu-button_layer {
+    min-width: 90px;
+    padding-left: 15px;
+    padding-right: 15px;
 }

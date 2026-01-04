@@ -6958,7 +6958,7 @@
                     (u = n.createElement(i, { options: t }));
                   break;
                 case "eraser":
-                  (c.marginTop = -((5.1 * d) / 2)),
+                  (c.marginTop = -((6.1 * d) / 2)),
                     (u = n.createElement(l, { options: t }));
                   break;
                 case "powerup":
@@ -6966,11 +6966,11 @@
                     (u = n.createElement(a, { options: t }));
                   break;
                 case "vehiclepowerup":
-                  (c.marginTop = -((5 * d) / 2)),
+                  (c.marginTop = -((4 * d) / 2)),
                     (u = n.createElement(s, { options: t }));
                   break;
                 case "select":
-                  (c.marginTop = -((5.1 * d) / 2)),
+                  (c.marginTop = -((6.1 * d) / 2)),
                     (u = n.createElement(l, { options: t }));
                   break;
                 case "pete":

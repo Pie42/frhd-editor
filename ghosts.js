@@ -59,7 +59,7 @@ function formatGhostTime(ticks, fps = 30) {
 // upload ghost - allows guests
 router.post('/upload', optionalAuth, async (req, res) => {
     try {
-        const { trackType, trackId, timeTicks, timeFormatted, vehicle, ghostData, keyData } = req.body;
+        const { trackType, trackId, timeTicks, timeFormatted, vehicle, ghostData, keyData, guestUsername } = req.body;
 
         if (!trackType || !trackId || !timeTicks || !ghostData) {
             return res.status(400).json({ error: 'Missing required fields' });
@@ -69,9 +69,17 @@ router.post('/upload', optionalAuth, async (req, res) => {
             return res.status(400).json({ error: 'Invalid track type' });
         }
 
-        const userId = req.user?.uid || 0;
-        const username = req.user?.username || 'Guest';
         const isGuest = !req.user;
+        const userId = req.user?.uid || 0;
+        
+        let username;
+        if (req.user) {
+            username = req.user.username;
+        } else if (guestUsername && guestUsername.trim()) {
+            username = guestUsername.trim().substring(0, 30).replace(/[<>"'&]/g, '');
+        } else {
+            username = 'Guest';
+        }
 
         // cpgh ghost to blob
         const ghostBuffer = Buffer.from(ghostData, 'base64');
@@ -123,13 +131,14 @@ router.post('/upload', optionalAuth, async (req, res) => {
 
         // create new ghost
         const record = await pb.collection('ghosts').create(formData);
-        console.log(`[Ghost] New${isGuest ? ' (guest)' : ''}: ${username} on ${trackType}/${trackId}: ${timeFormatted}`);
+        console.log(`[Ghost] New${isGuest ? ` (guest: ${username})` : ''}: ${username} on ${trackType}/${trackId}: ${timeFormatted}`);
 
         res.json({
             success: true,
             ghostId: record.id,
-            message: isGuest ? 'Ghost uploaded as Guest!' : 'Ghost uploaded!',
-            isGuest: isGuest
+            message: isGuest ? `Ghost uploaded as "${username}"!` : 'Ghost uploaded!',
+            isGuest: isGuest,
+            username: username
         });
 
     } catch (error) {
@@ -317,10 +326,10 @@ router.get('/', async (req, res) => {
     const player = req.query.player || '';
     
     const trackLinksLookup = req.trackLinksLookup || new Map();
-    const findUserAliases = req.findUserAliases || ((name) => ({ aliases: [name] }));
+    const findPlayerAliases = req.findPlayerAliases || ((name) => ({ aliases: [name] }));
 
     console.log('[Ghosts API] Request params:', { page, perPage, sortBy, query, trackType, player });
-    console.log('[Ghosts API] findUserAliases passed:', !!req.findUserAliases);
+    console.log('[Ghosts API] findPlayerAliases passed:', !!req.findPlayerAliases);
 
     try {
         let filter = '';
@@ -331,11 +340,11 @@ router.get('/', async (req, res) => {
         }
         
         if (player) {
-            const userInfo = findUserAliases(player);
-            console.log('[Ghosts API] User aliases for', player, ':', userInfo.aliases);
+            const playerInfo = findPlayerAliases(player);
+            console.log('[Ghosts API] Player aliases for', player, ':', playerInfo.aliases);
             
-            if (userInfo.aliases && userInfo.aliases.length > 0) {
-                const aliasConditions = userInfo.aliases.map(alias => {
+            if (playerInfo.aliases && playerInfo.aliases.length > 0) {
+                const aliasConditions = playerInfo.aliases.map(alias => {
                     const escaped = alias.replace(/"/g, '\\"');
                     return `username ~ "${escaped}"`;
                 }).join(' || ');
