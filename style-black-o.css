@@ -11258,48 +11258,73 @@ legend body,
   display: inline-block;
   width: 47px;
   height: 32px;
-  background-image: url('assets/images/gui/editor_gui.png');
-  background-size: 512px 164px;
+  background-size: cover;
   background-repeat: no-repeat;
-  background-position: -47px -132px;
+  background-position: center;
   transform: scale(0.5);
   transform-origin: right center;
   margin: -8px -4px -8px -20px;
+  transition: background-image 0.1s;
 }
 
-.ghost-badge:hover .ghost-badge-sprite {
-  background-position: 0 -132px;
-}
-
-.ghost-badge-sprite {
-  display: inline-block;
-  width: 47px;
-  height: 32px;
-  background-image: url('assets/images/gui/editor_gui.png');
-  background-size: 512px 164px;
-  -repeat: no-repeat;
-  background-position: -47px -132px;
-  transform: scale(0.5);
-  transform-origin: right center;
-  margin: -8px -4px -8px -20px;
-}
-
-/* Default BMX */
+/* BMX */
 .ghost-badge-sprite.bmx {
-  background-position: -47px -132px;
+  background-image: url('/assets/images/icons/bmx-ghost-gray.png');
 }
 
-.ghost-badge:hover .ghost-badge-sprite.bmx {
-  background-position: 0 -132px;
+.ghost-badge:hover .ghost-badge-sprite.bmx,
+.ghost-badge-sprite.bmx:hover {
+  background-image: url('/assets/images/icons/bmx-ghost.png');
 }
 
-
+/* MTB */
 .ghost-badge-sprite.mtb {
-  background-position: -141px -132px;
+  background-image: url('/assets/images/icons/mtb-ghost-gray.png');
 }
 
-.ghost-badge:hover .ghost-badge-sprite.mtb {
-  background-position: -94px -132px;
+.ghost-badge:hover .ghost-badge-sprite.mtb,
+.ghost-badge-sprite.mtb:hover {
+  background-image: url('/assets/images/icons/mtb-ghost.png');
+}
+
+/* Helicopter */
+.ghost-badge-sprite.heli {
+  background-image: url('/assets/images/icons/helicopter-ghost-gray.png');
+}
+
+.ghost-badge:hover .ghost-badge-sprite.heli,
+.ghost-badge-sprite.heli:hover {
+  background-image: url('/assets/images/icons/helicopter-ghost.png');
+}
+
+/* Truck */
+.ghost-badge-sprite.truck {
+  background-image: url('/assets/images/icons/truck-ghost-gray.png');
+}
+
+.ghost-badge:hover .ghost-badge-sprite.truck,
+.ghost-badge-sprite.truck:hover {
+  background-image: url('/assets/images/icons/truck-ghost.png');
+}
+
+/* Balloon */
+.ghost-badge-sprite.balloon {
+  background-image: url('/assets/images/icons/balloon-ghost-gray.png');
+}
+
+.ghost-badge:hover .ghost-badge-sprite.balloon,
+.ghost-badge-sprite.balloon:hover {
+  background-image: url('/assets/images/icons/balloon-ghost.png');
+}
+
+/* Blob */
+.ghost-badge-sprite.blob {
+  background-image: url('/assets/images/icons/blob-ghost-gray.png');
+}
+
+.ghost-badge:hover .ghost-badge-sprite.blob,
+.ghost-badge-sprite.blob:hover {
+  background-image: url('/assets/images/icons/blob-ghost.png');
 }
 
 .order-toggle {
@@ -11324,7 +11349,6 @@ legend body,
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 1px; /* maybe unnecessary for other shuffle icons */
   width: 14px;
   height: 14px;
 }
@@ -11348,9 +11372,11 @@ legend body,
 }
 
 .order-toggle .order-icon.shuffle::before {
-  content: '⤭';
+  content: '⥮';
   font-size: 16px;
   color: #333;
+  display: inline-block;
+  transform: rotate(90deg);
 }
 
 .sort-value {

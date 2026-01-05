@@ -424,11 +424,11 @@
                     "div",
                     { className: "clearfix" },
                     f,
+                    n.createElement(r, { vehicle: this.props.data.vehicle }),
                     !playMode && !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
                     !playMode && !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
                     !playMode && !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
                     //e !== "select" && n.createElement(vv),
-                    n.createElement(r, { vehicle: this.props.data.vehicle }),
                     !playMode && !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
                     !playMode && !mobile ? n.createElement(L) : null,
                     //e === "select" && n.createElement(vvv),
@@ -2002,56 +2002,59 @@
               }
             },
             render: function () {
-              var e =
-                  "bottomMenu-button bottomMenu-button-right bottomMenu-button_vehicle ",
-                t = "editorgui_icons editorgui_icons-icon_bmx",
+              var e = "bottomMenu-button bottomMenu-button-right bottomMenu-button_vehicle ",
+                t = "editorgui_icons_bottom_vehicle editorgui_icons-icon_bmx",
                 r = "BMX";
-                var o = this.state.open ? " :" : "";
+              var o = this.state.open ? " :" : "";
 
-                if (typeof GameSettings !== 'undefined') {
-                  playMode = GameSettings.trackName !== 'track.txt';
-                } else {
-                  playMode = false;
-                }
-              return (
-                this.props.vehicle &&
-                  ((r = this.props.vehicle.toLowerCase()),
-                  (t = "editorgui_icons_bottom editorgui_icons-icon_" + r)),
-                n.createElement(
-                  "div",
-                  { className: e, onClick: this.openOptions },
-                  n.createElement("span", { className: t, onClick: (event) => {
+              if (typeof GameSettings !== 'undefined') {
+                playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                playMode = false;
+              }
+
+              if (this.props.vehicle) {
+                r = this.props.vehicle.toLowerCase();
+                t = "editorgui_icons_bottom_vehicle editorgui_icons-icon_" + r;
+              }
+
+              return n.createElement(
+                "div",
+                { className: e, onClick: this.openOptions },
+                n.createElement("span", {
+                  className: t,
+                  onClick: (event) => {
                     event.stopPropagation();
                     this.toggleVehicle(event);
-                  }}),
-                  n.createElement(
-                    "span",
-                    { className: "name" },
-                    "",
-                    n.createElement("span", { className: "name" }, r, o), !playMode && this.state.open && n.createElement("button", {
-                      className: "margin",
-                      onClick: (event) => {
-                        event.stopPropagation();
-                        this.moveVehicle(event);
-                      }
-                    }, "SET START POSITION"),
-                    this.state.open && n.createElement("button", {
-                      className: "margin",
-                      onClick: (event) => {
-                        event.stopPropagation();
-                        this.exportGhost(event);
-                      }
-                    }, "EXPORT GHOST")
-                  ),
-                  this.state.open && n.createElement("button", {
-                      className: "margin",
-                      onClick: (event) => {
-                        event.stopPropagation();
-                        this.importGhost(event);
-                      }
-                  }, "IMPORT GHOST")
-                  
-                )
+                  }
+                }),
+                n.createElement(
+                  "span",
+                  { className: "name_vehicle" },
+                  r,
+                  o
+                ),
+                this.state.open && !playMode && n.createElement("button", {
+                  className: "margin",
+                  onClick: (event) => {
+                    event.stopPropagation();
+                    this.moveVehicle(event);
+                  }
+                }, "SET START POSITION"),
+                this.state.open && n.createElement("button", {
+                  className: "margin",
+                  onClick: (event) => {
+                    event.stopPropagation();
+                    this.exportGhost(event);
+                  }
+                }, "EXPORT GHOST"),
+                this.state.open && n.createElement("button", {
+                  className: "margin",
+                  onClick: (event) => {
+                    event.stopPropagation();
+                    this.importGhost(event);
+                  }
+                }, "IMPORT GHOST")
               );
             },
           });

@@ -1,4 +1,25 @@
 /*! normalize.css v2.0.1 | MIT License | git.io/normalize */
+body::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    content: 
+        url('/assets/images/icons/bmx-ghost.png')
+        url('/assets/images/icons/mtb-ghost.png')
+        url('/assets/images/icons/helicopter-ghost.png')
+        url('/assets/images/icons/truck-ghost.png')
+        url('/assets/images/icons/balloon-ghost.png')
+        url('/assets/images/icons/blob-ghost.png')
+        url('/assets/images/icons/bmx-ghost-gray.png')
+        url('/assets/images/icons/mtb-ghost-gray.png')
+        url('/assets/images/icons/helicopter-ghost-gray.png')
+        url('/assets/images/icons/truck-ghost-gray.png')
+        url('/assets/images/icons/balloon-ghost-gray.png')
+        url('/assets/images/icons/blob-ghost-gray.png');
+}
+
 .game,
 sub,
 sup {
@@ -1382,11 +1403,6 @@ span.editorgui_icons-icon_all {
     background-position: 0 -88px
 }
 
-.editorgui_icons-icon_bmx:hover {
-    width: 47px;
-    height: 32px;
-    background-position: 0 -132px
-}
 
 .editorgui_icons-bomb {
     width: 44px;
@@ -1404,12 +1420,6 @@ span.editorgui_icons-icon_all {
     width: 44px;
     height: 44px;
     background-position: -44px -88px
-}
-
-.editorgui_icons-icon_bmx {
-    width: 47px;
-    height: 32px;
-    background-position: -47px -132px
 }
 
 .editorgui_icons-gravity {
@@ -1430,12 +1440,6 @@ span.editorgui_icons-icon_all {
     background-position: -88px -88px
 }
 
-.editorgui_icons-icon_mtb:hover {
-    width: 47px;
-    height: 32px;
-    background-position: -94px -132px
-}
-
 .editorgui_icons-icon_camera {
     width: 44px;
     height: 44px;
@@ -1452,12 +1456,6 @@ span.editorgui_icons-icon_all {
     width: 44px;
     height: 44px;
     background-position: -132px -88px
-}
-
-.editorgui_icons-icon_mtb {
-    width: 47px;
-    height: 32px;
-    background-position: -141px -132px
 }
 
 .editorgui_icons-icon_line {
@@ -1481,7 +1479,7 @@ span.editorgui_icons-icon_all {
 .editorgui_icons-icon_camera_lock_off:hover {
     width: 32px;
     height: 32px;
-    background-position: -188px -131px
+    background-position: -188px -130px
 }
 
 .editorgui_icons-icon_scenery {
@@ -1526,13 +1524,13 @@ span.editorgui_icons-icon_all {
 .editorgui_icons-icon_camera_lock_off {
     width: 32px;
     height: 32px;
-    background-position: -220px -131px
+    background-position: -220px -130px
 }
 
 .editorgui_icons-icon_camera_lock_on:hover {
     width: 32px;
     height: 32px;
-    background-position: -252px -131px
+    background-position: -252px -130px
 }
 
 .editorgui_icons-icon_vehicle_swap {
@@ -1556,7 +1554,7 @@ span.editorgui_icons-icon_all {
 .editorgui_icons-icon_camera_lock_on {
     width: 32px;
     height: 32px;
-    background-position: -252px -131px
+    background-position: -252px -130px
 }
 
 .editorgui_icons-speed {
@@ -3439,4 +3437,102 @@ div.sideDivider {
     min-width: 90px;
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.editorgui_icons_bottom_vehicle {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 44px;
+    height: 32px;
+}
+
+/* BMX */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_bmx {
+    background-image: url('/assets/images/icons/bmx-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_bmx:hover {
+    background-image: url('/assets/images/icons/bmx-ghost.png');
+}
+
+/* MTB */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_mtb {
+    background-image: url('/assets/images/icons/mtb-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_mtb:hover {
+    background-image: url('/assets/images/icons/mtb-ghost.png');
+}
+
+/* Helicopter */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_helicopter,
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_heli {
+    background-image: url('/assets/images/icons/helicopter-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_helicopter:hover,
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_heli:hover {
+    background-image: url('/assets/images/icons/helicopter-ghost.png');
+}
+
+/* Truck */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_truck {
+    background-image: url('/assets/images/icons/truck-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_truck:hover {
+    background-image: url('/assets/images/icons/truck-ghost.png');
+}
+
+/* Balloon */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_balloon {
+    background-image: url('/assets/images/icons/balloon-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_balloon:hover {
+    background-image: url('/assets/images/icons/balloon-ghost.png');
+}
+
+/* Blob */
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_blob {
+    background-image: url('/assets/images/icons/blob-ghost-gray.png');
+}
+
+.editorgui_icons_bottom_vehicle.editorgui_icons-icon_blob:hover {
+    background-image: url('/assets/images/icons/blob-ghost.png');
+}
+
+.bottomMenu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.bottomMenu-button_vehicle {
+    min-width: 92px;
+    padding-left: 10px;
+    padding-right: 15px;
+    margin-left: -5px;
+    margin-right: -5px;
+    gap: 6px;
+}
+
+.bottomMenu-button_vehicle > .name_vehicle {
+    text-align: center;
+    min-width: 35px;
+    display: inline-block;
+}
+
+.bottomMenu-button_vehicle .editorgui_icons_bottom_vehicle {
+    flex-shrink: 0;
+}
+
+.bottomMenu-button>.name_vehicle {
+    margin-left: -8px;
 }

@@ -12481,7 +12481,18 @@
         const version = header.getUint32(4);
         const username = dec.decode(header8.subarray(8, 28)).replace(/\0/g, '');
         const trackId = header.getUint32(28);
-        const vehicleType = dec.decode(header8.subarray(32, 36)).replace(/\0/g, '').trim();
+
+        const vehicleCode = header.getUint8(32);
+        const vehicleMap = {
+          0: 'MTB',
+          1: 'BMX',
+          2: 'HELI',
+          3: 'TRUCK',
+          4: 'BALLOON',
+          5: 'BLOB'
+        };
+        const vehicleType = vehicleMap[vehicleCode] || 'BMX';
+
         const frameCount = header.getUint32(36);
 
         return { version, username, trackId, vehicleType, frameCount };
@@ -12576,7 +12587,10 @@
 
         this.playbackFrames = chunks;
         this.playbackHeader = header;
-        this.vehicleType = header.vehicleType || "BMX";
+        this.vehicleType = header.vehicleType;
+
+        console.log('[Gamepad] CPGH vehicle type:', this.vehicleType);
+
         this.replaying = true;
       }
 
@@ -12623,42 +12637,36 @@
         if (!ghostPlayer) return;
 
         const vehicleCode = frameData.vehicle;
-        const Vehicles = window.GameVehicles || Xt;
-        const tempType = { 2: 'HELI', 3: 'TRUCK', 4: 'BALLOON', 5: 'BLOB' }[vehicleCode];
+        const Vehicles = window.GameVehicles;
+
+        const vehicleTypeMap = {
+          0: 'MTB',
+          1: 'BMX',
+          2: 'HELI',
+          3: 'TRUCK',
+          4: 'BALLOON',
+          5: 'BLOB'
+        };
+
+        const targetVehicleType = vehicleTypeMap[vehicleCode] || 'MTB';
 
         const x = frameData.masses[0]?.x || 0;
         const y = frameData.masses[0]?.y || 0;
         const dir = frameData.dir;
 
-        // Handle base vehicles (MTB = 0, BMX = 1)
-        if (vehicleCode === 0 || vehicleCode === 1) {
-          const baseType = vehicleCode === 1 ? 'BMX' : 'MTB';
 
-          // Clear temp vehicle if switching back to base
-          if (ghostPlayer._tempVehicle) {
-            ghostPlayer._tempVehicle.stopSounds?.();
-            ghostPlayer._tempVehicle = false;
-            ghostPlayer._tempVehicleType = false;
-            ghostPlayer._tempVehicleTicks = 0;
-          }
-
-          // Switch base vehicle type if needed
-          if (ghostPlayer._baseVehicleType !== baseType && Vehicles?.[baseType]) {
-            ghostPlayer._baseVehicle?.stopSounds?.();
-            ghostPlayer._baseVehicleType = baseType;
-            ghostPlayer._baseVehicle = new Vehicles[baseType](ghostPlayer, { x, y }, dir, { x: 0, y: 0 });
-            this.disableCollisions(ghostPlayer._baseVehicle);
-          }
+        if (ghostPlayer._tempVehicle) {
+          ghostPlayer._tempVehicle.stopSounds?.();
+          ghostPlayer._tempVehicle = false;
+          ghostPlayer._tempVehicleType = false;
+          ghostPlayer._tempVehicleTicks = 0;
         }
-        // Handle temp vehicles (HELI, TRUCK, BALLOON, BLOB)
-        else if (tempType) {
-          if (ghostPlayer._tempVehicleType !== tempType && Vehicles?.[tempType]) {
-            ghostPlayer.getActiveVehicle()?.stopSounds?.();
-            ghostPlayer._tempVehicle = new Vehicles[tempType](ghostPlayer, { x, y }, dir);
-            ghostPlayer._tempVehicleType = tempType;
-            ghostPlayer._tempVehicleTicks = 999999;
-            this.disableCollisions(ghostPlayer._tempVehicle);
-          }
+
+        if (ghostPlayer._baseVehicleType !== targetVehicleType && Vehicles?.[targetVehicleType]) {
+          ghostPlayer._baseVehicle?.stopSounds?.();
+          ghostPlayer._baseVehicleType = targetVehicleType;
+          ghostPlayer._baseVehicle = new Vehicles[targetVehicleType](ghostPlayer, { x, y }, dir, { x: 0, y: 0 });
+          this.disableCollisions(ghostPlayer._baseVehicle);
         }
 
         const vehicle = ghostPlayer.getActiveVehicle();
@@ -12698,7 +12706,7 @@
           mass.old.y = massData.y;
           mass.radius = massData.radius;
           mass.friction = massData.friction;
-          mass.collide = false;  // Keep collisions disabled for ghosts
+          mass.collide = false;
           mass.contact = massData.contact;
           mass.brake = massData.brake;
         }
@@ -12712,31 +12720,28 @@
           spring.springConstant = springData.springConstant;
         }
 
-        // drawHeadAngle
         if ((vehicleCode === 0 || vehicleCode === 1 || vehicleCode === 3) && vehicle.frontWheel && vehicle.rearWheel) {
           vehicle.drawHeadAngle = -(Math.atan2(
             vehicle.frontWheel.pos.x - vehicle.rearWheel.pos.x,
             vehicle.frontWheel.pos.y - vehicle.rearWheel.pos.y
           ) - Math.PI / 2);
         }
-        // cockpitAngle
         else if (vehicleCode === 2 && vehicle.masses.length >= 4) {
           vehicle.cockpitAngle = -(Math.atan2(
             vehicle.masses[0].pos.x - vehicle.masses[3].pos.x,
             vehicle.masses[0].pos.y - vehicle.masses[3].pos.y
           ) - Math.PI / 2);
         }
-
         else if (vehicleCode === 5 && vehicle.head && vehicle.masses.length >= 4) {
-        let sumX = 0, sumY = 0;
-        for (const m of vehicle.masses) {
+          let sumX = 0, sumY = 0;
+          for (const m of vehicle.masses) {
             sumX += m.pos.x;
             sumY += m.pos.y;
+          }
+          vehicle.head.pos.x = sumX * 0.25;
+          vehicle.head.pos.y = sumY * 0.25;
+          vehicle.head.vel = vehicle.masses[0].vel;
         }
-        vehicle.head.pos.x = sumX * 0.25; 
-        vehicle.head.pos.y = sumY * 0.25;
-        vehicle.head.vel = vehicle.masses[0].vel;
-      }
 
         vehicle.updateCameraFocalPoint?.();
 
@@ -12752,7 +12757,40 @@
           this.setButtonUp("x");
         }
       }
+      applyCPGHPositions() {
+        if (!this.playbackFrames) return;
 
+        const currentTick = this.scene.ticks;
+
+        if (currentTick >= this.playbackFrames.length) return;
+
+        const frameData = this.playbackFrames[currentTick];
+        if (!frameData || !frameData.masses) return;
+
+        let ghostPlayer = null;
+        for (let i = 0; i < this.scene.playerManager._players.length; i++) {
+          const player = this.scene.playerManager._players[i];
+          if (player.isGhost() && player._gamepad === this) {
+            ghostPlayer = player;
+            break;
+          }
+        }
+
+        if (!ghostPlayer) return;
+
+        const vehicle = ghostPlayer.getActiveVehicle();
+
+        // Apply mass positions
+        for (let i = 0; i < frameData.masses.length && i < vehicle.masses.length; i++) {
+          const mass = vehicle.masses[i];
+          const massData = frameData.masses[i];
+
+          mass.pos.x = massData.x;
+          mass.pos.y = massData.y;
+          mass.old.x = massData.x;
+          mass.old.y = massData.y;
+        }
+      }
       disableCollisions(vehicle) {
         if (!vehicle?.masses) return;
         for (const mass of vehicle.masses) {
@@ -12891,9 +12929,18 @@
           header.setUint32(28, GameSettings.id);
         }
 
-        // Store vehicle type at bytes 32-35 (e.g., "BMX", "MTB")
+        // Store vehicle code at byte 32 (single byte)
         const vehicleType = this.scene.playerManager.firstPlayer._baseVehicleType || "BMX";
-        enc.encodeInto(vehicleType, header8.subarray(32, 36));
+        let vehicleCode = 0;
+        switch (vehicleType) {
+          case "BMX": vehicleCode = 1; break;
+          case "MTB": vehicleCode = 0; break;
+          case "HELI": vehicleCode = 2; break;
+          case "TRUCK": vehicleCode = 3; break;
+          case "BALLOON": vehicleCode = 4; break;
+          case "BLOB": vehicleCode = 5; break;
+        }
+        header.setUint8(32, vehicleCode);
 
         // Store frame count at bytes 36-39
         header.setUint32(36, frameCount);
@@ -12902,9 +12949,10 @@
         this.hasHeader = true;
       }
       encodeFrame(V) {
-        if (this.scene.state.paused || !this.scene.state.playing) return;
-
         const currentTick = this.scene.ticks;
+
+        if (currentTick === this.lastRecordedTick) return;
+        if (currentTick > 0 && (this.scene.state.paused || !this.scene.state.playing)) return;
 
         // if we rewind, remove all frames after current tick
         if (currentTick < this.lastRecordedTick) {
@@ -12934,7 +12982,10 @@
           offset = 8,
           frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs),
           frame = new DataView(frameBuffer);
-        switch (V.player._tempVehicleType) {
+
+        const vehicleType = this.scene.playerManager.firstPlayer._baseVehicleType;
+
+        switch (vehicleType) {
           case "HELI":
             vehicle = 2;
             break;
@@ -12947,11 +12998,15 @@
           case "BLOB":
             vehicle = 5;
             break;
+          case "BMX":
+            vehicle = 1;
+            break;
+          case "MTB":
           default:
-            if (V.player._baseVehicleType == "BMX") {
-              vehicle = 1;
-            }
+            vehicle = 0;
+            break;
         }
+
         frame.setUint8(0, masses | (springs << 4));
         frame.setUint8(1, gravity >> 1);
         frame.setUint16(2, (V.alive) |
@@ -16782,8 +16837,12 @@
                 (this._color = s.color ? s.color : "#000000"),
                 (this._hatColor = s.hatColor || null),
                 (this._hatType = s.hatType || null), 
-                this.setDefaults(),
-                this.createBaseVehicle(new t.Z(0, 35), 1, new t.Z(0, 0)),
+                this.setDefaults();
+                let startY = 35;
+                  if (['HELI', 'TRUCK', 'BALLOON', 'BLOB'].includes(this._baseVehicleType)) {
+                  startY = 0;
+                }
+                this.createBaseVehicle(new t.Z(0, startY), 1, new t.Z(0, 0)),
                 (this.deadVehiclesIndex = 0),
                 (this.deadVehicles = new Array(10));
 
@@ -16984,6 +17043,18 @@
             }
             draw() {
               this.updateOpacity();
+              if (this._ghost && this._gamepad.playbackFrames) {
+                this._gamepad.applyCPGHPositions();
+              }
+              if (this._ghost && this._liveRider && this._lastLiveFrame) {
+                const v = this.getActiveVehicle();
+                for (let i = 0; i < this._lastLiveFrame.masses.length && i < v.masses.length; i++) {
+                  v.masses[i].pos.x = this._lastLiveFrame.masses[i].x;
+                  v.masses[i].pos.y = this._lastLiveFrame.masses[i].y;
+                  v.masses[i].old.x = this._lastLiveFrame.masses[i].x;
+                  v.masses[i].old.y = this._lastLiveFrame.masses[i].y;
+                }
+              }
               let t = this._baseVehicle;
               this._tempVehicleTicks > 0 && (t = this._tempVehicle),
                 this._effectTicks > 0 &&
@@ -17152,12 +17223,16 @@
                   vehicle = 0,
                   offset = 8;
 
-                switch (this._tempVehicleType) {
+                const vehicleType = this._tempVehicleTicks > 0 ? this._tempVehicleType : this._baseVehicleType;
+
+                switch (vehicleType) {
                   case "HELI": vehicle = 2; break;
                   case "TRUCK": vehicle = 3; break;
                   case "BALLOON": vehicle = 4; break;
                   case "BLOB": vehicle = 5; break;
-                  default: if (this._baseVehicleType == "BMX") vehicle = 1;
+                  case "BMX": vehicle = 1; break;
+                  case "MTB":
+                  default: vehicle = 0; break;
                 }
 
                 let frameBuffer = new ArrayBuffer(8 + 18 * masses + 6 * springs);
@@ -17240,8 +17315,14 @@
             reset() {
               this._tempVehicle && this._tempVehicle.stopSounds(),
                 this._baseVehicle.stopSounds(),
-                this.setDefaults(),
-                this.createBaseVehicle(new t.Z(0, 35), 1, new t.Z(0, 0)),
+                this.setDefaults();
+  
+  let startY = 35;
+  if (['HELI', 'TRUCK', 'BALLOON', 'BLOB'].includes(this._baseVehicleType)) {
+    startY = 0;
+  }
+  
+  this.createBaseVehicle(new t.Z(0, startY), 1, new t.Z(0, 0)),
                 this._gamepad.reset(),
                 (this._scene.state.playerAlive = this.isAlive());
             }
@@ -24923,7 +25004,7 @@
             (this.physicsLines = []),
             (this.sceneryLines = []),
             (this.targets = []),
-            (this.allowedVehicles = ["MTB", "BMX"]),
+            (this.allowedVehicles = ["BMX", "MTB", "HELI", "TRUCK", "BALLOON", "BLOB"]),
             (this.canvasPool = new $i(t)),
             (this.needsCleaning = !1),
             (this.stampedAreas = []),
@@ -26758,6 +26839,18 @@ showMessage();
 
           // Handle CPGH format (from file upload or ghost card)
           if (raceData && raceData.cpghData) {
+            const headerView = new DataView(raceData.cpghData.slice(0, 40));
+            const vehicleCode = headerView.getUint8(32);
+            const vehicleMap = {
+              0: 'MTB',
+              1: 'BMX',
+              2: 'HELI',
+              3: 'TRUCK',
+              4: 'BALLOON',
+              5: 'BLOB'
+            };
+            const vehicleType = vehicleMap[vehicleCode] || 'BMX';
+
             const mappedUser = {
               "u_id": 999,
               "u_name": raceData.username || "Ghost",
@@ -26765,21 +26858,30 @@ showMessage();
               "cosmetics": {}
             };
 
+            const originalStartVehicle = this.settings.startVehicle;
+            const originalTrackVehicle = this.settings.track?.vehicle;
+
+            this.settings.startVehicle = vehicleType;
+            if (this.settings.track) {
+              this.settings.track.vehicle = vehicleType;
+            }
+
             const player = playerManager.createPlayer(this, mappedUser);
+
+            this.settings.startVehicle = originalStartVehicle;
+            if (this.settings.track) {
+              this.settings.track.vehicle = originalTrackVehicle;
+            }
+
             const gamepad = player.getGamepad();
 
-            // Load CPGH first to decode the header
             gamepad.loadCPGHPlayback(raceData.cpghData);
 
-            // Also load key data for button presses if available
             if (raceData.keyData) {
               gamepad.loadKeyPlayback(raceData.keyData);
               console.log("CPGH ghost loaded with key data");
             }
 
-            // Get vehicle type from the loaded CPGH header
-            const vehicleType = gamepad.vehicleType || raceData.vehicle || "BMX";
-            player.setBaseVehicle(vehicleType);
             player.setAsGhost();
             playerManager.addPlayer(player);
 
@@ -26787,7 +26889,36 @@ showMessage();
             return;
           }
 
-          // Handle JSON format (from GameSettings.fullRaceData)
+          if (raceData && raceData.code) {
+            console.log("[Ghost] Loading from raceData parameter");
+
+            const mappedUser = {
+              "u_id": 999,
+              "u_name": "Ghost",
+              "d_name": "Ghost",
+              "cosmetics": {}
+            };
+
+            const player = playerManager.createPlayer(this, mappedUser);
+
+            player.setBaseVehicle(raceData.vehicle || "BMX");
+            player.setAsGhost();
+
+            const ghostKeys = Object.keys(raceData.code)
+              .filter(k => k.endsWith('_down') || k.endsWith('_up'))
+              .map(k => k.replace(/_down$|_up$/, ''))
+              .filter((v, i, a) => a.indexOf(v) === i);
+
+            console.log("[Ghost] Keys found:", ghostKeys);
+            console.log("[Ghost] Code:", raceData.code);
+
+            player.getGamepad().loadPlayback(raceData.code, ghostKeys);
+            playerManager.addPlayer(player);
+
+            console.log("[Ghost] JSON ghost added with vehicle:", raceData.vehicle || "BMX");
+            return;
+          }
+
           if (typeof GameSettings === 'undefined' || !GameSettings.fullRaceData) {
             return;
           }
@@ -30808,20 +30939,33 @@ class LiveRiderManager {
   connect(trackId, username, hatColor, hatType) {
     const pm = this.scene.playerManager;
 
-    // no physics updates for ghosts
-    const originalUpdate = pm.update.bind(pm);
     pm.update = function () {
-      for (const player of this._players) {
-        if (!player._ghost) player.update();
-      }
-    };
+  for (const player of this._players) {
+    const isLiveRider = player._liveRider;
+    const isCPGH = player._gamepad?.playbackFrames;
+    const isKeypress = player._gamepad?.playback && !isCPGH;
+    
+    console.log("[PM.update] Player ghost:", player._ghost, 
+                "liveRider:", isLiveRider, 
+                "CPGH:", !!isCPGH, 
+                "keypress:", isKeypress);
+    
+    if (isLiveRider || isCPGH) {
+      continue;
+    }
+    player.update();
+  }
+};
 
-    /*const originalUpdateGamepads = pm.updateGamepads.bind(pm);
     pm.updateGamepads = function () {
-      for (const player of this._players) {
-        if (!player._ghost) player._gamepad.update(player);
-      }
-    };*/
+  for (const player of this._players) {
+    // Only skip live rider ghosts (they get updates from websocket)
+    if (player._liveRider) {
+      continue;
+    }
+    player._gamepad.update(player);
+  }
+};
 
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     this.ws = new WebSocket(`${protocol}//${location.host}`);
@@ -30966,36 +31110,32 @@ class LiveRiderManager {
     const vehicleCode = (flags >> 12) & 7;
 
     const Vehicles = window.GameVehicles;
-    const tempType = { 2: 'HELI', 3: 'TRUCK', 4: 'BALLOON', 5: 'BLOB' }[vehicleCode];
+    const vehicleTypeMap = {
+      0: 'MTB',
+      1: 'BMX',
+      2: 'HELI',
+      3: 'TRUCK',
+      4: 'BALLOON',
+      5: 'BLOB'
+    };
+
+    const targetVehicleType = vehicleTypeMap[vehicleCode] || 'MTB';
 
     const x = massCount > 0 ? f.getFloat64(8) : 0;
     const y = massCount > 0 ? f.getFloat64(16) : 0;
 
-    if (vehicleCode === 0 || vehicleCode === 1) {
-      const baseType = vehicleCode === 1 ? 'BMX' : 'MTB';
-
-      if (ghost._tempVehicle) {
-        ghost._tempVehicle.stopSounds?.();
-        ghost._tempVehicle = false;
-        ghost._tempVehicleType = false;
-        ghost._tempVehicleTicks = 0;
-      }
-
-      if (ghost._baseVehicleType !== baseType && Vehicles?.[baseType]) {
-        ghost._baseVehicle?.stopSounds?.();
-        ghost._baseVehicleType = baseType;
-        ghost._baseVehicle = new Vehicles[baseType](ghost, { x, y }, dir, { x: 0, y: 0 });
-        this.disableCollisions(ghost._baseVehicle);
-      }
+    if (ghost._tempVehicle) {
+      ghost._tempVehicle.stopSounds?.();
+      ghost._tempVehicle = false;
+      ghost._tempVehicleType = false;
+      ghost._tempVehicleTicks = 0;
     }
-    else if (tempType) {
-      if (ghost._tempVehicleType !== tempType && Vehicles?.[tempType]) {
-        ghost.getActiveVehicle()?.stopSounds?.();
-        ghost._tempVehicle = new Vehicles[tempType](ghost, { x, y }, dir);
-        ghost._tempVehicleType = tempType;
-        ghost._tempVehicleTicks = 999999;
-        this.disableCollisions(ghost._tempVehicle);
-      }
+
+    if (ghost._baseVehicleType !== targetVehicleType && Vehicles?.[targetVehicleType]) {
+      ghost._baseVehicle?.stopSounds?.();
+      ghost._baseVehicleType = targetVehicleType;
+      ghost._baseVehicle = new Vehicles[targetVehicleType](ghost, { x, y }, dir, { x: 0, y: 0 });
+      this.disableCollisions(ghost._baseVehicle);
     }
 
     const v = ghost.getActiveVehicle();
@@ -31071,6 +31211,14 @@ class LiveRiderManager {
     }
 
     v.updateCameraFocalPoint?.();
+
+    ghost._lastLiveFrame = { masses: [], springs: [] };
+    for (let i = 0; i < v.masses.length; i++) {
+      ghost._lastLiveFrame.masses.push({
+        x: v.masses[i].pos.x,
+        y: v.masses[i].pos.y
+      });
+    }
 
     const gamepad = ghost._gamepad;
     if (gamepad) {
