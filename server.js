@@ -35,7 +35,7 @@ const LOCAL_ROOT = USE_LOCAL_FILES
     : PERSISTENT_ROOT_DISK;
 
 // maps /var/data/cr/trackcodes to the public URL /data/cr/trackcodes
-['cr', 'bhr', 'frhd'].forEach(type => {
+['cr', 'bhr', 'frhd', 'tm', 'app'].forEach(type => {
     app.use(`/data/${type}/trackcodes`, express.static(path.join(LOCAL_ROOT, type, 'trackcodes')));
     app.use(`/data/${type}/thumbnails`, express.static(path.join(LOCAL_ROOT, type, 'thumbnails')));
 });
@@ -95,9 +95,10 @@ async function loadPlaylistsFromDb() {
     console.log('Loading playlists from PocketBase...');
     
     try {
+        // Load ALL playlists, not just show=true
         const records = await pb.collection('playlists').getFullList({
             sort: '-created',
-            expand: 'frhd_track,bhr_track,cr_track',
+            expand: 'frhd_track,bhr_track,cr_track,tm_track,app_track,db_track,playlists',
             requestKey: `playlists-${Date.now()}`
         });
         
@@ -105,6 +106,7 @@ async function loadPlaylistsFromDb() {
         
         playlistsCache = records.map(record => {
             const tracks = [];
+            const childPlaylists = [];
             
             if (record.expand?.frhd_track) {
                 const frhdTracks = Array.isArray(record.expand.frhd_track) 
@@ -147,8 +149,77 @@ async function loadPlaylistsFromDb() {
                     });
                 }
             }
+
+            if (record.expand?.tm_track) {
+                const tmTracks = Array.isArray(record.expand.tm_track)
+                    ? record.expand.tm_track
+                    : [record.expand.tm_track];
+                for (const track of tmTracks) {
+                    tracks.push({
+                        type: 'tm',
+                        id: track._id,
+                        name: track.name,
+                        recordId: track.id
+                    });
+                }
+            }
+
+            if (record.expand?.app_track) {
+                const appTracks = Array.isArray(record.expand.app_track)
+                    ? record.expand.app_track
+                    : [record.expand.app_track];
+                for (const track of appTracks) {
+                    tracks.push({
+                        type: 'app',
+                        id: track._id,
+                        name: track.name,
+                        recordId: track.id
+                    });
+                }
+            }
             
-            console.log(`  Playlist "${record.name}": ${tracks.length} tracks`);
+            if (record.expand?.db_track) {
+                const dbTracks = Array.isArray(record.expand.db_track) 
+                    ? record.expand.db_track 
+                    : [record.expand.db_track];
+                for (const dbRecord of dbTracks) {
+                    const linked = trackLinks.find(l => l.canonical === dbRecord.canonical);
+                    if (linked && linked.tracks.length > 0) {
+                        const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
+                        let primaryTrack = linked.tracks[0];
+                        for (const priorityType of typePriority) {
+                            const found = linked.tracks.find(t => t.type === priorityType);
+                            if (found) {
+                                primaryTrack = found;
+                                break;
+                            }
+                        }
+                        tracks.push({
+                            type: primaryTrack.type,
+                            id: primaryTrack.id,
+                            name: linked.name || dbRecord.name,
+                            recordId: dbRecord.id,
+                            fromDb: true
+                        });
+                    }
+                }
+            }
+            
+            // Handle nested playlists
+            if (record.expand?.playlists) {
+                const nestedPlaylists = Array.isArray(record.expand.playlists) 
+                    ? record.expand.playlists 
+                    : [record.expand.playlists];
+                for (const nested of nestedPlaylists) {
+                    childPlaylists.push({
+                        id: nested.id,
+                        canonical: nested.canonical,
+                        name: nested.name
+                    });
+                }
+            }
+            
+            console.log(`  Playlist "${record.name}": ${tracks.length} tracks, ${childPlaylists.length} child playlists`);
             
             return {
                 id: record.id,
@@ -157,7 +228,9 @@ async function loadPlaylistsFromDb() {
                 username: record.username || 'Unknown',
                 description: record.description || '',
                 tracks: tracks,
+                childPlaylists: childPlaylists,
                 trackCount: tracks.length,
+                show: record.show === true,
                 created: record.created,
                 updated: record.updated
             };
@@ -267,7 +340,7 @@ async function loadTrackLinksFromDb() {
     
     try {
         const records = await pb.collection('db').getFullList({
-            expand: 'frhd_id,bhr_id,cr_id',
+            expand: 'frhd_id,bhr_id,cr_id,tm_id,app_id',
             requestKey: `track-links-${Date.now()}`
         });
         
@@ -292,10 +365,24 @@ async function loadTrackLinksFromDb() {
                 }
             }
             
+            if (record.expand?.tm_id) {
+                for (const t of record.expand.tm_id) {
+                    tracks.push({ type: 'tm', id: t._id });
+                }
+            }
+            
+            if (record.expand?.app_id) {
+                for (const t of record.expand.app_id) {
+                    tracks.push({ type: 'app', id: t._id });
+                }
+            }
+            
             return {
                 canonical: record.canonical,
                 name: record.name,
                 authors: record.authors || [],
+                published: record.published || null,
+                description: record.description || null,
                 tracks: tracks
             };
         });
@@ -369,7 +456,7 @@ let linkedTrackStatsCache = new Map();
 async function loadLinkedTrackStatsCache() {
     console.log('Loading stats for linked tracks...');
     
-    const needed = { frhd: new Set(), bhr: new Set(), cr: new Set() };
+    const needed = { frhd: new Set(), bhr: new Set(), cr: new Set(), tm: new Set(), app: new Set() };
     
     for (const link of trackLinks) {
         for (const track of link.tracks) {
@@ -379,9 +466,17 @@ async function loadLinkedTrackStatsCache() {
         }
     }
     
-    console.log(`Need: frhd=${needed.frhd.size}, bhr=${needed.bhr.size}, cr=${needed.cr.size}`);
+    console.log(`Need: frhd=${needed.frhd.size}, bhr=${needed.bhr.size}, cr=${needed.cr.size}, tm=${needed.tm.size}, app=${needed.app.size}`);
     
-    for (const type of ['frhd', 'bhr', 'cr']) {
+    const fieldsByType = {
+        frhd: '_id,upvotes,downvotes,votes,plays,favorites,description',
+        bhr: '_id,upvotes,downvotes,votes,plays,favorites,description',
+        cr: '_id,upvotes,downvotes,votes,plays,favorites,description',
+        tm: '_id,description',
+        app: '_id,description'
+    };
+    
+    for (const type of ['frhd', 'bhr', 'cr', 'tm', 'app']) {
         if (needed[type].size === 0) continue;
         
         try {
@@ -393,7 +488,7 @@ async function loadLinkedTrackStatsCache() {
                 
                 const records = await pb.collection(type).getFullList({
                     filter: filter,
-                    fields: '_id,upvotes,downvotes,votes,plays,favorites,description',
+                    fields: fieldsByType[type],
                     requestKey: `linked-cache-${type}-${i}-${Date.now()}`
                 });
                 
@@ -468,6 +563,7 @@ function transformRecord(record, type) {
         published: published,
         description: record.description || '',
         type: type,
+        urlType: type === 'app' ? 't' : type,
         urlType: type,
         urlId: record._id,
         badges: [type],
@@ -485,7 +581,8 @@ function processTrackWithLinks(track) {
     let authorsArray = track.authorsArray || [];
     let name = track.name;
     let description = track.description || '';
-    
+    let canonical = null;
+
     let combinedUpvotes = track.type === 'cr' 
         ? parseNumericValue(track.votes) 
         : parseNumericValue(track.upvotes);
@@ -494,8 +591,17 @@ function processTrackWithLinks(track) {
     let combinedFavorites = parseNumericValue(track.favorites);
     
     if (linked) {
+        canonical = linked.canonical;
+        
         if (linked.name) {
             name = linked.name;
+        }
+
+        if (linked.published) {
+            const date = new Date(linked.published);
+            if (!isNaN(date.getTime())) {
+                published = date.toISOString().split('T')[0];
+            }
         }
         
         badges = [...new Set(linked.tracks.map(t => t.type))];
@@ -505,10 +611,14 @@ function processTrackWithLinks(track) {
             authors = authorsArray.join(', ');
         }
         
-        const typePriority = ['cr', 'bhr', 'frhd'];
+        urlType = 't';
+        urlId = linked.canonical;
+        
+        const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
         for (const priorityType of typePriority) {
             const found = linked.tracks.find(t => t.type === priorityType);
             if (found) {
+                urlType = found.type === 'app' ? 't' : found.type;
                 urlType = found.type;
                 urlId = found.id;
                 break;
@@ -556,11 +666,13 @@ function processTrackWithLinks(track) {
         ...track,
         name,
         description,
+        published,
         authors,
         authorsArray,
         badges,
         urlType,
         urlId,
+        canonical,
         upvotes: formattedUpvotes,
         downvotes: formattedDownvotes,
         votes: track.type === 'cr' ? formattedUpvotes : null,
@@ -568,36 +680,6 @@ function processTrackWithLinks(track) {
         favorites: formattedFavorites,
         canonicalId: linked ? linked.canonical : `${track.type}-${track.id}`
     };
-}
-
-function buildFilterString(options) {
-    const { type, query, author, showOnly } = options;
-    let filterParts = [];
-    
-    if (showOnly) {
-        filterParts.push('show = true');
-    }
-    
-    if (query) {
-        const escapedQuery = query.replace(/"/g, '\\"');
-        filterParts.push(`(name ~ "${escapedQuery}" || username ~ "${escapedQuery}" || _id ~ "${escapedQuery}")`);
-    }
-    
-    if (author) {
-        const playerInfo = findPlayerAliases(author);
-        if (playerInfo.aliases && playerInfo.aliases.length > 1) {
-            const aliasConditions = playerInfo.aliases.map(alias => {
-                const escaped = alias.replace(/"/g, '\\"');
-                return `username = "${escaped}" || authors ~ "\\"${escaped}\\""`;
-            }).join(' || ');
-            filterParts.push(`(${aliasConditions})`);
-        } else {
-            const escapedAuthor = author.replace(/"/g, '\\"');
-            filterParts.push(`(username = "${escapedAuthor}" || authors ~ "\\"${escapedAuthor}\\"")`);
-        }
-    }
-    
-    return filterParts.length > 0 ? filterParts.join(' && ') : '';
 }
 
 function sortTracks(tracks, sortBy, sortOrder) {
@@ -651,6 +733,32 @@ function sortTracks(tracks, sortBy, sortOrder) {
 }
 
 app.get('/api/playlists', (req, res) => {
+    const visiblePlaylists = playlistsCache.filter(p => p.show === true);
+    
+    res.json({
+        playlists: visiblePlaylists.map(p => {
+            const lastTrack = p.tracks[p.tracks.length - 1];
+            const thumbnail = lastTrack 
+                ? `/${lastTrack.type}/${lastTrack.id}.png`
+                : null;
+            
+            return {
+                id: p.id,
+                canonical: p.canonical,
+                name: p.name,
+                username: p.username,
+                description: p.description,
+                trackCount: p.tracks.length,
+                childPlaylists: p.childPlaylists || [],
+                show: p.show,
+                thumbnail: thumbnail,
+                lastTrack: lastTrack
+            };
+        })
+    });
+});
+
+app.get('/api/playlists/all', (req, res) => {
     res.json({
         playlists: playlistsCache.map(p => {
             const lastTrack = p.tracks[p.tracks.length - 1];
@@ -665,6 +773,8 @@ app.get('/api/playlists', (req, res) => {
                 username: p.username,
                 description: p.description,
                 trackCount: p.tracks.length,
+                childPlaylists: p.childPlaylists || [],
+                show: p.show,
                 thumbnail: thumbnail,
                 lastTrack: lastTrack
             };
@@ -683,7 +793,7 @@ app.get('/api/playlist/:id', (req, res) => {
 app.get('/api/daily/:type', async (req, res) => {
     const type = req.params.type;
 
-    if (!['frhd', 'bhr', 'cr'].includes(type)) {
+    if (!['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
         return res.status(400).json({ error: 'Invalid type' });
     }
 
@@ -741,7 +851,7 @@ app.get('/api/daily/:type', async (req, res) => {
 app.get('/api/random/:type', async (req, res) => {
     const type = req.params.type;
 
-    if (!['frhd', 'bhr', 'cr'].includes(type)) {
+    if (!['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
         return res.status(400).json({ error: 'Invalid type' });
     }
 
@@ -804,7 +914,7 @@ app.get('/api/user-aliases/:name', async (req, res) => {
             return false;
         }).length;
     } 
-    else if (['frhd', 'bhr', 'cr'].includes(type)) {
+    else if (['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
         try {
             const filterString = buildFilterString({
                 type,
@@ -825,7 +935,7 @@ app.get('/api/user-aliases/:name', async (req, res) => {
         }
     }
     else if (type === 'all') {
-        for (const collectionType of ['frhd', 'bhr', 'cr']) {
+        for (const collectionType of ['frhd', 'bhr', 'cr', 'tm', 'app']) {
             try {
                 const filterString = buildFilterString({
                     type: collectionType,
@@ -896,6 +1006,8 @@ let dbTracksCache = {
     frhd: [],
     bhr: [],
     cr: [],
+    tm: [],
+    app: [],
     all: [],
     lastUpdated: null
 };
@@ -903,7 +1015,7 @@ let dbTracksCache = {
 async function loadDbTracksCache() {
     console.log('Loading db tracks cache (show=true)...');
     
-    for (const type of ['frhd', 'bhr', 'cr']) {
+    for (const type of ['frhd', 'bhr', 'cr', 'tm', 'app']) {
         try {
             const records = await pb.collection(type).getFullList({
                 filter: 'show = true',
@@ -921,18 +1033,23 @@ async function loadDbTracksCache() {
     let allTracks = [
         ...dbTracksCache.frhd,
         ...dbTracksCache.bhr,
-        ...dbTracksCache.cr
+        ...dbTracksCache.cr,
+        ...dbTracksCache.tm,
+        ...dbTracksCache.app
     ].map(processTrackWithLinks);
+    
+    const linkedCanonicals = new Set(trackLinks.map(link => link.canonical));
     
     const seenCanonical = new Set();
     dbTracksCache.all = allTracks.filter(track => {
+        if (!linkedCanonicals.has(track.canonicalId)) return false;
         if (seenCanonical.has(track.canonicalId)) return false;
         seenCanonical.add(track.canonicalId);
         return true;
     });
     
     dbTracksCache.lastUpdated = Date.now();
-    console.log(`DB tracks cache loaded: ${dbTracksCache.all.length} total tracks`);
+    console.log(`DB tracks cache loaded: ${dbTracksCache.all.length} total tracks (from db collection)`);
 }
 
 app.get('/api/db', async (req, res) => {
@@ -959,11 +1076,11 @@ app.get('/api/db', async (req, res) => {
             }
 
             let playlistTracks = playlistData.tracks;
-            if (type && type !== 'db' && ['frhd', 'bhr', 'cr'].includes(type)) {
+            if (type && type !== 'db' && ['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
                 playlistTracks = playlistTracks.filter(t => t.type === type);
             }
 
-            const tracksByType = { frhd: [], bhr: [], cr: [] };
+            const tracksByType = { frhd: [], bhr: [], cr: [], tm: [], app: [] };
             playlistTracks.forEach(t => {
                 if (tracksByType[t.type]) {
                     tracksByType[t.type].push(t.id);
@@ -1055,7 +1172,7 @@ app.get('/api/db', async (req, res) => {
                 });
             }
 
-            const collections = ['frhd', 'bhr', 'cr'].includes(type) ? [type] : ['frhd', 'bhr', 'cr'];
+            const collections = ['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type) ? [type] : ['frhd', 'bhr', 'cr', 'tm', 'app'];
 
             for (const collectionType of collections) {
                 const filterString = buildFilterString({
@@ -1078,7 +1195,7 @@ app.get('/api/db', async (req, res) => {
 
             allTracks = allTracks.map(processTrackWithLinks);
 
-            if (!['frhd', 'bhr', 'cr'].includes(type)) {
+            if (!['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
                 const seenCanonical = new Set();
                 allTracks = allTracks.filter(track => {
                     if (seenCanonical.has(track.canonicalId)) return false;
@@ -1118,7 +1235,7 @@ app.get('/api/db', async (req, res) => {
             });
         }
         
-        if (['frhd', 'bhr', 'cr'].includes(type)) {
+        if (['frhd', 'bhr', 'cr', 'tm', 'app'].includes(type)) {
             const filterString = buildFilterString({ type, query, author, showOnly: false });
             
             let sortString;
@@ -1166,7 +1283,7 @@ app.get('/api/db', async (req, res) => {
             });
         }
         
-        const collections = ['frhd', 'bhr', 'cr'];
+        const collections = ['frhd', 'bhr', 'cr', 'tm', 'app'];
         
         for (const collectionType of collections) {
             const filterString = buildFilterString({ 
@@ -1266,7 +1383,9 @@ app.get('/api/authors-by-platform', (req, res) => {
         );
     }
     
-    if (sortBy === 'name') {
+    if (sortBy === 'shuffle') {
+        players = shuffleArray(players);
+    } else if (sortBy === 'name') {
         players.sort((a, b) => {
             const cmp = (a.displayName || '').localeCompare(b.displayName || '');
             return sortOrder === 'asc' ? cmp : -cmp;
@@ -1327,39 +1446,57 @@ function buildFilterString(options) {
             };
             filterParts.push(`(${sizeRanges[sizeCategory]})`);
         }
-       else {
-    const escapedQuery = query.replace(/"/g, '\\"');
-    
-    let searchFields = [
-        `name ~ "${escapedQuery}"`,
-        `username ~ "${escapedQuery}"`,
-        `authors ~ "${escapedQuery}"`
-    ];
-    
-    if (type === 'frhd') {
-        searchFields.push(`description ~ "${escapedQuery}"`);
-    }
-    
-    if (/^\d+$/.test(query)) {
-        searchFields.push(`_id = ${query}`);
-    }
-    
-    filterParts.push(`(${searchFields.join(' || ')})`);
-}
+        else {
+            const escapedQuery = query.replace(/"/g, '\\"');
+
+            let searchFields = [
+                `name ~ "${escapedQuery}"`,
+                `authors ~ "${escapedQuery}"`
+            ];
+
+            if (type === 'frhd') {
+                searchFields.push(`description ~ "${escapedQuery}"`);
+            }
+
+            if (/^\d+$/.test(query)) {
+                searchFields.push(`_id = ${query}`);
+            }
+
+            const playerInfo = findPlayerAliases(query);
+            if (playerInfo.aliases && playerInfo.aliases.length > 1) {
+                for (const alias of playerInfo.aliases) {
+                    const escapedAlias = alias.replace(/"/g, '\\"');
+                    if (escapedAlias.toLowerCase() !== escapedQuery.toLowerCase()) {
+                        searchFields.push(`authors ~ "${escapedAlias}"`);
+                        if (['frhd', 'bhr', 'cr'].includes(type)) {
+                            searchFields.push(`username ~ "${escapedAlias}"`);
+                        }
+                    }
+                }
+            }
+
+            filterParts.push(`(${searchFields.join(' || ')})`);
+        }
     }
     
     if (author) {
         const playerInfo = findPlayerAliases(author);
-        if (playerInfo.aliases && playerInfo.aliases.length > 1) {
-            const aliasConditions = playerInfo.aliases.map(alias => {
-                const escaped = alias.replace(/"/g, '\\"');
-                return `username = "${escaped}" || authors ~ "\\"${escaped}\\""`;
-            }).join(' || ');
-            filterParts.push(`(${aliasConditions})`);
-        } else {
-            const escapedAuthor = author.replace(/"/g, '\\"');
-            filterParts.push(`(username = "${escapedAuthor}" || authors ~ "\\"${escapedAuthor}\\"")`);
-        }
+        const aliases = playerInfo.aliases && playerInfo.aliases.length > 0
+            ? playerInfo.aliases
+            : [author];
+
+        const aliasConditions = aliases.flatMap(alias => {
+            const escaped = alias.replace(/"/g, '\\"');
+            const conditions = [`authors ~ '"${escaped}"'`];
+
+            if (['frhd', 'bhr', 'cr'].includes(type)) {
+                conditions.push(`username = "${escaped}"`);
+            }
+
+            return conditions;
+        });
+
+        filterParts.push(`(${aliasConditions.join(' || ')})`);
     }
     
     return filterParts.length > 0 ? filterParts.join(' && ') : '';
@@ -1443,8 +1580,8 @@ function filterCachedTracks(tracks, query, author) {
                 return size >= min && size < max;
             });
         }
-        else if (query.match(/^type:(frhd|bhr|cr)$/i)) {
-            const filterType = query.match(/^type:(frhd|bhr|cr)$/i)[1].toLowerCase();
+        else if (query.match(/^type:(frhd|bhr|cr|tm|app)$/i)) {
+            const filterType = query.match(/^type:(frhd|bhr|cr|tm|app)$/i)[1].toLowerCase();
             filtered = filtered.filter(t => t.type === filterType);
         }
         else if (query.match(/^has:(description|votes|plays|favorites)$/i)) {
@@ -1469,27 +1606,46 @@ function filterCachedTracks(tracks, query, author) {
         else {
             const lowerQuery = query.toLowerCase();
             const playerInfo = findPlayerAliases(query);
-            const isPlayerSearch = playerInfo.aliases.length > 1 || 
-                playerLinks.some(u => u.aliases?.some(a => a.toLowerCase() === lowerQuery));
+            const isPlayerSearch = playerInfo.aliases && playerInfo.aliases.length > 1;
             
             if (isPlayerSearch) {
-                const aliasesToSearch = playerInfo.aliases.map(a => a.toLowerCase());
+                const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
+                
                 filtered = filtered.filter(t => {
-                    if (t.username && aliasesToSearch.includes(t.username.toLowerCase())) return true;
-                    if (t.authorsArray) {
-                        for (const a of t.authorsArray) {
-                            if (a && aliasesToSearch.includes(a.toLowerCase())) return true;
-                        }
-                    }
-                    if (t.authors) {
-                        for (const alias of aliasesToSearch) {
-                            if (t.authors.toLowerCase().includes(alias)) return true;
-                        }
-                    }
                     if (t.name?.toLowerCase().includes(lowerQuery)) return true;
                     if (t.description?.toLowerCase().includes(lowerQuery)) return true;
                     if (t.id?.toString().includes(query)) return true;
                     if (t.canonicalId?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.authorsArray && t.authorsArray.length > 0) {
+                        for (const trackAuthor of t.authorsArray) {
+                            if (!trackAuthor) continue;
+                            const trackAuthorLower = trackAuthor.toLowerCase();
+                            for (const alias of aliasesLower) {
+                                if (trackAuthorLower.includes(alias) || alias.includes(trackAuthorLower)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (t.authors) {
+                        const authorsLower = t.authors.toLowerCase();
+                        for (const alias of aliasesLower) {
+                            if (authorsLower.includes(alias)) {
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    if (t.username) {
+                        const usernameLower = t.username.toLowerCase();
+                        for (const alias of aliasesLower) {
+                            if (usernameLower.includes(alias) || alias.includes(usernameLower)) {
+                                return true;
+                            }
+                        }
+                    }
+                    
                     return false;
                 });
             } else {
@@ -1499,7 +1655,8 @@ function filterCachedTracks(tracks, query, author) {
                     t.authors?.toLowerCase().includes(lowerQuery) ||
                     t.description?.toLowerCase().includes(lowerQuery) ||
                     t.id?.toString().includes(query) ||
-                    t.canonicalId?.toLowerCase().includes(lowerQuery)
+                    t.canonicalId?.toLowerCase().includes(lowerQuery) ||
+                    t.authorsArray?.some(a => a?.toLowerCase().includes(lowerQuery))
                 );
             }
         }
@@ -1507,13 +1664,31 @@ function filterCachedTracks(tracks, query, author) {
     
     if (author) {
         const playerInfo = findPlayerAliases(author);
+        const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
+
         filtered = filtered.filter(t => {
-            if (t.username && findPlayerAliases(t.username).canonical === playerInfo.canonical) return true;
-            if (t.authorsArray) {
-                for (const a of t.authorsArray) {
-                    if (a && findPlayerAliases(a).canonical === playerInfo.canonical) return true;
+            if (t.authorsArray && t.authorsArray.length > 0) {
+                for (const trackAuthor of t.authorsArray) {
+                    if (!trackAuthor) continue;
+                    const trackAuthorLower = trackAuthor.toLowerCase();
+
+                    for (const alias of aliasesLower) {
+                        if (trackAuthorLower === alias) {
+                            return true;
+                        }
+                    }
                 }
             }
+
+            if (t.username) {
+                const usernameLower = t.username.toLowerCase();
+                for (const alias of aliasesLower) {
+                    if (usernameLower === alias) {
+                        return true;
+                    }
+                }
+            }
+
             return false;
         });
     }
@@ -1565,6 +1740,10 @@ app.get('/bhr/random', randomTrackRedirect('bhr'));
 app.get('/bhr/daily', dailyTrackRedirect('bhr'));
 app.get('/frhd/random', randomTrackRedirect('frhd'));
 app.get('/frhd/daily', dailyTrackRedirect('frhd'));
+app.get('/tm/random', randomTrackRedirect('tm'));
+app.get('/tm/daily', dailyTrackRedirect('tm'));
+app.get('/app/random', randomTrackRedirect('app'));
+app.get('/app/daily', dailyTrackRedirect('app'));
 
 async function frhdTxtFallback(trackId, filePath) {
     try {
@@ -1642,6 +1821,208 @@ app.get('/bhr/:id.txt', txtRouting(path.join(LOCAL_ROOT, 'bhr', 'trackcodes')));
 app.get('/bhr/:id.png', pngRouting(path.join(LOCAL_ROOT, 'bhr', 'thumbnails')));
 app.get('/frhd/:id.txt', txtRouting(path.join(LOCAL_ROOT, 'frhd', 'trackcodes'), frhdTxtFallback));
 app.get('/frhd/:id.png', pngRouting(path.join(LOCAL_ROOT, 'frhd', 'thumbnails'), frhdPngFallback));
+app.get('/tm/:id.txt', txtRouting(path.join(LOCAL_ROOT, 'tm', 'trackcodes')));
+app.get('/tm/:id.png', pngRouting(path.join(LOCAL_ROOT, 'tm', 'thumbnails')));
+app.get('/app/:id.txt', txtRouting(path.join(LOCAL_ROOT, 'app', 'trackcodes')));
+app.get('/app/:id.png', pngRouting(path.join(LOCAL_ROOT, 'app', 'thumbnails')));
+
+app.get('/t/:id.txt', async (req, res) => {
+    const id = req.params.id;
+    
+    const linked = trackLinks.find(l => l.canonical === id);
+    if (!linked || linked.tracks.length === 0) {
+        return res.status(404).send('Track code not found');
+    }
+    
+    const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
+    let primaryTrack = linked.tracks[0];
+    for (const priorityType of typePriority) {
+        const found = linked.tracks.find(t => t.type === priorityType);
+        if (found) {
+            primaryTrack = found;
+            break;
+        }
+    }
+    
+    const filePath = path.join(LOCAL_ROOT, primaryTrack.type, 'trackcodes', `${primaryTrack.id}.txt`);
+    
+    try {
+        const code = await fsPromises.readFile(filePath, 'utf8');
+        return res.type('text/plain').send(code);
+    } catch {
+        if (primaryTrack.type === 'frhd') {
+            const code = await frhdTxtFallback(primaryTrack.id, filePath);
+            if (code) return res.type('text/plain').send(code);
+        }
+        return res.status(404).send('Track code not found');
+    }
+});
+
+app.get('/t/:id.png', async (req, res) => {
+    const id = req.params.id;
+    
+    const linked = trackLinks.find(l => l.canonical === id);
+    if (!linked || linked.tracks.length === 0) {
+        return res.sendFile(path.join(__dirname, 'data', 'default-thumbnail.png'));
+    }
+    
+    const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
+    let primaryTrack = linked.tracks[0];
+    for (const priorityType of typePriority) {
+        const found = linked.tracks.find(t => t.type === priorityType);
+        if (found) {
+            primaryTrack = found;
+            break;
+        }
+    }
+    
+    const filePath = path.join(LOCAL_ROOT, primaryTrack.type, 'thumbnails', `${primaryTrack.id}.png`);
+    
+    try {
+        await fsPromises.access(filePath);
+        return res.sendFile(filePath);
+    } catch {
+        if (primaryTrack.type === 'frhd') {
+            const redirectUrl = await frhdPngFallback(primaryTrack.id);
+            if (redirectUrl) return res.redirect(302, redirectUrl);
+        }
+        return res.sendFile(path.join(__dirname, 'data', 'default-thumbnail.png'));
+    }
+});
+
+app.get('/t/:id', async (req, res) => {
+    const id = req.params.id;
+    
+    const linked = trackLinks.find(l => l.canonical === id);
+    if (!linked || linked.tracks.length === 0) {
+        return res.status(404).send('Track not found');
+    }
+    
+    const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
+    let primaryTrack = linked.tracks[0];
+    for (const priorityType of typePriority) {
+        const found = linked.tracks.find(t => t.type === priorityType);
+        if (found) {
+            primaryTrack = found;
+            break;
+        }
+    }
+    
+    const type = primaryTrack.type;
+    const trackId = primaryTrack.id;
+    
+    let trackData = {
+        id: trackId,
+        canonical: linked.canonical,
+        name: linked.name || `Track #${trackId}`,
+        authors: linked.authors?.join(', ') || 'Unknown',
+        authorsArray: linked.authors || [],
+        code: '',
+        type: type,
+        description: '',
+        published: '',
+        size: '',
+        forumUrl: '',
+        thumbnail: `/t/${linked.canonical}.png`,
+        permalink: `https://freerider.app/t/${linked.canonical}`,
+        badges: [...new Set(linked.tracks.map(t => t.type))]
+    };
+    
+    try {
+        const record = await pb.collection(type).getFirstListItem(`_id = ${trackId}`, {
+            requestKey: `track-${type}-${trackId}-${Date.now()}`
+        });
+        
+        if (record) {
+            const transformed = transformRecord(record, type);
+            const processed = processTrackWithLinks(transformed);
+            
+            let publishedDate = '';
+            if (record.published) {
+                const date = new Date(record.published);
+                if (!isNaN(date.getTime())) {
+                    publishedDate = date.toISOString().split('T')[0];
+                }
+            }
+            
+            let description = record.description || '';
+            if (!description) {
+                const frhdLink = linked.tracks.find(t => t.type === 'frhd');
+                if (frhdLink) {
+                    const cacheKey = `frhd-${frhdLink.id}`;
+                    const frhdMeta = linkedTrackStatsCache.get(cacheKey);
+                    if (frhdMeta && frhdMeta.description) {
+                        description = frhdMeta.description;
+                    }
+                }
+            }
+            
+            trackData = {
+                ...trackData,
+                ...processed,
+                canonical: linked.canonical,
+                name: linked.name || processed.name,
+                authorsArray: linked.authors || processed.authorsArray,
+                authors: linked.authors?.join(', ') || processed.authors,
+                pageId: `t-${linked.canonical}`,
+                sourceUrl: `/t/${linked.canonical}`,
+                description: description,
+                size: formatSize(parseInt(record.size) || 0),
+                published: publishedDate,
+                thumbnail: `/t/${linked.canonical}.png`,
+                permalink: `https://freerider.app/t/${linked.canonical}`,
+                badges: [...new Set(linked.tracks.map(t => t.type))]
+            };
+        }
+        
+        const codePath = path.join(LOCAL_ROOT, type, 'trackcodes', `${trackId}.txt`);
+        try {
+            trackData.code = await fsPromises.readFile(codePath, 'utf8');
+            trackData.code = trackData.code.trim();
+        } catch {
+            if (type === 'frhd') {
+                const code = await frhdTxtFallback(trackId, codePath);
+                if (code) trackData.code = code;
+            }
+        }
+        
+        const forumLink = await getForumLinkForTrack(type, trackId);
+        if (forumLink) {
+            trackData.forumUrl = forumLink.forumUrl;
+        }
+        
+    } catch (error) {
+        console.error(`Track ${linked.canonical} error:`, error.message);
+    }
+    
+    if (req.query.json === 'true') {
+        return res.json({
+            id: trackData.id,
+            canonical: trackData.canonical,
+            name: trackData.name,
+            authors: trackData.authors,
+            thumbnail: trackData.thumbnail,
+            type: trackData.type,
+            trackUrl: `/t/${linked.canonical}.txt`,
+            description: trackData.description,
+            published: trackData.published,
+            size: trackData.size,
+            upvotes: trackData.upvotes,
+            downvotes: trackData.downvotes,
+            plays: trackData.plays,
+            badges: trackData.badges,
+            permalink: trackData.permalink
+        });
+    }
+    
+    const renderedHtml = trackTemplate({
+        trackId: linked.canonical,
+        trackType: 't',
+        track: trackData
+    });
+    
+    res.status(200).send(renderedHtml);
+});
 
 function createTrackHandler(type) {
     return async (req, res) => {
@@ -1650,7 +2031,7 @@ function createTrackHandler(type) {
 
         const linked = findLinkedTracks(type, numericId);
         if (linked) {
-            const typePriority = ['cr', 'bhr', 'frhd'];
+            const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
             const typeIndex = typePriority.indexOf(type);
             
             for (let i = 0; i < typeIndex; i++) {
@@ -1784,6 +2165,8 @@ function createTrackHandler(type) {
 app.get('/cr/:id', createTrackHandler('cr'));
 app.get('/bhr/:id', createTrackHandler('bhr'));
 app.get('/frhd/:id', createTrackHandler('frhd'));
+app.get('/tm/:id', createTrackHandler('tm'));
+app.get('/app/:id', createTrackHandler('app'));
 
 app.get('/api/live-sessions', (req, res) => {
     const sessions = {};

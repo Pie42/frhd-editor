@@ -101,6 +101,7 @@ input[type="reset"],
 input[type="submit"],
 input[type="radio"],
 input[type="checkbox"] {
+  accent-color: #1884cf;
   cursor: pointer;
 }
 input[type="search"] {
@@ -10868,15 +10869,15 @@ legend body,
 
 .track-thumb .desc {
   max-width: 250px;
-  height: 28px;
+  height: 38px;
   margin: 0 auto;
   font-size: 12px;
   color: #000;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
@@ -10989,8 +10990,8 @@ legend body,
   background-color: #4a4a4a;
 }
 
-.track-type-badge.plus {
-  background-color: #9b59b6;
+.track-type-badge.app {
+  background-color: #a784c5
 }
 
 .track-type-badge.playlist {
@@ -11382,4 +11383,14 @@ legend body,
 .sort-value {
     color: #888;
     font-size: 11px;
+}
+
+.playlist-breadcrumb {
+    cursor: pointer;
+    color: #666;
+}
+
+.playlist-breadcrumb:hover {
+    color: #000;
+    text-decoration: underline;
 }

@@ -16,7 +16,7 @@
                     <!-- type filters -->
                     <div class="type-filters">
                         <strong>
-                            <% const types = ['db', 'frhd', 'bhr', 'cr', 'tm', 'plus']; %>
+                            <% const types = ['db', 'frhd', 'bhr', 'cr', 'app']; %>
                             <% types.forEach((t, i) => { %>
                                 <span class="track-type-filter" data-type="<%= t %>">
                                     <span class="type-filter-link"><%= t === 'plus' ? '+' : t.toUpperCase() %></span>
@@ -72,7 +72,7 @@
 const state = {
     // current view mode
     mode: 'tracks',        // 'tracks' | 'ghosts' | 'players'
-    type: '<%= type %>',   // 'db' | 'frhd' | 'bhr' | 'cr' | 'tm' | 'plus'
+    type: '<%= type %>',   // 'db' | 'frhd' | 'bhr' | 'cr' | 'tm' | 'plus' | 'app'
     playerPlatform: '<%= type === "user" || type === "playlist" ? "db" : type %>',
     
     // search and sort
@@ -112,7 +112,7 @@ function pluralize(count, singular, plural = null) {
 }
 
 function getBadgeText(type) {
-    return { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR' }[type] || type.toUpperCase();
+    return { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR', tm: 'TM', app: 'APP'}[type] || type.toUpperCase();
 }
 
 function handleThumbnailFallback(img) {
@@ -333,24 +333,72 @@ function setPlayerFilter(playerName) {
 }
 
 function setPlaylistFilter(playlistId) {
-    const playlist = playlistsData.find(p => p.id === playlistId);
+    const playlist = playlistsData.find(p => p.id === playlistId || p.canonical === playlistId);
     if (!playlist) return;
+
+    if (!state.playlistHistory) state.playlistHistory = [];
+    if (state.playlist && state.playlist !== playlistId) {
+        state.playlistHistory.push(state.playlist);
+    }
 
     state.playlist = playlistId;
     state.player = '';
     state.mode = 'tracks';
-    // or reset to 'db' to show all playlist tracks initially:
-    // state.type = 'db';
 
     clearFilterIndicators();
+    
+    let breadcrumb = '';
+    if (state.playlistHistory.length > 0) {
+        const parentId = state.playlistHistory[state.playlistHistory.length - 1];
+        const parent = playlistsData.find(p => p.id === parentId || p.canonical === parentId);
+        if (parent) {
+            breadcrumb = `<span class="playlist-breadcrumb" onclick="goToParentPlaylist()">${parent.name}</span> → `;
+        }
+    }
+    
     showFilterIndicator(
-        `<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount || 0, 'track')})`,
+        `${breadcrumb}<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount || 0, 'track')})`,
         'playlist'
     );
     updateFilterStyles();
     updateURL(true);
     resetAndFetch();
 }
+
+function goToParentPlaylist() {
+    if (!state.playlistHistory || state.playlistHistory.length === 0) {
+        clearFilter('playlist');
+        return;
+    }
+    
+    const parentId = state.playlistHistory.pop();
+    state.playlist = parentId;
+    
+    const playlist = playlistsData.find(p => p.id === parentId || p.canonical === parentId);
+    
+    clearFilterIndicators();
+    
+    let breadcrumb = '';
+    if (state.playlistHistory.length > 0) {
+        const grandparentId = state.playlistHistory[state.playlistHistory.length - 1];
+        const grandparent = playlistsData.find(p => p.id === grandparentId || p.canonical === grandparentId);
+        if (grandparent) {
+            breadcrumb = `<span class="playlist-breadcrumb" onclick="goToParentPlaylist()">${grandparent.name}</span> → `;
+        }
+    }
+    
+    if (playlist) {
+        showFilterIndicator(
+            `${breadcrumb}<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount || 0, 'track')})`,
+            'playlist'
+        );
+    }
+    
+    updateURL(true);
+    resetAndFetch();
+}
+
+window.goToParentPlaylist = goToParentPlaylist;
 
 function updatePlaylistIndicator() {
     if (!state.playlist) return;
@@ -386,7 +434,10 @@ function updatePlaylistIndicator() {
 
 function clearFilter(type) {
     if (type === 'player') state.player = '';
-    else if (type === 'playlist') state.playlist = '';
+    else if (type === 'playlist') {
+        state.playlist = '';
+        state.playlistHistory = [];
+    }
     
     clearFilterIndicators();
     updateURL(true);
@@ -402,6 +453,21 @@ function renderBadges(badges) {
         `<span class="track-type-badge ${type}">${getBadgeText(type)}</span>`
     ).join('');
 }
+
+/*function renderBadges(badges) {
+    if (!badges || badges.length === 0) return '';
+    
+    const typePriority = ['cr', 'bhr', 'frhd', 'app'];
+    let primaryBadge = badges[0];
+    for (const priorityType of typePriority) {
+        if (badges.includes(priorityType)) {
+            primaryBadge = priorityType;
+            break;
+        }
+    }
+    
+    return `<span class="track-type-badge ${primaryBadge}">${getBadgeText(primaryBadge)}</span>`;
+}*/
 
 function renderAuthorsHtml(authorsArray, fallbackAuthor) {
     if (authorsArray?.length > 0) {
@@ -424,11 +490,12 @@ function renderAuthorsHtml(authorsArray, fallbackAuthor) {
 }
 
 function renderTrackCard(track) {
-    const urlType = (track.urlType || track.type) === 'plus' ? 't' : (track.urlType || track.type);
+    const urlType = track.urlType || track.type;
     const urlId = track.urlId || track.slug || track.id;
     const trackUrl = `/${urlType}/${urlId}`;
+    const thumbUrl = `/${urlType}/${urlId}.png`;
     const badges = track.badges || [track.type];
-    const liveKey = `${track.urlType || track.type}/${urlId}`;
+    const liveKey = `${urlType}/${urlId}`;
     const liveBadge = liveSessions[liveKey] > 0 ? '<span class="live-badge">LIVE</span>' : '';
     const sortValue = getSortValueDisplay(track);
     const sortValueHtml = sortValue ? `<br><small style="color: #888;">${sortValue}</small>` : '';
@@ -440,12 +507,12 @@ function renderTrackCard(track) {
                     <div class="thumbnail">
                         <div class="badge-container">${renderBadges(badges)}</div>
                         ${liveBadge}
-                        <img class="track-thumbnail" src="${trackUrl}.png" alt="${track.name}"
+                        <img class="track-thumbnail" src="${thumbUrl}" alt="${track.name}"
                              loading="lazy" onerror="handleThumbnailFallback(this)">
                     </div>
                 </a>
                 <p class="desc">
-                    <a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
+                    <a href="${trackUrl}" class="track-link">${track.name}</a>
                     by ${renderAuthorsHtml(track.authorsArray, track.username || track.authors)}
                     ${sortValueHtml}
                 </p>
@@ -482,7 +549,7 @@ function renderGhostCard(ghost) {
                     </div>
                 </a>
                 <p class="desc">
-                    <a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${ghost.trackName}</a>
+                    <a href="${trackUrl}" class="track-link">${ghost.trackName}</a>
                     <br><small style="color: #888;">${ghost.ghostUsername}${ghost.isGuest ? ' (Guest)' : ''}</small>
                 </p>
             </div>
@@ -513,7 +580,11 @@ function renderAuthorCard(playerData) {
 
 function renderPlaylistCard(playlist) {
     const thumbnail = playlist.thumbnail || '/data/default-thumbnail.png';
-    const username = playlist.username || 'Unknown';
+    const username = playlist.username;
+    
+    const byLine = username && username !== 'Unknown' 
+        ? ` by <a href="#" class="player-link" data-player="${username}"><strong>${username}</strong></a>`
+        : '';
     
     return `
         <div class="track-item playlist-card" data-playlist-id="${playlist.id}">
@@ -530,8 +601,7 @@ function renderPlaylistCard(playlist) {
                 </a>
                 <p class="desc">
                     <a href="#" class="playlist-link" data-playlist-id="${playlist.id}" 
-                       style="color: inherit; text-decoration: none;"><strong>${playlist.name}</strong></a>
-                    by <a href="#" class="player-link" data-player="${username}"><strong>${username}</strong></a>
+                       style="color: inherit; text-decoration: none;"><strong>${playlist.name}</strong></a>${byLine}
                 </p>
             </div>
         </div>
@@ -636,7 +706,7 @@ async function fetchTracks(append = false) {
             trackGrid.insertAdjacentHTML('beforeend', html);
         } else {
             let prefix = '';
-            if (state.mode === 'tracks' && state.page === 1 && !state.player && !state.playlist) {
+            if (state.mode === 'tracks' && state.page === 1 && !state.player) {
                 prefix = await getSpecialCards();
             }
             trackGrid.innerHTML = prefix + html;
@@ -701,19 +771,30 @@ async function getSpecialCards() {
     let html = '';
     
     if (state.type === 'db') {
-        let filteredPlaylists = playlistsData;
+        let filteredPlaylists = [];
         
-        if (state.query) {
-            const q = state.query.toLowerCase();
-            filteredPlaylists = playlistsData.filter(p => 
-                p.name?.toLowerCase().includes(q) || 
-                p.description?.toLowerCase().includes(q) ||
-                p.username?.toLowerCase().includes(q)
-            );
+        if (state.playlist) {
+            const currentPlaylist = playlistsData.find(p => p.id === state.playlist || p.canonical === state.playlist);
+            if (currentPlaylist?.childPlaylists?.length > 0) {
+                filteredPlaylists = currentPlaylist.childPlaylists
+                    .map(child => playlistsData.find(p => p.id === child.id || p.canonical === child.canonical))
+                    .filter(Boolean);
+            }
+        } else {
+            filteredPlaylists = playlistsData.filter(p => p.show === true);
+            
+            if (state.query) {
+                const q = state.query.toLowerCase();
+                filteredPlaylists = filteredPlaylists.filter(p => 
+                    p.name?.toLowerCase().includes(q) || 
+                    p.description?.toLowerCase().includes(q) ||
+                    p.username?.toLowerCase().includes(q)
+                );
+            }
         }
         
         html += filteredPlaylists.map(renderPlaylistCard).join('');
-    } else if (['frhd', 'bhr', 'cr'].includes(state.type)) {
+    } /*else if (['frhd', 'bhr', 'cr', 'tm', 'app'].includes(state.type)) {
         if (!specialTracksCache[state.type]) {
             try {
                 const [daily, random] = await Promise.all([
@@ -729,7 +810,7 @@ async function getSpecialCards() {
         const { daily, random } = specialTracksCache[state.type];
         if (daily && state.sortBy === 'shuffle' && !state.query) html += renderSpecialTrackCard(daily, 'daily');
         if (random && state.sortBy === 'shuffle' && !state.query) html += renderSpecialTrackCard(random, 'random');
-    }
+    }*/
     
     return html;
 }
@@ -885,8 +966,10 @@ function handleGridClick(e) {
 
 function initializeLinkHijacking() {
     if (window.self === window.top) return;
+    if (window._linkHijackingInitialized) return;
+    window._linkHijackingInitialized = true;
 
-    const trackUrlRegex = /\/(frhd|bhr|cr|u)\/([a-zA-Z0-9_-]+)/i;
+    const trackUrlRegex = /\/(frhd|bhr|cr|tm|app|t|u)\/([a-zA-Z0-9_-]+)/i;
 
     document.getElementById('content').addEventListener('click', function(e) {
         if (e.defaultPrevented) return;
@@ -901,6 +984,11 @@ function initializeLinkHijacking() {
         
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
+
+        if (link.dataset.messageSent) return;
+        link.dataset.messageSent = 'true';
+        setTimeout(() => delete link.dataset.messageSent, 100);
 
         const message = {
             action: 'linkClicked',
@@ -943,7 +1031,7 @@ async function fetchLiveSessions() {
 
 async function fetchPlaylists() {
     try {
-        const data = await fetch('/api/playlists').then(r => r.json());
+        const data = await fetch('/api/playlists/all').then(r => r.json());
         playlistsData = data.playlists || [];
     } catch (e) {
         playlistsData = [];

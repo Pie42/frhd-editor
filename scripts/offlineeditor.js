@@ -4360,7 +4360,7 @@
                 }
               }
 
-              const typeIdMatch = e.value.match(/^(frhd|bhr|cr|u|plus|t)-(\d+)$/i);
+              const typeIdMatch = e.value.match(/^(frhd|bhr|cr|u|plus|t|app)-(\d+)$/i);
               if (typeIdMatch) {
                 const trackType = typeIdMatch[1].toLowerCase();
                 const trackId = typeIdMatch[2];
@@ -33762,7 +33762,7 @@
                   });
                 return;
               }
-              if (trackType === 'plus' || trackType === 't') {
+              if (trackType === 'plus' || trackType === 't' || trackType === 'app') {
                 const urlType = 't';
                 fetch(`/${urlType}/${trackId}?json=true`)
                   .then((response) => {
@@ -33870,6 +33870,8 @@
               }
             },
             addImportListener() {
+              if (this._importListenerAdded) return;
+              this._importListenerAdded = true;
               window.addEventListener('popstate', (event) => {
                 console.log('[PopState] Event triggered:', event.state);
 
@@ -33879,7 +33881,7 @@
                   this.loadTrackFromState(trackType, trackId);
                 } else {
                   const path = window.location.pathname;
-                  const match = path.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/);
+                  const match = path.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/);
 
                   if (match) {
                     const trackType = match[1];
@@ -33943,8 +33945,8 @@
                 trackName = hash.substring(1);
             } 
 
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/([a-zA-Z0-9_-]+)/);
+            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/)) {
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/);
               trackType = match[1];
               const idPart = match[2];
 
@@ -33958,14 +33960,14 @@
             }
 
             else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)\/(.+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)\/(.+)/);
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/(\d+)\/(.+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               const userName = match[3];
               trackName = `${trackType}-${trackId}`;
             }
             else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)/);
+              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/(\d+)/);
               trackType = match[1];
               trackId = parseInt(match[2], 10);
               trackName = `${trackType}-${trackId}`;
@@ -34357,7 +34359,7 @@
           }
 
           // Plus logic
-          if (trackType === 'plus' || trackType === 't') {
+          if (trackType === 'plus' || trackType === 't' || trackType === 'app') {
             console.log("Loading Plus track:", trackId);
             fetch(`/t/${trackId}?json=true`)
               .then((response) => {

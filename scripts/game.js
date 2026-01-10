@@ -30940,32 +30940,25 @@ class LiveRiderManager {
     const pm = this.scene.playerManager;
 
     pm.update = function () {
-  for (const player of this._players) {
-    const isLiveRider = player._liveRider;
-    const isCPGH = player._gamepad?.playbackFrames;
-    const isKeypress = player._gamepad?.playback && !isCPGH;
-    
-    console.log("[PM.update] Player ghost:", player._ghost, 
-                "liveRider:", isLiveRider, 
-                "CPGH:", !!isCPGH, 
-                "keypress:", isKeypress);
-    
-    if (isLiveRider || isCPGH) {
-      continue;
-    }
-    player.update();
-  }
-};
+      for (const player of this._players) {
+        const isLiveRider = player._liveRider;
+        const isCPGH = player._gamepad?.playbackFrames;
+        const isKeypress = player._gamepad?.playback && !isCPGH;
+        if (isLiveRider || isCPGH) {
+          continue;
+        }
+        player.update();
+      }
+    };
 
     pm.updateGamepads = function () {
-  for (const player of this._players) {
-    // Only skip live rider ghosts (they get updates from websocket)
-    if (player._liveRider) {
-      continue;
-    }
-    player._gamepad.update(player);
-  }
-};
+      for (const player of this._players) {
+        if (player._liveRider) {
+          continue;
+        }
+        player._gamepad.update(player);
+      }
+    };
 
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     this.ws = new WebSocket(`${protocol}//${location.host}`);

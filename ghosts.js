@@ -328,9 +328,6 @@ router.get('/', async (req, res) => {
     const trackLinksLookup = req.trackLinksLookup || new Map();
     const findPlayerAliases = req.findPlayerAliases || ((name) => ({ aliases: [name] }));
 
-    console.log('[Ghosts API] Request params:', { page, perPage, sortBy, query, trackType, player });
-    console.log('[Ghosts API] findPlayerAliases passed:', !!req.findPlayerAliases);
-
     try {
         let filter = '';
         const filterParts = [];
@@ -363,9 +360,7 @@ router.get('/', async (req, res) => {
         if (filterParts.length > 0) {
             filter = filterParts.join(' && ');
         }
-
-        console.log('[Ghosts API] Final filter:', filter || '(none)');
-
+        
         let sortField;
         switch (sortBy) {
             case 'time_ticks':
@@ -389,12 +384,6 @@ router.get('/', async (req, res) => {
             sort: sortField,
             requestKey: `ghosts-list-${page}-${Date.now()}`
         });
-
-        console.log('[Ghosts API] Results found:', result.items.length, 'of', result.totalItems);
-
-        if (result.items.length > 0) {
-            console.log('[Ghosts API] Usernames in results:', result.items.map(g => g.username));
-        }
 
         const tracksByType = { frhd: [], bhr: [], cr: [] };
         for (const ghost of result.items) {
