@@ -334,15 +334,18 @@ function findPlayerAliases(username) {
 // track links for cross-platform tracks
 let trackLinks = [];
 let trackLinksLookup = new Map();
+let trackRemixesLookup = new Map()
 
 async function loadTrackLinksFromDb() {
     console.log('Loading track links from PocketBase...');
     
     try {
         const records = await pb.collection('db').getFullList({
-            expand: 'frhd_id,bhr_id,cr_id,tm_id,app_id',
+            expand: 'frhd_id,bhr_id,cr_id,tm_id,app_id,remix_of',
             requestKey: `track-links-${Date.now()}`
         });
+
+        trackRemixesLookup.clear();
         
         trackLinks = records.map(record => {
             const tracks = [];
@@ -376,6 +379,24 @@ async function loadTrackLinksFromDb() {
                     tracks.push({ type: 'app', id: t._id });
                 }
             }
+
+            let remixOf = [];
+            if (record.expand?.remix_of && record.expand.remix_of.length > 0) {
+                for (const original of record.expand.remix_of) {
+                    remixOf.push({
+                        canonical: original.canonical,
+                        name: original.name
+                    });
+
+                    if (!trackRemixesLookup.has(original.canonical)) {
+                        trackRemixesLookup.set(original.canonical, []);
+                    }
+                    trackRemixesLookup.get(original.canonical).push({
+                        canonical: record.canonical,
+                        name: record.name
+                    });
+                }
+            }
             
             return {
                 canonical: record.canonical,
@@ -383,7 +404,8 @@ async function loadTrackLinksFromDb() {
                 authors: record.authors || [],
                 published: record.published || null,
                 description: record.description || null,
-                tracks: tracks
+                tracks: tracks,
+                remixOf: remixOf.length > 0 ? remixOf : null
             };
         });
         
@@ -400,8 +422,33 @@ async function loadTrackLinksFromDb() {
         console.error('Failed to load track links from PocketBase:', e.message);
         trackLinks = [];
         trackLinksLookup.clear();
+        trackRemixesLookup.clear();
     }
 }
+
+app.get('/api/remixes/:canonical', (req, res) => {
+    const canonical = req.params.canonical;
+    const remixes = trackRemixesLookup.get(canonical) || [];
+    
+    const remixTracks = remixes.map(remix => {
+        const linked = trackLinks.find(l => l.canonical === remix.canonical);
+        if (!linked || linked.tracks.length === 0) return null;
+        
+        for (const trackRef of linked.tracks) {
+            const cached = dbTracksCache[trackRef.type]?.find(t => t.id == trackRef.id);
+            if (cached) {
+                return processTrackWithLinks(cached);
+            }
+        }
+        return null;
+    }).filter(Boolean);
+    
+    res.json({
+        original: canonical,
+        remixes: remixTracks,
+        count: remixTracks.length
+    });
+});
 
 function findLinkedTracks(type, id) {
     const key = `${type}-${id}`;
@@ -451,7 +498,7 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-let linkedTrackStatsCache = new Map();
+/*let linkedTrackStatsCache = new Map();
 
 async function loadLinkedTrackStatsCache() {
     console.log('Loading stats for linked tracks...');
@@ -512,7 +559,7 @@ async function loadLinkedTrackStatsCache() {
     }
     
     console.log(`Linked track stats cache loaded: ${linkedTrackStatsCache.size} tracks`);
-}
+}*/
 
 function transformRecord(record, type) {
     let authorsArray = [];
@@ -582,6 +629,8 @@ function processTrackWithLinks(track) {
     let name = track.name;
     let description = track.description || '';
     let canonical = null;
+    let remixOf = null;
+    let remixCount = 0;
 
     let combinedUpvotes = track.type === 'cr' 
         ? parseNumericValue(track.votes) 
@@ -613,6 +662,15 @@ function processTrackWithLinks(track) {
         
         urlType = 't';
         urlId = linked.canonical;
+
+        if (linked.remixOf && linked.remixOf.length > 0) {
+            remixOf = linked.remixOf;
+        }
+
+        const remixes = trackRemixesLookup.get(linked.canonical);
+        if (remixes) {
+            remixCount = remixes.length;
+        }
         
         const typePriority = ['cr', 'tm', 'bhr', 'frhd', 'app'];
         for (const priorityType of typePriority) {
@@ -673,6 +731,8 @@ function processTrackWithLinks(track) {
         urlType,
         urlId,
         canonical,
+        remixOf,
+        remixCount,
         upvotes: formattedUpvotes,
         downvotes: formattedDownvotes,
         votes: track.type === 'cr' ? formattedUpvotes : null,
@@ -1002,6 +1062,7 @@ app.get('/api/players', (req, res) => {
     });
 });
 
+let linkedTrackStatsCache = new Map();
 let dbTracksCache = {
     frhd: [],
     bhr: [],
@@ -1012,7 +1073,97 @@ let dbTracksCache = {
     lastUpdated: null
 };
 
-async function loadDbTracksCache() {
+async function loadDbTracksAndStatsCache() {
+    console.log('Loading db tracks and stats cache...');
+    
+    const needed = { frhd: new Set(), bhr: new Set(), cr: new Set(), tm: new Set(), app: new Set() };
+    
+    for (const link of trackLinks) {
+        for (const track of link.tracks) {
+            if (needed[track.type]) {
+                needed[track.type].add(track.id);
+            }
+        }
+    }
+    
+    console.log(`Need: frhd=${needed.frhd.size}, bhr=${needed.bhr.size}, cr=${needed.cr.size}, tm=${needed.tm.size}, app=${needed.app.size}`);
+    
+    linkedTrackStatsCache.clear();
+    
+    for (const type of ['frhd', 'bhr', 'cr', 'tm', 'app']) {
+        if (needed[type].size === 0) {
+            dbTracksCache[type] = [];
+            console.log(`  ${type}: 0 tracks`);
+            continue;
+        }
+        
+        try {
+            const ids = Array.from(needed[type]);
+            const allRecords = [];
+            
+            for (let i = 0; i < ids.length; i += 100) {
+                const batch = ids.slice(i, i + 100);
+                const filter = batch.map(id => `_id = ${id}`).join(' || ');
+                
+                const records = await pb.collection(type).getFullList({
+                    filter: filter,
+                    requestKey: `db-cache-${type}-${i}-${Date.now()}`
+                });
+                
+                allRecords.push(...records);
+            }
+            
+            dbTracksCache[type] = allRecords.map(r => transformRecord(r, type));
+            
+            for (const record of allRecords) {
+                const cacheKey = `${type}-${record._id}`;
+                linkedTrackStatsCache.set(cacheKey, {
+                    upvotes: record.upvotes,
+                    downvotes: record.downvotes,
+                    votes: record.votes,
+                    plays: record.plays,
+                    favorites: record.favorites,
+                    description: record.description || ''
+                });
+            }
+            
+            console.log(`  ${type}: ${dbTracksCache[type].length} tracks`);
+        } catch (e) {
+            console.error(`Failed to load ${type} cache:`, e.message);
+            dbTracksCache[type] = [];
+        }
+    }
+    
+    let allTracks = [
+        ...dbTracksCache.frhd,
+        ...dbTracksCache.bhr,
+        ...dbTracksCache.cr,
+        ...dbTracksCache.tm,
+        ...dbTracksCache.app
+    ].map(processTrackWithLinks);
+    
+    const seenCanonical = new Set();
+    dbTracksCache.all = allTracks.filter(track => {
+        if (seenCanonical.has(track.canonicalId)) return false;
+        seenCanonical.add(track.canonicalId);
+        return true;
+    }).map(track => ({
+        ...track,
+        _searchName: track.name?.toLowerCase() || '',
+        _searchAuthors: track.authors?.toLowerCase() || '',
+        _searchDescription: track.description?.toLowerCase() || '',
+        _searchAuthorsArray: track.authorsArray?.map(a => a?.toLowerCase()).filter(Boolean) || [],
+        _searchCanonicalId: track.canonicalId?.toLowerCase() || '',
+        _searchUsername: track.username?.toLowerCase() || ''
+    }));
+    
+    buildSearchIndexes();
+    
+    dbTracksCache.lastUpdated = Date.now();
+    console.log(`DB tracks cache loaded: ${dbTracksCache.all.length} total tracks, ${linkedTrackStatsCache.size} stats cached`);
+}
+
+/*async function loadDbTracksCache() {
     console.log('Loading db tracks cache (show=true)...');
     
     for (const type of ['frhd', 'bhr', 'cr', 'tm', 'app']) {
@@ -1050,7 +1201,7 @@ async function loadDbTracksCache() {
     
     dbTracksCache.lastUpdated = Date.now();
     console.log(`DB tracks cache loaded: ${dbTracksCache.all.length} total tracks (from db collection)`);
-}
+}*/
 
 app.get('/api/db', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -1407,20 +1558,23 @@ function buildFilterString(options) {
     }
     
     if (query) {
-        const numericMatch = query.match(/^(upvotes|downvotes|votes|plays|size|favorites)(>|<|>=|<=|=)(\d+)$/i);
-        
+        const numericMatch = query.match(/^(upvotes|downvotes|votes|plays|size|favorites|id)(>|<|>=|<=|=)(\d+)$/i);
+
         if (numericMatch) {
             const field = numericMatch[1].toLowerCase();
             const operator = numericMatch[2];
             const value = parseInt(numericMatch[3]);
-            
+
             let dbField = field;
             if (type === 'cr' && (field === 'upvotes' || field === 'downvotes')) {
                 dbField = 'votes';
             }
-            
+            if (field === 'id') {
+                dbField = '_id';
+            }
+
             filterParts.push(`${dbField} ${operator} ${value}`);
-        } 
+        }
         else if (query.match(/^published(>|<|>=|<=|=)(\d{4}-\d{2}-\d{2})$/i)) {
             const dateMatch = query.match(/^published(>|<|>=|<=|=)(\d{4}-\d{2}-\d{2})$/i);
             const operator = dateMatch[1];
@@ -1445,6 +1599,16 @@ function buildFilterString(options) {
                 huge: 'size >= 1000000'
             };
             filterParts.push(`(${sizeRanges[sizeCategory]})`);
+        }
+        else if (query.match(/^remix(of)?:(.+)$/i)) {
+            const remixMatch = query.match(/^remix(of)?:(.+)$/i);
+            const searchTerm = remixMatch[2].toLowerCase();
+
+            filtered = filtered.filter(t => {
+                if (!t.remixOf) return false;
+                return t.remixOf.canonical.toLowerCase().includes(searchTerm) ||
+                    t.remixOf.name.toLowerCase().includes(searchTerm);
+            });
         }
         else {
             const escapedQuery = query.replace(/"/g, '\\"');
@@ -1505,14 +1669,47 @@ function buildFilterString(options) {
 function filterCachedTracks(tracks, query, author) {
     let filtered = [...tracks];
     
-    if (query) {
-        const numericMatch = query.match(/^(upvotes|downvotes|votes|plays|size|favorites)(>|<|>=|<=|=)(\d+)$/i);
+    if (author && !query) {
+        const playerInfo = findPlayerAliases(author);
+        const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
         
-        if (numericMatch) {
+        const matchingIndices = new Set();
+        for (const alias of aliasesLower) {
+            const indices = authorIndex.get(alias);
+            if (indices) {
+                indices.forEach(idx => matchingIndices.add(idx));
+            }
+        }
+        
+        if (matchingIndices.size > 0) {
+            return Array.from(matchingIndices).map(idx => dbTracksCache.all[idx]);
+        }
+        return [];
+    }
+    
+    if (query) {
+        if (/^\d+$/.test(query)) {
+            const found = filtered.filter(t => t.id?.toString() === query);
+            if (found.length > 0) {
+                filtered = found;
+            } else {
+                const lowerQuery = query.toLowerCase();
+                filtered = filtered.filter(t => 
+                    t._searchName.includes(lowerQuery) ||
+                    t._searchAuthors.includes(lowerQuery)
+                );
+            }
+        }
+        else if (query.match(/^id=(\d+)$/i)) {
+            const id = parseInt(query.match(/^id=(\d+)$/i)[1]);
+            return filtered.filter(t => t.id === id);
+        }
+        else if (query.match(/^(upvotes|downvotes|votes|plays|size|favorites|id)(>|<|>=|<=|=)(\d+)$/i)) {
+            const numericMatch = query.match(/^(upvotes|downvotes|votes|plays|size|favorites|id)(>|<|>=|<=|=)(\d+)$/i);
             const field = numericMatch[1].toLowerCase();
             const operator = numericMatch[2];
             const value = parseInt(numericMatch[3]);
-            
+
             filtered = filtered.filter(t => {
                 let trackValue;
                 if (field === 'upvotes' || field === 'votes') {
@@ -1525,8 +1722,10 @@ function filterCachedTracks(tracks, query, author) {
                     trackValue = parseInt(t.size) || 0;
                 } else if (field === 'favorites') {
                     trackValue = parseNumericValue(t.favorites) || 0;
+                } else if (field === 'id') {
+                    trackValue = parseInt(t.id) || 0;
                 }
-                
+
                 switch (operator) {
                     case '>': return trackValue > value;
                     case '<': return trackValue < value;
@@ -1561,10 +1760,6 @@ function filterCachedTracks(tracks, query, author) {
             const year = query.match(/^year=(\d{4})$/i)[1];
             filtered = filtered.filter(t => t.published && t.published.startsWith(year));
         }
-        else if (query.match(/^id=(\d+)$/i)) {
-            const id = parseInt(query.match(/^id=(\d+)$/i)[1]);
-            filtered = filtered.filter(t => t.id === id);
-        }
         else if (query.match(/^size:(tiny|small|medium|large|huge)$/i)) {
             const sizeCategory = query.match(/^size:(tiny|small|medium|large|huge)$/i)[1].toLowerCase();
             const sizeRanges = {
@@ -1584,14 +1779,16 @@ function filterCachedTracks(tracks, query, author) {
             const filterType = query.match(/^type:(frhd|bhr|cr|tm|app)$/i)[1].toLowerCase();
             filtered = filtered.filter(t => t.type === filterType);
         }
-        else if (query.match(/^has:(description|votes|plays|favorites)$/i)) {
-            const hasField = query.match(/^has:(description|votes|plays|favorites)$/i)[1].toLowerCase();
+        else if (query.match(/^has:(description|votes|plays|favorites|remix|remixes)$/i)) {
+            const hasField = query.match(/^has:(description|votes|plays|favorites|remix|remixes)$/i)[1].toLowerCase();
             filtered = filtered.filter(t => {
                 switch (hasField) {
                     case 'description': return t.description && t.description.trim() !== '';
                     case 'votes': return parseNumericValue(t.upvotes) > 0 || parseNumericValue(t.votes) > 0;
                     case 'plays': return parseNumericValue(t.plays) > 0;
                     case 'favorites': return parseNumericValue(t.favorites) > 0;
+                    case 'remix':
+                    case 'remixes': return t.remixCount > 0;
                     default: return true;
                 }
             });
@@ -1603,6 +1800,21 @@ function filterCachedTracks(tracks, query, author) {
         else if (query.toLowerCase() === 'linked' || query.toLowerCase() === 'multiplatform') {
             filtered = filtered.filter(t => t.badges && t.badges.length > 1);
         }
+        else if (query.toLowerCase() === 'remix' || query.toLowerCase() === 'remixes') {
+            filtered = filtered.filter(t => t.remixOf && t.remixOf.length > 0);
+        }
+        else if (query.match(/^remix(of)?:(.+)$/i)) {
+            const remixMatch = query.match(/^remix(of)?:(.+)$/i);
+            const searchTerm = remixMatch[2].toLowerCase();
+
+            filtered = filtered.filter(t => {
+                if (!t.remixOf || t.remixOf.length === 0) return false;
+                return t.remixOf.some(r =>
+                    r.canonical.toLowerCase().includes(searchTerm) ||
+                    r.name.toLowerCase().includes(searchTerm)
+                );
+            });
+        }
         else {
             const lowerQuery = query.toLowerCase();
             const playerInfo = findPlayerAliases(query);
@@ -1610,53 +1822,31 @@ function filterCachedTracks(tracks, query, author) {
             
             if (isPlayerSearch) {
                 const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
+                const matchingIndices = new Set();
                 
-                filtered = filtered.filter(t => {
-                    if (t.name?.toLowerCase().includes(lowerQuery)) return true;
-                    if (t.description?.toLowerCase().includes(lowerQuery)) return true;
-                    if (t.id?.toString().includes(query)) return true;
-                    if (t.canonicalId?.toLowerCase().includes(lowerQuery)) return true;
-                    if (t.authorsArray && t.authorsArray.length > 0) {
-                        for (const trackAuthor of t.authorsArray) {
-                            if (!trackAuthor) continue;
-                            const trackAuthorLower = trackAuthor.toLowerCase();
-                            for (const alias of aliasesLower) {
-                                if (trackAuthorLower.includes(alias) || alias.includes(trackAuthorLower)) {
-                                    return true;
-                                }
-                            }
-                        }
+                for (const alias of aliasesLower) {
+                    const indices = authorIndex.get(alias);
+                    if (indices) {
+                        indices.forEach(idx => matchingIndices.add(idx));
                     }
-                    
-                    if (t.authors) {
-                        const authorsLower = t.authors.toLowerCase();
-                        for (const alias of aliasesLower) {
-                            if (authorsLower.includes(alias)) {
-                                return true;
-                            }
-                        }
-                    }
-                    
-                    if (t.username) {
-                        const usernameLower = t.username.toLowerCase();
-                        for (const alias of aliasesLower) {
-                            if (usernameLower.includes(alias) || alias.includes(usernameLower)) {
-                                return true;
-                            }
-                        }
-                    }
-                    
+                }
+                
+                filtered = filtered.filter((t, idx) => {
+                    if (matchingIndices.has(idx)) return true;
+                    if (t._searchName.includes(lowerQuery)) return true;
+                    if (t._searchDescription.includes(lowerQuery)) return true;
+                    if (t._searchCanonicalId.includes(lowerQuery)) return true;
                     return false;
                 });
             } else {
                 filtered = filtered.filter(t => 
-                    t.name?.toLowerCase().includes(lowerQuery) ||
-                    t.username?.toLowerCase().includes(lowerQuery) ||
-                    t.authors?.toLowerCase().includes(lowerQuery) ||
-                    t.description?.toLowerCase().includes(lowerQuery) ||
+                    t._searchName.includes(lowerQuery) ||
+                    t._searchUsername.includes(lowerQuery) ||
+                    t._searchAuthors.includes(lowerQuery) ||
+                    t._searchDescription.includes(lowerQuery) ||
                     t.id?.toString().includes(query) ||
-                    t.canonicalId?.toLowerCase().includes(lowerQuery) ||
-                    t.authorsArray?.some(a => a?.toLowerCase().includes(lowerQuery))
+                    t._searchCanonicalId.includes(lowerQuery) ||
+                    t._searchAuthorsArray.some(a => a?.includes(lowerQuery))
                 );
             }
         }
@@ -1667,33 +1857,58 @@ function filterCachedTracks(tracks, query, author) {
         const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
 
         filtered = filtered.filter(t => {
-            if (t.authorsArray && t.authorsArray.length > 0) {
-                for (const trackAuthor of t.authorsArray) {
-                    if (!trackAuthor) continue;
-                    const trackAuthorLower = trackAuthor.toLowerCase();
-
-                    for (const alias of aliasesLower) {
-                        if (trackAuthorLower === alias) {
-                            return true;
-                        }
-                    }
-                }
+            for (const alias of aliasesLower) {
+                if (t._searchAuthorsArray.includes(alias)) return true;
+                if (t._searchUsername === alias) return true;
             }
-
-            if (t.username) {
-                const usernameLower = t.username.toLowerCase();
-                for (const alias of aliasesLower) {
-                    if (usernameLower === alias) {
-                        return true;
-                    }
-                }
-            }
-
             return false;
         });
     }
     
     return filtered;
+}
+
+
+let authorIndex = new Map();
+let nameIndex = new Map();
+let canonicalIndex = new Map();
+
+function buildSearchIndexes() {
+    console.log('Building search indexes...');
+    
+    authorIndex.clear();
+    nameIndex.clear();
+    canonicalIndex.clear();
+    
+    dbTracksCache.all.forEach((track, idx) => {
+        if (track.canonicalId) {
+            canonicalIndex.set(track.canonicalId.toLowerCase(), idx);
+        }
+        if (track.canonical) {
+            canonicalIndex.set(track.canonical.toLowerCase(), idx);
+        }
+        
+        track.authorsArray?.forEach(author => {
+            if (!author) return;
+            const lower = author.toLowerCase();
+            if (!authorIndex.has(lower)) authorIndex.set(lower, new Set());
+            authorIndex.get(lower).add(idx);
+        });
+        
+        if (track.username) {
+            const lower = track.username.toLowerCase();
+            if (!authorIndex.has(lower)) authorIndex.set(lower, new Set());
+            authorIndex.get(lower).add(idx);
+        }
+        
+        track.name?.toLowerCase().split(/\s+/).forEach(word => {
+            if (word.length < 2) return;
+            if (!nameIndex.has(word)) nameIndex.set(word, new Set());
+            nameIndex.get(word).add(idx);
+        });
+    });
+    
+    console.log(`  Search indexes built: ${authorIndex.size} authors, ${nameIndex.size} name words, ${canonicalIndex.size} canonicals`);
 }
 
 function randomTrackFromCache(type) {
@@ -2192,8 +2407,9 @@ async function refreshCaches() {
         console.log('Auto-refreshing caches...');
         await loadPlayerLinksFromDb();
         await loadTrackLinksFromDb();
-        await loadLinkedTrackStatsCache();
-        await loadDbTracksCache();
+        //await loadLinkedTrackStatsCache();
+        //await loadDbTracksCache();
+        await loadDbTracksAndStatsCache();
         await loadPlaylistsFromDb();
         console.log(`Cache refreshed: ${dbTracksCache.all.length} tracks, ${playerLinks.length} players, ${trackLinks.length} track links, ${playlistsCache.length} playlists`);
     } catch (error) {
@@ -2204,8 +2420,9 @@ async function refreshCaches() {
 async function startServer() {
     await loadPlayerLinksFromDb();
     await loadTrackLinksFromDb();
-    await loadLinkedTrackStatsCache();
-    await loadDbTracksCache();
+    //await loadLinkedTrackStatsCache();
+    //await loadDbTracksCache();
+    await loadDbTracksAndStatsCache();
     await loadPlaylistsFromDb();
 
     setupLiveRacing(server);

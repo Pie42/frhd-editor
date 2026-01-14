@@ -1495,17 +1495,17 @@ span.editorgui_icons-icon_all {
 }
 
 .editorgui_icons-icon_snapbottom {
-    width: 40px;
+    width: 34px;
     height: 40px;
     transform: scale(0.8);
-    background-position: -219px -46px;
+    background-position: -226px -46px;
 }
 
 .editorgui_icons-icon_snapbottom:hover {
-    width: 40px;
+    width: 34px;
     height: 40px;
     transform: scale(0.8);
-    background-position: -440px -88px;
+    background-position: -447px -88px;
 }
 
 .editorgui_icons-icon_snap_on {
@@ -1515,10 +1515,10 @@ span.editorgui_icons-icon_all {
 }
 
 .editorgui_icons-icon_snapbottom_on {
-    width: 40px;
+    width: 34px;
     height: 40px;
     transform: scale(0.8);
-    background-position: -219px -90px
+    background-position: -226px -90px
 }
 
 .editorgui_icons-icon_camera_lock_off {
@@ -1966,7 +1966,7 @@ span.editorgui_icons-icon_all {
 }
 
 .bottomMenu-button_object {
-    min-width: 100px;
+    min-width: 96px;
     padding-left: 15px;
     padding-right: 15px;
 }

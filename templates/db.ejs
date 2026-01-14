@@ -88,7 +88,8 @@ const state = {
     
     // filters
     player: '',
-    playlist: ''
+    playlist: '',
+    remixesOf: ''
 };
 
 let currentFetchController = null;
@@ -432,17 +433,30 @@ function updatePlaylistIndicator() {
         .catch(() => {});
 }
 
+function setRemixesFilter(canonical, trackName) {
+    state.remixesOf = canonical;
+    state.player = '';
+    state.playlist = '';
+    clearFilterIndicators();
+    showFilterIndicator(`Remixes of <strong>${trackName}</strong>`, 'remixes');
+    updateURL(true);
+    resetAndFetch();
+}
+
 function clearFilter(type) {
     if (type === 'player') state.player = '';
     else if (type === 'playlist') {
         state.playlist = '';
         state.playlistHistory = [];
     }
+    else if (type === 'remixes') state.remixesOf = '';
     
     clearFilterIndicators();
     updateURL(true);
     resetAndFetch();
 }
+
+window.setRemixesFilter = setRemixesFilter;
 
 window.setPlayerFilter = setPlayerFilter;
 window.setPlaylistFilter = setPlaylistFilter;
@@ -489,6 +503,16 @@ function renderAuthorsHtml(authorsArray, fallbackAuthor) {
     return `<a href="#" class="player-link" data-player="${author}"><strong>${author}</strong></a>`;
 }
 
+function renderRemixOfHtml(remixOf) {
+    if (!remixOf || remixOf.length === 0) return '';
+    
+    const links = remixOf.map(r => 
+        `<a href="/t/${r.canonical}" class="track-link" style="color: #888;">${r.name}</a>`
+    ).join(', ');
+    
+    return `<br><small style="color: #888;">Remix of ${links}</small>`;
+}
+
 function renderTrackCard(track) {
     const urlType = track.urlType || track.type;
     const urlId = track.urlId || track.slug || track.id;
@@ -499,6 +523,14 @@ function renderTrackCard(track) {
     const liveBadge = liveSessions[liveKey] > 0 ? '<span class="live-badge">LIVE</span>' : '';
     const sortValue = getSortValueDisplay(track);
     const sortValueHtml = sortValue ? `<br><small style="color: #888;">${sortValue}</small>` : '';
+
+    const remixHtml = renderRemixOfHtml(track.remixOf);
+    
+    let remixesHtml = '';
+    if (track.remixCount > 0 && track.canonical) {
+        const remixText = track.remixCount === 1 ? '1 remix' : `${track.remixCount} remixes`;
+        remixesHtml = `<br><small><a href="#" class="remixes-link" data-canonical="${track.canonical}" data-name="${track.name}" style="color: #888;">${remixText}</a></small>`;
+    }
     
     return `
         <div class="track-item" data-track-type="${track.type}">
@@ -514,6 +546,8 @@ function renderTrackCard(track) {
                 <p class="desc">
                     <a href="${trackUrl}" class="track-link">${track.name}</a>
                     by ${renderAuthorsHtml(track.authorsArray, track.username || track.authors)}
+                    ${remixHtml}
+                    ${remixesHtml}
                     ${sortValueHtml}
                 </p>
             </div>
@@ -641,9 +675,13 @@ function getEndpointAndParams() {
             break;
             
         default: // tracks
-            endpoint = '/api/db';
-            params.set('type', state.type);
-            if (state.player) params.set('author', state.player);
+            if (state.remixesOf) {
+                endpoint = `/api/remixes/${encodeURIComponent(state.remixesOf)}`;
+            } else {
+                endpoint = '/api/db';
+                params.set('type', state.type);
+                if (state.player) params.set('author', state.player);
+            }
             break;
     }
     
@@ -685,14 +723,20 @@ async function fetchTracks(append = false) {
         } else if (state.mode === 'players') {
             items = data.players || [];
             html = items.map(renderAuthorCard).join('');
+        } else if (state.remixesOf) {
+            items = data.remixes || [];
+            html = items.map(renderTrackCard).join('');
+            state.hasMore = false;
         } else {
-            items = data.tracks || [];
+            items = state.remixesOf ? (data.remixes || []) : (data.tracks || []);
             html = items.map(renderTrackCard).join('');
         }
-        
-        state.hasMore = data.pagination 
-            ? state.page < data.pagination.totalPages 
-            : !data.allLoaded;
+
+        if (!state.remixesOf) {
+            state.hasMore = data.pagination 
+                ? state.page < data.pagination.totalPages 
+                : !data.allLoaded;
+        }
         
         if (items.length === 0 && !append) {
             const typeLabel = state.mode === 'ghosts' ? 'ghosts' : state.mode === 'players' ? 'players' : 'tracks';
@@ -706,7 +750,7 @@ async function fetchTracks(append = false) {
             trackGrid.insertAdjacentHTML('beforeend', html);
         } else {
             let prefix = '';
-            if (state.mode === 'tracks' && state.page === 1 && !state.player) {
+            if (state.mode === 'tracks' && state.page === 1 && !state.player && !state.remixesOf) {
                 prefix = await getSpecialCards();
             }
             trackGrid.innerHTML = prefix + html;
@@ -905,6 +949,9 @@ window.addEventListener('popstate', (event) => {
 
 function handleSearch(e) {
     clearTimeout(handleSearch.timeout);
+    if (currentFetchController) {
+        currentFetchController.abort();
+    }
     handleSearch.timeout = setTimeout(() => {
         state.query = e.target.value;
         resetAndFetch();
@@ -942,6 +989,15 @@ function handleGridClick(e) {
     if (playlistLink) {
         e.preventDefault();
         setPlaylistFilter(playlistLink.dataset.playlistId);
+        return;
+    }
+
+    const remixesLink = e.target.closest('.remixes-link');
+    if (remixesLink) {
+        e.preventDefault();
+        const canonical = remixesLink.dataset.canonical;
+        const name = remixesLink.dataset.name;
+        setRemixesFilter(canonical, name);
         return;
     }
     
