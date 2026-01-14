@@ -2327,6 +2327,38 @@ app.post('/api/admin/upload-track-code', (req, res) => {
     res.json({ success: true, path: filePath });
 });
 
+app.post('/api/admin/upload-thumbnail', (req, res) => {
+    const adminKey = req.headers['x-admin-key'];
+    
+    if (adminKey !== process.env.ADMIN_KEY) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+    
+    const { type, id, extension, data } = req.body;
+    
+    if (!type || !id || !extension || !data) {
+        return res.status(400).json({ error: 'Missing type, id, extension, or data' });
+    }
+    
+    if (!['jpg', 'png'].includes(extension)) {
+        return res.status(400).json({ error: 'Invalid extension. Must be jpg or png' });
+    }
+    
+    const trackDir = `/var/data/${type}/thumbnails`;
+    
+    if (!fs.existsSync(trackDir)) {
+        fs.mkdirSync(trackDir, { recursive: true });
+    }
+    
+    const buffer = Buffer.from(data, 'base64');
+    const filePath = path.join(trackDir, `${id}.${extension}`);
+    fs.writeFileSync(filePath, buffer);
+    
+    console.log(`[Admin] Saved ${type} thumbnail ${id}.${extension} (${buffer.length} bytes)`);
+    
+    res.json({ success: true, path: filePath });
+});
+
 async function startServer() {
     try {
         await ensurePersistentRootExists();
