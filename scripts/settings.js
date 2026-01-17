@@ -157,6 +157,8 @@ var GameSettings = {
     },
     "pattern": {
         "globalGrid": false,
+        "experimentalSpeedups": true,
+        "experimentalStabilization": true,
     },
     "playHotkeys": {
         "up": [38, 87, 73],

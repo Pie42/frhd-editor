@@ -29617,6 +29617,7 @@ var v = window.setInterval(function() {
 //   - brushes using just a canvas (or two - one with the outline to be rendered and transparent everywhere else, and the mask)
 //     - might make this the default lol, it seems so much easier (pass in functions to draw these to the right size?)
 // - detect symmetry in patterns and allow for random (seed-based) rotations
+// - instead of using a grid of cells locked to the size of a pattern, scale them to a decent multiple (shoot for like 300x300) on small patterns - might also make long line detections easier?
 function loadPatternTool() {
   let zv = GameManager.game.currentScene.camera.position.factor(0),
       vector = (x = 0, y = 0) => {return zv.factor(0).add({x, y})};
@@ -29630,19 +29631,26 @@ function loadPatternTool() {
     constructor(x1, y1, x2, y2) {
       this.p1 = vector(x1, y1);
       this.p2 = vector(x2, y2);
+      if (y1 > y2) {
+        [this.p1, this.p2] = [this.p2, this.p1];
+        [x1, x2] = [x2, x1];
+      }
+      if (x1 > x2) {
+        [this.p1, this.p2] = [this.p2, this.p1];
+      }
       this.pp = this.p2.sub(this.p1);
       this.len = this.pp.len();
       this.angle = Math.atan2(this.pp.y, this.pp.x);
       // desired is segments every 5-20 pixels, but for performance, also have no fewer than 2 and no more than 40 segments
       // (2 has to be on the outside so the math.min doesn't end up producing 0 segments for short lines)
-      this.segments = Math.max(Math.min(Math.max(gcd(this.pp.x, this.pp.y), this.len / 20 | 0), this.len / 5 | 0, 40), 1);
+      this.segments = Math.max(Math.min(Math.max(gcd(this.pp.x, this.pp.y), this.len / 20 | 0), this.len / 2 | 0, 100), 1);
       this.segment = this.pp.factor(1 / this.segments);
       this.pixels = [];
     }
 
     getPixels(width) {
       let start = this.p1.x + this.p1.y * width;
-      this.pixels = [...Array(this.segments)].map(i => {
+      this.pixels = [...Array(this.segments)].map((_, i) => {
         let segment = this.segment.factor(i),
           offset = Math.floor(segment.x) + Math.floor(segment.y) * width;
         return start + offset;
@@ -29650,8 +29658,9 @@ function loadPatternTool() {
       this.pixels.push(this.p2.x + this.p2.y * width);
     }
 
-    testPixels(imageData) {
+    testPixels(imageData, offset) {
       let lines = [],
+        objects = [],
         state = false;
       for (let i = 0; i < this.pixels.length; i++) {
         if (!!imageData[this.pixels[i] * 4 + 3] != state) {
@@ -29663,11 +29672,14 @@ function loadPatternTool() {
       for (let i = 0; i < lines.length - 1; i += 2) {
         let p1 = this.p1.add(this.segment.factor(lines[i])),
           p2 = this.p1.add(this.segment.factor(lines[i + 1]));
-        this.addLine(p1, p2);
+        objects.push(this.addLine(p1, p2, offset));
       }
+      return objects;
     }
 
-    addLine(p1, p2) {}
+    addLine(p1, p2, offset) {
+      console.log('not implemented!', p1, p2, offset);
+    }
   }
 
   // idk oop
@@ -29675,11 +29687,45 @@ function loadPatternTool() {
     constructor(x1, y1, x2, y2) {
       super(x1, y1, x2, y2);
     }
+
+    addLine(p1, p2, origin) {
+      return GameManager.game.currentScene.track.addPhysicsLine(
+        p1.x + origin.x, p1.y + origin.y,
+        p2.x + origin.x, p2.y + origin.y
+      );
+    }
+  }
+
+  class PatternLineWrap {
+    constructor(line, point, edge) {
+      this.line = line;
+      this.point = point;
+      this.point.wrap = this;
+      this.edge = edge;
+    }
+
+    update(line, point) {
+      if (line.len > this.line.len) {
+        this.point.wrap = undefined;
+        this.line = line;
+        this.point = point;
+        this.point.wrap = this;
+        return true;
+      }
+      return false;
+    }
   }
 
   class PatternSceneryLine extends PatternLine {
     constructor(x1, y1, x2, y2) {
       super(x1, y1, x2, y2);
+    }
+
+    addLine(p1, p2, origin) {
+      return GameManager.game.currentScene.track.addSceneryLine(
+        p1.x + origin.x, p1.y + origin.y,
+        p2.x + origin.x, p2.y + origin.y
+      );
     }
   }
 
@@ -29697,7 +29743,7 @@ function loadPatternTool() {
   class PatternObject {}
 
   class PatternGridCell {
-    constructor(pattern, origin, x, y) {
+    constructor(pattern, origin, x, y, canvas) {
       // figure out if this is actually feasible to determine performance-wise
       this.full = false;
       this.x = x;
@@ -29705,26 +29751,46 @@ function loadPatternTool() {
       this.width = pattern.width;
       this.height = pattern.height;
       this.pos = vector(this.x * this.width, this.y * this.height);
+      this.width++;
+      this.height++;
       // might want to switch to a canvas pool
-      this.canvas = document.createElement('canvas');
+      this.canvas = canvas || document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d');
       this.ctx.imageSmoothingEnabled = false;
       this.canvas.width = this.width;
       this.canvas.height = this.height;
+      this.rendered = false;
+      this.cellAbove = undefined;
+      this.cellBelow = undefined;
+      this.cellLeft = undefined;
+      this.cellRight = undefined;
+      this.wrappingData = undefined;
+      this.pattern = pattern;
     }
 
     // pos should be the position of the top left of the brush,
     // even though the mask will track to be centered on the mouse
     stroke(brush, pos) {
+      if (this.full) return;
       let drawPos = pos.sub(this.pos),
         zoom = GameManager.game.currentScene.camera.zoom;
       this.ctx.drawImage(brush.mask, drawPos.x, drawPos.y, brush.mask.width * 2, brush.mask.height * 2);
+      if (!GameSettings.pattern.experimentalSpeedups || this.width > 100 || this.height > 100) return;
+      let data = this.canvas.toDataURL();
+      if (data == this.pattern.asFull) {
+        this.full = true;
+        this.ctx.clearRect(0, 0, this.width, this.height);
+      }
     }
 
     draw(ctx, tl, zoom) {
       let drawPos = this.pos.sub(tl).factor(zoom);
-      ctx.drawImage(this.canvas, drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
-      GameManager.game.canvas.getContext('2d').strokeRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      if (this.full) {
+        ctx.fillRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      } else {
+        ctx.drawImage(this.canvas, drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      }
+      //GameManager.game.canvas.getContext('2d').strokeRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
     }
   }
 
@@ -29732,6 +29798,7 @@ function loadPatternTool() {
     constructor() {
       this.origin = vector();
       this.cells = [];
+      this.canvasPool = [...Array(5)].map(i => document.createElement('canvas'));
       this.pattern = undefined;
       this.brush = undefined;
     }
@@ -29744,12 +29811,22 @@ function loadPatternTool() {
     }
 
     end() {
+      let objects = [];
       for (let i in this.cells) {
         let row = this.cells[i];
         for (let j in row) {
-          this.pattern.render(row[j]);
+          objects.push(...this.pattern.render(row[j], this.origin));
+          if (row[j].canvas) {
+            row[j].ctx.clearRect(0, 0, row[j].width, row[j].height);
+            this.canvasPool.push(row[j].canvas);
+          }
         }
       }
+      objects = objects.filter(i => i);
+      GameManager.game.currentScene.toolHandler.addActionToTimeline({
+        type: "add",
+        objects
+      });
     }
 
     // draw is the temporary fun rendering
@@ -29771,20 +29848,61 @@ function loadPatternTool() {
       ctx.globalCompositeOperation = 'source-in';
       ctx.fillStyle = this.pattern.canvPattern;
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      if (this.canvasPool.length < 5) {
+        this.canvasPool.push(document.createElement('canvas'));
+      } else if (this.canvasPool.length > 50) {
+        this.canvasPool.pop();
+      }
     }
 
     stroke(pos) {
       pos = pos.sub(this.origin).sub(vector(this.brush.mask.width, this.brush.mask.height));
       let start = vector(Math.floor(pos.x / this.pattern.width), Math.floor(pos.y / this.pattern.height)),
         end = vector(Math.floor((pos.x + this.brush.mask.width * 2) / this.pattern.width), Math.floor((pos.y + this.brush.mask.height * 2) / this.pattern.height));
-      for (let x = start.x; x <= end.x; x++) {
+      for (let x = start.x - 1; x <= end.x + 1; x++) {
         let row = this.cells[x] || (this.cells[x] = []);
-        for (let y = start.y; y <= end.y; y++) {
-          let cell = row[y] || (row[y] = new PatternGridCell(this.pattern, this.origin, x, y));
+        for (let y = start.y - 1; y <= end.y + 1; y++) {
+          let cell = row[y];
+          // sorry about the naming
+          if (!cell) {
+            row[y] = cell = new PatternGridCell(this.pattern, this.origin, x, y, this.canvasPool.pop());
+            let temp = row[y - 1];
+            if (temp) {
+              temp.cellBelow = cell;
+              cell.cellAbove = temp;
+            }
+            temp = row[y + 1];
+            if (temp) {
+              temp.cellAbove = cell;
+              cell.cellBelow = temp;
+            }
+            temp = this.cells[x - 1]?.[y];
+            if (temp) {
+              temp.cellRight = cell;
+              cell.cellLeft = temp;
+            }
+            temp = this.cells[x + 1]?.[y];
+            if (temp) {
+              temp.cellLeft = cell;
+              cell.cellRight = temp;
+            }
+          }
           cell.stroke(this.brush, pos);
+          if (cell.full) {
+            this.canvasPool.push(cell.canvas);
+            cell.canvas = undefined;
+          }
         }
       }
     }
+  }
+
+  function fpClose(a, b, eps = 0.001) {
+    return Math.abs(a - b) < eps;
+  }
+
+  function mod(a, b) {
+    return ((a % b) + b) % b;
   }
 
   class Pattern {
@@ -29798,7 +29916,21 @@ function loadPatternTool() {
       this.ctx = this.canvas.getContext('2d');
       this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
       this.transform = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+      this.objects = [];
+      this.edges = {
+        left: {},
+        right: {},
+        top: {},
+        bottom: {}
+      };
+      this.corners = {tl: [], tr: [], bl: [], br: []};
+      this.middle = {};
+      this.infLines = [];
+      this.wraps = new Map();
+      this.loops = new Map();
+      this.wrappingEdges = {};
       this.parse(p);
+      this.getLoopsAndWraps();
       this.origin = vector();
       this.scale = 1;
     }
@@ -29829,6 +29961,7 @@ function loadPatternTool() {
       for (let i of h) {
         this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
         this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+        this.addLine(new PatternPhysicsLine(i.x1 - this.min.x, i.y1 - this.min.y, i.x2 - this.min.x, i.y2 - this.min.y));
       }
       this.ctx.stroke();
       this.ctx.strokeStyle = '#aaa';
@@ -29836,9 +29969,176 @@ function loadPatternTool() {
       for (let i of s) {
         this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
         this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+        this.addLine(new PatternSceneryLine(i.x1 - this.min.x, i.y1 - this.min.y, i.x2 - this.min.x, i.y2 - this.min.y));
       }
       this.ctx.stroke();
       this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+      let fullCanvas = document.createElement('canvas');
+      fullCanvas.width = this.width + 1;
+      fullCanvas.height = this.height + 1;
+      let fullctx = fullCanvas.getContext('2d');
+      fullctx.fillStyle = '#000000';
+      fullctx.fillRect(0, 0, this.width + 1, this.height + 1);
+      this.asFull = fullCanvas.toDataURL();
+    }
+
+    /**
+     * 
+     * @param {PatternLine} line 
+     */
+    addLine(line) {
+      line.getPixels(this.width + 1);
+      for (let p of [line.p1, line.p2]) {
+        if (p.x == 0) {
+          if (p.y == 0) {
+            this.corners.tl.push([p, line]);
+            p.edge = 'top-left';
+            p.corner = true;
+          } else if (p.y == this.height) {
+            this.corners.bl.push([p, line]);
+            p.edge = 'bottom-left';
+            p.corner = true;
+          } else {
+            let e;
+            this.edges.left[p.y] = e = this.edges.left[p.y] || [];
+            e.push([p, line]);
+            p.edge = 'left';
+          }
+        } else if (p.x == this.width) {
+          if (p.y == 0) {
+            this.corners.tr.push([p, line]);
+            p.edge = 'top-right';
+            p.corner = true;
+          } else if (p.y == this.height) {
+            this.corners.br.push([p, line]);
+            p.edge = 'bottom-right';
+            p.corner = true;
+          } else {
+            let e;
+            this.edges.right[p.y] = e = this.edges.right[p.y] || [];
+            e.push([p, line]);
+            p.edge = 'right';
+          }
+        } else if (p.y == 0) {
+            let e;
+            this.edges.top[p.x] = e = this.edges.top[p.x] || [];
+            e.push([p, line]);
+            p.edge = 'top';
+        } else if (p.y == this.height) {
+            let e;
+            this.edges.bottom[p.x] = e = this.edges.bottom[p.x] || [];
+            e.push([p, line]);
+            p.edge = 'bottom';
+        } else {
+          p.edge = false;
+        }
+        // technically this is probably slower but y'know
+        if (GameSettings.pattern.experimentalSpeedups) {
+          let coords = `${p.x},${p.y}`,
+            m = this.middle[coords] || (this.middle[coords] = []),
+            found = false;
+          for (let i in m) {
+            let l = m[i];
+            patternFoundContinuousLine: 
+            if (fpClose(l.angle, line.angle)) {
+              let ind = this.objects.indexOf(l);
+              if (ind < 0) {
+                console.log('wtf', l, line);
+                break patternFoundContinuousLine;
+              } else {
+                let otherPoint = (p == line.p1) ? line.p2 : line.p1;
+                if (l.p1.x == p.x && l.p1.y == p.y && otherPoint == line.p1) {
+                  l.p1 = otherPoint;
+                } else if (l.p2.x == p.x && l.p2.y == p.y && otherPoint == line.p2) {
+                  l.p2 = otherPoint;
+                } else {
+                  // actually this should be fairly normal and prevent overlapping lines
+                  // from being converted into one line incorrectly
+                  console.log('wtf2', l, line, m, otherPoint);
+                  break patternFoundContinuousLine;
+                }
+                this.objects.splice(ind, 1);
+                // shouldn't ever happen but just in case
+                ind = this.infLines.indexOf(l);
+                if (ind >= 0) {
+                  this.infLines.splice(ind, 1);
+                }
+                line = new line.constructor(l.p1.x, l.p1.y, l.p2.x, l.p2.y);
+                line.getPixels(this.width + 1);
+                line.p1 = l.p1;
+                line.p2 = l.p2;
+              }
+              found = true;
+              break;
+            }
+          }
+          if (!found) m.push(line);
+        }
+      }
+      if (
+        line.p1.edge && line.p2.edge && 
+        !line.p1.edge.includes(line.p2.edge) && 
+        !line.p2.edge.includes(line.p1.edge)
+      ) {
+        line.isInf = true;
+        this.infLines.push(line);
+        if (line.p1.corner && line.p2.corner &&
+          fpClose(mod(line.angle, Math.PI / 2), 0)
+        ) {
+          // handle straight lines along an edge differently
+          line.p1.corner = false;
+          line.p2.corner = false;
+        }
+      }
+      this.objects.push(line);
+    }
+
+    getLoopsAndWraps() {
+      // since cells are parsed top-left to bottom-right,
+      // wrapping data should connect the lines extending out of the top and left to the cells above and to the left
+      let tl = {
+        "left": "left",
+        "right": "right",
+        "top": "top",
+        "bottom": "bottom",
+        "top-left": "tl",
+        "bottom-left": "bl",
+        "top-right": "tr",
+        "bottom-right": "br",
+      },
+        wm = {
+        "left": ["right"],
+        "top": ["bottom"],
+        "top-left": ["bottom-right", "top-right", "bottom-left"],
+        "bottom-left": ["top-right", "bottom-right", "top-left"],
+        "top-right": ["bottom-left", "top-left", "bottom-right"],
+      };
+      for (let i of this.infLines) {
+        for (let p of [i.p1, i.p2]) {
+          if (wm[p.edge]) {
+            // sorry
+            for (let e of wm[p.edge]) {
+              let isEdge = tl[e] == e,
+                axis = (e == "left" || e == "right") ? "y" : "x",
+                edge = isEdge ? this.edges[e][p[axis]] || [] : this.corners[tl[e]],
+                found = false;
+              for (let l of edge) {
+                let line = l[1],
+                  point = (mod(line.p1.x - p.x, this.width) == 0 &&
+                           mod(line.p1.y - p.y, this.height) == 0) ? line.p1 : line.p2;
+                if (point.wrap) continue;
+                if (typeof line == typeof i && fpClose(line.angle, i.angle)) {
+                  console.log('loop found!', l, i, p, point);
+                  this.loops.set(p, new PatternLineWrap(line, point, tl[e]));
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
+          }
+        }
+      }
     }
 
     setOrigin(x, y, keep = true) {
@@ -29859,7 +30159,26 @@ function loadPatternTool() {
     }
 
     // takes in a cell (with position information and the pattern mask) 
-    render(cell) {}
+    /**
+     * 
+     * @param {PatternGridCell} cell 
+     */
+    render(cell, origin) {
+      let objects = [];
+      if (cell.full) {
+        let pos = origin.add(cell.pos);
+        for (let i of this.objects) {
+          objects.push(i.addLine(i.p1, i.p2, pos));
+        }
+      } else {
+        let data = cell.ctx.getImageData(0, 0, cell.width, cell.height).data,
+          pos = origin.add(cell.pos);
+        for (let i of this.objects) {
+          objects.push(...i.testPixels(data, pos));
+        }
+      }
+      return objects;
+    }
   }
 
   // store brushes; allow for using a function to detect if a pixel / grid cell touches the brush
@@ -29895,6 +30214,104 @@ function loadPatternTool() {
     }
   }
 
+  // to-do: also take in the previous diff to add bezier smoothing
+  class PatternStroke {
+    constructor(start, end, oldDiff, size, stepsPerFrame, grid) {
+      this.start = start.factor(1);
+      this.end = end.factor(1);
+      this.size = size;
+      this.grid = grid;
+      this.diff = end.sub(start);
+      this.diffLen = this.diff.len();
+      if (!GameSettings.pattern.experimentalStabilization ||
+        this.diffLen == 0 || oldDiff.len() == 0) {
+        this.inflectionPoint = this.start.add(this.end).factor(0.5);
+      } else {
+        let midPoint = this.start.add(this.end).factor(0.5),
+          norm = this.diff.factor(1 / this.diffLen),
+          cross = this.diff.x * oldDiff.y - this.diff.y * oldDiff.x,
+          dot = Math.abs(this.diff.dot(oldDiff)),
+          rDot = Math.sqrt(Math.abs(cross)) * Math.sign(cross) * (1 - dot / (this.diffLen * oldDiff.len())) * 2;
+        norm.equ({x: -norm.y, y: norm.x});
+        this.inflectionPoint = midPoint.add(norm.factor(rDot));
+        //grid.stroke(this.inflectionPoint);
+        start.equ(this.inflectionPoint);
+        console.log(midPoint, norm, dot, rDot, cross);
+      }
+      this.stepsPerFrame = stepsPerFrame;
+      this.count = Math.floor(this.diffLen * 2 / this.size);
+      if (this.count == 0) {
+        this.done = true;
+        return 0;
+      }
+      if (this.count <= this.stepsPerFrame) {
+        let offset = this.diff.factor(1 / (this.count + 1)),
+          temp = 0;
+        for (let i = 0; i < this.count; i++) {
+          this.start.inc(offset);
+          this.grid.stroke(this.pointAt(temp));
+          temp += 1 / (this.count + 1);
+          //this.grid.stroke(this.start);
+        }
+        this.done = true;
+        return this.count;
+      }
+      this.actualSteps = [];
+      let offset = this.diff.factor(1 / this.stepsPerFrame),
+        temp = this.start.factor(1),
+        temp2 = 0;
+      for (let i = 0; i < this.stepsPerFrame; i++) {
+        //this.grid.stroke(temp);
+        this.grid.stroke(this.pointAt(temp2));
+        temp2 += 1 / this.stepsPerFrame;
+        this.actualSteps.push(temp.factor(1));
+        temp.inc(offset);
+      }
+      this.steps = Math.ceil(Math.log2(this.count) - Math.log2(this.stepsPerFrame)) + 1;
+      this.step = 1;
+      this.countInStep = 1;
+      this.done = false;
+      //console.log(this);
+    }
+
+    pointAt(t) {
+      let a = this.start.add(this.inflectionPoint.sub(this.start).factor(t)),
+        b = this.inflectionPoint.add(this.end.sub(this.inflectionPoint).factor(t));
+      return a.add(b.sub(a).factor(t));
+    }
+
+    update(numStrokes) {
+      let stepsThisFrame = Math.ceil(this.stepsPerFrame / numStrokes),
+        stepsThisStep = this.stepsPerFrame * (2 ** this.step),
+        offset = this.diff.factor(1 / this.stepsPerFrame / (2 ** this.step)),
+        start = this.start.add(offset.factor(this.countInStep)),
+        i = 0;
+      for (; i < stepsThisFrame; i++) {
+        //this.grid.stroke(start);
+        this.grid.stroke(this.pointAt(this.countInStep / stepsThisStep));
+        this.actualSteps.push(start.factor(1));
+        start.inc(offset.factor(2));
+        this.countInStep += 2;
+        if (this.countInStep >= stepsThisStep) {
+          this.step++;
+          if (this.step >= this.steps) {
+            this.done = true;
+            return true;
+          }
+          this.countInStep = 1;
+          stepsThisStep = this.stepsPerFrame * (2 ** this.step);
+          offset = this.diff.factor(1 / this.stepsPerFrame / (2 ** this.step));
+          start = this.start.add(offset.factor(1));
+        }
+      }
+      return false;
+    }
+
+    finish() {
+      this.update(0.001);
+    }
+  }
+
   class PatternTool {
     constructor(s) {
       // new line - since i can't seem to use super anymore, i can accomplish the same thing with a temporary variable
@@ -29915,7 +30332,7 @@ function loadPatternTool() {
       this.patterns = [];
       this.brushes = [];
       // represents the radius / half-width of the brush
-      this.size = 1000;
+      this.size = 100;
       // default rectangle brush
       this.addBrush('rect', (ctx, s) => ctx.rect(0, 0, s, s));
       // circular brush
@@ -29927,7 +30344,7 @@ function loadPatternTool() {
       this.grid = new PatternGrid();
 
       this.currentPattern = 0;
-      this.currentBrush = 0;
+      this.currentBrush = 1;
       this.mPos = vector();
       this.cameraPosWhenPressed = vector();
 
@@ -29939,10 +30356,16 @@ function loadPatternTool() {
       this.canvas.height = this.gameHeight;
 
       this.oldMouse = vector();
+      this.oldDiff = vector();
+      this.strokeBuffer = [];
+      this.stepsPerFrame = 0;
     }
 
     addPattern(name, p) {
       this.patterns.push(new Pattern(name, p));
+      if (this.currentPattern == this.patterns.length - 1) {
+        this.setBrushSize(this.size);
+      }
     }
 
     addBrush(name, pathFunc) {
@@ -29963,9 +30386,11 @@ function loadPatternTool() {
       );
       this.placePattern();
       this.mPos = mPos;
+      this.oldMouse.equ(mPos);
+      this.oldDiff = vector();
       this.down = true;
       this.cameraPosWhenPressed = this.scene.camera.position.factor(1);
-      console.log('cpwp', this.cameraPosWhenPressed);
+      //console.log('cpwp', this.cameraPosWhenPressed);
     }
 
     hold() {
@@ -29975,12 +30400,34 @@ function loadPatternTool() {
       let zoom = this.scene.camera.zoom,
         pattern = this.patterns[this.currentPattern],
         mPos = this.mouse.touch.real;
+      /*let diff = mPos.sub(this.oldMouse),
+        diffLen = diff.len();
+      if (diffLen >= this.size / 2) {
+        let count = Math.floor(diffLen * 2 / this.size),
+          offset = diff.factor(1 / (count + 1));
+        for (let i = 0; i < count; i++) {
+          this.oldMouse.inc(offset);
+          this.grid.stroke(this.oldMouse);
+        }
+      }//*/
+      let stroke = new PatternStroke(this.oldMouse, mPos, this.oldDiff, this.size, this.stepsPerFrame, this.grid);
+      if (stroke.done) {
+        //
+      } else {
+        this.strokeBuffer.push(stroke);
+      }//*/
       this.grid.stroke(mPos);
+      this.oldDiff = mPos.sub(this.oldMouse);
+      this.oldMouse.equ(mPos);
       //this.mPos.equ(this.mouse.touch.real);
     }
 
     release() {
       this.down = false;
+      for (let i of this.strokeBuffer) {
+        i.finish();
+      }
+      this.strokeBuffer = [];
       this.grid.end();
     }
 
@@ -30061,6 +30508,31 @@ function loadPatternTool() {
     update() {
       this.toolUpdate();
       this.resize();
+      if (this.down) {
+        for (let i = 0; i < this.strokeBuffer.length; i++) {
+          this.strokeBuffer[i].update(this.strokeBuffer.length)
+          if (this.strokeBuffer[i].done) {
+            this.strokeBuffer.splice(i, 1);
+            i--;
+          }
+        }
+      }
+    }
+
+    setBrushSize(size) {
+      let brush = this.brushes[this.currentBrush];
+      if (!brush) return;
+      this.size = size;
+      brush.resize(size);
+      let pattern = this.patterns[this.currentPattern];
+      if (!pattern) return;
+      this.stepsPerFrame = Math.sqrt(pattern.width * pattern.height / (size ** 2)) * 5;
+    }
+
+    setBrush(n) {
+      if (n >= this.brushes.length || n < 0) return;
+      this.currentBrush = n;
+      this.brushes[this.currentBrush].resize(this.size);
     }
   }
 
@@ -30070,6 +30542,6 @@ function loadPatternTool() {
   
   scene.toolHandler.registerTool(PatternTool);
 
-  //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01']) 
-  GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['DARKMATTER']) 
+  GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01']) 
+  //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['DARKMATTER']) 
 }
