@@ -1680,7 +1680,8 @@
           a = n.createClass({
             displayName: "Layer",
             getInitialState: function() {
-              return {open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default'};
+              // rerender just forces a rerender by toggling a property
+              return {open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default', rerender: false};
             },
             stopClickPropagation: function (e) {
               //e.preventDefault();
@@ -1730,45 +1731,116 @@
             },
             renderSettings: function() {
               let o = this.state.settingsOpen;
-              let l = GameManager.game.currentScene.track.currentLayer;
+              let t = GameManager.game.currentScene.track;
+              let l = t.currentLayer;
+              let c = t.layerIndex;
+              let num = t.layers.length;
               //this.state.name != l.name && this.setState({name: l.name});
-              return n.createElement("span", {},
-                n.createElement("button", {
-                  onClick: this.openSettings,
-                  className: "margin"
-                }, "Settings"),
-              o ? this.modal(
-                // name
-                // this does not work and i have no idea why; just use the console if you want to change a layer name
-                n.createElement('div', null,
-                //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
-                //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
-                n.createElement('button', {onClick: (e) => {this.stopClickPropagation(e); let n = prompt('What would you like to name this layer?', l.name); if (n) l.name = e.target.innerText = n;}}, l.name)
-                ),
-                // physics line color
-                n.createElement("label", {htmlFor: "layer-physics-color"}, "Physics line color: "),
-                n.createElement("input", {type: "color", id: "layer-physics-color", value: this.fixColor(l.physicsLineColor), onChange: (e) => {let c = e.target.value; l.physicsLineColor = c; l.update();}}),
-                // scenery line color
-                n.createElement("label", {htmlFor: "layer-scenery-color"}, "Scenery line color: "),
-                n.createElement("input", {type: "color", id: "layer-scenery-color", value: this.fixColor(l.sceneryLineColor), onChange: (e) => {let c = e.target.value; l.sceneryLineColor = c; l.update();}}),
-                // uses default colors
-                n.createElement("button", {onClick: l.resetColors.bind(l)}, "Reset colors"),
-                // show/hide
-                n.createElement("button", {
-                  onClick: (e) => {
-                    this.stopClickPropagation(e);
-                    if (!l) return;
-                    l.toggle();
-                    e.target.innerHTML = l.show ? "Hide" : "Show";
-                  }
-                }, GameManager.game.currentScene.track.currentLayer.show ? 'Hide': 'Show')
-                // end modal
-              ) : null);
+              return n.createElement(
+                  'span',
+                  {},
+                  n.createElement(
+                      'button',
+                      {
+                          onClick: this.openSettings,
+                          className: 'margin',
+                      },
+                      'Settings'
+                  ),
+                  o
+                      ? this.modal(
+                            // name
+                            // this does not work and i have no idea why; just use the console if you want to change a layer name
+                            n.createElement('div', null,
+                                //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
+                                //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
+                                n.createElement('button', {
+                                        onClick: (e) => {
+                                            this.stopClickPropagation(e);
+                                            let n = prompt(
+                                                'What would you like to name this layer?',
+                                                l.name
+                                            );
+                                            if (n)
+                                                l.name = e.target.innerText = n;
+                                        }}, l.name)
+                            ),
+                            // physics line color
+                            n.createElement('label', { htmlFor: 'layer-physics-color' }, 'Physics line color: '
+                            ),
+                            n.createElement('input', {
+                                type: 'color',
+                                id: 'layer-physics-color',
+                                value: this.fixColor(l.physicsLineColor),
+                                onChange: (e) => {
+                                    let c = e.target.value;
+                                    l.physicsLineColor = c;
+                                    l.update();
+                                },
+                            }),
+                            // scenery line color
+                            n.createElement('label', { htmlFor: 'layer-scenery-color' }, 'Scenery line color: '),
+                            n.createElement('input', {
+                                type: 'color',
+                                id: 'layer-scenery-color',
+                                value: this.fixColor(l.sceneryLineColor),
+                                onChange: (e) => {
+                                    let c = e.target.value;
+                                    l.sceneryLineColor = c;
+                                    l.update();
+                                },
+                            }),
+                            // uses default colors
+                            n.createElement('button', { onClick: l.resetColors.bind(l) }, 'Reset colors'),
+                            // reorder
+                            n.createElement('span', {}, 'Move ',
+                                n.createElement('button', {
+                                        disabled: !(c > 0),
+                                        onClick: (e) => {
+                                            this.stopClickPropagation(e);
+                                            if (!l) return;
+                                            t.layers.splice(c - 1, 0,
+                                                ...t.layers.splice(c, 1)
+                                            );
+                                            t.layerIndex--;
+                                            l.update();
+                                            this.setState({
+                                                rerender: !this.state.rerender,
+                                            })}}, 'Up'), ' / ',
+                                n.createElement('button', {
+                                        disabled: !(c < num - 1),
+                                        onClick: (e) => {
+                                            this.stopClickPropagation(e);
+                                            if (!l) return;
+                                            t.layers.splice(c + 1, 0,
+                                                ...t.layers.splice(c, 1)
+                                            );
+                                            t.layerIndex++;
+                                            l.update();
+                                            this.setState({
+                                                rerender: !this.state.rerender,
+                                            })}}, 'Down')),
+                            // show/hide
+                            n.createElement('button', {
+                                    onClick: (e) => {
+                                        this.stopClickPropagation(e);
+                                        if (!l) return;
+                                        l.toggle();
+                                        e.target.innerHTML = l.show
+                                            ? 'Hide'
+                                            : 'Show';
+                                    },
+                                }, GameManager.game.currentScene.track.currentLayer
+                                    .show ? 'Hide' : 'Show')
+                            // end modal
+                        )
+                      : null
+              );
             },
             renderControls: function() {
               let l = GameManager.game.currentScene.track.layers,
                 c = GameManager.game.currentScene.track.layerIndex,
-                f = c > 0,
+                f = !GameManager.game.currentScene.track.currentLayer.isDefault,
                 o = this.state.mergeOpen;
               return n.createElement("span", {},
                 n.createElement("button", {

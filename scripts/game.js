@@ -24040,21 +24040,32 @@
             (r.lineWidth = o);
           let g = {},
             f = [],
-            d = [...this.layers.values()], l;
-          for (let _l = d.length; --_l >= 0;) {
-            l = d[_l];
-            g[l.sceneryLineColor] = [];
-            g[l.physicsLineColor] = [];
+            d = [...this.layers.values()],
+            dd = this.scene.track.layers,
+            curr = this.scene.track.layerIndex,
+            l;
+          for (let _l = 0; _l < dd.length; _l++) {
+            l = dd[_l];
+            if (!l || !l.show || _l == curr || !this.layers.has(l)) continue;
+            g[`${l.sceneryLineColor}:${l.name}`] = [];
+            g[`${l.physicsLineColor}:${l.name}`] = [];
+          }
+          if (this.layers.has(this.scene.track.currentLayer)) {
+            l = this.scene.track.currentLayer;
+            if (l && l.show) {
+              g[`${l.sceneryLineColor}:${l.name}`] = [];
+              g[`${l.physicsLineColor}:${l.name}`] = [];
+            }
           }
           for (let _l = e.length; --_l >= 0;) {
             l = e[_l];
             if (l.remove) continue;
-            l.layer.show && g[l.layer.physicsLineColor].push(l);
+            l.layer.show && g[`${l.layer.physicsLineColor}:${l.layer.name}`].push(l);
           }
           for (let _l = s.length; --_l >= 0;) {
             l = s[_l];
             if (l.remove) continue;
-            l.layer.show && g[l.layer.sceneryLineColor].push(l);
+            l.layer.show && g[`${l.layer.sceneryLineColor}:${l.layer.name}`].push(l);
           }
           this.drawLines(g, t, r);
           for (let _l = d.length; --_l >= 0;) {
@@ -24151,7 +24162,7 @@
           let t, r, p, a, h, l, c;
           s.lineCap = s.lineJoin = "round";
           for (let b in o) {
-            s.strokeStyle = b;
+            s.strokeStyle = b.match(/(.+?):/)[1];
             t = o[b];
             s.beginPath();
             for (let u = t.length - 1; u >= 0; u--) {
@@ -24310,6 +24321,7 @@
             (this.needsCleaning = !1),
             (this.stampedAreas = []),
             this.createPowerupCache();
+            this.layers[0].isDefault = true;
         }
         createPowerupCache() {
           on.push(new ds(0, 0, 0, this)),
@@ -24326,14 +24338,17 @@
             on.push(new Li(0, 0, 0, this));
         }
         createLayer() {
-          this.layers.push(new Layer(this));
-          this.setLayerIndex(this.layers.length - 1);
-          this.currentLayer.name = `Layer ${this.layerIndex}`;
+          this.layers.unshift(new Layer(this));
+          this.layerIndex++;
+          this.setLayerIndex(0);
+          this.currentLayer.name = `Layer ${this.layers.length - 1}`;
         }
         setLayerIndex(i) {
           if (this.layers[i]) {
+            this.currentLayer.update();
             this.layerIndex = i;
             this.currentLayer = this.layers[i];
+            this.currentLayer.update();
           }
         }
         recachePowerups(t) {

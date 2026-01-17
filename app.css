@@ -3341,6 +3341,13 @@ div.layer-modal {
     border-radius: 2px;
     background-color: #e2e2e2;
     line-height: 3em;
+    display: flex;
+    flex-wrap: wrap;
+    white-space: nowrap;
+}
+
+.bottomMenu-button:active .layer-modal > * {
+    color: #000;
 }
 
 span:has(div.layer-modal) {
