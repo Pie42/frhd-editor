@@ -1,1 +1,0 @@
--18 1i 18 1i 1i 1i 1s 18 1s u 26 k 2g 0 2q 0 34 -k 34 -u 3e -u 3o -1i 42 -1i 42 -1s 4c -26 4c -2g 4m -2q 50 -3e 5a -3e 5k -42 5k -4c 5u -4c 68 -50 6i -50 6i -5a 6s -5k 6s -5u 76 -68 7g -6s 7q -6s 84 -7g 84 -7q 8e -7q 8o -8e 92 -8e 92 -8o 9c -92 9c -9c 9m -9m a0 -aa aa -aa ak -au ak -b8 au -b8 b8 -bs bi -bs bi -c6 e2 -c6,-18 1i -1i 1i##C 6i -5a,O c6 -au,T cq -cq#MTB
