@@ -12166,6 +12166,7 @@
           this.zoom !== this.desiredZoom &&
             ((this.scene.loading = !0),
             this._performZoom(),
+            this.scene.toolHandler.tools.pattern.zc(),
             this.zoom === this.desiredZoom && this.zoomComplete());
         }
         zoomToPoint(t) {
@@ -29646,6 +29647,7 @@ function loadPatternTool() {
       this.segments = Math.max(Math.min(Math.max(gcd(this.pp.x, this.pp.y), this.len / 20 | 0), this.len / 2 | 0, 100), 1);
       this.segment = this.pp.factor(1 / this.segments);
       this.pixels = [];
+      this.type = null;
     }
 
     getPixels(width) {
@@ -29686,6 +29688,7 @@ function loadPatternTool() {
   class PatternPhysicsLine extends PatternLine {
     constructor(x1, y1, x2, y2) {
       super(x1, y1, x2, y2);
+      this.type = 'physics';
     }
 
     addLine(p1, p2, origin) {
@@ -29719,6 +29722,7 @@ function loadPatternTool() {
   class PatternSceneryLine extends PatternLine {
     constructor(x1, y1, x2, y2) {
       super(x1, y1, x2, y2);
+      this.type = 'scenery';
     }
 
     addLine(p1, p2, origin) {
@@ -29915,7 +29919,7 @@ function loadPatternTool() {
       this.canvas = document.createElement('canvas');
       this.ctx = this.canvas.getContext('2d');
       this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
-      this.transform = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+      this.transform = new DOMMatrix([0.5, 0, 0, 0.5, 0, 0]);
       this.objects = [];
       this.edges = {
         left: {},
@@ -29926,6 +29930,7 @@ function loadPatternTool() {
       this.corners = {tl: [], tr: [], bl: [], br: []};
       this.middle = {};
       this.infLines = [];
+      this.renderLines = [];
       this.wraps = new Map();
       this.loops = new Map();
       this.wrappingEdges = {};
@@ -30090,6 +30095,21 @@ function loadPatternTool() {
           line.p2.corner = false;
         }
       }
+      if (line.p1.edge && line.p2.edge) {
+        if (line.p1.x == line.p2.x) {
+          this.renderLines.push({
+            p1: {x: this.width - line.p1.x, y: line.p1.y},
+            p2: {x: this.width - line.p2.x, y: line.p2.y},
+            type: line.type,
+          });
+        } else if (line.p1.y == line.p2.y) {
+          this.renderLines.push({
+            p1: {x: line.p1.x, y: this.height - line.p1.y},
+            p2: {x: line.p2.x, y: this.height - line.p2.y},
+            type: line.type,
+          });
+        }
+      }
       this.objects.push(line);
     }
 
@@ -30150,12 +30170,48 @@ function loadPatternTool() {
 
     setZoom(z, keep = true) {
       let oldZoom = this.transform.a;
-      this.transform.a = z;
-      this.transform.d = z;
+      //this.transform.a = z;
+      //this.transform.d = z;
       //this.transform.e /= oldZoom / z / 2;
       //this.transform.f /= oldZoom / z / 2;
-      this.canvPattern.setTransform(this.transform);
       if (keep) this.zoom = z;
+
+      let zoom = z * 2;
+      this.canvas.width = this.width * zoom;
+      this.canvas.height = this.height * zoom;
+      this.ctx.lineWidth = 2 * Math.max(zoom, 1);
+      // add in edge parsing and stuff in these loops
+      this.ctx.strokeStyle = '#000';
+      let isPhysics = true;
+      this.ctx.beginPath();
+      for (let i of this.objects) {
+        if (isPhysics && i.type == 'scenery') {
+          isPhysics = false;
+          this.ctx.stroke();
+          this.ctx.strokeStyle = '#aaa';
+          this.ctx.beginPath();
+        }
+        this.ctx.moveTo(i.p1.x * zoom, i.p1.y * zoom);
+        this.ctx.lineTo(i.p2.x * zoom, i.p2.y * zoom);
+      }
+      this.ctx.stroke();
+      // extra lines just for better, more cohesive rendering
+      this.ctx.strokeStyle = '#000';
+      isPhysics = true;
+      this.ctx.beginPath();
+      for (let i of this.renderLines) {
+        if (isPhysics && i.type == 'scenery') {
+          isPhysics = false;
+          this.ctx.stroke();
+          this.ctx.strokeStyle = '#aaa';
+          this.ctx.beginPath();
+        }
+        this.ctx.moveTo(i.p1.x * zoom, i.p1.y * zoom);
+        this.ctx.lineTo(i.p2.x * zoom, i.p2.y * zoom);
+      }
+      this.ctx.stroke();
+      this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+      this.canvPattern.setTransform(this.transform);
     }
 
     // takes in a cell (with position information and the pattern mask) 
@@ -30202,15 +30258,27 @@ function loadPatternTool() {
       if (this.size != size) {
         this.size = size;
         // resizing a canvas clears it
-        this.icon.width = this.icon.height =
+        //this.icon.width = this.icon.height = this.size + 8;
+        //this.ictx.transform(1, 0, 0, 1, 4, 4);
         this.mask.width = this.mask.height = this.size;
-        this.ictx.beginPath();
-        this.pathFunc(this.ictx, this.size);
-        this.ictx.stroke();
+        //this.ictx.beginPath();
+        //this.pathFunc(this.ictx, this.size);
+        //this.ictx.stroke();
+        this.zoom(GameManager.game.currentScene.camera.zoom);
         this.mctx.beginPath();
         this.pathFunc(this.mctx, this.size);
         this.mctx.fill();
       }
+    }
+
+    zoom(z) {
+      this.ictx.lineWidth = 1 + z / 2;
+      this.icon.width = this.icon.height = this.size * z * 2 + this.ictx.lineWidth * 4;
+      this.ictx.setTransform(2 * z, 0, 0, 2 * z, 4, 4);
+      this.ictx.beginPath();
+      this.pathFunc(this.ictx, this.size);
+      this.ictx.stroke();
+      this.ictx.setTransform(1, 0, 0, 1, 0, 0);
     }
   }
 
@@ -30435,7 +30503,7 @@ function loadPatternTool() {
       let pattern = this.patterns[this.currentPattern],
         brush = this.brushes[this.currentBrush],
         zoom = this.camera.zoom,
-        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.icon.width * zoom, y: brush.icon.height * zoom});
+        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.mask.width * zoom, y: brush.mask.height * zoom});
       if (!this.down && pattern) {
         t.globalCompositeOperation = "source-over";
         t.drawImage(brush.mask, pos.x, pos.y, brush.mask.width * zoom * 2, brush.mask.height * zoom * 2);
@@ -30444,7 +30512,7 @@ function loadPatternTool() {
         t.fillRect(0, 0, t.canvas.width, t.canvas.height);
       }
       t.globalCompositeOperation = "source-over";
-      t.drawImage(brush.icon, pos.x, pos.y, brush.icon.width * zoom * 2, brush.icon.height * zoom * 2);
+      t.drawImage(brush.icon, pos.x - 4, pos.y - 4, brush.icon.width, brush.icon.height);
     }
 
     draw() {
@@ -30475,6 +30543,13 @@ function loadPatternTool() {
         l = screen.height / t,
         n = vector(x - h * o + h / 2, y - l * a + l / 2);
       this.cameraPosWhenPressed.inc(n.sub(this.scene.camera.position));
+    }
+
+    zc() {
+      let brush = this.brushes[this.currentBrush];
+      if (brush) {
+        brush.zoom(this.scene.camera.zoom);
+      }
     }
 
     placePattern() {
