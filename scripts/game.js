@@ -29650,14 +29650,16 @@ function loadPatternTool() {
       this.type = null;
     }
 
-    getPixels(width) {
-      let start = this.p1.x + this.p1.y * width;
+    // width should include additional width from the padding
+    // (paddingOffset is only the top left)
+    getPixels(width, paddingOffset = {x: 0, y: 0}) {
+      let start = this.p1.x + paddingOffset.x + (this.p1.y + paddingOffset.y) * width;
       this.pixels = [...Array(this.segments)].map((_, i) => {
         let segment = this.segment.factor(i),
           offset = Math.floor(segment.x) + Math.floor(segment.y) * width;
         return start + offset;
       });
-      this.pixels.push(this.p2.x + this.p2.y * width);
+      this.pixels.push(this.p2.x + paddingOffset.x + (this.p2.y + paddingOffset.y) * width);
     }
 
     testPixels(imageData, offset) {
@@ -29838,8 +29840,14 @@ function loadPatternTool() {
       ctx.globalCompositeOperation = 'source-over';
       let zoom = camera.zoom,
         tl = vector(camera.position.x - screen.size.x / zoom / 2 - this.origin.x, camera.position.y - screen.size.y / zoom / 2 - this.origin.y),
-        start = vector(Math.floor((camera.position.x - this.origin.x - screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y - screen.size.y / zoom / 2) / this.pattern.height)),
-        end = vector(Math.floor((camera.position.x - this.origin.x + screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y + screen.size.y / zoom / 2) / this.pattern.height));
+        start = vector(
+          Math.floor((camera.position.x - this.origin.x - screen.size.x / zoom / 2) / this.pattern.width), 
+          Math.floor((camera.position.y - this.origin.y - screen.size.y / zoom / 2) / this.pattern.height)
+        ),
+        end = vector(
+          Math.floor((camera.position.x - this.origin.x + screen.size.x / zoom / 2) / this.pattern.width), 
+          Math.floor((camera.position.y - this.origin.y + screen.size.y / zoom / 2) / this.pattern.height)
+        );
       for (let x = start.x; x <= end.x; x++) {
         let row = this.cells[x];
         if (!row) continue;
@@ -29931,6 +29939,9 @@ function loadPatternTool() {
       this.middle = {};
       this.infLines = [];
       this.renderLines = [];
+      this.margins = [0, 0, 0, 0];
+      this.offset = vector();
+      this.renderOffset = vector();
       this.wraps = new Map();
       this.loops = new Map();
       this.wrappingEdges = {};
@@ -29958,8 +29969,8 @@ function loadPatternTool() {
       }
       this.width = this.max.x - this.min.x;
       this.height = this.max.y - this.min.y;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
+      this.canvas.width = this.rawWidth = this.width;
+      this.canvas.height = this.rawHeight = this.height;
       // add in edge parsing and stuff in these loops
       this.ctx.strokeStyle = '#000';
       this.ctx.beginPath();
@@ -30170,18 +30181,27 @@ function loadPatternTool() {
 
     setZoom(z, keep = true) {
       let oldZoom = this.transform.a;
+      let different = this._zoom != z * 2;
       //this.transform.a = z;
       //this.transform.d = z;
       //this.transform.e /= oldZoom / z / 2;
       //this.transform.f /= oldZoom / z / 2;
       if (keep) this.zoom = z;
+      this._zoom = z * 2;
+      different && this.redraw();
+    }
 
-      let zoom = z * 2;
+    redraw() {
+      let zoom = this._zoom,
+        o = this.offset,
+        v = vector(this.margins[2], this.margins[3]),
+        m = o.add(v);
       this.canvas.width = this.width * zoom;
       this.canvas.height = this.height * zoom;
       this.ctx.lineWidth = 2 * Math.max(zoom, 1);
       // add in edge parsing and stuff in these loops
       this.ctx.strokeStyle = '#000';
+      this.ctx.lineCap = 'round';
       let isPhysics = true;
       this.ctx.beginPath();
       for (let i of this.objects) {
@@ -30191,11 +30211,12 @@ function loadPatternTool() {
           this.ctx.strokeStyle = '#aaa';
           this.ctx.beginPath();
         }
-        this.ctx.moveTo(i.p1.x * zoom, i.p1.y * zoom);
-        this.ctx.lineTo(i.p2.x * zoom, i.p2.y * zoom);
+        //this.ctx.moveTo(mod(o.x + i.p1.x, this.width + 1) * zoom, mod(o.y + i.p1.y, this.height + 1) * zoom);
+        //this.ctx.lineTo(mod(o.x + i.p2.x, this.width + 1) * zoom, mod(o.y + i.p2.y, this.height + 1) * zoom);
+        this.ctx.moveTo(mod(i.p1.x, this.width + 1) * zoom, mod(i.p1.y, this.height + 1) * zoom);
+        this.ctx.lineTo(mod(i.p2.x, this.width + 1) * zoom, mod(i.p2.y, this.height + 1) * zoom);
       }
       this.ctx.stroke();
-      // extra lines just for better, more cohesive rendering
       this.ctx.strokeStyle = '#000';
       isPhysics = true;
       this.ctx.beginPath();
@@ -30206,12 +30227,42 @@ function loadPatternTool() {
           this.ctx.strokeStyle = '#aaa';
           this.ctx.beginPath();
         }
-        this.ctx.moveTo(i.p1.x * zoom, i.p1.y * zoom);
-        this.ctx.lineTo(i.p2.x * zoom, i.p2.y * zoom);
+        let pointIsX;
+        if (!((i.p1.x && i.p1.y) || (i.p2.x && i.p2.y))) {
+          pointIsX = !(i.p1.x || i.p2.x);
+          this.ctx.moveTo((i.p1.x - m.x * pointIsX) * zoom, (i.p1.y - m.y * !pointIsX) * zoom);
+          this.ctx.lineTo((i.p2.x - m.x * pointIsX) * zoom, (i.p2.y - m.y * !pointIsX) * zoom);
+        } else {
+          pointIsX = !!(i.p1.x == this.rawWidth && i.p2.x == this.rawWidth);
+          this.ctx.moveTo((i.p1.x + m.x * pointIsX) * zoom, (i.p1.y + m.y * !pointIsX) * zoom);
+          this.ctx.lineTo((i.p2.x + m.x * pointIsX) * zoom, (i.p2.y + m.y * !pointIsX) * zoom);
+        }
+        // draw in corners if they seem necessary
+        for (let p of [i.p1, i.p2]) {
+          if (mod(p.x, this.rawWidth) == mod(p.y, this.rawHeight)) {
+            this.ctx.moveTo(pointIsX ^ (p.x == this.rawWidth) ? -0.5 * zoom : (this.width + 0.5) * zoom, !pointIsX ^ (p.y == this.rawHeight) ? -0.5 * zoom : (this.height + 0.5) * zoom);
+            this.ctx.arc(pointIsX ^ (p.x == this.rawWidth) ? -0.5 * zoom : (this.width + 0.5) * zoom, !pointIsX ^ (p.y == this.rawHeight) ? -0.5 * zoom : (this.height + 0.5) * zoom, zoom / 2, 0, 2 * Math.PI);
+          }
+        }
       }
       this.ctx.stroke();
       this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
       this.canvPattern.setTransform(this.transform);
+    }
+
+    // [left, top, right, bottom]
+    setMargins(m) {
+      let offset = vector(m[0], m[1]);
+      this.width = this.canvas.width = this.rawWidth + m[0] + m[2];
+      this.height = this.canvas.height = this.rawHeight + m[1] + m[3];
+      for (let i of this.objects) {
+        i.getPixels(this.width + 1, offset);
+      }
+      this.offset = offset;
+      //this.offset = vector(m[0] + m[2], m[1] + m[3])
+      this.renderOffset = vector(-m[0] - m[2], -m[1] - m[3]);
+      this.margins = m;
+      this.redraw();
     }
 
     // takes in a cell (with position information and the pattern mask) 
@@ -30492,6 +30543,9 @@ function loadPatternTool() {
 
     release() {
       this.down = false;
+      let pattern = this.patterns[this.currentPattern];
+      if (pattern)
+        pattern.setZoom(this.scene.camera.zoom, !this.down);
       for (let i of this.strokeBuffer) {
         i.finish();
       }
@@ -30503,7 +30557,7 @@ function loadPatternTool() {
       let pattern = this.patterns[this.currentPattern],
         brush = this.brushes[this.currentBrush],
         zoom = this.camera.zoom,
-        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.mask.width * zoom, y: brush.mask.height * zoom});
+        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.mask.width * zoom, y: brush.mask.height * zoom}).sub(pattern.renderOffset.factor(zoom));
       if (!this.down && pattern) {
         t.globalCompositeOperation = "source-over";
         t.drawImage(brush.mask, pos.x, pos.y, brush.mask.width * zoom * 2, brush.mask.height * zoom * 2);
@@ -30608,6 +30662,19 @@ function loadPatternTool() {
       if (n >= this.brushes.length || n < 0) return;
       this.currentBrush = n;
       this.brushes[this.currentBrush].resize(this.size);
+    }
+
+    get settings() {
+      let brush = this.brushes[this.currentBrush],
+        pattern = this.patterns[this.currentPattern];
+    }
+
+    set settings(o) {
+      for (let i in o) {
+        switch (i) {
+          //
+        }
+      }
     }
   }
 

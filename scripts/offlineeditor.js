@@ -349,6 +349,7 @@
           xx = e("./selectbottomtooloptions"),
           xxx = e("./snap"),
           xxxx = e("./object"),
+          pattern = e("./pattern"),
           s = e("./eraserbottomtooloptions"),
           l = e("./camerabottomtooloptions"),
           c = e("./straightlinebottomtooloptions"),
@@ -410,6 +411,9 @@
                 case "select":
                   f = n.createElement(xx, { options: t });
                   break;
+                case "pattern":
+                  f = n.createElement(pattern, { options: t });
+                  break;
                 case "camera":
                   f = n.createElement(l, { options: t });
               }
@@ -452,6 +456,7 @@
         "./eraserbottomtooloptions": 9,
         "./grid": 10,
         "./object": 910,
+        "./pattern": 907,
         "./powerupbottomtooloptions": 11,
         "./straightlinebottomtooloptions": 12,
         "./vehicle": 13,
@@ -1610,10 +1615,98 @@
             
           }
         });
-      t.exports = a;
+        t.exports = a;
       }, {
         react: 230
       }],
+    907: [function (e, t) {
+      var n = e("react"),
+        a = n.createClass({
+          displayName: "PatternBottomToolOptions",
+          getInitialState: function() {
+            return { importPatternOpen: false, importBrushOpen: false, settingsOpen: false };
+          },
+          stopClickPropagation: function (e) {
+            //e.preventDefault();
+            e.stopPropagation();
+          },
+          toggleImportPattern: function() {
+            this.setState({ importPatternOpen: !this.state.importPatternOpen });
+          },
+          toggleImportBrush: function() {
+            this.setState({ importBrushOpen: !this.state.importBrushOpen });
+          },
+          toggleOptions: function() {
+            this.setState({ settingsOpen: !this.state.settingsOpen });
+          },
+          modalColumn: function(c) {
+            let itemFunc = i => {
+              let tag = i.t;
+              if (!tag) return i;
+              delete i.t;
+              let c = [];
+              if (i.c) {
+                c = i.c.map(itemFunc);
+                delete i.c;
+              }
+              return n.createElement(tag, i, ...c)
+            };
+            return n.createElement("div", {
+              className: "pattern-modal_column"
+            }, ...c.map(itemFunc))
+          },
+          modal: function(m) {
+            return n.createElement("div", {
+              className: "pattern-modal",
+              onClick: this.stopClickPropagation,
+            }, ...m.map(this.modalColumn))
+          },
+          renderSettings: function() {
+            return !this.state.settingsOpen ? null :
+            this.modal([
+              [
+                {t: 'p', style: {fontSize: '1.5em'}, c: ['Pattern']}, 
+                {t: 'label', htmlFor: 'pattern-mode', c: ['Grid Mode: ']}, 
+                {t: 'button', id: 'pattern-mode', title: 'GLOBAL means that the pattern is contained on a track-wide grid, so consecutive strokes will line up; LOCAL means the grid is based around the starting point of the stroke', onClick: () => (GameSettings.pattern.globalGrid = !GameSettings.pattern.globalGrid), c: [GameSettings.pattern.globalGrid ? "GLOBAL" : "LOCAL"]}
+              ]
+            ]);
+          },
+          render: function() {
+            let b = this.state.importBrushOpen,
+              p = this.state.importPatternOpen,
+              s = this.state.settingsOpen;
+            return n.createElement("div", {
+              className: "bottomToolOptions bottomToolOptions_camera"
+          }, n.createElement("div", {
+              className: "bottomToolOptions-toolTitle"
+          }, n.createElement("span", {
+              className: "editorgui_icons_bottom editorgui_icons-icon_pattern"
+          }), n.createElement("span", {
+              className: "toolName"
+          }, "Pattern : ",
+          n.createElement("span", {},
+            n.createElement("button", {
+                onClick: this.toggleOptions
+            }, "OPTIONS"), this.renderSettings()),
+            
+            n.createElement("span", {},
+              n.createElement("button", {
+                  className: "margin",
+                  onClick: this.toggleImportBrush
+              }, "IMPORT BRUSH")),
+            n.createElement("span", {},
+                n.createElement("button", {
+                  className: "margin",
+                  onClick: this.toggleImportPattern
+              }, "IMPORT PATTERN"))),
+          ), 
+        );
+          }
+        });
+      t.exports = a;
+    }, {
+      react: 230
+    }],
     11: [
       function (e, t) {
         var n = e("react"),
@@ -7072,7 +7165,7 @@
                   "div",
                   { className: e, onClick: this.changeTool },
                   n.createElement("span", {
-                    className: "editorgui_icons editorgui_icons-icon_select",
+                    className: "editorgui_icons editorgui_icons-icon_pattern",
                   })
                 )
               );

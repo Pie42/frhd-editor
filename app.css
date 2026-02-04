@@ -1620,14 +1620,16 @@ html.fullscreen #main_page {
 
 .editorgui_icons-icon_controls {
     width: 32px;
-    height: 32px;
-    background-position: -448px -32px
+    height: 29px;
+    background-position: -448px -35px;
+    margin-top: 3px;
 }
 
 .editorgui_icons-icon_controls:hover {
     width: 32px;
     height: 32px;
-    background-position: -340px -88px
+    background-position: -340px -88px;
+    margin-top: 0px;
 }
 
 .editorgui_icons-icon_upload:hover {
@@ -1650,16 +1652,25 @@ html.fullscreen #main_page {
     background-position: -471px -58px;
 }
 
+.editorgui_icons-icon_pattern {
+    width: 34px;
+    height: 36px;
+    background-position: -449px 0px;
+    margin: 4px 5.3px 4px 4.7px;
+}
+
 .editorgui_icons-icon_zoom_in:hover {
     width: 32px;
     height: 32px;
-    background-position: -444px -128px
+    background-position: -444px -128px;
+    margin-left: 0px;
 }
 
 .editorgui_icons-icon_zoom_in {
-    width: 32px;
+    width: 29px;
     height: 32px;
-    background-position: -480px 0
+    background-position: -483px 0px;
+    margin-left: 3px;
 }
 
 .editorgui_icons-icon_zoom_out:hover {
@@ -3276,4 +3287,48 @@ only screen and (min-device-pixel-ratio:3) {
     flex-grow: 1;
     flex-basis: 0;
     min-width: 50px;
+}
+
+div.pattern-modal {
+    position: absolute;
+    bottom: 30px;
+    left: 0px;
+    border: 1px solid black;
+    border-radius: 2px;
+    background-color: #e2e2e2;
+    line-height: 3em;
+    display: flex;
+    flex-direction: row;
+    width:max-content;
+    /*flex-wrap: wrap;
+    white-space: nowrap;*/
+}
+
+div.pattern-modal_column {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    flex-wrap: wrap;
+    padding: 4px;
+}
+
+/* this seems to work even with lots of columns idk */
+div.pattern-modal_column:nth-child(n+2)::before {
+    width: 2px;
+    height: 100%;
+    background-color: black;
+    margin-block: 4px;
+    position: relative;
+    left: -5px;
+    justify-content: space-between;
+    content: "";
+    box-sizing: content-box;
+    display:flex;
+}
+div.pattern-modal_column:not(:last-child) {
+    padding-right: 8px;
+}
+
+span:has(div.pattern-modal) {
+    position: relative;
 }
