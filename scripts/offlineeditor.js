@@ -34650,6 +34650,8 @@
             componentWillUnmount: function () {
               window.removeEventListener('message', this.handleIframeMessage);
 
+              if (this.state.isLoading) return;
+
               if (typeof GameSettings !== 'undefined' && GameSettings.id) {
                 var urlType = GameSettings.urlType || GameSettings.type || 't';
                 var id = GameSettings.canonical || GameSettings.id;

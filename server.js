@@ -31,7 +31,7 @@ const PORT = 3000;
 // persistent disk mount for Render
 const PERSISTENT_ROOT_DISK = '/var/data';
 
-const USE_LOCAL_FILES = true;
+const USE_LOCAL_FILES = false;
 
 const LOCAL_ROOT = USE_LOCAL_FILES
     ? path.join(__dirname, '..', '..', 'data')
