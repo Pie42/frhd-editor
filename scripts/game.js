@@ -26191,12 +26191,10 @@
               .then(function (r) { return r.json(); })
               .then(function (data) {
                 if (data.loggedIn) {
-                  GameSettings.user = {
-                    uid: data.user.uid,
-                    username: data.user.username,
-                    d_name: data.user.username
-                  };
-                  GameSettings.beta = true;
+                  GameSettings.user.uid = data.user.uid;
+                  GameSettings.user.username = data.user.username;
+                  GameSettings.user.d_name = data.user.username;
+                  GameSettings.user.guest = false;
                 }
               })
               .catch(function () { })
