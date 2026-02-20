@@ -14480,7 +14480,9 @@
                     y.stroke();
                   }
               } else {
-                GameInventoryManager.getItem(GameSettings.user.cosmetics.head).draw(y, a.x, a.y, this.drawHeadAngle, v, this.dir);
+                var headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+                  || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
+                GameInventoryManager.getItem(headCosmetic).draw(y, a.x, a.y, this.drawHeadAngle, v, this.dir);
               }
               y.globalAlpha = 1;
             }
@@ -14860,7 +14862,10 @@
                 g = -o / 2,
                 m = -a / 2,
                 v = -1 === n,
-                y = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
+                y = GameInventoryManager.getItem(
+                  (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+                  || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } }
+                ),
                 w = this.cockpitAngle;
               y.draw(s, l + i.x, c + i.y, w, 0.7 * h, n),
                 s.translate(l, c),
@@ -15299,7 +15304,10 @@
         drawTruck(t) {
           const e = this.scene,
             s = e.camera.zoom,
-            i = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
+            i = GameInventoryManager.getItem(
+              (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+              || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } }
+            ),
             n = this.drawHeadAngle,
             r = this.dir,
             o = this.frontWheel.pos.toScreen(e),
@@ -16120,7 +16128,9 @@
                 u.closePath()
               }
             else {
-              const t = GameInventoryManager.getItem(GameSettings.user.cosmetics.head),
+              var headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+                || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
+              const t = GameInventoryManager.getItem(headCosmetic),
                 e = this.drawHeadAngle;
               t.draw(u, z.x, z.y, e, c, this.dir);
             }
