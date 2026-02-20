@@ -9016,7 +9016,7 @@
           o = s.n(r)()(n());
         o.push([
           t.id,
-          "@media (max-height: 800px) {.mod-icon {\r\n bottom: -6px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-icon {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
+          "@media (max-height: 800px) {.mod-icon {\r\n bottom: -6px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-icon {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 101;\r\n    opacity: 1;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    display: flex; font-size: 13px; align-items: center;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    width: 13px; margin-right: 4px; height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}",
           "",
           {
             version: 3,
@@ -9025,7 +9025,7 @@
             mappings:
               "AAAA;IACI,eAAe;IACf,OAAO;IACP,SAAS;IACT,WAAW;IACX,uBAAuB;IACvB,uBAAuB;IACvB,iBAAiB;;IAEjB,iBAAiB,EAAE,kCAAkC;IACrD,yBAAyB,EAAE,WAAW;IACtC,wBAAwB,EAAE,mBAAmB;IAC7C,sBAAsB,EAAE,YAAY;IACpC,qBAAqB,EAAE,2BAA2B;AACtD;;AAEA;IACI,uBAAuB;IACvB,eAAe;IACf,kBAAkB;IAClB,UAAU;AACd;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,eAAe;IACf,wDAAwD;IACxD,cAAc;AAClB;AACA;IACI,oCAAoC;AACxC;;AAEA;IACI,eAAe;AACnB;AACA;IACI,YAAY;IACZ,uBAAuB;AAC3B;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;AACjB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,aAAa;IACb,sBAAsB;IACtB,YAAY;IACZ,eAAe;AACnB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,YAAY;AAChB;;;;AAIA;IACI,eAAe;IACf,0BAA0B;IAC1B,WAAW;IACX,WAAW;IACX,WAAW;IACX,YAAY;IACZ,SAAS;IACT,OAAO;AACX;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,WAAW;IACX,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,gCAAgC;IAChC,eAAe;IACf,MAAM;IACN,aAAa;IACb,kBAAkB;IAClB,iBAAiB;IACjB,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,kCAAkC;IAClC,YAAY;IACZ,kBAAkB;IAClB,YAAY;AAChB;AACA;IACI,kCAAkC;AACtC;;;;;;AAMA;IACI,UAAU;IACV,WAAW;IACX,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;;IAEpB,kBAAkB;IAClB,MAAM;IACN,OAAO;EACT;;AAEF;IACI,kBAAkB;AACtB;AACA;IACI,eAAe;AACnB;;;AAGA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;AACA;IACI,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;IACX,WAAW;IACX,UAAU;IACV,uBAAuB;IACvB,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,OAAO;IACP,QAAQ;IACR,YAAY;IACZ,iBAAiB;IACjB,eAAe;IACf,kBAAkB;AACtB;;AAEA;IACI,cAAc;IACd,4BAA4B;AAChC;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,6BAA6B;AACjC",
             sourcesContent: [
-              `@media (max-height: 800px) {.mod-menu-container {\r\n bottom: -5px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-menu-container {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 11;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}`,
+              `@media (max-height: 800px) {.mod-menu-container {\r\n bottom: -5px;\r\n left: -5px;\r\n transform-origin: center;\r\n transform: scale(0.8);\r\n}} @media (min-height: 1440px) {.mod-menu-container {\r\n bottom: 3px;\r\n left: 5px;\r\n transform-origin: center;\r\n transform: scale(1.25);\r\n}} .mod-menu-container {\r\n    position: fixed;\r\n    left: 0;\r\n    bottom: 0;\r\n    z-index: 101;\r\n    background-color: white;\r\n    border: 1px solid black;\r\n    min-height: 250px;\r\n\r\n    user-select: none; /* supported by Chrome and Opera */\r\n    -webkit-user-select: none; /* Safari */\r\n    -khtml-user-select: none; /* Konqueror HTML */\r\n    -moz-user-select: none; /* Firefox */\r\n    -ms-user-select: none; /* Internet Explorer/Edge */\r\n}\r\n\r\n.mod-v-seperator {\r\n    background-color: black;\r\n    margin-top: 6px;\r\n    margin-bottom: 6px;\r\n    width: 1px;\r\n}\r\n\r\n.mod-list-container {\r\n    display: grid;\r\n    grid-template-columns: auto auto auto;\r\n}\r\n\r\n.mod-section-title {\r\n    font-size: 13pt;\r\n    font-weight: bold;\r\n    text-align: center;\r\n    padding-bottom: 10px;\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n}\r\n\r\n.mod-menu {\r\n    min-width: 170px;\r\n    padding-top: 14px;\r\n    padding-bottom: 14px;\r\n}\r\n\r\n.mod-menu-option {\r\n    padding-left: 14px;\r\n    padding-right: 14px;\r\n    font-size: 16px;\r\n    font-family: roboto_medium, Arial, Helvetica, sans-serif;\r\n    color: #1B5264;\r\n}\r\n.mod-menu-option:hover, .mod-menu-option.opened {\r\n    background-color: rgb(236, 236, 236);\r\n}\r\n\r\n.mod-clickable:hover {\r\n    cursor: pointer;\r\n}\r\n.mod-clickable.mod-disabled:hover {\r\n    cursor: auto;\r\n    background-color: unset;\r\n}\r\n\r\n.mod-description-container {\r\n    max-width: 200px;\r\n    min-width: 200px;\r\n    padding: 14px;\r\n}\r\n\r\n.mod-setting-description {\r\n    font-size: 13px;\r\n}\r\n\r\n.mod-title {\r\n    text-align: center;\r\n    display: flex;\r\n    flex-direction: column;\r\n    height: 100%;\r\n    cursor: pointer;\r\n}\r\n\r\n.invisible {\r\n    display: none;\r\n}\r\n\r\n.mod-menu-container input {\r\n    height: auto;\r\n}\r\n\r\n\r\n\r\n.mod-icon {\r\n    position: fixed;\r\n    background-size: 32px 32px;\r\n    margin: 7px;\r\n    z-index: 10;\r\n    width: 32px;\r\n    height: 32px;\r\n    bottom: 0;\r\n    left: 0;\r\n}\r\n.mod-icon:hover {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.mod-update-notification {\r\n    width: 100%;\r\n    height: 50px;\r\n    background-color: rgb(43, 184, 43);\r\n    color: white;\r\n    border: 2px solid rgb(3, 141, 3);\r\n    position: fixed;\r\n    top: 0;\r\n    z-index: 1002;\r\n    text-align: center;\r\n    line-height: 46px;\r\n    cursor: pointer;\r\n}\r\n\r\n.mod-dismiss-button {\r\n    height: 30px;\r\n    background-color: rgb(39, 206, 53);\r\n    border: none;\r\n    border-radius: 4px;\r\n    color: white;\r\n}\r\n.mod-dismiss-button:hover {\r\n    background-color: rgb(20, 167, 32);\r\n}\r\n\r\n\r\n\r\n\r\n\r\n.shade-indicator {\r\n    width: 6px;\r\n    height: 6px;\r\n    border: 2px solid black;\r\n    box-sizing: unset;\r\n    border-radius: 6px;\r\n    pointer-events: none;\r\n    \r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n  }\r\n  \r\n.shade-picker-container {\r\n    position: relative;\r\n}\r\n.shade-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n\r\n.hue-picker-container {\r\n    position: relative;\r\n    margin-left: 10px;\r\n}\r\n.hue-picker-container canvas {\r\n    cursor: pointer;\r\n}\r\n\r\n.hue-indicator {\r\n    position: absolute;\r\n    box-sizing: unset;\r\n    width: 28px;\r\n    height: 6px;\r\n    left: -4px;\r\n    border: 1px solid black;\r\n    border-left: none;\r\n    border-right: none;\r\n    pointer-events: none;\r\n}\r\n\r\n.color-picker-container {\r\n    padding: 10px;\r\n    width: fit-content;\r\n}\r\n\r\n.color-picker-container .graphic-container {\r\n    display: flex;\r\n    width: fit-content;\r\n    margin-bottom: 10px;\r\n}\r\n\r\nbody {\r\n    margin: 0;\r\n}\r\n\r\n.textbox-container {\r\n    display: flex;\r\n}\r\n\r\n.color-box {\r\n    flex: 1;\r\n    width: 0;\r\n    padding: 2px;\r\n    margin-left: 10px;\r\n    font-size: 13px;\r\n    text-align: center;\r\n}\r\n\r\n.red-box {\r\n    margin-left: 0;\r\n    border-bottom: 4px solid red;\r\n}\r\n\r\n.green-box {\r\n    border-bottom: 4px solid green;\r\n}\r\n\r\n.blue-box {\r\n    border-bottom: 4px solid blue;\r\n}`,
             ],
             sourceRoot: "",
           },
@@ -12187,6 +12187,7 @@
             this.zoom === this.desiredZoom && this.zoomComplete());
         }
         zoomToPoint(t) {
+          //this.scene.toolHandler.tools.pattern.ztp(t);
           const e = this.scene.screen,
             s = this.position,
             i = this.zoomPoint,
@@ -12212,7 +12213,7 @@
         }
         setZoom(t, e) {
           const s = this.scene;
-          (this.desiredZoom = (d(20 * t) / 20) * s.game.pixelRatio), //(this.desiredZoom = (d(40 * t) / 40) * s.game.pixelRatio) for 5%
+          (this.desiredZoom = (d(40 * t) / 40) * s.game.pixelRatio), //(this.desiredZoom = (d(40 * t) / 40) * s.game.pixelRatio) for 5%
             (this.zooming = !0),
             this.desiredZoom === this.zoom &&
               ((this.zooming = !1), (this.scene.state.loading = !1)),
@@ -17118,9 +17119,9 @@
                 t._sceneTicks = this._scene.ticks;
                 this._checkpoints.push(t);
 
-                if (this._checkpoints.length > 500 && this._game.mod.getVar("rewind")) {
+                /*if (this._checkpoints.length > 500 && this._game.mod.getVar("rewind")) {
                   this._checkpoints.shift();
-                }
+                }*/
             }
             _snapshotFilter(t, e) {
               switch (t) {
@@ -17679,6 +17680,7 @@
             this.snapPoint.equ(this.scene.track.defaultLine.p2),
             (this.snapUpdated = false),
             (this.gridCache = !1),
+            (this._lastGridZoom = null),
             this.initAnalytics(),
             (this.actionTimeline = []),
             (this.actionTimelinePointer = 0);
@@ -18163,7 +18165,10 @@
         }
         checkGrid() {
           const t = this.scene.camera;
-          t.zoom !== t.desiredZoom && (this.gridCache = !1);
+          if (t.zoom !== t.desiredZoom || t.zoom !== this._lastGridZoom) {
+            this.gridCache = false;
+            this._lastGridZoom = t.zoom;
+          }
         }
         checkSnap() {
           this.options.snapLocked && (this.options.snap = !0);
@@ -18226,7 +18231,7 @@
           }
         }
         setObjectOptions() {
-          if (!this.options.object || this.currentTool === "eraser") return;
+          if (!this.options.object || this.currentTool === "eraser" || this.currentTool === "camera") return;
         
           let scale = GameSettings.objectScale;
           let stretchX = GameSettings.objectStretchX;
@@ -18311,19 +18316,19 @@
           if (t.isButtonDown("shift")) {
             if (t.isButtonDown("up")) {
               t.setButtonUp("up");
-              (offsetY -= 1);
+              (offsetY -= GameSettings.offsetSensitivity);
             }
             if (t.isButtonDown("down")) {
               t.setButtonUp("down");
-              (offsetY += 1)
+              (offsetY += GameSettings.offsetSensitivity)
             }
             if (t.isButtonDown("right")) {
               t.setButtonUp("right");
-              (offsetX += 1)
+              (offsetX += GameSettings.offsetSensitivity)
             }
             if (t.isButtonDown("left")) {
               t.setButtonUp("left");
-              (offsetX -= 1);
+              (offsetX -= GameSettings.offsetSensitivity);
             }
             GameSettings.objectOffsetX = offsetX;
             GameSettings.objectOffsetY = offsetY;
@@ -18612,9 +18617,11 @@
               r = this.scene.screen.center,
               o = 2 + (r.x / i | 0),
               a = 2 + (r.y / n | 0),
-              h = this.camera.zoom,
-              l = this.camera.position.x * h % i,
-              c = this.camera.position.y * h % n;
+              h = this.camera.zoom;
+            let l = (this.camera.position.x * h) % i;
+            let c = (this.camera.position.y * h) % n;
+            if (l < 0) l += i;
+            if (c < 0) c += n;
             t.globalAlpha = this.gridCacheAlpha;
             t.globalCompositeOperation = "destination-over";
             for (let e = -o; e < o; e++) {
@@ -18637,9 +18644,11 @@
             r = this.scene.screen.center,
             o = 2 + (r.x / i | 0),
             a = 2 + (r.y / n | 0),
-            h = this.camera.zoom,
-            l = this.camera.position.x * h % i,
-            c = this.camera.position.y * h % n;
+            h = this.camera.zoom;
+          let l = (this.camera.position.x * h) % i;
+          let c = (this.camera.position.y * h) % n;
+          if (l < 0) l += i;
+          if (c < 0) c += n;
           t.globalAlpha = this.gridCacheAlpha;
           t.globalCompositeOperation = "destination-over";
           for (let e = -o; e < o; e++) {
@@ -18801,6 +18810,211 @@
           this.options[t] = e
           GameSettings.curve.segmentLength = e;
         }
+        rotate(x, y, angle) {
+          angle = -angle;
+          return {
+            x: Math.cos(angle) * x + Math.sin(angle) * y,
+            y: -Math.sin(angle) * x + Math.cos(angle) * y
+          };
+        }
+
+        scale(x, y, factor) {
+          return {
+            x: x * factor,
+            y: y * factor
+          };
+        }
+
+        applyJitter(physics, scenery, powerups, posX, posY) {
+          const rotateJitter = GameSettings.brushRotateJitter || 0;
+          const scaleJitter = GameSettings.brushScaleJitter || 0;
+
+          if (rotateJitter === 0 && scaleJitter === 0) {
+            // no jitter - return unmodified
+            return {
+              physics: physics.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              scenery: scenery.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              powerups: powerups.map(p => ({
+                name: p.name,
+                x: posX + p.x,
+                y: posY + p.y,
+                x2: p.x2 !== undefined ? posX + p.x2 : undefined,
+                y2: p.y2 !== undefined ? posY + p.y2 : undefined,
+                angle: p.angle,
+                time: p.time
+              }))
+            };
+          }
+
+          // apply random jitter
+          const dirJitter = (Math.random() - 0.5) * rotateJitter;
+          const scaleAmount = 1 + (Math.random() - 0.5) * scaleJitter;
+
+          const self = this;
+
+          return {
+            physics: physics.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            scenery: scenery.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            powerups: powerups.map(p => {
+              let pos = { x: p.x, y: p.y };
+
+              if (rotateJitter > 0) {
+                pos = self.rotate(pos.x, pos.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                pos = self.scale(pos.x, pos.y, scaleAmount);
+              }
+
+              let pos2 = null;
+              if (p.x2 !== undefined) {
+                pos2 = { x: p.x2, y: p.y2 };
+                if (rotateJitter > 0) {
+                  pos2 = self.rotate(pos2.x, pos2.y, dirJitter);
+                }
+                if (scaleJitter > 0) {
+                  pos2 = self.scale(pos2.x, pos2.y, scaleAmount);
+                }
+              }
+
+              const angleJitterDegrees = rotateJitter > 0 ? (dirJitter * 180 / Math.PI) : 0;
+
+              return {
+                name: p.name,
+                x: posX + pos.x,
+                y: posY + pos.y,
+                x2: pos2 ? posX + pos2.x : undefined,
+                y2: pos2 ? posY + pos2.y : undefined,
+                angle: (p.angle || 0) + angleJitterDegrees,
+                time: p.time
+              };
+            })
+          };
+        }
+
+        addObjectAtPosition(posX, posY, addedObjects) {
+          const e = this.scene.track;
+          const jittered = this.applyJitter(
+            this.scene.modObjectPhysics,
+            this.scene.modObjectScenery,
+            this.scene.modObjectPowerups,
+            posX, posY
+          );
+
+          jittered.physics.forEach(point => {
+            const newLine = e.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.scenery.forEach(point => {
+            const newLine = e.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.powerups.forEach(powerup => {
+            let newPowerup = null;
+            switch (powerup.name) {
+              case "goal":
+                newPowerup = new ge(powerup.x, powerup.y, this);
+                this.scene.track.addTarget(newPowerup);
+                break;
+              case "bomb":
+                newPowerup = new zs(powerup.x, powerup.y, this);
+                break;
+              case "gravity":
+                newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "boost":
+                newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "slowmo":
+                newPowerup = new xs(powerup.x, powerup.y, this);
+                break;
+              case "checkpoint":
+                newPowerup = new Ps(powerup.x, powerup.y, this);
+                break;
+              case "antigravity":
+                newPowerup = new Vs(powerup.x, powerup.y, this);
+                break;
+              case "teleport":
+                const portal1 = new Xs(powerup.x, powerup.y, this),
+                  portal2 = new Xs(powerup.x2, powerup.y2, this);
+                portal1.addOtherPortalRef(portal2);
+                portal2.addOtherPortalRef(portal1);
+                this.scene.track.addPowerup(portal1);
+                this.scene.track.addPowerup(portal2);
+                addedObjects.push(portal1, portal2);
+                return;
+              case "helicopter":
+                newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "truck":
+                newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "balloon":
+                newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "blob":
+                newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                break;
+            }
+            if (newPowerup) {
+              this.scene.track.addPowerup(newPowerup);
+              addedObjects.push(newPowerup);
+            }
+          });
+        }
         reset() {
           (this.active = !1), (this.anchoring = !1);
         }
@@ -18822,134 +19036,49 @@
         }
         release() {
           const t = this.p1,
-                e = this.p2,
-                s = this.midpoint,
-                i = this.toolHandler;
-      
+            e = this.p2,
+            s = this.midpoint,
+            i = this.toolHandler;
+
           if (this.anchoring && this.active) {
-              if (s.x === e.x && s.y === e.y) {
-                  const track = this.scene.track;
-                  let lineObject = false;
-      
-                  if (!i.options.object) {
-                      lineObject = i.options.lineType === "physics"
-                          ? track.addPhysicsLine(t.x, t.y, e.x, e.y)
-                          : track.addSceneryLine(t.x, t.y, e.x, e.y);
-                  }
-      
-                  if (i.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                      const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                          x1: t.x + line.x1,
-                          y1: t.y + line.y1,
-                          x2: t.x + line.x2,
-                          y2: t.y + line.y2
-                      }));
-      
-                      const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                          x1: t.x + line.x1,
-                          y1: t.y + line.y1,
-                          x2: t.x + line.x2,
-                          y2: t.y + line.y2
-                      }));
-      
-                      const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                          name: powerup.name,
-                          x: t.x + powerup.x,
-                          y: t.y + powerup.y,
-                          x2: powerup.x2 !== undefined ? t.x + powerup.x2 : undefined,
-                          y2: powerup.y2 !== undefined ? t.y + powerup.y2 : undefined,
-                          angle: powerup.angle,
-                          time: powerup.time
-                      }));
-      
-                      modifiedPhysics.forEach(point => {
-                          const lineObject = track.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                          if (lineObject) {
-                              i.addActionToTimeline({ type: "add", objects: [lineObject] });
-                          }
-                      });
-      
-                      modifiedScenery.forEach(point => {
-                          const lineObject = track.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                          if (lineObject) {
-                              i.addActionToTimeline({ type: "add", objects: [lineObject] });
-                          }
-                      });
-      
-                      modifiedPowerups.forEach(powerup => {
-                          let newPowerup = null;
-                          switch (powerup.name) {
-                              case "goal":
-                                  newPowerup = new ge(powerup.x, powerup.y, this);
-                                  this.scene.track.addTarget(newPowerup);
-                                  break;
-                              case "bomb":
-                                  newPowerup = new zs(powerup.x, powerup.y, this);
-                                  break;
-                              case "gravity":
-                                  newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                                  break;
-                              case "boost":
-                                  newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                                  break;
-                              case "slowmo":
-                                  newPowerup = new xs(powerup.x, powerup.y, this);
-                                  break;
-                              case "checkpoint":
-                                  newPowerup = new Ps(powerup.x, powerup.y, this);
-                                  break;
-                              case "antigravity":
-                                  newPowerup = new Vs(powerup.x, powerup.y, this);
-                                  break;
-                              case "teleport":
-                                  const portal1 = new Xs(powerup.x, powerup.y, this),
-                                        portal2 = new Xs(powerup.x2, powerup.y2, this);
-                                  portal1.addOtherPortalRef(portal2);
-                                  portal2.addOtherPortalRef(portal1);
-                                  this.scene.track.addPowerup(portal1);
-                                  this.scene.track.addPowerup(portal2);
-                                  i.addActionToTimeline({ type: "add", objects: [portal1, portal2] });
-                                  break;
-                              case "helicopter":
-                                  newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                                  break;
-                              case "truck":
-                                  newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                                  break;
-                              case "balloon":
-                                  newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                                  break;
-                              case "blob":
-                                  newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                                  break;
-                          }
-                          if (newPowerup) {
-                              this.scene.track.addPowerup(newPowerup);
-                              i.addActionToTimeline({ type: "add", objects: [newPowerup] });
-                          }
-                      });
-                  }
-      
-                  if (lineObject) {
-                      i.addActionToTimeline({ type: "add", objects: [lineObject] });
-                  }
-      
-                  i.snapPoint.x = e.x;
-                  i.snapPoint.y = e.y;
-                  this.active = false;
-              } else {
-                  this.splitAndAddCurve();
+            if (s.x === e.x && s.y === e.y) {
+              const track = this.scene.track;
+              const addedObjects = [];
+              let lineObject = false;
+
+              if (!i.options.object) {
+                lineObject = i.options.lineType === "physics"
+                  ? track.addPhysicsLine(t.x, t.y, e.x, e.y)
+                  : track.addSceneryLine(t.x, t.y, e.x, e.y);
+                if (lineObject) {
+                  addedObjects.push(lineObject);
+                }
               }
-      
-              this.anchoring = false;
+
+              if (i.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+                this.addObjectAtPosition(t.x, t.y, addedObjects);
+              }
+
+              if (addedObjects.length > 0) {
+                i.addActionToTimeline({ type: "add", objects: addedObjects });
+              }
+
+              i.snapPoint.x = e.x;
+              i.snapPoint.y = e.y;
               this.active = false;
+            } else {
+              this.splitAndAddCurve();
+            }
+
+            this.anchoring = false;
+            this.active = false;
           } else if (this.active) {
-              if (Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2)) > 0) {
-                  this.anchoring = true;
-              }
-              this.active = false;
+            if (Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2)) > 0) {
+              this.anchoring = true;
+            }
+            this.active = false;
           }
-      }
+        }
 
         updateAnchor() {
           this.midpoint.equ(this.mouse.touch.real);
@@ -18957,247 +19086,65 @@
 
         splitAndAddCurve() {
           const t = Ce()(this.p1, this.midpoint, this.p2),
-                e = this.scene.track,
-                s = this.toolHandler,
-                i = [];
-      
+            e = this.scene.track,
+            s = this.toolHandler,
+            i = [];
+
           for (let n = 0; n < t.length - 2; n += 2) {
-              const r = Math.round(t[n]),
-                    o = Math.round(t[n + 1]),
-                    a = Math.round(t[n + 2]),
-                    h = Math.round(t[n + 3]);
-              let lineObject = false;
-      
-              if (!s.options.object) {
-                  lineObject = s.options.lineType === "physics"
-                      ? e.addPhysicsLine(r, o, a, h)
-                      : e.addSceneryLine(r, o, a, h);
-              }
-      
-              if (s.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                  const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                      x1: r + line.x1,
-                      y1: o + line.y1,
-                      x2: r + line.x2,
-                      y2: o + line.y2
-                  }));
-      
-                  const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                      x1: r + line.x1,
-                      y1: o + line.y1,
-                      x2: r + line.x2,
-                      y2: o + line.y2
-                  }));
-      
-                  const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                      name: powerup.name,
-                      x: r + powerup.x,
-                      y: o + powerup.y,
-                      x2: powerup.x2 !== undefined ? r + powerup.x2 : undefined,
-                      y2: powerup.y2 !== undefined ? o + powerup.y2 : undefined,
-                      angle: powerup.angle,
-                      time: powerup.time
-                  }));
-      
-                  modifiedPhysics.forEach(point => {
-                      const lineObject = e.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                      if (lineObject) {
-                          i.push(lineObject);
-                      }
-                  });
-      
-                  modifiedScenery.forEach(point => {
-                      const lineObject = e.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                      if (lineObject) {
-                          i.push(lineObject);
-                      }
-                  });
-      
-                  modifiedPowerups.forEach(powerup => {
-                      let newPowerup = null;
-                      switch (powerup.name) {
-                          case "goal":
-                              newPowerup = new ge(powerup.x, powerup.y, this);
-                              this.scene.track.addTarget(newPowerup);
-                              break;
-                          case "bomb":
-                              newPowerup = new zs(powerup.x, powerup.y, this);
-                              break;
-                          case "gravity":
-                              newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "boost":
-                              newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "slowmo":
-                              newPowerup = new xs(powerup.x, powerup.y, this);
-                              break;
-                          case "checkpoint":
-                              newPowerup = new Ps(powerup.x, powerup.y, this);
-                              break;
-                          case "antigravity":
-                              newPowerup = new Vs(powerup.x, powerup.y, this);
-                              break;
-                          case "teleport":
-                              const portal1 = new Xs(powerup.x, powerup.y, this),
-                                    portal2 = new Xs(powerup.x2, powerup.y2, this);
-                              portal1.addOtherPortalRef(portal2);
-                              portal2.addOtherPortalRef(portal1);
-                              this.scene.track.addPowerup(portal1);
-                              this.scene.track.addPowerup(portal2);
-                              i.push(portal1);
-                              i.push(portal2);
-                              break;
-                          case "helicopter":
-                              newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "truck":
-                              newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "balloon":
-                              newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "blob":
-                              newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                      }
-                      if (newPowerup) {
-                          this.scene.track.addPowerup(newPowerup);
-                          i.push(newPowerup);
-                      }
-                  });
-              }
-      
+            const r = Math.round(t[n]),
+              o = Math.round(t[n + 1]),
+              a = Math.round(t[n + 2]),
+              h = Math.round(t[n + 3]);
+
+            if (!s.options.object) {
+              const lineObject = s.options.lineType === "physics"
+                ? e.addPhysicsLine(r, o, a, h)
+                : e.addSceneryLine(r, o, a, h);
               if (lineObject) {
-                  i.push(lineObject);
+                i.push(lineObject);
               }
-      
-              s.snapPoint.x = a;
-              s.snapPoint.y = h;
+            }
+
+            if (s.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+              this.addObjectAtPosition(r, o, i);
+            }
+
+            s.snapPoint.x = a;
+            s.snapPoint.y = h;
           }
-      
+
+          // Handle last segment to exact endpoint
           const lastSegment = t.length - 2;
           if (lastSegment >= 0) {
-              const r = Math.round(t[lastSegment]),
-                    o = Math.round(t[lastSegment + 1]),
-                    a = Math.round(this.p2.x),
-                    h = Math.round(this.p2.y);
-              let lineObject = false;
-      
-              if (!s.options.object) {
-                  lineObject = s.options.lineType === "physics"
-                      ? e.addPhysicsLine(r, o, a, h)
-                      : e.addSceneryLine(r, o, a, h);
-              }
-      
-              if (s.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                  const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                      x1: r + line.x1,
-                      y1: o + line.y1,
-                      x2: r + line.x2,
-                      y2: o + line.y2
-                  }));
-      
-                  const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                      x1: r + line.x1,
-                      y1: o + line.y1,
-                      x2: r + line.x2,
-                      y2: o + line.y2
-                  }));
-      
-                  const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                      name: powerup.name,
-                      x: r + powerup.x,
-                      y: o + powerup.y,
-                      x2: powerup.x2 !== undefined ? r + powerup.x2 : undefined,
-                      y2: powerup.y2 !== undefined ? o + powerup.y2 : undefined,
-                      angle: powerup.angle,
-                      time: powerup.time
-                  }));
-      
-                  modifiedPhysics.forEach(point => {
-                      const lineObject = e.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                      if (lineObject) {
-                          i.push(lineObject);
-                      }
-                  });
-      
-                  modifiedScenery.forEach(point => {
-                      const lineObject = e.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                      if (lineObject) {
-                          i.push(lineObject);
-                      }
-                  });
-      
-                  modifiedPowerups.forEach(powerup => {
-                      let newPowerup = null;
-                      switch (powerup.name) {
-                          case "goal":
-                              newPowerup = new ge(powerup.x, powerup.y, this);
-                              this.scene.track.addTarget(newPowerup);
-                              break;
-                          case "bomb":
-                              newPowerup = new zs(powerup.x, powerup.y, this);
-                              break;
-                          case "gravity":
-                              newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "boost":
-                              newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "slowmo":
-                              newPowerup = new xs(powerup.x, powerup.y, this);
-                              break;
-                          case "checkpoint":
-                              newPowerup = new Ps(powerup.x, powerup.y, this);
-                              break;
-                          case "antigravity":
-                              newPowerup = new Vs(powerup.x, powerup.y, this);
-                              break;
-                          case "teleport":
-                              const portal1 = new Xs(powerup.x, powerup.y, this),
-                                    portal2 = new Xs(powerup.x2, powerup.y2, this);
-                              portal1.addOtherPortalRef(portal2);
-                              portal2.addOtherPortalRef(portal1);
-                              this.scene.track.addPowerup(portal1);
-                              this.scene.track.addPowerup(portal2);
-                              i.push(portal1);
-                              i.push(portal2);
-                              break;
-                          case "helicopter":
-                              newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "truck":
-                              newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "balloon":
-                              newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "blob":
-                              newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                      }
-                      if (newPowerup) {
-                          this.scene.track.addPowerup(newPowerup);
-                          i.push(newPowerup);
-                      }
-                  });
-              }
-      
+            const r = Math.round(t[lastSegment]),
+              o = Math.round(t[lastSegment + 1]),
+              a = Math.round(this.p2.x),
+              h = Math.round(this.p2.y);
+
+            if (!s.options.object) {
+              const lineObject = s.options.lineType === "physics"
+                ? e.addPhysicsLine(r, o, a, h)
+                : e.addSceneryLine(r, o, a, h);
               if (lineObject) {
-                  i.push(lineObject);
+                i.push(lineObject);
               }
-      
-              s.snapPoint.x = a;
-              s.snapPoint.y = h;
+            }
+
+            if (s.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+              this.addObjectAtPosition(r, o, i);
+            }
+
+            s.snapPoint.x = a;
+            s.snapPoint.y = h;
           }
-      
+
           if (i.length > 0) {
-              s.addActionToTimeline({ type: "add", objects: i });
+            s.addActionToTimeline({ type: "add", objects: i });
           }
-      
+
           this.active = false;
-      }
+        }
+
         update() {
           const t = this.mouse,
             e = t.touch,
@@ -19237,6 +19184,132 @@
           (e = Math.max(n, Math.min(i, e))),
           this.setOption("segmentLength", e);
           this.scene.stateChanged();
+        }
+        rotate(x, y, angle) {
+          angle = -angle;
+          return {
+            x: Math.cos(angle) * x + Math.sin(angle) * y,
+            y: -Math.sin(angle) * x + Math.cos(angle) * y
+          };
+        }
+
+        scale(x, y, factor) {
+          return {
+            x: x * factor,
+            y: y * factor
+          };
+        }
+
+        applyJitter(physics, scenery, powerups, posX, posY) {
+          const rotateJitter = GameSettings.brushRotateJitter || 0;
+          const scaleJitter = GameSettings.brushScaleJitter || 0;
+
+          if (rotateJitter === 0 && scaleJitter === 0) {
+            // no jitter - return unmodified
+            return {
+              physics: physics.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              scenery: scenery.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              powerups: powerups.map(p => ({
+                name: p.name,
+                x: posX + p.x,
+                y: posY + p.y,
+                x2: p.x2 !== undefined ? posX + p.x2 : undefined,
+                y2: p.y2 !== undefined ? posY + p.y2 : undefined,
+                angle: p.angle,
+                time: p.time
+              }))
+            };
+          }
+
+          // apply random jitter
+          const dirJitter = (Math.random() - 0.5) * rotateJitter;
+          const scaleAmount = 1 + (Math.random() - 0.5) * scaleJitter;
+
+          const self = this;
+
+          return {
+            physics: physics.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            scenery: scenery.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            powerups: powerups.map(p => {
+              let pos = { x: p.x, y: p.y };
+
+              if (rotateJitter > 0) {
+                pos = self.rotate(pos.x, pos.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                pos = self.scale(pos.x, pos.y, scaleAmount);
+              }
+
+              let pos2 = null;
+              if (p.x2 !== undefined) {
+                pos2 = { x: p.x2, y: p.y2 };
+                if (rotateJitter > 0) {
+                  pos2 = self.rotate(pos2.x, pos2.y, dirJitter);
+                }
+                if (scaleJitter > 0) {
+                  pos2 = self.scale(pos2.x, pos2.y, scaleAmount);
+                }
+              }
+
+              return {
+                name: p.name,
+                x: posX + pos.x,
+                y: posY + pos.y,
+                x2: pos2 ? posX + pos2.x : undefined,
+                y2: pos2 ? posY + pos2.y : undefined,
+                angle: p.angle + (rotateJitter > 0 ? dirJitter : 0),
+                time: p.time
+              };
+            })
+          };
         }
         draw() {
           const t = this.scene,
@@ -19457,6 +19530,134 @@
         reset() {
           this.active = !1;
         }
+        rotate(x, y, angle) {
+          angle = -angle;
+          return {
+            x: Math.cos(angle) * x + Math.sin(angle) * y,
+            y: -Math.sin(angle) * x + Math.cos(angle) * y
+          };
+        }
+
+        scale(x, y, factor) {
+          return {
+            x: x * factor,
+            y: y * factor
+          };
+        }
+
+        applyJitter(physics, scenery, powerups, posX, posY) {
+          const rotateJitter = GameSettings.brushRotateJitter || 0;
+          const scaleJitter = GameSettings.brushScaleJitter || 0;
+
+          if (rotateJitter === 0 && scaleJitter === 0) {
+            // no jitter - return unmodified
+            return {
+              physics: physics.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              scenery: scenery.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              powerups: powerups.map(p => ({
+                name: p.name,
+                x: posX + p.x,
+                y: posY + p.y,
+                x2: p.x2 !== undefined ? posX + p.x2 : undefined,
+                y2: p.y2 !== undefined ? posY + p.y2 : undefined,
+                angle: p.angle,
+                time: p.time
+              }))
+            };
+          }
+
+          // apply random jitter
+          const dirJitter = (Math.random() - 0.5) * rotateJitter;
+          const scaleAmount = 1 + (Math.random() - 0.5) * scaleJitter;
+
+          const self = this;
+
+          return {
+            physics: physics.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            scenery: scenery.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            powerups: powerups.map(p => {
+              let pos = { x: p.x, y: p.y };
+
+              if (rotateJitter > 0) {
+                pos = self.rotate(pos.x, pos.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                pos = self.scale(pos.x, pos.y, scaleAmount);
+              }
+
+              let pos2 = null;
+              if (p.x2 !== undefined) {
+                pos2 = { x: p.x2, y: p.y2 };
+                if (rotateJitter > 0) {
+                  pos2 = self.rotate(pos2.x, pos2.y, dirJitter);
+                }
+                if (scaleJitter > 0) {
+                  pos2 = self.scale(pos2.x, pos2.y, scaleAmount);
+                }
+              }
+
+              const angleJitterDegrees = rotateJitter > 0 ? (dirJitter * 180 / Math.PI) : 0;
+
+              return {
+                name: p.name,
+                x: posX + pos.x,
+                y: posY + pos.y,
+                x2: pos2 ? posX + pos2.x : undefined,
+                y2: pos2 ? posY + pos2.y : undefined,
+                angle: (p.angle || 0) + angleJitterDegrees,
+                time: p.time
+              };
+            })
+          };
+        }
         press() {
           this.active ||
             (this.p1.equ(this.mouse.touch.real), (this.active = !0));
@@ -19490,130 +19691,113 @@
         }
         release() {
           if (this.active) {
-              const t = this.p1,
-                    e = this.p2,
-                    s = this.scene.track,
-                    i = this.toolHandler;
-      
-              let addedObjects = [];
-      
-              if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
-                  let newLine = null;
-                  if ("physics" === i.options.lineType) {
-                      newLine = s.addPhysicsLine(t.x, t.y, e.x, e.y);
-                  } else {
-                      newLine = s.addSceneryLine(t.x, t.y, e.x, e.y);
-                  }
-                  if (newLine) {
-                      addedObjects.push(newLine);
-                      i.addActionToTimeline({ type: "add", objects: addedObjects });
-                  }
+            const t = this.p1,
+              e = this.p2,
+              s = this.scene.track,
+              i = this.toolHandler;
+
+            let addedObjects = [];
+
+            if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
+              let newLine = null;
+              if ("physics" === i.options.lineType) {
+                newLine = s.addPhysicsLine(t.x, t.y, e.x, e.y);
+              } else {
+                newLine = s.addSceneryLine(t.x, t.y, e.x, e.y);
               }
-      
-              if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                  const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                      x1: e.x + line.x1,
-                      y1: e.y + line.y1,
-                      x2: e.x + line.x2,
-                      y2: e.y + line.y2
-                  }));
-      
-                  const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                      x1: e.x + line.x1,
-                      y1: e.y + line.y1,
-                      x2: e.x + line.x2,
-                      y2: e.y + line.y2
-                  }));
-      
-                  const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                      name: powerup.name,
-                      x: e.x + powerup.x,
-                      y: e.y + powerup.y,
-                      x2: powerup.x2 !== undefined ? e.x + powerup.x2 : undefined,
-                      y2: powerup.y2 !== undefined ? e.y + powerup.y2 : undefined,
-                      angle: powerup.angle,
-                      time: powerup.time
-                  }));
-      
-                  modifiedPhysics.forEach(point => {
-                      let newLine = s.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                      if (newLine) {
-                          addedObjects.push(newLine);
-                      }
-                  });
-      
-                  modifiedScenery.forEach(point => {
-                      let newLine = s.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                      if (newLine) {
-                          addedObjects.push(newLine);
-                      }
-                  });
-      
-                  modifiedPowerups.forEach(powerup => {
-                      let newPowerup = null;
-                      switch (powerup.name) {
-                          case "goal":
-                              newPowerup = new ge(powerup.x, powerup.y, this);
-                              this.scene.track.addTarget(newPowerup);
-                              break;
-                          case "bomb":
-                              newPowerup = new zs(powerup.x, powerup.y, this);
-                              break;
-                          case "gravity":
-                              newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "boost":
-                              newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                              break;
-                          case "slowmo":
-                              newPowerup = new xs(powerup.x, powerup.y, this);
-                              break;
-                          case "checkpoint":
-                              newPowerup = new Ps(powerup.x, powerup.y, this);
-                              break;
-                          case "antigravity":
-                              newPowerup = new Vs(powerup.x, powerup.y, this);
-                              break;
-                          case "teleport":
-                              const portal1 = new Xs(powerup.x, powerup.y, this),
-                                    portal2 = new Xs(powerup.x2, powerup.y2, this);
-                              portal1.addOtherPortalRef(portal2);
-                              portal2.addOtherPortalRef(portal1);
-                              this.scene.track.addPowerup(portal1);
-                              this.scene.track.addPowerup(portal2);
-                              addedObjects.push(portal1, portal2);
-                              break;
-                          case "helicopter":
-                              newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "truck":
-                                newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                                break;
-                          case "balloon":
-                              newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                          case "blob":
-                              newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                              break;
-                      }
-                      if (newPowerup) {
-                          this.scene.track.addPowerup(newPowerup);
-                          addedObjects.push(newPowerup);
-                      }
-                  });
-      
-                  if (addedObjects.length > 0) {
-                      this.toolHandler.addActionToTimeline({
-                          type: "add",
-                          objects: addedObjects
-                      });
-                  }
+              if (newLine) {
+                addedObjects.push(newLine);
+                i.addActionToTimeline({ type: "add", objects: addedObjects });
               }
-      
-              this.active = false;
-              i.snapPoint.equ(e);
+            }
+
+            if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+              const jittered = this.applyJitter(
+                this.scene.modObjectPhysics,
+                this.scene.modObjectScenery,
+                this.scene.modObjectPowerups,
+                e.x, e.y
+              );
+
+              jittered.physics.forEach(point => {
+                let newLine = s.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
+                if (newLine) {
+                  addedObjects.push(newLine);
+                }
+              });
+
+              jittered.scenery.forEach(point => {
+                let newLine = s.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
+                if (newLine) {
+                  addedObjects.push(newLine);
+                }
+              });
+
+              jittered.powerups.forEach(powerup => {
+                let newPowerup = null;
+                switch (powerup.name) {
+                  case "goal":
+                    newPowerup = new ge(powerup.x, powerup.y, this);
+                    this.scene.track.addTarget(newPowerup);
+                    break;
+                  case "bomb":
+                    newPowerup = new zs(powerup.x, powerup.y, this);
+                    break;
+                  case "gravity":
+                    newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
+                    break;
+                  case "boost":
+                    newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                    break;
+                  case "slowmo":
+                    newPowerup = new xs(powerup.x, powerup.y, this);
+                    break;
+                  case "checkpoint":
+                    newPowerup = new Ps(powerup.x, powerup.y, this);
+                    break;
+                  case "antigravity":
+                    newPowerup = new Vs(powerup.x, powerup.y, this);
+                    break;
+                  case "teleport":
+                    const portal1 = new Xs(powerup.x, powerup.y, this),
+                      portal2 = new Xs(powerup.x2, powerup.y2, this);
+                    portal1.addOtherPortalRef(portal2);
+                    portal2.addOtherPortalRef(portal1);
+                    this.scene.track.addPowerup(portal1);
+                    this.scene.track.addPowerup(portal2);
+                    addedObjects.push(portal1, portal2);
+                    break;
+                  case "helicopter":
+                    newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                    break;
+                  case "truck":
+                    newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                    break;
+                  case "balloon":
+                    newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                    break;
+                  case "blob":
+                    newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                    break;
+                }
+                if (newPowerup) {
+                  this.scene.track.addPowerup(newPowerup);
+                  addedObjects.push(newPowerup);
+                }
+              });
+
+              if (addedObjects.length > 0) {
+                this.toolHandler.addActionToTimeline({
+                  type: "add",
+                  objects: addedObjects
+                });
+              }
+            }
+
+            this.active = false;
+            i.snapPoint.equ(e);
           }
-      }
+        }
         update() {
           super.update();
           const t = this.toolHandler,
@@ -20059,118 +20243,215 @@
           }
         }
 
+        applyJitter(physics, scenery, powerups, posX, posY) {
+          const rotateJitter = GameSettings.brushRotateJitter || 0;
+          const scaleJitter = GameSettings.brushScaleJitter || 0;
+
+          if (rotateJitter === 0 && scaleJitter === 0) {
+            return {
+              physics: physics.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              scenery: scenery.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              powerups: powerups.map(p => ({
+                name: p.name,
+                x: posX + p.x,
+                y: posY + p.y,
+                x2: p.x2 !== undefined ? posX + p.x2 : undefined,
+                y2: p.y2 !== undefined ? posY + p.y2 : undefined,
+                angle: p.angle,
+                time: p.time
+              }))
+            };
+          }
+
+          const dirJitter = (Math.random() - 0.5) * rotateJitter;
+          const scaleAmount = 1 + (Math.random() - 0.5) * scaleJitter;
+          const self = this;
+
+          return {
+            physics: physics.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            scenery: scenery.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            powerups: powerups.map(p => {
+              let pos = { x: p.x, y: p.y };
+
+              if (rotateJitter > 0) {
+                pos = self.rotate(pos.x, pos.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                pos = self.scale(pos.x, pos.y, scaleAmount);
+              }
+
+              let pos2 = null;
+              if (p.x2 !== undefined) {
+                pos2 = { x: p.x2, y: p.y2 };
+                if (rotateJitter > 0) {
+                  pos2 = self.rotate(pos2.x, pos2.y, dirJitter);
+                }
+                if (scaleJitter > 0) {
+                  pos2 = self.scale(pos2.x, pos2.y, scaleAmount);
+                }
+              }
+
+              const angleJitterDegrees = rotateJitter > 0 ? (dirJitter * 180 / Math.PI) : 0;
+
+              return {
+                name: p.name,
+                x: posX + pos.x,
+                y: posY + pos.y,
+                x2: pos2 ? posX + pos2.x : undefined,
+                y2: pos2 ? posY + pos2.y : undefined,
+                angle: (p.angle || 0) + angleJitterDegrees,
+                time: p.time
+              };
+            })
+          };
+        }
+
+        addObjectAtPosition(posX, posY, addedObjects) {
+          const track = this.scene.track;
+          const jittered = this.applyJitter(
+            this.scene.modObjectPhysics,
+            this.scene.modObjectScenery,
+            this.scene.modObjectPowerups,
+            posX, posY
+          );
+
+          jittered.physics.forEach(point => {
+            const newLine = track.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.scenery.forEach(point => {
+            const newLine = track.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.powerups.forEach(powerup => {
+            let newPowerup = null;
+            switch (powerup.name) {
+              case "goal":
+                newPowerup = new ge(powerup.x, powerup.y, this);
+                this.scene.track.addTarget(newPowerup);
+                break;
+              case "bomb":
+                newPowerup = new zs(powerup.x, powerup.y, this);
+                break;
+              case "gravity":
+                newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "boost":
+                newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "slowmo":
+                newPowerup = new xs(powerup.x, powerup.y, this);
+                break;
+              case "checkpoint":
+                newPowerup = new Ps(powerup.x, powerup.y, this);
+                break;
+              case "antigravity":
+                newPowerup = new Vs(powerup.x, powerup.y, this);
+                break;
+              case "teleport":
+                const portal1 = new Xs(powerup.x, powerup.y, this),
+                  portal2 = new Xs(powerup.x2, powerup.y2, this);
+                portal1.addOtherPortalRef(portal2);
+                portal2.addOtherPortalRef(portal1);
+                this.scene.track.addPowerup(portal1);
+                this.scene.track.addPowerup(portal2);
+                addedObjects.push(portal1, portal2);
+                return;
+              case "helicopter":
+                newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "truck":
+                newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "balloon":
+                newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "blob":
+                newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                break;
+            }
+            if (newPowerup) {
+              this.scene.track.addPowerup(newPowerup);
+              addedObjects.push(newPowerup);
+            }
+          });
+        }
+
         release() {
           if (this.active) {
-              const t = this.p1,
-                    e = this.p2,
-                    s = this.scene.track;
-              const points = [];
-      
-              if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
-                  let i = !1;
-                  i = "physics" === this.toolHandler.options.lineType
-                      ? s.addPhysicsLine(t.x, t.y, e.x, e.y)
-                      : s.addSceneryLine(t.x, t.y, e.x, e.y);
-                  i && this.addedObjects.push(i);
-              }
-      
-              if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                  const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                      x1: e.x + line.x1,
-                      y1: e.y + line.y1,
-                      x2: e.x + line.x2,
-                      y2: e.y + line.y2
-                  }));
-      
-                  const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                      x1: e.x + line.x1,
-                      y1: e.y + line.y1,
-                      x2: e.x + line.x2,
-                      y2: e.y + line.y2
-                  }));
-      
-                  const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                      name: powerup.name,
-                      x: e.x + powerup.x,
-                      y: e.y + powerup.y,
-                      x2: powerup.x2 !== undefined ? e.x + powerup.x2 : undefined,
-                      y2: powerup.y2 !== undefined ? e.y + powerup.y2 : undefined,
-                      angle: powerup.angle,
-                      time: powerup.time
-                  }));
+            const t = this.p1,
+              e = this.p2,
+              s = this.scene.track;
 
-                  let toAdd = [];
-      
-                  modifiedPhysics.forEach(point => {
-                      let i = s.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                      if (i) {
-                          toAdd.push(i);
-                      }
-                  });
-      
-                  modifiedScenery.forEach(point => {
-                      let i = s.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                      if (i) {
-                          toAdd.push(i);
-                      }
-                  });
-
-                  modifiedPowerups.forEach(powerup => {
-                    let newPowerup = null;
-                    switch (powerup.name) {
-                        case "goal":
-                            newPowerup = new ge(powerup.x, powerup.y, this);
-                            this.scene.track.addTarget(newPowerup);
-                            break;
-                        case "bomb":
-                            newPowerup = new zs(powerup.x, powerup.y, this);
-                            break;
-                        case "gravity":
-                            newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                            break;
-                        case "boost":
-                            newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                            break;
-                        case "slowmo":
-                            newPowerup = new xs(powerup.x, powerup.y, this);
-                            break;
-                        case "checkpoint":
-                            newPowerup = new Ps(powerup.x, powerup.y, this);
-                            break;
-                        case "antigravity":
-                            newPowerup = new Vs(powerup.x, powerup.y, this);
-                            break;
-                        case "teleport":
-                            const portal1 = new Xs(powerup.x, powerup.y, this),
-                                portal2 = new Xs(powerup.x2, powerup.y2, this);
-                            portal1.addOtherPortalRef(portal2);
-                            portal2.addOtherPortalRef(portal1);
-                            this.scene.track.addPowerup(portal1);
-                            this.scene.track.addPowerup(portal2);
-                            toAdd.push(portal1);
-                            toAdd.push(portal2);
-                            break;
-                        case "helicopter":
-                            newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                            break;
-                        case "truck":
-                            newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                            break;
-                        case "balloon":
-                            newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                            break;
-                        case "blob":
-                            newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                            break;
-                    }
-                    if (newPowerup) {
-                      this.scene.track.addPowerup(newPowerup);
-                      toAdd.push(newPowerup);
-                    }
-                });
-                this.addedObjects.push(toAdd);
+            if (!this.toolHandler.options.object || (this.scene.objectPhysics.length === 0 && this.scene.objectScenery.length === 0 && this.scene.objectPowerups.length === 0)) {
+              let i = !1;
+              i = "physics" === this.toolHandler.options.lineType
+                ? s.addPhysicsLine(t.x, t.y, e.x, e.y)
+                : s.addSceneryLine(t.x, t.y, e.x, e.y);
+              i && this.addedObjects.push(i);
             }
-            
+
+            if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+              let toAdd = [];
+              this.addObjectAtPosition(e.x, e.y, toAdd);
+              if (toAdd.length > 0) {
+                this.addedObjects.push(toAdd);
+              }
+            }
 
             this.recordActionsToToolhandler();
 
@@ -20387,6 +20668,211 @@
                   });
               this.addedObjects = []
           }
+          rotate(x, y, angle) {
+            angle = -angle;
+            return {
+              x: Math.cos(angle) * x + Math.sin(angle) * y,
+              y: -Math.sin(angle) * x + Math.cos(angle) * y
+            };
+          }
+
+          scale(x, y, factor) {
+            return {
+              x: x * factor,
+              y: y * factor
+            };
+          }
+
+          applyJitter(physics, scenery, powerups, posX, posY) {
+          const rotateJitter = GameSettings.brushRotateJitter || 0;
+          const scaleJitter = GameSettings.brushScaleJitter || 0;
+
+          if (rotateJitter === 0 && scaleJitter === 0) {
+            // no jitter - return unmodified
+            return {
+              physics: physics.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              scenery: scenery.map(line => ({
+                x1: posX + line.x1,
+                y1: posY + line.y1,
+                x2: posX + line.x2,
+                y2: posY + line.y2
+              })),
+              powerups: powerups.map(p => ({
+                name: p.name,
+                x: posX + p.x,
+                y: posY + p.y,
+                x2: p.x2 !== undefined ? posX + p.x2 : undefined,
+                y2: p.y2 !== undefined ? posY + p.y2 : undefined,
+                angle: p.angle,
+                time: p.time
+              }))
+            };
+          }
+
+          // apply random jitter
+          const dirJitter = (Math.random() - 0.5) * rotateJitter;
+          const scaleAmount = 1 + (Math.random() - 0.5) * scaleJitter;
+
+          const self = this;
+
+          return {
+            physics: physics.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            scenery: scenery.map(line => {
+              let p1 = { x: line.x1, y: line.y1 };
+              let p2 = { x: line.x2, y: line.y2 };
+
+              if (rotateJitter > 0) {
+                p1 = self.rotate(p1.x, p1.y, dirJitter);
+                p2 = self.rotate(p2.x, p2.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                p1 = self.scale(p1.x, p1.y, scaleAmount);
+                p2 = self.scale(p2.x, p2.y, scaleAmount);
+              }
+
+              return {
+                x1: posX + p1.x,
+                y1: posY + p1.y,
+                x2: posX + p2.x,
+                y2: posY + p2.y
+              };
+            }),
+            powerups: powerups.map(p => {
+              let pos = { x: p.x, y: p.y };
+
+              if (rotateJitter > 0) {
+                pos = self.rotate(pos.x, pos.y, dirJitter);
+              }
+              if (scaleJitter > 0) {
+                pos = self.scale(pos.x, pos.y, scaleAmount);
+              }
+
+              let pos2 = null;
+              if (p.x2 !== undefined) {
+                pos2 = { x: p.x2, y: p.y2 };
+                if (rotateJitter > 0) {
+                  pos2 = self.rotate(pos2.x, pos2.y, dirJitter);
+                }
+                if (scaleJitter > 0) {
+                  pos2 = self.scale(pos2.x, pos2.y, scaleAmount);
+                }
+              }
+
+              const angleJitterDegrees = rotateJitter > 0 ? (dirJitter * 180 / Math.PI) : 0;
+
+              return {
+                name: p.name,
+                x: posX + pos.x,
+                y: posY + pos.y,
+                x2: pos2 ? posX + pos2.x : undefined,
+                y2: pos2 ? posY + pos2.y : undefined,
+                angle: (p.angle || 0) + angleJitterDegrees,
+                time: p.time
+              };
+            })
+          };
+        }
+
+        addObjectAtPosition(posX, posY, addedObjects) {
+          const track = this.scene.track;
+          const jittered = this.applyJitter(
+            this.scene.modObjectPhysics,
+            this.scene.modObjectScenery,
+            this.scene.modObjectPowerups,
+            posX, posY
+          );
+
+          jittered.physics.forEach(point => {
+            const newLine = track.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.scenery.forEach(point => {
+            const newLine = track.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
+            if (newLine) {
+              addedObjects.push(newLine);
+            }
+          });
+
+          jittered.powerups.forEach(powerup => {
+            let newPowerup = null;
+            switch (powerup.name) {
+              case "goal":
+                newPowerup = new ge(powerup.x, powerup.y, this);
+                this.scene.track.addTarget(newPowerup);
+                break;
+              case "bomb":
+                newPowerup = new zs(powerup.x, powerup.y, this);
+                break;
+              case "gravity":
+                newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "boost":
+                newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
+                break;
+              case "slowmo":
+                newPowerup = new xs(powerup.x, powerup.y, this);
+                break;
+              case "checkpoint":
+                newPowerup = new Ps(powerup.x, powerup.y, this);
+                break;
+              case "antigravity":
+                newPowerup = new Vs(powerup.x, powerup.y, this);
+                break;
+              case "teleport":
+                const portal1 = new Xs(powerup.x, powerup.y, this),
+                  portal2 = new Xs(powerup.x2, powerup.y2, this);
+                portal1.addOtherPortalRef(portal2);
+                portal2.addOtherPortalRef(portal1);
+                this.scene.track.addPowerup(portal1);
+                this.scene.track.addPowerup(portal2);
+                addedObjects.push(portal1, portal2);
+                return;
+              case "helicopter":
+                newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "truck":
+                newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "balloon":
+                newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
+                break;
+              case "blob":
+                newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
+                break;
+            }
+            if (newPowerup) {
+              this.scene.track.addPowerup(newPowerup);
+              addedObjects.push(newPowerup);
+            }
+          });
+        }
           press() {
               if (this.rotatingEllipse) return;
               if (this.recordActionsToToolhandler(),
@@ -20422,156 +20908,64 @@
               return;
             }
             if (this.active && this.toolHandler) {
-                const t = this.p1;
-                const e = this.p2;
-                const s = this.scene.track;
-                const i = GameSettings.circle.segmentLength * 10;
-                
-                const radiusX = GameSettings.ellipse ? Math.abs(e.x - t.x) : Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2));
-                const radiusY = GameSettings.ellipse ? Math.abs(e.y - t.y) : Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2));
+              const t = this.p1;
+              const e = this.p2;
+              const s = this.scene.track;
+              const i = GameSettings.circle.segmentLength * 10;
 
-                const segments = Math.ceil(Math.max(4, Math.round(((radiusX + radiusY) * 0.5 / i) / 2) * 2));
-                const angleIncrement = (2 * Math.PI) / segments;
-                const addedObjects = [];
-                const rotation = this.rotationAngle || 0;
-                const cosAngle = Math.cos(rotation);
-                const sinAngle = Math.sin(rotation);
-        
-                for (let j = 0; j < segments; j++) {
-                    const angle = j * angleIncrement;
-                    let firstX1 = t.x + radiusX * Math.cos(angle);
-                    let firstY1 = t.y + radiusY * Math.sin(angle);
-                    let firstX2 = t.x + radiusX * Math.cos(angle + angleIncrement);
-                    let firstY2 = t.y + radiusY * Math.sin(angle + angleIncrement);
+              const radiusX = GameSettings.ellipse ? Math.abs(e.x - t.x) : Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2));
+              const radiusY = GameSettings.ellipse ? Math.abs(e.y - t.y) : Math.sqrt(Math.pow(e.x - t.x, 2) + Math.pow(e.y - t.y, 2));
 
-                    let x1 = t.x + (firstX1 - t.x) * cosAngle - (firstY1 - t.y) * sinAngle;
-                    let y1 = t.y + (firstX1 - t.x) * sinAngle + (firstY1 - t.y) * cosAngle;
-                    let x2 = t.x + (firstX2 - t.x) * cosAngle - (firstY2 - t.y) * sinAngle;
-                    let y2 = t.y + (firstX2 - t.x) * sinAngle + (firstY2 - t.y) * cosAngle;
-        
-                    let lineObject;
-        
-                    if (!this.toolHandler.options.object) {
-                        if (this.toolHandler.options.lineType === "physics") {
-                            lineObject = s.addPhysicsLine(x1, y1, x2, y2);
-                        } else {
-                            lineObject = s.addSceneryLine(x1, y1, x2, y2);
-                        }
-                    }
-        
-                    if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
-                        const modifiedPhysics = this.scene.modObjectPhysics.map(line => ({
-                            x1: x1 + line.x1,
-                            y1: y1 + line.y1,
-                            x2: x1 + line.x2,
-                            y2: y1 + line.y2
-                        }));
-        
-                        const modifiedScenery = this.scene.modObjectScenery.map(line => ({
-                            x1: x1 + line.x1,
-                            y1: y1 + line.y1,
-                            x2: x1 + line.x2,
-                            y2: y1 + line.y2
-                        }));
-        
-                        const modifiedPowerups = this.scene.modObjectPowerups.map(powerup => ({
-                            name: powerup.name,
-                            x: x1 + powerup.x,
-                            y: y1 + powerup.y,
-                            x2: powerup.x2 !== undefined ? x1 + powerup.x2 : undefined,
-                            y2: powerup.y2 !== undefined ? y1 + powerup.y2 : undefined,
-                            angle: powerup.angle,
-                            time: powerup.time
-                        }));
-        
-                        modifiedPhysics.forEach(point => {
-                            const lineObject = s.addPhysicsLine(point.x1, point.y1, point.x2, point.y2);
-                            if (lineObject) {
-                                addedObjects.push(lineObject);
-                            }
-                        });
-        
-                        modifiedScenery.forEach(point => {
-                            const lineObject = s.addSceneryLine(point.x1, point.y1, point.x2, point.y2);
-                            if (lineObject) {
-                                addedObjects.push(lineObject);
-                            }
-                        });
-        
-                        modifiedPowerups.forEach(powerup => {
-                            let newPowerup = null;
-                            switch (powerup.name) {
-                                case "goal":
-                                    newPowerup = new ge(powerup.x, powerup.y, this);
-                                    this.scene.track.addTarget(newPowerup);
-                                    break;
-                                case "bomb":
-                                    newPowerup = new zs(powerup.x, powerup.y, this);
-                                    break;
-                                case "gravity":
-                                    newPowerup = new Ue(powerup.x, powerup.y, powerup.angle, this);
-                                    break;
-                                case "boost":
-                                    newPowerup = new ds(powerup.x, powerup.y, powerup.angle, this);
-                                    break;
-                                case "slowmo":
-                                    newPowerup = new xs(powerup.x, powerup.y, this);
-                                    break;
-                                case "checkpoint":
-                                    newPowerup = new Ps(powerup.x, powerup.y, this);
-                                    break;
-                                case "antigravity":
-                                    newPowerup = new Vs(powerup.x, powerup.y, this);
-                                    break;
-                                case "teleport":
-                                    const portal1 = new Xs(powerup.x, powerup.y, this),
-                                          portal2 = new Xs(powerup.x2, powerup.y2, this);
-                                    portal1.addOtherPortalRef(portal2);
-                                    portal2.addOtherPortalRef(portal1);
-                                    this.scene.track.addPowerup(portal1);
-                                    this.scene.track.addPowerup(portal2);
-                                    addedObjects.push(portal1);
-                                    addedObjects.push(portal2);
-                                    break;
-                                case "helicopter":
-                                    newPowerup = new hi(powerup.x, powerup.y, powerup.time, this);
-                                    break;
-                                case "truck":
-                                    newPowerup = new yi(powerup.x, powerup.y, powerup.time, this);
-                                    break;
-                                case "balloon":
-                                    newPowerup = new Si(powerup.x, powerup.y, powerup.time, this);
-                                    break;
-                                case "blob":
-                                    newPowerup = new Li(powerup.x, powerup.y, powerup.time, this);
-                                    break;
-                            }
-                            if (newPowerup) {
-                                this.scene.track.addPowerup(newPowerup);
-                                addedObjects.push(newPowerup);
-                            }
-                        });
-                    }
-        
-                    if (lineObject) {
-                        addedObjects.push(lineObject);
-                    }
+              const segments = Math.ceil(Math.max(4, Math.round(((radiusX + radiusY) * 0.5 / i) / 2) * 2));
+              const angleIncrement = (2 * Math.PI) / segments;
+              const addedObjects = [];
+              const rotation = this.rotationAngle || 0;
+              const cosAngle = Math.cos(rotation);
+              const sinAngle = Math.sin(rotation);
+
+              for (let j = 0; j < segments; j++) {
+                const angle = j * angleIncrement;
+                let firstX1 = t.x + radiusX * Math.cos(angle);
+                let firstY1 = t.y + radiusY * Math.sin(angle);
+                let firstX2 = t.x + radiusX * Math.cos(angle + angleIncrement);
+                let firstY2 = t.y + radiusY * Math.sin(angle + angleIncrement);
+
+                let x1 = t.x + (firstX1 - t.x) * cosAngle - (firstY1 - t.y) * sinAngle;
+                let y1 = t.y + (firstX1 - t.x) * sinAngle + (firstY1 - t.y) * cosAngle;
+                let x2 = t.x + (firstX2 - t.x) * cosAngle - (firstY2 - t.y) * sinAngle;
+                let y2 = t.y + (firstX2 - t.x) * sinAngle + (firstY2 - t.y) * cosAngle;
+
+                if (!this.toolHandler.options.object) {
+                  let lineObject;
+                  if (this.toolHandler.options.lineType === "physics") {
+                    lineObject = s.addPhysicsLine(x1, y1, x2, y2);
+                  } else {
+                    lineObject = s.addSceneryLine(x1, y1, x2, y2);
+                  }
+                  if (lineObject) {
+                    addedObjects.push(lineObject);
+                  }
                 }
-        
-                if (addedObjects.length > 0) {
-                    this.toolHandler.addActionToTimeline({
-                        type: "add",
-                        objects: addedObjects
-                    });
+
+                if (this.toolHandler.options.object && (this.scene.objectPhysics.length > 0 || this.scene.objectScenery.length > 0 || this.scene.objectPowerups.length > 0)) {
+                  this.addObjectAtPosition(x1, y1, addedObjects);
                 }
-        
-                this.toolHandler.snapPoint.x = e.x;
-                this.toolHandler.snapPoint.y = e.y;
-        
-                this.active = false;
-                this.ellipseRotated = false;
-                this.rotatingEllipse = false;
-                this.rotationAngle = 0;
+              }
+
+              if (addedObjects.length > 0) {
+                this.toolHandler.addActionToTimeline({
+                  type: "add",
+                  objects: addedObjects
+                });
+              }
+
+              this.toolHandler.snapPoint.x = e.x;
+              this.toolHandler.snapPoint.y = e.y;
+
+              this.active = false;
+              this.ellipseRotated = false;
+              this.rotatingEllipse = false;
+              this.rotationAngle = 0;
             }
           }
           rotateEllipse() {
@@ -24401,6 +24795,7 @@
           this.sceneryLines = new Set();
           this.objects = new Set();
           this.show = true;
+          this.locked = false;
           this.name = "";
         }
 
@@ -24438,13 +24833,13 @@
 
         clear() {
           for (let object of this.physicsLines) {
-            remove(object);
+            this.scene.remove(object);
           }
           for (let object of this.sceneryLines) {
-            remove(object);
+            this.scene.remove(object);
           }
           for (let object of this.objects) {
-            remove(object);
+            this.scene.remove(object);
           }
         }
 
@@ -24663,12 +25058,12 @@
             l = this.track.currentLayer,
             r = this.track.settings.eraser.mode;
           if (s.physics)
-            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
+            for (const s of this.physicsLines) (r != "layer" || s.layer == l) && !s.layer.locked && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
           if (s.scenery)
-            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
+            for (const s of this.sceneryLines) (r != "layer" || s.layer == l) && !s.layer.locked && (r != "visible" || s.layer.show) && s.erase(t, e) && i.push(s);
           if (s.powerups)
             for (const s of this.powerups.all) {
-              const n = (r != "layer" || s.layer == l) && (r != "visible" || s.layer.show) && s.erase(t, e);
+              const n = (r != "layer" || s.layer == l) && !s.layer.locked && (r != "visible" || s.layer.show) && s.erase(t, e);
               n && i.push(...n);
             }
           return i;
@@ -25428,12 +25823,12 @@
           }
 
           else {
-            if (GameSettings.trackName !== 'track.txt') {
+            /*if (GameSettings.trackName !== 'track.txt') {
               if (this.game.mod.ui?.obj?.['play']) {
                 this.game.mod.ui.obj['play'].checkbox.checked = true;
                 this.game.mod.ui.obj['play'].disable();
               }
-            }
+            }*/
             fetch(`assets/tracks/${GameSettings.trackName}.txt`)
               .then(response => {
                 if (!response.ok) {
@@ -25779,22 +26174,49 @@
             this.modObjectPowerups = this.objectPowerups;
             this.cleanCode = false;
             this.logged = false;
-            this.liveRider = new LiveRiderManager(this);
-            const trackId = `${GameSettings.type}/${GameSettings.id}`
-            const username = GameSettings.user.d_name || 'Player';
-
-            const modUi = this.mod.ui?.obj;
-            const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
-            const crHead = modUi?.['crHead']?.checkbox?.checked;
-            const blackHat = modUi?.['blackHat']?.checkbox?.checked;
-            const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
-
-            this.liveRider.connect(trackId, username, hatColor, hatType);
+          this.liveRider = new LiveRiderManager(this);
+          if (!GameSettings._pendingTrackLoad) {
+            const self = this;
+            fetch('/api/auth/me')
+              .then(function (r) { return r.json(); })
+              .then(function (data) {
+                if (data.loggedIn) {
+                  GameSettings.user = {
+                    uid: data.user.uid,
+                    username: data.user.username,
+                    d_name: data.user.username
+                  };
+                  GameSettings.beta = true;
+                }
+              })
+              .catch(function () { })
+              .then(function () {
+                const trackId = `${GameSettings.urlType}/${GameSettings.id}`;
+                const username = GameSettings.user?.d_name || GameSettings.user?.username || 'Player';
+                const mod = self.mod;
+                const hatColorRgb = mod ? mod.getVar('hatColor') : null;
+                const hatColor = hatColorRgb
+                  ? '#' + hatColorRgb.map(function (c) { return ('0' + c.toString(16)).slice(-2); }).join('')
+                  : '#000000';
+                const crHead = mod ? mod.getVar('crHead') : false;
+                const blackHat = mod ? mod.getVar('blackHat') : false;
+                const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+                self.liveRider.connect(trackId, username, hatColor, hatType);
+              });
+          }
         }
         getCanvasOffset() {
-          return this.settings.isStandalone
-            ? { height: 90, width: 0 }
-            : { height: 90, width: 0 };
+          let totalHeight;
+
+          if (window.innerHeight <= 800) {
+            totalHeight = 90;
+          } else if (window.innerHeight >= 1440) { 
+            totalHeight = 150;
+          } else {
+            totalHeight = 90;
+          }
+
+          return { height: totalHeight, width: 0 };
         }
         tapToStartOrRestart() {
           if (this.settings.mobile || this.game.mod.getVar("mobile")) {
@@ -25859,36 +26281,36 @@
             }, 5000);
           };
 
-showMessage();
+        showMessage();
         }
         updateControls() {
           if (this.controls) {
             const t = this.state.paused;
-            this.controls.isVisible() === t &&
-              (t ||
-                ((this.state.playing = !1),
-                this.camera.focusOnMainPlayer(),
-                this.toolHandler.setTool("camera")),
-              this.controls.setVisibility(!t),
-              this.controls.setZoomControlsVisibilty(t),
-              this.updateState()),
-              this.controls.update();
-              this.redoundoControls.controlsContainer.visible = false;
-
-              if (!this.game.mod.getVar("mobile")) {
-                  this.controls.setVisibility(false),
-                  this.controls.setZoomControlsVisibilty(false),
-                  this.redoundoControls.controlsContainer.visible = true,
-                  this.controls = false;
+            if (this.controls.isVisible() === t) {
+              if (!t) {
+                this.state.playing = false;
+                this.camera.focusOnMainPlayer();
+                this.toolHandler.setTool("camera");
               }
+              this.controls.setVisibility(!t);
+              this.controls.setZoomControlsVisibilty(t);
+              this.updateState();
+            }
+            this.controls.update();
+            this.redoundoControls.controlsContainer.visible = false;
+
+            if (!this.game.mod.getVar("mobile")) {
+              this.controls.setVisibility(false);
+              this.controls.setZoomControlsVisibilty(false);
+              this.redoundoControls.controlsContainer.visible = true;
+              this.controls = null;
+            }
           }
 
-          if (!this.controls && this.game.mod.getVar("mobile") || this.game.mod.getVar("play")) {
+          if (!this.controls && !this.redoundoControls) {
             this.createControls();
-            this.toolHandler.setTool("camera");
-            this.redoundoControls.controlsContainer.visible = false;
-          };
-          
+          }
+
           this.pauseControls.update();
         }
         registerTools() {
@@ -25952,11 +26374,31 @@ showMessage();
             (this.track.targetCount === 0 && this.playerManager.firstPlayer._scene.ticks > 1) && this.logTrackComplete();
         }
         isStateDirty() {
-          const t = this.oldState,
-            e = this.state;
-          let s = !1;
-          for (const i in e)
-            e[i] !== t[i] && ((s = !0), (this.oldState[i] = e[i]));
+          if (this._stateDirty) {
+            this._stateDirty = false;
+            return true;
+          }
+
+          const t = this.oldState;
+          const e = this.state;
+          let s = false;
+
+          for (const i in e) {
+            const cfg = Config[i];
+            const oldVal = t[i];
+            const newVal = e[i];
+
+            if (cfg && cfg.compareJson || typeof newVal === 'object') {
+              if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
+                s = true;
+                this.oldState[i] = newVal;
+              }
+            } else if (oldVal !== newVal) {
+              s = true;
+              this.oldState[i] = newVal;
+            }
+          }
+
           return s;
         }
         updateGamepads() {
@@ -26236,19 +26678,24 @@ showMessage();
         }
         updateState() {
           if (null !== this.game.onStateChange) {
-            const t = this.state;
-            (t.tool = this.toolHandler.currentTool),
-              (t.toolOptions = this.toolHandler.getToolOptions()),
-              (t.grid = this.toolHandler.options.grid),
-              (t.cameraLocked = this.toolHandler.options.cameraLocked),
-              (t.zoomPercentage = this.camera.zoomPercentage),
-              (t.vehicle = this.vehicle),
-              this.game.onStateChange(this.state);
-              t.hideMenus = this.game.mod.getVar("play") || this.game.mod.getVar("mobile");
+            var newState = generateState(this, Config);
+
+            var toolOpts = this.toolHandler.getToolOptions();
+            var toolOptsString = JSON.stringify(toolOpts || {});
+
+            if (toolOptsString !== this._lastToolOptsString) {
+              this._lastToolOptsString = toolOptsString;
+              newState.toolOptions = toolOpts ? { ...toolOpts } : {};
+            } else {
+              newState.toolOptions = this.state.toolOptions;
+            }
+
+            Object.assign(this.state, newState);
+            this.game.onStateChange(this.state);
           }
         }
         stateChanged() {
-          this.updateState();
+          this._stateDirty = true;
         }
         setStateDefaults() {
           const t = {};
@@ -26304,7 +26751,13 @@ showMessage();
               break;
             case "advancedBrush":
               break;
-            case "dbimport":
+            case "dbImport":
+              break;
+            case "objectImport":
+              break;
+            case "patternImport":
+              break;
+            case "toolsDialog":
               break;
             case "export":
               setTimeout(this.getTrackCode.bind(this), 750);
@@ -26515,6 +26968,94 @@ showMessage();
           localStorage.setItem("objects", JSON.stringify(save));
           this.stateChanged();
         }
+        loadPatterns() {
+          const patternTool = this.toolHandler.tools.pattern;
+          if (!patternTool) return;
+
+          let patterns = JSON.parse(localStorage.getItem("patterns") || "{}");
+
+          for (let name in patterns) {
+            try {
+              patternTool.addPattern(name, patterns[name], true); // true = skip save
+            } catch (e) {
+              console.error('Failed to load pattern:', name, e);
+            }
+          }
+
+          console.log('Patterns loaded:', Object.keys(patterns).length);
+        }
+
+        savePatterns() {
+          const patternTool = this.toolHandler.tools.pattern;
+          if (!patternTool) return;
+
+          let save = {};
+          for (let pattern of patternTool.patterns) {
+            save[pattern.name] = {
+              objectPhysics: pattern.objects
+                .filter(obj => obj.type === 'physics')
+                .map(obj => ({
+                  x1: Math.round(obj.p1.x),
+                  y1: Math.round(obj.p1.y),
+                  x2: Math.round(obj.p2.x),
+                  y2: Math.round(obj.p2.y)
+                })),
+              objectScenery: pattern.objects
+                .filter(obj => obj.type === 'scenery')
+                .map(obj => ({
+                  x1: Math.round(obj.p1.x),
+                  y1: Math.round(obj.p1.y),
+                  x2: Math.round(obj.p2.x),
+                  y2: Math.round(obj.p2.y)
+                })),
+              objectPowerups: []
+            };
+          }
+          localStorage.setItem("patterns", JSON.stringify(save));
+        }
+
+        getPatternCode(pattern) {
+          let i = "";
+          let n = false;
+
+          // physics lines
+          for (const obj of pattern.objects) {
+            if (obj instanceof PatternPhysicsLine) {
+              n = true;
+              i +=
+                Math.round(obj.p1.x).toString(32) + " " +
+                Math.round(obj.p1.y).toString(32) + " " +
+                Math.round(obj.p2.x).toString(32) + " " +
+                Math.round(obj.p2.y).toString(32) + ",";
+            }
+          }
+          if (n) i = i.slice(0, -1);
+          i += "#";
+
+          n = false;
+
+          // scenery lines
+          for (const obj of pattern.objects) {
+            if (obj instanceof PatternSceneryLine) {
+              n = true;
+              i +=
+                Math.round(obj.p1.x).toString(32) + " " +
+                Math.round(obj.p1.y).toString(32) + " " +
+                Math.round(obj.p2.x).toString(32) + " " +
+                Math.round(obj.p2.y).toString(32) + ",";
+            }
+          }
+          if (n) i = i.slice(0, -1);
+          i += "#";
+
+          // no powerups yet
+          i += "#";
+
+          // name
+          i += pattern.name;
+
+          return i;
+        }
         trackComplete() {
           this.verified = !this.track.dirty;
           this.completedTicks = this.playerManager.firstPlayer._scene.ticks;
@@ -26721,12 +27262,41 @@ showMessage();
                   (this.state.playing = !1));
               break;
             case "clear track":
-              this.trackAction("editor-action", "clear"), (this.clear = !0);
+              this.trackAction("editor-action", "clear");
+              this.clear = true;
               GameSettings.trackName = "track.txt";
+              GameSettings.id = null;
+              GameSettings.canonical = null;
+              GameSettings.type = null;
+              GameSettings.urlType = null;
+              GameSettings.authors = "";
+              GameSettings.description = "";
+              GameSettings.thumbnail = "";
+              GameSettings.permalink = "";
+              GameSettings.dialogFilter = null;
+              GameSettings.initialDialog = null;
               GameSettings.offsetPeteX = 0;
               GameSettings.offsetPeteY = 0;
               this.trackUpdated = true;
               GameManager.game.currentScene.toolHandler.actionTimeline = [];
+
+              history.pushState({ cleared: true }, "Free Rider", "/editor");
+              document.title = "track editor 1.1";
+
+              var oldScene = GameManager.game.currentScene;
+                if (oldScene && oldScene.liveRider) {
+                  oldScene.liveRider.disconnect();
+                }
+
+              var toolsIframe = document.getElementById('toolsIframe');
+              if (toolsIframe && toolsIframe.contentWindow) {
+                toolsIframe.contentWindow.postMessage({
+                  action: 'trackChanged',
+                  type: null,
+                  id: null,
+                  clearPlaylist: true
+                }, '*');
+              }
               break;
             case "import": {
               let e = t[0];
@@ -26812,6 +27382,26 @@ showMessage();
                 this.objectPowerups = [];
                 this.objectName = "";
               }
+              this.command("dialog", false);
+              break;
+            }
+            case "addPattern": {
+              let code = t[0];
+              let name = t[1];
+              if (!code || code.length <= 0) return;
+
+              const parsedLines = this.parseCoordinates(code);
+              const patternTool = this.toolHandler.tools.pattern;
+
+              if (patternTool) {
+                let patternName = name || parsedLines.extra || `pattern-${patternTool.patterns.length}`;
+                patternTool.addPattern(patternName, {
+                  objectPhysics: parsedLines.physicsLines,
+                  objectScenery: parsedLines.sceneryLines,
+                  objectPowerups: parsedLines.powerups
+                });
+              }
+
               this.command("dialog", false);
               break;
             }
@@ -27982,12 +28572,23 @@ showMessage();
       const er = document.createElement("style");
       (er.innerHTML = Qn), (window.crStyle = tr);
       const sr = {
-          crHead: {},
-          crBmx: {},
-          crMtb: {},
-          crHeli: {},
-          crRagdoll: {},
+          crHead: {
+            default: !1,
+          },
+          crBmx: {
+            default: !1,
+          },
+          crMtb: {
+            default: !1,
+          },
+          crHeli: {
+            default: !1,
+          },
+          crRagdoll: {
+            default: !1,
+          },
           crPowerups: {
+            default: !1,
             set(t, e, s) {
               e.currentScene.track.undraw(),
                 t && !s
@@ -28050,8 +28651,23 @@ showMessage();
           accurateEraser: { default: !1 },
           snap15: { default: !1 },
           pointDataAlways: { default: !1 },
-          mobile: { default: !1 },
-          play: { default: !1 },
+          mobile: {
+            default: false,
+            set(t, e, s) {
+              if (t !== s && e && e.currentScene) {
+                e.currentScene.createControls();
+                e.currentScene.updateMainPlayerHotkeys();
+              }
+            },
+          },
+          play: {
+            default: false,
+            set(t, e, s) {
+              if (t !== s && e && e.currentScene) {
+                e.currentScene.updateMainPlayerHotkeys();
+              }
+            },
+          },
           keepDeadRiders: {
             default: !1,
             set(t, e, s) {
@@ -28063,7 +28679,7 @@ showMessage();
             },
           },
           fadedVehiclePowerups: {
-            default: !1,
+            default: !0,
             set(t, e, s) {
               t !== s && e.currentScene.track.undraw();
             },
@@ -28104,12 +28720,12 @@ showMessage();
               this.set(t, null, !1);
             },
           },
-          lineShadow: {
+          /*lineShadow: {
             default: !1,
             set(t, e) {
               e.currentScene.track.undraw();
             },
-          },
+          },*/
           customColors: {
             default: !1,
             set(t, e, s) {
@@ -28124,11 +28740,11 @@ showMessage();
               this.set(t, null, !1);
             },
           },
-          vehicleColor: { type: "color", default: [15, 0, 185] },
-          riderColor: { type: "color", default: [18, 26, 61] },
+          vehicleColor: { type: "color", default: [0, 0, 0] },
+          riderColor: { type: "color", default: [0, 0, 0] },
           lineColor: {
             type: "color",
-            default: [61, 0, 15],
+            default: [0, 0, 0],
             set(t, e) {
               e.currentScene.track.undraw();
               e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
@@ -28136,7 +28752,7 @@ showMessage();
           },
           sceneryColor: {
             type: "color",
-            default: [190, 169, 158],
+            default: [170, 170, 170],
             set(t, e) {
               e.currentScene.track.undraw();
               e.currentScene.track.layers.forEach(i => i.usesDefaultColors && i.resetColors());
@@ -28144,7 +28760,7 @@ showMessage();
           },
           backgroundColor: {
             type: "color",
-            default: [255, 247, 242],
+            default: [255, 255, 255],
             set(t) {
               nr.innerHTML = `#game-container canvas{background-color:${Q(t)}}`;
             },
@@ -28154,7 +28770,7 @@ showMessage();
           },
           hatColor: {
             type: "color",
-            default: [255, 255, 255],
+            default: [0, 0, 0],
             set(t) {
               GameSettings.hatColor = `rgb(${t.join(", ")})`;
             },
@@ -28334,7 +28950,7 @@ showMessage();
             type: "folder",
             title: "Nostalgia Mode",
             description:
-              "Makes the game look like Canvas Rider, an older defunct version of the game.",
+              "Makes the game look like Canvas Rider and Black Hat Rider.",
             folder: [
               {
                 type: "activate",
@@ -28392,12 +29008,12 @@ showMessage();
             description:
               "More mods that were included in Polygon's Mod.",
             folder: [
-              {
+              /*{
                 key: "lineShadow",
                 title: "Line Shadows",
                 description:
                   "Adds shadows behind the black lines to make them stand out more.",
-              },
+              },*/
               {
                 key: "fadedVehiclePowerups",
                 title: "Faded Vehicle Powerups",
@@ -28865,7 +29481,7 @@ showMessage();
       }
       let xr = document.createElement("template");
       (xr.innerHTML =
-        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/pie42/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br>Char<br>Renée<br>Maxime<br>Pete<br><span title="created icons for the layer feature">mbcool</span></div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
+        '<div class="mod-menu-container"> <div style="display:grid;grid-template-columns:auto auto auto"> <div class="mod-menu"> </div> <div class="mod-v-seperator"></div> <div class="mod-description-container"> <div class="mod-setting-description invisible"></div> <div class="mod-title" onclick=\'window.open("https://github.com/pie42/frhd-editor/"); document.body.removeChild(GameManager.game.mod.ui.container);\'> <div style="flex:0.5"></div> <div> <p style="font-family:monospace;font-size:14pt">Free Rider<br><span style="font-size:10pt">track editor v1.1</span></p><br><p style="font-family:monospace;font-size:8pt">credits:<br>Ness<br>Pie42<br>Polygon<br>Calculus<br><span title="for object, layer, and pattern tool icons">mbcool</span><br>Char<br>Renée<br>Maxime<br>Pete</div></p><br><p style="font-family:monospace;font-size:8pt">click for app info</div></p> <div style="flex:1"></div> </div> </div> </div> </div> '),
         (xr = xr.content);
       const br = {
         bool: (t, e, s, i) => new lr(t, s[e], i),
@@ -28940,24 +29556,20 @@ showMessage();
                   (this.icon = document.createElement("div")),
                   (this.icon.className = "mod-icon"),
                   (this.icon.onclick = () => {
-                    const t = (e) => {
-                      if (!this.container.contains(e.target)) {
-                        document.removeEventListener("mousedown", t),
-                          document.removeEventListener("pointerdown", t),
-                          document.body.contains(this.container) && document.body.removeChild(this.container);
-                        for (const t of this.arr)
-                          t instanceof dr && t.opened && t.close();
-                      }
-                    };
-                    document.body.appendChild(this.container),
-                      setTimeout(
-                        () => document.addEventListener("mousedown", t),
-                        0
-                      ),
-                      setTimeout(
-                        () => document.addEventListener("pointerdown", t),
-                        0
-                      );
+                    var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+                    var iframe = document.getElementById("toolsIframe");
+                    if (iframe && iframe.contentWindow) {
+                      iframe.contentWindow.postMessage({
+                        action: 'showToolTab',
+                        tool: 'mods'
+                      }, '*');
+                    }
+
+                    if (typeof GameManager !== "undefined" && !sidebarOpen) {
+                      GameSettings.dialogTool = 'mods';
+                      GameManager.command("dialog", "toolsDialog", "mods");
+                    }
                   });
               }
               
@@ -28999,7 +29611,7 @@ showMessage();
             rr[t].hasOwnProperty("initialize") &&
               rr[t].initialize(this.vars[t]);
           if (typeof GameSettings !== 'undefined' && GameSettings) {
-            if (GameSettings.trackName !== 'track.txt' && this.ui.obj['play']) {
+            /*if (GameSettings.trackName !== 'track.txt' && this.ui.obj['play']) {
               this.vars.play = true;
               this.ui.obj['play'].checkbox.checked = true;
               this.ui.obj['play'].disable();
@@ -29007,7 +29619,7 @@ showMessage();
             else if (GameSettings.trackName === 'track.txt' && this.ui.obj['play']) {
               this.vars.play = false;
               this.ui.obj['play'].checkbox.checked = false;
-            }
+            }*/
 
             this.vars.crouch = true;
             this.ui.obj['crouch'].checkbox.checked = true;
@@ -29038,6 +29650,9 @@ showMessage();
                 console.error(t);
               }
             this.ui.update(t, this.vars[t]), this.saveToLocalStorage();
+            if (this.game && this.game.currentScene) {
+            this.game.currentScene.stateChanged();
+            }
           } else console.error('No mod variable found called "' + t + '".');
         }
         getVar(t) {
@@ -29045,16 +29660,18 @@ showMessage();
           console.error('No mod variable found called "' + t + '".');
         }
         loadFromLocalStorage() {
-          const t = localStorage.getItem("polygonsMod");
+          /*const t = localStorage.getItem("polygonsMod");
           if (t) {
             const e = JSON.parse(t);
             for (const t in e.vars) this.vars[t] = e.vars[t];
             for (const t in e.meta) this.meta[t] = e.meta[t];
-          }
+          }*/
+          localStorage.removeItem("polygonsMod");
         }
         saveToLocalStorage() {
-          const t = JSON.stringify({ vars: this.vars, meta: this.meta });
-          localStorage.setItem("polygonsMod", t);
+          if (typeof saveSettings === 'function') {
+            saveSettings(true);
+          }
         }
         clean() {
           for (const t in this.vars)
@@ -29193,25 +29810,26 @@ showMessage();
             this.currentScene.updateState();
           }
         }
-        addTrackFullscreenListener() {
-          Object.defineProperty(this.settings, 'editorFullscreen', {
-              configurable: true,
-              enumerable: true,
-              get: () => this._editorFullscreen,
-              set: (value) => {
-                  this._editorFullscreen = value;
-                  this.onTrackFullscreenChange();
-              },
-          });
-        }
         addSidebarListener() {
           Object.defineProperty(this.settings, 'sidebar', {
             configurable: true,
             enumerable: true,
-            get: () => this._sidebar,
+            get: () => this._sidebar !== undefined ? this._sidebar : true,
             set: (value) => {
-                this._sidebar = value;
-                this.onSidebarChange();
+              this._sidebar = value;
+              this.onSidebarChange();
+            },
+          });
+        }
+
+        addTrackFullscreenListener() {
+          Object.defineProperty(this.settings, 'editorFullscreen', {
+            configurable: true,
+            enumerable: true,
+            get: () => this._editorFullscreen || false,
+            set: (value) => {
+              this._editorFullscreen = value;
+              this.onTrackFullscreenChange();
             },
           });
         }
@@ -29237,6 +29855,8 @@ showMessage();
             (this.currentScene = null),
             (this.assets = null),
             (this.settings = null),
+            this._editorFullscreen = s.editorFullscreen || false;
+            this._sidebar = s.sidebar !== false;
             (this.stage.autoClear = !0),
             this.stage.removeAllChildren(),
             this.stage.update(),
@@ -29402,14 +30022,17 @@ function load() {
               this.clearTemp();
           }
           if (r && !this.rotate) {
-              const degrees = shift ? -1 * GameSettings.rotateFactor : GameSettings.rotateFactor;
-              this.rotateSelected(degrees);
-              this.rotate = !0;
+            const degrees = shift
+              ? -1 * (GameSettings.rotateFactor || 15)
+              : (GameSettings.rotateFactor || 15);
+            this.rotateSelected(degrees);
+            this.rotate = !0;
           }
           if (s && !this.scale) {
-              const scale = shift ? 1 / GameSettings.scaleFactor : GameSettings.scaleFactor;
-              this.scaleSelected(scale);
-              this.scale = !0;
+            const factor = GameSettings.scaleFactor || 0.1;
+            const scale = shift ? 1 / (1 + factor) : (1 + factor);
+            this.scaleSelected(scale);
+            this.scale = !0;
           }
           if (f && !this.flip) {
               const flipVertically = shift;
@@ -29879,7 +30502,7 @@ function load() {
               layer = this.scene.track.currentLayer,
               mode = this.scene.settings.select.mode;
           // selected doesn't exist on the track, so we have to check it separately
-          if (selected && (mode != 'layer' || layer == selected.layer) && (mode != "visible" || selected.layer.hide == false)) {
+          if (selected && (mode != 'layer' || layer == selected.layer) && (mode != "visible" || selected.layer.show) && !selected.layer.locked) {
               let dist = selected.p1 ?
                   linesdf(mousePos.sub(selectOffset), selected) :
                   pointsdf(mousePos.sub(selectOffset), selected);
@@ -29892,6 +30515,7 @@ function load() {
               for (let i of selectList) {
                   if (mode == 'layer' && layer != i.layer) continue;
                   if (mode == 'visible' && i.layer.hide == true) continue;
+                  if (i.layer.locked) continue;
                   let dist = i.p1 ?
                       linesdf(mousePos.sub(selectOffset), i) :
                       pointsdf(mousePos.sub(selectOffset), i);
@@ -30116,7 +30740,7 @@ function load() {
           }
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer))
                       continue;
                   if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
@@ -30128,7 +30752,7 @@ function load() {
           }
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer))
                       continue;
                   if (mode == 'visible' && !i.layer.show) continue;
                   let dist = linesdf(mousePos, i);
@@ -30140,7 +30764,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer))
                       continue;
                   if (mode == 'visible' && !i.layer.show) continue;
                   let dist = pointsdf(mousePos, i);
@@ -30167,15 +30791,15 @@ function load() {
               maxVec.x >= sectorTrackPos.x + sectorSize &&
               maxVec.y >= sectorTrackPos.y + sectorSize) {
               hoverPhysicsList[sectorPos.x][sectorPos.y] = 
-                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : [])
-                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
+                  (this.options.types.physics ? sector.physicsLines.filter(i => !i.remove && !i.layer.locked && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : [])
+                  .concat((this.options.types.powerups ? sector.powerups.all.filter(i => !i.remove && !i.layer.locked && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
               return hoverPhysicsList[sectorPos.x][sectorPos.y]
-                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
+                  .concat((this.options.types.scenery ? sector.sceneryLines.filter(i => !i.remove && !i.layer.locked && (mode != 'layer' || layer == i.layer) && (mode != 'visible' || i.layer.show)) : []));
           }
           let toReturn = [];
           if (this.options.types.physics) {
               for (let i of sector.physicsLines) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -30183,7 +30807,7 @@ function load() {
           }
           if (this.options.types.powerups) {
               for (let i of sector.powerups.all) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (pointrect(i, minVec, maxVec))
                       toReturn.push(i);
@@ -30192,7 +30816,7 @@ function load() {
           hoverPhysicsList[sectorPos.x][sectorPos.y] = [...toReturn];
           if (this.options.types.scenery) {
               for (let i of sector.sceneryLines) {
-                  if (i.remove || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
+                  if (i.remove || i.layer.locked || (mode == 'layer' && layer != i.layer) || (mode == 'visible' && !i.layer.show))
                       continue;
                   if (rectcollide(i.p1, i.p2, minVec, maxVec))
                       toReturn.push(i);
@@ -30524,6 +31148,7 @@ function load() {
       scene = game.currentScene,
       active = false;
 
+  scene.remove = remove;
   scene.toolHandler.registerTool(SelectTool);
   let selectTool = scene.toolHandler.tools.select;
   
@@ -30581,8 +31206,9 @@ function load() {
           if (selectTool.selected.length) {
               let dirLen = Math.sqrt(dir.x ** 2 + dir.y ** 2);
               if (dirLen > 0) {
-                  dir.x = dir.x * moveAccumulator / dirLen | 0;
-                  dir.y = dir.y * moveAccumulator / dirLen | 0;
+                let offsetFactor = GameSettings.offsetFactor || 10;
+                dir.x = dir.x * moveAccumulator * offsetFactor / dirLen | 0;
+                dir.y = dir.y * moveAccumulator * offsetFactor / dirLen | 0;
                   if (moveSelection) {
                       if (!selectTool.oldOffset) selectTool.oldOffset = selectPoint ? pointOffset.factor(1) : selectOffset.factor(1);
                       if (selectPoint) {
@@ -30924,6 +31550,12 @@ var v = window.setInterval(function() {
   if (GameManager != undefined && GameManager.game != undefined) {
       rInterval();
       load();
+      loadPatternTool();
+      registerModConfig();
+        if (window._pendingModSettings) {
+            console.log('[Mod] Pending settings found, applying...');
+        }
+        applyModSettings();
   }
 }, 250)
 
@@ -30967,14 +31599,13 @@ class LiveRiderManager {
     this.username = username;
 
     this.ws.onopen = () => {
-      this.connected = true;
-      this.ws.send(JSON.stringify({
+    this.connected = true;
+    this.ws.send(JSON.stringify({
         type: 'join',
         trackId,
-        username,
         hatColor: hatColor || '#000000',
         hatType: hatType || 'none'
-      }));
+    }));
     };
 
     this.ws.onmessage = (e) => {
@@ -31003,6 +31634,16 @@ class LiveRiderManager {
           });
         } else if (msg.type === 'player_left') {
           this.removeGhost(msg.playerId);
+        } else if (msg.type === 'appearance' && msg.playerId !== this.playerId) {
+          const playerData = this.ghostPlayers.get(msg.playerId);
+          if (playerData) {
+            playerData.hatColor = msg.hatColor;
+            playerData.hatType = msg.hatType;
+            if (playerData.ghost) {
+              playerData.ghost._hatColor = msg.hatColor;
+              playerData.ghost._hatType = msg.hatType;
+            }
+          }
         }
       }
     };
@@ -31228,6 +31869,23 @@ class LiveRiderManager {
     }
   }
 
+  sendAppearance() {
+    if (!this.connected || this.ws.readyState !== WebSocket.OPEN) return;
+    const mod = this.scene.mod;
+    const hatColorRgb = mod ? mod.getVar('hatColor') : null;
+    const hatColor = hatColorRgb
+        ? '#' + hatColorRgb.map(function(c) { return ('0' + c.toString(16)).slice(-2); }).join('')
+        : '#000000';
+    const crHead = mod ? mod.getVar('crHead') : false;
+    const blackHat = mod ? mod.getVar('blackHat') : false;
+    const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+    this.ws.send(JSON.stringify({
+        type: 'appearance',
+        hatColor,
+        hatType
+    }));
+  }
+
   createGhost(playerId, username, hatColor, hatType) {
     const pm = this.scene.playerManager;
     const Vehicles = window.GameVehicles;
@@ -31281,8 +31939,16 @@ class LiveRiderManager {
   }
 
   disconnect() {
+    for (const [playerId] of this.ghostPlayers) {
+        this.removeGhost(playerId);
+    }
+    this.ghostPlayers.clear();
+
     this.ws?.close();
-  }
+    this.ws = null;
+    this.playerId = null;
+    this.connected = false;
+}
 }
 
 String.prototype.hashCode = function () {
@@ -31290,3 +31956,1029 @@ String.prototype.hashCode = function () {
   for (let i = 0; i < this.length; i++) h = ((h << 5) - h) + this.charCodeAt(i) | 0;
   return Math.abs(h);
 };
+
+// we should really rework this + select tool to fit better
+
+// requirements:
+// - parse object to find / connect lines that extend through the edge
+//   - might make some sort of structure like {top: {}, left: {}, right: {}, down: {}} where each inner object is indexed to an array by the other coordinate, each element of which has the angle of the line, a reference to the line (or possibly just the other endpoint), and (optionally) something saying if the other endpoint is also on an edge / wtv
+// - some kind of brush with which to paint the pattern
+//   - can make a CanvasPattern with the rendered object and create a polyline somehow from the brushstrokes and fill that with the CanvasPattern in order to draw the current stroke without creating lines
+//   - might not support objects until later just to be lazy
+//   - to store brush stroke: make an internal grid on every brush stroke; every movement fills in the appropriate part of a boolean array representing every pixel in the cell (if every cell just uses a 2d canvas and draws the shape on it, this could be fairly fast)
+//   - to render brush stroke: store an internal canvas of appropriate size and all of the points of the brush stroke so far (in case the canvas gets moved or something). then, simply render each one so far (try to make sure that this doesn't make the rendering look horrible?)
+//     - could also use the canvas from the internal grid and render a rectangle over everything using source-in (i.e. render entire grid with brushstrokes onto a temp canvas, render rectangle of full pattern over with source-in, then render temp canvas onto normal canvas)
+
+// optional:
+// - easy way to make new brushes (if i can figure out how to get an object's outline, for instance; just square and circle should be good for a lot)
+//   - brushes using just a canvas (or two - one with the outline to be rendered and transparent everywhere else, and the mask)
+//     - might make this the default lol, it seems so much easier (pass in functions to draw these to the right size?)
+// - detect symmetry in patterns and allow for random (seed-based) rotations
+// - instead of using a grid of cells locked to the size of a pattern, scale them to a decent multiple (shoot for like 300x300) on small patterns - might also make long line detections easier?
+function loadPatternTool() {
+  let zv = GameManager.game.currentScene.camera.position.factor(0),
+      vector = (x = 0, y = 0) => {return zv.factor(0).add({x, y})};
+  
+  function gcd(a, b) {
+    while (b)
+      [a, b] = [b, a % b];
+    return Math.abs(a);
+  }
+  class PatternLine {
+    constructor(x1, y1, x2, y2) {
+      this.p1 = vector(x1, y1);
+      this.p2 = vector(x2, y2);
+      if (y1 > y2) {
+        [this.p1, this.p2] = [this.p2, this.p1];
+        [x1, x2] = [x2, x1];
+      }
+      if (x1 > x2) {
+        [this.p1, this.p2] = [this.p2, this.p1];
+      }
+      this.pp = this.p2.sub(this.p1);
+      this.len = this.pp.len();
+      this.angle = Math.atan2(this.pp.y, this.pp.x);
+      // desired is segments every 5-20 pixels, but for performance, also have no fewer than 2 and no more than 40 segments
+      // (2 has to be on the outside so the math.min doesn't end up producing 0 segments for short lines)
+      this.segments = Math.max(Math.min(Math.max(gcd(this.pp.x, this.pp.y), this.len / 20 | 0), this.len / 2 | 0, 100), 1);
+      this.segment = this.pp.factor(1 / this.segments);
+      this.pixels = [];
+    }
+
+    getPixels(width) {
+      let start = this.p1.x + this.p1.y * width;
+      this.pixels = [...Array(this.segments)].map((_, i) => {
+        let segment = this.segment.factor(i),
+          offset = Math.floor(segment.x) + Math.floor(segment.y) * width;
+        return start + offset;
+      });
+      this.pixels.push(this.p2.x + this.p2.y * width);
+    }
+
+    testPixels(imageData, offset) {
+      let lines = [],
+        objects = [],
+        state = false;
+      for (let i = 0; i < this.pixels.length; i++) {
+        if (!!imageData[this.pixels[i] * 4 + 3] != state) {
+          lines.push(i);
+          state = !state;
+        }
+      }
+      lines.push(this.pixels.length - 1);
+      for (let i = 0; i < lines.length - 1; i += 2) {
+        let p1 = this.p1.add(this.segment.factor(lines[i])),
+          p2 = this.p1.add(this.segment.factor(lines[i + 1]));
+        objects.push(this.addLine(p1, p2, offset));
+      }
+      return objects;
+    }
+
+    addLine(p1, p2, offset) {
+      console.log('not implemented!', p1, p2, offset);
+    }
+  }
+
+  // idk oop
+  class PatternPhysicsLine extends PatternLine {
+    constructor(x1, y1, x2, y2) {
+      super(x1, y1, x2, y2);
+      this.type = 'physics';
+    }
+
+    addLine(p1, p2, origin) {
+      return GameManager.game.currentScene.track.addPhysicsLine(
+        p1.x + origin.x, p1.y + origin.y,
+        p2.x + origin.x, p2.y + origin.y
+      );
+    }
+  }
+
+  class PatternLineWrap {
+    constructor(line, point, edge) {
+      this.line = line;
+      this.point = point;
+      this.point.wrap = this;
+      this.edge = edge;
+    }
+
+    update(line, point) {
+      if (line.len > this.line.len) {
+        this.point.wrap = undefined;
+        this.line = line;
+        this.point = point;
+        this.point.wrap = this;
+        return true;
+      }
+      return false;
+    }
+  }
+
+  class PatternSceneryLine extends PatternLine {
+    constructor(x1, y1, x2, y2) {
+      super(x1, y1, x2, y2);
+      this.type = 'scenery';
+    }
+
+    addLine(p1, p2, origin) {
+      return GameManager.game.currentScene.track.addSceneryLine(
+        p1.x + origin.x, p1.y + origin.y,
+        p2.x + origin.x, p2.y + origin.y
+      );
+    }
+  }
+
+  // run >= 0
+  // reference point should be on the left wall if possible, or the top wall if not
+  // rise and run should have a gcd of 1
+  class PatternInfLine {
+    constructor(p, rise, run) {
+      this.p = p;
+      this.rise = rise;
+      this.run = run;
+    }
+  }
+
+  class PatternObject {}
+
+  class PatternGridCell {
+    constructor(pattern, origin, x, y, canvas) {
+      // figure out if this is actually feasible to determine performance-wise
+      this.full = false;
+      this.x = x;
+      this.y = y;
+      this.width = pattern.width;
+      this.height = pattern.height;
+      this.pos = vector(this.x * this.width, this.y * this.height);
+      this.width++;
+      this.height++;
+      // might want to switch to a canvas pool
+      this.canvas = canvas || document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+      this.ctx.imageSmoothingEnabled = false;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.rendered = false;
+      this.cellAbove = undefined;
+      this.cellBelow = undefined;
+      this.cellLeft = undefined;
+      this.cellRight = undefined;
+      this.wrappingData = undefined;
+      this.pattern = pattern;
+    }
+
+    // pos should be the position of the top left of the brush,
+    // even though the mask will track to be centered on the mouse
+    stroke(brush, pos) {
+      if (this.full) return;
+      let drawPos = pos.sub(this.pos),
+        zoom = GameManager.game.currentScene.camera.zoom;
+      this.ctx.drawImage(brush.mask, drawPos.x, drawPos.y, brush.mask.width * 2, brush.mask.height * 2);
+      if (!GameSettings.pattern.experimentalSpeedups || this.width > 100 || this.height > 100) return;
+      let data = this.canvas.toDataURL();
+      if (data == this.pattern.asFull) {
+        this.full = true;
+        this.ctx.clearRect(0, 0, this.width, this.height);
+      }
+    }
+
+    draw(ctx, tl, zoom) {
+      let drawPos = this.pos.sub(tl).factor(zoom);
+      if (this.full) {
+        ctx.fillRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      } else {
+        ctx.drawImage(this.canvas, drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+      }
+      //GameManager.game.canvas.getContext('2d').strokeRect(drawPos.x, drawPos.y, this.width * zoom, this.height * zoom);
+    }
+  }
+
+  class PatternGrid {
+    constructor() {
+      this.origin = vector();
+      this.cells = [];
+      this.canvasPool = [...Array(5)].map(i => document.createElement('canvas'));
+      this.pattern = undefined;
+      this.brush = undefined;
+      this.active = false;
+    }
+
+    start(pattern, brush, origin) {
+      this.pattern = pattern;
+      this.brush = brush;
+      this.origin = origin;
+      this.cells = [];
+      this.active = true;
+    }
+
+    end() {
+      let objects = [];
+      for (let i in this.cells) {
+        let row = this.cells[i];
+        for (let j in row) {
+          objects.push(...this.pattern.render(row[j], this.origin));
+          if (row[j].canvas) {
+            row[j].ctx.clearRect(0, 0, row[j].width, row[j].height);
+            this.canvasPool.push(row[j].canvas);
+          }
+        }
+      }
+      objects = objects.filter(i => i);
+      GameManager.game.currentScene.toolHandler.addActionToTimeline({
+        type: "add",
+        objects
+      });
+      this.cells = [];
+      this.active = false;
+    }
+
+    // draw is the temporary fun rendering
+    draw(camera, screen, ctx) {
+      if (!this.active || !this.pattern) return;
+      ctx.globalCompositeOperation = 'source-over';
+      let zoom = camera.zoom,
+        tl = vector(camera.position.x - screen.size.x / zoom / 2 - this.origin.x, camera.position.y - screen.size.y / zoom / 2 - this.origin.y),
+        start = vector(Math.floor((camera.position.x - this.origin.x - screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y - screen.size.y / zoom / 2) / this.pattern.height)),
+        end = vector(Math.floor((camera.position.x - this.origin.x + screen.size.x / zoom / 2) / this.pattern.width), Math.floor((camera.position.y - this.origin.y + screen.size.y / zoom / 2) / this.pattern.height));
+      for (let x = start.x; x <= end.x; x++) {
+        let row = this.cells[x];
+        if (!row) continue;
+        for (let y = start.y; y <= end.y; y++) {
+          let cell = row[y];
+          if (!cell) continue;
+          cell.draw(ctx, tl, zoom);
+        }
+      }
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = this.pattern.canvPattern;
+      ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      if (this.canvasPool.length < 5) {
+        this.canvasPool.push(document.createElement('canvas'));
+      } else if (this.canvasPool.length > 50) {
+        this.canvasPool.pop();
+      }
+    }
+
+    stroke(pos) {
+      if (!this.active || !this.pattern || !this.brush) return;
+      pos = pos.sub(this.origin).sub(vector(this.brush.mask.width, this.brush.mask.height));
+      let start = vector(Math.floor(pos.x / this.pattern.width), Math.floor(pos.y / this.pattern.height)),
+        end = vector(Math.floor((pos.x + this.brush.mask.width * 2) / this.pattern.width), Math.floor((pos.y + this.brush.mask.height * 2) / this.pattern.height));
+      for (let x = start.x - 1; x <= end.x + 1; x++) {
+        let row = this.cells[x] || (this.cells[x] = []);
+        for (let y = start.y - 1; y <= end.y + 1; y++) {
+          let cell = row[y];
+          // sorry about the naming
+          if (!cell) {
+            row[y] = cell = new PatternGridCell(this.pattern, this.origin, x, y, this.canvasPool.pop());
+            let temp = row[y - 1];
+            if (temp) {
+              temp.cellBelow = cell;
+              cell.cellAbove = temp;
+            }
+            temp = row[y + 1];
+            if (temp) {
+              temp.cellAbove = cell;
+              cell.cellBelow = temp;
+            }
+            temp = this.cells[x - 1]?.[y];
+            if (temp) {
+              temp.cellRight = cell;
+              cell.cellLeft = temp;
+            }
+            temp = this.cells[x + 1]?.[y];
+            if (temp) {
+              temp.cellLeft = cell;
+              cell.cellRight = temp;
+            }
+          }
+          cell.stroke(this.brush, pos);
+          if (cell.full) {
+            this.canvasPool.push(cell.canvas);
+            cell.canvas = undefined;
+          }
+        }
+      }
+    }
+  }
+
+  function fpClose(a, b, eps = 0.001) {
+    return Math.abs(a - b) < eps;
+  }
+
+  function mod(a, b) {
+    return ((a % b) + b) % b;
+  }
+
+  class Pattern {
+    constructor(name, p) {
+      this.name = name;
+      this.width = 0;
+      this.height = 0;
+      this.min = vector(Infinity, Infinity);
+      this.max = vector(-Infinity, -Infinity);
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+      this.transform = new DOMMatrix([1, 0, 0, 1, 0, 0]);
+      this.objects = [];
+      this.edges = {
+        left: {},
+        right: {},
+        top: {},
+        bottom: {}
+      };
+      this.corners = {tl: [], tr: [], bl: [], br: []};
+      this.middle = {};
+      this.infLines = [];
+      this.wraps = new Map();
+      this.loops = new Map();
+      this.wrappingEdges = {};
+      this.parse(p);
+      this.getLoopsAndWraps();
+      this.origin = vector();
+      this.scale = 1;
+    }
+
+    parse(p) {
+      // find bounds
+      let h = p.objectPhysics,
+        s = p.objectScenery;
+      for (let i of h) {
+        this.min.x = Math.min(this.min.x, i.x1, i.x2);
+        this.min.y = Math.min(this.min.y, i.y1, i.y2);
+        this.max.x = Math.max(this.max.x, i.x1, i.x2);
+        this.max.y = Math.max(this.max.y, i.y1, i.y2);
+      }
+      for (let i of s) {
+        this.min.x = Math.min(this.min.x, i.x1, i.x2);
+        this.min.y = Math.min(this.min.y, i.y1, i.y2);
+        this.max.x = Math.max(this.max.x, i.x1, i.x2);
+        this.max.y = Math.max(this.max.y, i.y1, i.y2);
+      }
+      this.width = this.max.x - this.min.x;
+      this.height = this.max.y - this.min.y;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      // add in edge parsing and stuff in these loops
+      this.ctx.strokeStyle = '#000';
+      this.ctx.beginPath();
+      for (let i of h) {
+        this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
+        this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+        this.addLine(new PatternPhysicsLine(i.x1 - this.min.x, i.y1 - this.min.y, i.x2 - this.min.x, i.y2 - this.min.y));
+      }
+      this.ctx.stroke();
+      this.ctx.strokeStyle = '#aaa';
+      this.ctx.beginPath();
+      for (let i of s) {
+        this.ctx.moveTo(i.x1 - this.min.x, i.y1 - this.min.y);
+        this.ctx.lineTo(i.x2 - this.min.x, i.y2 - this.min.y);
+        this.addLine(new PatternSceneryLine(i.x1 - this.min.x, i.y1 - this.min.y, i.x2 - this.min.x, i.y2 - this.min.y));
+      }
+      this.ctx.stroke();
+      this.canvPattern = this.ctx.createPattern(this.canvas, 'repeat');
+      let fullCanvas = document.createElement('canvas');
+      fullCanvas.width = this.width + 1;
+      fullCanvas.height = this.height + 1;
+      let fullctx = fullCanvas.getContext('2d');
+      fullctx.fillStyle = '#000000';
+      fullctx.fillRect(0, 0, this.width + 1, this.height + 1);
+      this.asFull = fullCanvas.toDataURL();
+    }
+
+    /**
+     * 
+     * @param {PatternLine} line 
+     */
+    addLine(line) {
+      line.getPixels(this.width + 1);
+      for (let p of [line.p1, line.p2]) {
+        if (p.x == 0) {
+          if (p.y == 0) {
+            this.corners.tl.push([p, line]);
+            p.edge = 'top-left';
+            p.corner = true;
+          } else if (p.y == this.height) {
+            this.corners.bl.push([p, line]);
+            p.edge = 'bottom-left';
+            p.corner = true;
+          } else {
+            let e;
+            this.edges.left[p.y] = e = this.edges.left[p.y] || [];
+            e.push([p, line]);
+            p.edge = 'left';
+          }
+        } else if (p.x == this.width) {
+          if (p.y == 0) {
+            this.corners.tr.push([p, line]);
+            p.edge = 'top-right';
+            p.corner = true;
+          } else if (p.y == this.height) {
+            this.corners.br.push([p, line]);
+            p.edge = 'bottom-right';
+            p.corner = true;
+          } else {
+            let e;
+            this.edges.right[p.y] = e = this.edges.right[p.y] || [];
+            e.push([p, line]);
+            p.edge = 'right';
+          }
+        } else if (p.y == 0) {
+            let e;
+            this.edges.top[p.x] = e = this.edges.top[p.x] || [];
+            e.push([p, line]);
+            p.edge = 'top';
+        } else if (p.y == this.height) {
+            let e;
+            this.edges.bottom[p.x] = e = this.edges.bottom[p.x] || [];
+            e.push([p, line]);
+            p.edge = 'bottom';
+        } else {
+          p.edge = false;
+        }
+        // technically this is probably slower but y'know
+        if (GameSettings.pattern.experimentalSpeedups) {
+          let coords = `${p.x},${p.y}`,
+            m = this.middle[coords] || (this.middle[coords] = []),
+            found = false;
+          for (let i in m) {
+            let l = m[i];
+            patternFoundContinuousLine: 
+            if (fpClose(l.angle, line.angle)) {
+              let ind = this.objects.indexOf(l);
+              if (ind < 0) {
+                console.log('wtf', l, line);
+                break patternFoundContinuousLine;
+              } else {
+                let otherPoint = (p == line.p1) ? line.p2 : line.p1;
+                if (l.p1.x == p.x && l.p1.y == p.y && otherPoint == line.p1) {
+                  l.p1 = otherPoint;
+                } else if (l.p2.x == p.x && l.p2.y == p.y && otherPoint == line.p2) {
+                  l.p2 = otherPoint;
+                } else {
+                  // actually this should be fairly normal and prevent overlapping lines
+                  // from being converted into one line incorrectly
+                  console.log('wtf2', l, line, m, otherPoint);
+                  break patternFoundContinuousLine;
+                }
+                this.objects.splice(ind, 1);
+                // shouldn't ever happen but just in case
+                ind = this.infLines.indexOf(l);
+                if (ind >= 0) {
+                  this.infLines.splice(ind, 1);
+                }
+                line = new line.constructor(l.p1.x, l.p1.y, l.p2.x, l.p2.y);
+                line.getPixels(this.width + 1);
+                line.p1 = l.p1;
+                line.p2 = l.p2;
+              }
+              found = true;
+              break;
+            }
+          }
+          if (!found) m.push(line);
+        }
+      }
+      if (
+        line.p1.edge && line.p2.edge && 
+        !line.p1.edge.includes(line.p2.edge) && 
+        !line.p2.edge.includes(line.p1.edge)
+      ) {
+        line.isInf = true;
+        this.infLines.push(line);
+        if (line.p1.corner && line.p2.corner &&
+          fpClose(mod(line.angle, Math.PI / 2), 0)
+        ) {
+          // handle straight lines along an edge differently
+          line.p1.corner = false;
+          line.p2.corner = false;
+        }
+      }
+      this.objects.push(line);
+    }
+
+    getLoopsAndWraps() {
+      // since cells are parsed top-left to bottom-right,
+      // wrapping data should connect the lines extending out of the top and left to the cells above and to the left
+      let tl = {
+        "left": "left",
+        "right": "right",
+        "top": "top",
+        "bottom": "bottom",
+        "top-left": "tl",
+        "bottom-left": "bl",
+        "top-right": "tr",
+        "bottom-right": "br",
+      },
+        wm = {
+        "left": ["right"],
+        "top": ["bottom"],
+        "top-left": ["bottom-right", "top-right", "bottom-left"],
+        "bottom-left": ["top-right", "bottom-right", "top-left"],
+        "top-right": ["bottom-left", "top-left", "bottom-right"],
+      };
+      for (let i of this.infLines) {
+        for (let p of [i.p1, i.p2]) {
+          if (wm[p.edge]) {
+            // sorry
+            for (let e of wm[p.edge]) {
+              let isEdge = tl[e] == e,
+                axis = (e == "left" || e == "right") ? "y" : "x",
+                edge = isEdge ? this.edges[e][p[axis]] || [] : this.corners[tl[e]],
+                found = false;
+              for (let l of edge) {
+                let line = l[1],
+                  point = (mod(line.p1.x - p.x, this.width) == 0 &&
+                           mod(line.p1.y - p.y, this.height) == 0) ? line.p1 : line.p2;
+                if (point.wrap) continue;
+                if (typeof line == typeof i && fpClose(line.angle, i.angle)) {
+                  console.log('loop found!', l, i, p, point);
+                  this.loops.set(p, new PatternLineWrap(line, point, tl[e]));
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
+            }
+          }
+        }
+      }
+    }
+
+    setOrigin(x, y, keep = true) {
+      this.transform.e = x;
+      this.transform.f = y;
+      this.canvPattern.setTransform(this.transform);
+      if (keep) this.origin = vector(x, y);
+    }
+
+    setZoom(z, keep = true) {
+      let oldZoom = this.transform.a;
+      this.transform.a = z;
+      this.transform.d = z;
+      //this.transform.e /= oldZoom / z / 2;
+      //this.transform.f /= oldZoom / z / 2;
+      this.canvPattern.setTransform(this.transform);
+      if (keep) this.zoom = z;
+    }
+
+    // takes in a cell (with position information and the pattern mask) 
+    /**
+     * 
+     * @param {PatternGridCell} cell 
+     */
+    render(cell, origin) {
+      let objects = [];
+      if (cell.full) {
+        let pos = origin.add(cell.pos);
+        for (let i of this.objects) {
+          objects.push(i.addLine(i.p1, i.p2, pos));
+        }
+      } else {
+        let data = cell.ctx.getImageData(0, 0, cell.width, cell.height).data,
+          pos = origin.add(cell.pos);
+        for (let i of this.objects) {
+          objects.push(...i.testPixels(data, pos));
+        }
+      }
+      return objects;
+    }
+  }
+
+  // store brushes; allow for using a function to detect if a pixel / grid cell touches the brush
+  // icon function takes in ctx, size (brush size; canvas will be initialized to this in both dimensions but this can be changed if so desired), and zoom (for adjusting line width); and should render only an outline of a brush
+  // mask function takes in ctx and size, and should render in a solid color
+  // update: resize function sets everything up; there's one function that assumes a path has been started (although calling beginPath in it again is fine) and DOES NOT call .stroke() or .fill()
+  class PatternBrush {
+    constructor(name, pathFunc, size) {
+      this.name = name;
+      this.pathFunc = pathFunc;
+      this.size = -size - 1;
+      this.icon = document.createElement('canvas');
+      this.ictx = this.icon.getContext('2d');
+      this.mask = document.createElement('canvas');
+      this.mctx = this.mask.getContext('2d');
+      this.mctx.imageSmoothingEnabled = false;
+      this.resize(size);
+    }
+
+    resize(size) {
+      if (this.size != size) {
+        this.size = size;
+        // resizing a canvas clears it
+        this.icon.width = this.icon.height =
+        this.mask.width = this.mask.height = this.size;
+        this.ictx.beginPath();
+        this.pathFunc(this.ictx, this.size);
+        this.ictx.stroke();
+        this.mctx.beginPath();
+        this.pathFunc(this.mctx, this.size);
+        this.mctx.fill();
+      }
+    }
+  }
+
+  // to-do: also take in the previous diff to add bezier smoothing
+  class PatternStroke {
+    constructor(start, end, oldDiff, size, stepsPerFrame, grid) {
+      this.start = start.factor(1);
+      this.end = end.factor(1);
+      this.size = size;
+      this.grid = grid;
+      this.diff = end.sub(start);
+      this.diffLen = this.diff.len();
+      if (!GameSettings.pattern.experimentalStabilization ||
+        this.diffLen == 0 || oldDiff.len() == 0) {
+        this.inflectionPoint = this.start.add(this.end).factor(0.5);
+      } else {
+        let midPoint = this.start.add(this.end).factor(0.5),
+          norm = this.diff.factor(1 / this.diffLen),
+          cross = this.diff.x * oldDiff.y - this.diff.y * oldDiff.x,
+          dot = Math.abs(this.diff.dot(oldDiff)),
+          rDot = Math.sqrt(Math.abs(cross)) * Math.sign(cross) * (1 - dot / (this.diffLen * oldDiff.len())) * 2;
+        norm.equ({x: -norm.y, y: norm.x});
+        this.inflectionPoint = midPoint.add(norm.factor(rDot));
+        //grid.stroke(this.inflectionPoint);
+        start.equ(this.inflectionPoint);
+        console.log(midPoint, norm, dot, rDot, cross);
+      }
+      this.stepsPerFrame = stepsPerFrame;
+      this.count = Math.floor(this.diffLen * 2 / this.size);
+      if (this.count == 0) {
+        this.done = true;
+        return 0;
+      }
+      if (this.count <= this.stepsPerFrame) {
+        let offset = this.diff.factor(1 / (this.count + 1)),
+          temp = 0;
+        for (let i = 0; i < this.count; i++) {
+          this.start.inc(offset);
+          this.grid.stroke(this.pointAt(temp));
+          temp += 1 / (this.count + 1);
+          //this.grid.stroke(this.start);
+        }
+        this.done = true;
+        return this.count;
+      }
+      this.actualSteps = [];
+      let offset = this.diff.factor(1 / this.stepsPerFrame),
+        temp = this.start.factor(1),
+        temp2 = 0;
+      for (let i = 0; i < this.stepsPerFrame; i++) {
+        //this.grid.stroke(temp);
+        this.grid.stroke(this.pointAt(temp2));
+        temp2 += 1 / this.stepsPerFrame;
+        this.actualSteps.push(temp.factor(1));
+        temp.inc(offset);
+      }
+      this.steps = Math.ceil(Math.log2(this.count) - Math.log2(this.stepsPerFrame)) + 1;
+      this.step = 1;
+      this.countInStep = 1;
+      this.done = false;
+      //console.log(this);
+    }
+
+    pointAt(t) {
+      let a = this.start.add(this.inflectionPoint.sub(this.start).factor(t)),
+        b = this.inflectionPoint.add(this.end.sub(this.inflectionPoint).factor(t));
+      return a.add(b.sub(a).factor(t));
+    }
+
+    update(numStrokes) {
+      let stepsThisFrame = Math.ceil(this.stepsPerFrame / numStrokes),
+        stepsThisStep = this.stepsPerFrame * (2 ** this.step),
+        offset = this.diff.factor(1 / this.stepsPerFrame / (2 ** this.step)),
+        start = this.start.add(offset.factor(this.countInStep)),
+        i = 0;
+      for (; i < stepsThisFrame; i++) {
+        //this.grid.stroke(start);
+        this.grid.stroke(this.pointAt(this.countInStep / stepsThisStep));
+        this.actualSteps.push(start.factor(1));
+        start.inc(offset.factor(2));
+        this.countInStep += 2;
+        if (this.countInStep >= stepsThisStep) {
+          this.step++;
+          if (this.step >= this.steps) {
+            this.done = true;
+            return true;
+          }
+          this.countInStep = 1;
+          stepsThisStep = this.stepsPerFrame * (2 ** this.step);
+          offset = this.diff.factor(1 / this.stepsPerFrame / (2 ** this.step));
+          start = this.start.add(offset.factor(1));
+        }
+      }
+      return false;
+    }
+
+    finish() {
+      this.update(0.001);
+    }
+  }
+
+  class PatternTool {
+    constructor(s) {
+      // new line - since i can't seem to use super anymore, i can accomplish the same thing with a temporary variable
+      let supa = Object.create(GameManager.game.currentScene.toolHandler.tools.straightline.__proto__.__proto__);
+      for (let i in supa) {
+        if (!this[i])
+          this.__proto__[i] = supa[i];
+      }
+        for (let i of Object.getOwnPropertyNames(supa.__proto__)) {
+          if (!this[i])
+            this.__proto__[i] = supa[i];
+        }
+      this.supa = supa;
+      this.toolUpdate = supa.update;
+      supa.init.apply(this, [s]);
+      this.toolHandler = s;
+
+      this.patterns = [];
+      this.brushes = [];
+      // represents the radius / half-width of the brush
+      this.size = 100;
+      // default rectangle brush
+      this.addBrush('rect', (ctx, s) => ctx.rect(0, 0, s, s));
+      // circular brush
+      this.addBrush('circle', (ctx, s) => ctx.arc(s / 2, s / 2, s / 2, 0, 2 * Math.PI));
+
+      this.name = 'pattern';
+      this.down = false;
+      this.options = s.scene.settings.pattern;
+      this.grid = new PatternGrid();
+
+      this.currentPattern = 0;
+      this.currentBrush = 1;
+      this.mPos = vector();
+      this.cameraPosWhenPressed = vector();
+
+      this.canvas = document.createElement('canvas');
+      this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+      this.gameWidth = this.scene.game.width;
+      this.gameHeight = this.scene.game.height;
+      this.canvas.width = this.gameWidth;
+      this.canvas.height = this.gameHeight;
+
+      this.oldMouse = vector();
+      this.oldDiff = vector();
+      this.strokeBuffer = [];
+      this.stepsPerFrame = 0;
+    }
+
+    addPattern(name, p, skipSave = false) {
+      let finalName = name;
+      let existingNames = this.patterns.map(pat => pat.name);
+      if (existingNames.includes(finalName)) {
+        let num = 1;
+        while (existingNames.includes(`${name}-${num}`)) num++;
+        finalName = `${name}-${num}`;
+      }
+
+      this.patterns.push(new Pattern(finalName, p));
+      if (this.currentPattern === this.patterns.length - 1) {
+        this.setBrushSize(this.size);
+      }
+
+      if (!skipSave) {
+        this.scene.savePatterns();
+        this.scene.stateChanged();
+      }
+    }
+
+    removePattern(index) {
+      if (index >= 0 && index < this.patterns.length) {
+        this.patterns.splice(index, 1);
+        if (this.currentPattern >= this.patterns.length) {
+          this.currentPattern = Math.max(0, this.patterns.length - 1);
+        }
+        this.scene.savePatterns();
+        this.scene.stateChanged();
+      }
+    }
+
+    renamePattern(index, newName) {
+      if (index >= 0 && index < this.patterns.length) {
+        this.patterns[index].name = newName;
+        this.scene.savePatterns();
+        this.scene.stateChanged();
+      }
+    }
+
+    addBrush(name, pathFunc) {
+      this.brushes.push(new PatternBrush(name, pathFunc, this.size));
+    }
+
+    press() {
+      if (this.patterns.length <= this.currentPattern || this.brushes.length <= this.currentBrush) return;
+      let pattern = this.patterns[this.currentPattern],
+        mPos = this.mouse.touch.real.factor(1);
+      // reset grid
+      this.grid.start(
+        pattern,
+        this.brushes[this.currentBrush],
+        this.options.globalGrid ? 
+          mPos.sub(vector(mPos.x % pattern.width - pattern.width / 2, mPos.y % pattern.height - pattern.height / 2)) : 
+          mPos.sub(vector(pattern.width / 2, pattern.height / 2))
+      );
+      this.placePattern();
+      this.mPos = mPos;
+      this.oldMouse.equ(mPos);
+      this.oldDiff = vector();
+      this.down = true;
+      this.cameraPosWhenPressed = this.scene.camera.position.factor(1);
+      //console.log('cpwp', this.cameraPosWhenPressed);
+    }
+
+    hold() {
+      //let m = this.mouse.touch.real;
+      //if (!this.down || (m.x == this.mPos.x && m.y == this.mPos.y)) return;
+      if (!this.down) return;
+      let zoom = this.scene.camera.zoom,
+        pattern = this.patterns[this.currentPattern],
+        mPos = this.mouse.touch.real;
+      /*let diff = mPos.sub(this.oldMouse),
+        diffLen = diff.len();
+      if (diffLen >= this.size / 2) {
+        let count = Math.floor(diffLen * 2 / this.size),
+          offset = diff.factor(1 / (count + 1));
+        for (let i = 0; i < count; i++) {
+          this.oldMouse.inc(offset);
+          this.grid.stroke(this.oldMouse);
+        }
+      }//*/
+      let stroke = new PatternStroke(this.oldMouse, mPos, this.oldDiff, this.size, this.stepsPerFrame, this.grid);
+      if (stroke.done) {
+        //
+      } else {
+        this.strokeBuffer.push(stroke);
+      }//*/
+      this.grid.stroke(mPos);
+      this.oldDiff = mPos.sub(this.oldMouse);
+      this.oldMouse.equ(mPos);
+      //this.mPos.equ(this.mouse.touch.real);
+    }
+
+    release() {
+      this.down = false;
+      for (let i of this.strokeBuffer) {
+        i.finish();
+      }
+      this.strokeBuffer = [];
+      this.grid.end();
+    }
+
+    drawCursor(t) {
+      let pattern = this.patterns[this.currentPattern],
+        brush = this.brushes[this.currentBrush],
+        zoom = this.camera.zoom,
+        pos = this.mouse.touch.real.toScreenSnapped(this.scene).sub({x: brush.icon.width * zoom, y: brush.icon.height * zoom});
+      if (!this.down && pattern) {
+        t.globalCompositeOperation = "source-over";
+        t.drawImage(brush.mask, pos.x, pos.y, brush.mask.width * zoom * 2, brush.mask.height * zoom * 2);
+        t.globalCompositeOperation = "source-in";
+        t.fillStyle = pattern.canvPattern;
+        t.fillRect(0, 0, t.canvas.width, t.canvas.height);
+      }
+      t.globalCompositeOperation = "source-over";
+      t.drawImage(brush.icon, pos.x, pos.y, brush.icon.width * zoom * 2, brush.icon.height * zoom * 2);
+    }
+
+    draw() {
+      if (!this.patterns.length || !this.brushes.length) return;
+      this.placePattern();
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.down && this.grid.draw(this.scene.camera, this.scene.screen, this.ctx);
+      this.drawCursor(this.ctx);
+      this.ctx.fillStyle = '#000000';
+      this.ctx.globalCompositeOperation = "source-over";
+      this.scene.game.canvas.getContext('2d', { willReadFrequently: true }).drawImage(this.canvas, 0, 0);
+    }
+
+    // handles updating the proper camera location when zooming with global grid disabled
+    // at some point i'd like to make it nicer but i don't know a better way to detect zooming and accurately determine where the zoom is centered etc.
+    // (does that mean that all of this is to handle the rather pedantic case of zooming after moving the mouse while drawing a pattern? yes)
+    ztp(t) {
+      if (this.options.globalGrid || !this.down) return;
+      let pattern = this.patterns[this.currentPattern];
+      if (!pattern) return;
+      let offset = this.mouse.touch.pos.sub(pattern.origin.sub(vector(pattern.width, pattern.height).factor(pattern.zoom / 2)));
+      let screen = this.scene.screen,
+        p = this.scene.camera.zoomPoint.sub(offset),
+        x = screen.toReal(p.x, 'x'),
+        y = screen.toReal(p.y, 'y'),
+        o = p.x / screen.width,
+        a = p.y / screen.height,
+        h = screen.width / t,
+        l = screen.height / t,
+        n = vector(x - h * o + h / 2, y - l * a + l / 2);
+      this.cameraPosWhenPressed.inc(n.sub(this.scene.camera.position));
+    }
+
+    placePattern() {
+      let pattern = this.patterns[this.currentPattern],
+        zoom = this.scene.camera.zoom;
+      if (pattern) {
+        if (this.options.globalGrid) {
+          let origin = this.scene.screen.center.sub(this.scene.camera.position.sub(vector(pattern.width / 2, pattern.height / 2)).factor(zoom));
+          pattern.setOrigin(origin.x, origin.y);
+        } else if (!this.down) {
+          let origin = this.mouse.touch.pos.add(vector(pattern.width, pattern.height).factor(zoom / 2));
+          pattern.setOrigin(origin.x, origin.y);
+        } else {
+          let origin = pattern.origin.add(vector(pattern.width, pattern.height).factor((zoom - pattern.zoom) / 2)).add(this.cameraPosWhenPressed.sub(this.scene.camera.position).factor(zoom));
+          pattern.setOrigin(origin.x, origin.y, false);
+        }
+        pattern.setZoom(this.scene.camera.zoom, !this.down);
+      }
+    }
+
+    resize() {
+      if (this.scene.game.width != this.gameWidth || this.scene.game.height != this.gameHeight) {
+        this.gameWidth = this.scene.game.width;
+        this.gameHeight = this.scene.game.height;
+        this.canvas.width = this.gameWidth;
+        this.canvas.height = this.gameHeight;
+        this.draw();
+      }
+    }
+
+    update() {
+      this.toolUpdate();
+      this.resize();
+      if (this.down) {
+        for (let i = 0; i < this.strokeBuffer.length; i++) {
+          this.strokeBuffer[i].update(this.strokeBuffer.length)
+          if (this.strokeBuffer[i].done) {
+            this.strokeBuffer.splice(i, 1);
+            i--;
+          }
+        }
+      }
+    }
+
+    setBrushSize(size) {
+      let brush = this.brushes[this.currentBrush];
+      if (!brush) return;
+      this.size = size;
+      brush.resize(size);
+      let pattern = this.patterns[this.currentPattern];
+      if (!pattern) return;
+      this.stepsPerFrame = Math.sqrt(pattern.width * pattern.height / (size ** 2)) * 5;
+    }
+
+    setBrush(n) {
+      if (n >= this.brushes.length || n < 0) return;
+      this.currentBrush = n;
+      this.brushes[this.currentBrush].resize(this.size);
+    }
+  }
+
+  let game = GameManager.game,
+    scene = game.currentScene,
+    active = false;
+
+  scene.toolHandler.registerTool(PatternTool);
+  scene.loadPatterns();
+
+  const patternTool = scene.toolHandler.tools.pattern;
+  if (patternTool.patterns.length === 0) {
+  GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01'])
+  } 
+  //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['DARKMATTER']) 
+}
+
+function registerModConfig() {
+    var mod = GameManager.game.mod;
+    if (!mod) return;
+
+    for (var key in mod.vars) {
+        if (Config['mod_' + key]) continue;
+
+        var value = mod.vars[key];
+        var isColor = Array.isArray(value) && value.length === 3;
+
+        if (isColor) {
+            Config['mod_' + key] = {
+                computed: (function (k) {
+                    return function (scene) {
+                        return scene.game.mod
+                            ? JSON.stringify(scene.game.mod.getVar(k))
+                            : null;
+                    };
+                })(key),
+                compareJson: true
+            };
+        } else {
+            Config['mod_' + key] = {
+                computed: (function (k) {
+                    return function (scene) {
+                        return scene.game.mod ? scene.game.mod.getVar(k) : undefined;
+                    };
+                })(key)
+            };
+        }
+    }
+
+    console.log('[Mod] Registered', Object.keys(mod.vars).length, 'mod vars into Config');
+}

@@ -31,25 +31,11 @@
     
     <script src="scripts/manifest.js"></script>
 
+    <script src="scripts/config.js"></script>
+
     <script src="scripts/settings.js"></script>
     
     <script src="scripts/offlineeditor.js"></script>
-
-    <script>
-        function setTrackNameFromURL() {
-            const hash = window.location.hash;
-            if (hash) {
-                let trackName = hash.substring(1);
-                trackName = trackName.replace(/(\.\.\/)/g, '');
-                if (trackName !== "1-4" && trackName !== "covid-19 dreamin" && trackName !== "demi-goddess demi-diety") {
-                    trackName = trackName.replace(/-/g, ' ');
-                }
-                trackName = decodeURIComponent(trackName);
-                GameSettings.trackName = trackName;
-            }
-        }
-        setTrackNameFromURL();
-    </script>
 
     <script>
         (window === window.parent) && (window.addEventListener('beforeunload', function (e) {
@@ -58,98 +44,7 @@
         return confirmationMessage;
     }));
     </script>
-    
-    <script>
-        window.addEventListener("message", function (event) {
-            /*if (event.data.action === "loggedIn") {
-                GameSettings.beta = true;
-                GameSettings.user = event.data.user;
-            }*/
-            if (event.data.action === "importTrack") {
-                const trackData = event.data.content;
-                var title = event.data.title ? event.data.title.toLowerCase() : null;
-                if (trackData) {
-                    console.log("Track data received:", trackData);
-                    GameManager.command("import", trackData, true);
-                    GameSettings.trackName = title;
-                        fetch('assets/tracks/tracklist-data.json')
-                        .then(res => res.json())
-                        .then(trackdata => {
-                          const match = trackdata.tracks.find(t => t["track-name"] === trackName);
-                          console.log(match)
-                          this.updateNowPlaying(match || { "track-name": trackName });
-                        })
-                } else {
-                    console.error("No track data found.");
-                }
-            } else if (event.data.action === "importGhost") {
-                const ghostData = event.data.content;
-                const positionDataArray = JSON.parse(ghostData);
-
-                  const processedData = positionDataArray.map(entry => {
-                    const result = {
-                      _sceneTicks: entry._sceneTicks,
-                      _crashed: entry._crashed,
-                    };
-
-                    if (entry._baseVehicleType && entry._baseVehicle) {
-                      result._baseVehicleType = entry._baseVehicleType;
-                      result._baseVehicle = entry._baseVehicle;
-                    }
-
-                    if (entry._tempVehicleType && entry._tempVehicle) {
-                      result._tempVehicleType = entry._tempVehicleType;
-                      result._tempVehicle = entry._tempVehicle;
-                      result._tempVehicleTicks = entry._tempVehicleTicks;
-                    }
-
-                    return result;
-                  });
-
-                  GameManager.game.currentScene.ghostData = processedData;
-                if (ghostData) {
-                    console.log("Ghost data received:", processedData);
-                    GameManager.command("add race", processedData, true);
-                } else {
-                    console.error("No ghost data found.");
-                }
-            } else if (event.data.action === "sectorStamp") {
-                const sectorStamp = event.data;
-                if (sectorStamp && sectorStamp.x1 !== undefined && sectorStamp.y1 !== undefined) {
-                    console.log("Stamp received:", sectorStamp);
-
-                    GameManager.game.currentScene.camera.sectorStamp.point1.x = sectorStamp.x1;
-                    GameManager.game.currentScene.camera.sectorStamp.point1.y = sectorStamp.y1;
-                    GameManager.game.currentScene.camera.sectorStamp.point2.x = sectorStamp.x2;
-                    GameManager.game.currentScene.camera.sectorStamp.point2.y = sectorStamp.y2;
-                    GameManager.game.currentScene.camera.sectorStampText = sectorStamp.comment || "";
-                } else {
-                    console.error("No valid stamp data found.");
-                }
-            } else if (event.data && event.data.action === 'applyModSettings') {
-                console.log("Received settings:", JSON.stringify(event.data.settings));
-
-                if (window.GameManager && window.GameManager.game && window.GameManager.game.mod) {
-                    var settings = event.data.settings;
-
-                    Object.keys(settings).forEach(key => {
-                        if (window.GameManager.game.mod.ui &&
-                            window.GameManager.game.mod.ui.obj &&
-                            window.GameManager.game.mod.ui.obj[key] &&
-                            window.GameManager.game.mod.ui.obj[key].checkbox) {
-                            window.GameManager.game.mod.ui.obj[key].checkbox.checked = settings[key];
-                        }
-                        window.GameManager.game.mod.vars[key] = settings[key];
-                            GameManager.game.currentScene.track.undraw();
-                            GameSettings.cameraMovementVertical = !window.GameManager.game.mod.vars.mario;
-                    });
-                } else {
-                    console.error("GameManager not available");
-                }
-            }
-        });
-    </script>
-    
+        
     <!--<script>
         window !== window.parent ? GameSettings.beta = false : GameSettings.beta = true;
     </script>-->

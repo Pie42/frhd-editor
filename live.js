@@ -5,6 +5,21 @@ const PLAYER_ID_LENGTH = 12;
 const liveSessions = new Map();
 const WS_OPEN = WebSocket.OPEN;
 
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET;
+
+function parseCookies(req) {
+    const cookies = {};
+    const header = req?.headers?.cookie;
+    if (!header) return cookies;
+    header.split(';').forEach(function (cookie) {
+        const parts = cookie.split('=');
+        const key = parts[0].trim();
+        cookies[key] = decodeURIComponent(parts.slice(1).join('='));
+    });
+    return cookies;
+}
+
 function generatePlayerId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
 }
@@ -15,7 +30,8 @@ function setupLiveRacing(server) {
         perMessageDeflate: false
     });
 
-    wss.on('connection', (ws) => {
+    wss.on('connection', (ws, req) => {
+        ws._req = req;
         let trackId = null;
         let playerId = null;
         let playerIdBuffer = null;
@@ -50,9 +66,22 @@ function setupLiveRacing(server) {
 
                 if (msg.type === 'join') {
                     trackId = msg.trackId;
-                    username = msg.username || 'Anonymous';
-                    if (trackId === 'frhd/undefined') return;
+                    if (trackId === 'undefined/undefined') return;
                     console.log('[Live] Join request for track:', msg.trackId);
+
+                    const cookies = parseCookies(ws._req);
+                    const nbbToken = cookies['nbb_token'];
+                    if (nbbToken) {
+                        try {
+                            const decoded = jwt.verify(nbbToken, JWT_SECRET);
+                            username = decoded.username || 'Guest';
+                        } catch (e) {
+                            username = 'Guest';
+                        }
+                    } else {
+                        username = 'Guest';
+                    }
+
                     playerId = generatePlayerId();
 
                     playerIdBuffer = Buffer.alloc(PLAYER_ID_LENGTH);
@@ -96,6 +125,19 @@ function setupLiveRacing(server) {
                         hatColor: msg.hatColor || '#000000',
                         hatType: msg.hatType || 'none'
                     }, playerId);
+                } else if (msg.type === 'appearance' && session && playerId) {
+                    const playerInfo = session.get(playerId);
+                    if (playerInfo) {
+                        playerInfo.hatColor = msg.hatColor;
+                        playerInfo.hatType = msg.hatType;
+                    }
+
+                    broadcastJSON(session, {
+                        type: 'appearance',
+                        playerId: senderPlayerId,
+                        hatColor: msg.hatColor,
+                        hatType: msg.hatType
+                    }, senderPlayerId);
                 }
             } catch (e) {
                 console.error('[Live] Error:', e.message);

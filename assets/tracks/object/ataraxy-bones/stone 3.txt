@@ -1,1 +1,0 @@
--p -v -3 -1b,-u -o -p -v,-u -o -11 -i,-11 -i -u -j,-u -j -n -p,-t -j -l c,-e h -l c,-n -p -a -t,-3 -1b e -17,-e h -j -5,-j -5 -k -f,-a -t -2 -s,-2 -s 4 -10,-7 15 -e h,e -17 v -s,4 -10 e -10,e -10 l -t,l -t 10 -n,10 -n 11 -p,11 -p v -s,u -n q -6,q -6 j 0,j 0 8 14,2 19 1 l,2 1b -7 15,8 14 2 1b#-2 -s 0 -1,j 0 n -g##stone 3

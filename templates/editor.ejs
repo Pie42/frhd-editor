@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=9">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="apple-mobile-web-app-title" content="Free Rider">
+    <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+
+    <% 
+    const t = typeof track !== 'undefined' && track && track.code ? track : null;
+    const _title = typeof title !== 'undefined' ? title : null;
+    const _author = typeof author !== 'undefined' ? author : null;
+    const _description = typeof description !== 'undefined' ? description : null;
+    const _thumbnail = typeof thumbnail !== 'undefined' ? thumbnail : null;
+    const _permalink = typeof permalink !== 'undefined' ? permalink : null;
+    
+    const pageTitle = t?.name || _title || 'free rider - draw';
+    const pageAuthor = t?.authors || _author || 'Ness & Pie42';
+    const pageDescription = (t?.description || _description || (t ? `a ${(t.primaryType || t.type || '').toUpperCase()} track` : 'track editor v1.1')).substring(0, 400);
+    const pageUrl = t?.permalink || _permalink || 'https://freerider.app';
+    const pageImage = t?.thumbnail || _thumbnail || 'https://freerider.app/images/og-image.png';
+    %>
+
+    <title><%= pageTitle %></title>
+    <meta name="author" content="<%= pageAuthor %>">
+    <meta name="description" content="<%= pageDescription %>">
+
+    <meta property="og:title" content="<%= pageTitle %><%= t ? ', by ' + pageAuthor : '' %>">
+    <meta property="og:description" content="<%= pageDescription %>">
+    <meta property="og:image" content="<%= pageImage %>">
+    <meta property="og:url" content="<%= pageUrl %>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="freerider.app">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= pageTitle %>">
+    <meta name="twitter:description" content="<%= pageDescription %>">
+    <meta name="twitter:image" content="<%= pageImage %>">
+
+    <% if (t?.published) { %>
+    <meta property="article:published_time" content="<%= t.published %>">
+    <% } %>
+
+    <link rel="icon" href="https://freerider.app/favicon.ico" type="image/x-icon">
+    <link type="text/css" rel="stylesheet" href="app.css">
+    <script defer data-domain="freerider.app" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+    <div id="game-container"></div>
+    
+    <% if (t) { %>
+    <script type="text/plain" id="trackcode"><%= t.code %></script>
+    <script type="application/json" id="trackdata"><%- JSON.stringify({
+        id: t.id,
+        canonical: t.canonical || null,
+        name: t.name,
+        type: t.primaryType || t.type,
+        urlType: t.canonical ? 't' : t.type,
+        urlId: t.canonical || t.id,
+        authors: t.authors || 'Unknown',
+        thumbnail: t.thumbnail || '',
+        description: t.description || '',
+        permalink: t.permalink || '',
+        published: t.published || '',
+        size: t.size || '',
+        forumUrl: t.forumUrl || '',
+        blackHat: (t.primaryType || t.type) === 'bhr',
+        ghoster: t.ghoster || null,
+        ghostTime: t.ghostTime || null,
+        ghostTicks: t.ghostTicks || null,
+        fullRaceData: t.fullRaceData || null
+    }) %></script>
+    <% } %>
+    
+    <script src="scripts/manifest.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/offlineeditor.js"></script>
+
+    <script>
+    (function() {
+        var trackEl = document.getElementById('trackcode');
+        var dataEl = document.getElementById('trackdata');
+        
+        if (trackEl && dataEl) {
+            var code = trackEl.textContent;
+            var data = JSON.parse(dataEl.textContent);
+
+            GameManager.command("import", code, true);
+            
+            Object.assign(GameSettings, {
+                trackName: data.name,
+                id: data.id,
+                canonical: data.canonical,
+                type: data.type,
+                urlType: data.urlType,
+                urlId: data.urlId,
+                code: code,
+                authors: data.authors,
+                thumbnail: data.thumbnail,
+                description: data.description,
+                permalink: data.permalink,
+                published: data.published,
+                size: data.size,
+                forumUrl: data.forumUrl || 'https://forum.freerider.app/feed',
+                blackHat: data.blackHat,
+                ghoster: data.ghoster,
+                ghostTime: data.ghostTime,
+                ghostTicks: data.ghostTicks,
+                fullRaceData: data.fullRaceData
+            });
+            
+            history.replaceState(
+                { trackId: data.urlId, trackType: data.urlType, primaryType: data.type },
+                document.title,
+                window.location.pathname
+            );
+
+            fetch('/api/tracks/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    trackType: data.urlType,
+                    trackId: data.canonical || data.id,
+                    trackName: data.name || ''
+                })
+            }).catch(function () { });
+
+        } else {
+    <% const _initialDialog = typeof initialDialog !== 'undefined' ? initialDialog : null; %>
+    <% const _dialogFilter = typeof dialogFilter !== 'undefined' ? dialogFilter : null; %>
+
+    <% if (_initialDialog) { %>
+    GameSettings.initialDialog = "<%= _initialDialog %>";
+    <% } %>
+
+    <% if (_dialogFilter) { %>
+    GameSettings.dialogFilter = <%- JSON.stringify(_dialogFilter) %>;
+
+    var filter = GameSettings.dialogFilter;
+    var state = filter.player ? { player: filter.player, type: 'user' }
+              : filter.playlist ? { playlist: filter.playlist, type: 'playlist' }
+              : filter.type ? { type: filter.type }
+              : null;
+
+    if (state) history.replaceState(state, document.title, window.location.pathname);
+
+        <% if (_dialogFilter.player) { %>
+    setTimeout(function() {
+        var iframe = document.getElementById("toolsIframe");
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+                action: 'showPlayerProfile',
+                player: '<%= _dialogFilter.player %>'
+            }, '*');
+        }
+    }, 200);
+        <% } %>
+    <% } %>
+}
+        
+        document.title = "<%= pageTitle %>";
+        
+        window.addEventListener("message", function(e) {
+            if (e.data.action === "loggedIn") {
+                GameSettings.beta = true;
+                GameSettings.user = e.data.user;
+            }
+        });
+        
+        if (window === window.parent) {
+            window.addEventListener('beforeunload', function(e) {
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            });
+        }
+    })();
+    </script>
+</body>
+</html>

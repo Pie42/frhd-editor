@@ -1,1 +1,0 @@
--p -1o -d -1r,-p -1o -u -1h -14 -4,-s -h -p -1i -l -1m -d -1m,-r -14 -t -1h,-d -1r 7 -21,-d -1m -b -1l -a -1n 3 -1s e -1p,1 -1q 3 -13,7 -21 g -1t,-14 -4 -12 1 -m s,3 t 5 0,-m s -g 1p -d 1s -3 21 3 t,-3 21 7 1o,a 1m 4 1r,7 1o b 1e,e -1p p -1i,g -1t t -1h,14 -1 t -1h,r t 14 -1,g 1c a 1m,g 15 r t,n 10 g 1c###stone 6

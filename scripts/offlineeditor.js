@@ -66,7 +66,7 @@
             var t, n, o, s, l, c;
             if (
               (this._events || (this._events = {}),
-              "error" === e &&
+                "error" === e &&
                 (!this._events.error ||
                   (i(this._events.error) && !this._events.error.length)))
             ) {
@@ -111,23 +111,23 @@
             if (!r(t)) throw TypeError("listener must be a function");
             if (
               (this._events || (this._events = {}),
-              this._events.newListener &&
+                this._events.newListener &&
                 this.emit("newListener", e, r(t.listener) ? t.listener : t),
-              this._events[e]
-                ? i(this._events[e])
-                  ? this._events[e].push(t)
-                  : (this._events[e] = [this._events[e], t])
-                : (this._events[e] = t),
-              i(this._events[e]) && !this._events[e].warned)
+                this._events[e]
+                  ? i(this._events[e])
+                    ? this._events[e].push(t)
+                    : (this._events[e] = [this._events[e], t])
+                  : (this._events[e] = t),
+                i(this._events[e]) && !this._events[e].warned)
             ) {
               var o;
               (o = a(this._maxListeners)
                 ? n.defaultMaxListeners
                 : this._maxListeners),
                 o &&
-                  o > 0 &&
-                  this._events[e].length > o &&
-                  ((this._events[e].warned = !0),
+                o > 0 &&
+                this._events[e].length > o &&
+                ((this._events[e].warned = !0),
                   console.error(
                     "(node) warning: possible EventEmitter memory leak detected. %d listeners added. Use emitter.setMaxListeners() to increase limit.",
                     this._events[e].length
@@ -152,15 +152,15 @@
             if (!this._events || !this._events[e]) return this;
             if (
               ((n = this._events[e]),
-              (a = n.length),
-              (o = -1),
-              n === t || (r(n.listener) && n.listener === t))
+                (a = n.length),
+                (o = -1),
+                n === t || (r(n.listener) && n.listener === t))
             )
               delete this._events[e],
                 this._events.removeListener &&
-                  this.emit("removeListener", e, t);
+                this.emit("removeListener", e, t);
             else if (i(n)) {
-              for (s = a; s-- > 0; )
+              for (s = a; s-- > 0;)
                 if (n[s] === t || (n[s].listener && n[s].listener === t)) {
                   o = s;
                   break;
@@ -170,7 +170,7 @@
                 ? ((n.length = 0), delete this._events[e])
                 : n.splice(o, 1),
                 this._events.removeListener &&
-                  this.emit("removeListener", e, t);
+                this.emit("removeListener", e, t);
             }
             return this;
           }),
@@ -194,7 +194,7 @@
               );
             }
             if (((n = this._events[e]), r(n))) this.removeListener(e, n);
-            else for (; n.length; ) this.removeListener(e, n[n.length - 1]);
+            else for (; n.length;) this.removeListener(e, n[n.length - 1]);
             return delete this._events[e], this;
           }),
           (n.prototype.listeners = function (e) {
@@ -223,15 +223,15 @@
         function n() {
           if (!a) {
             a = !0;
-            for (var e, t = i.length; t; ) {
+            for (var e, t = i.length; t;) {
               (e = i), (i = []);
-              for (var n = -1; ++n < t; ) e[n]();
+              for (var n = -1; ++n < t;) e[n]();
               t = i.length;
             }
             a = !1;
           }
         }
-        function r() {}
+        function r() { }
         var o = (t.exports = {}),
           i = [],
           a = !1;
@@ -295,7 +295,7 @@
               o.addEventListener("complete", this.handleComplete.bind(this)),
               o.loadManifest(GameManifest);
           }),
-          (i.loadFile = function () {}),
+          (i.loadFile = function () { }),
           (i.handleComplete = function () {
             this.emit("stateChange", { preloading: !1 }), this.startGame();
           }),
@@ -323,7 +323,7 @@
           (i.command = function () {
             this.game && this.game.command.apply(this.game, arguments);
           }),
-          (i.close = function () {}),
+          (i.close = function () { }),
           (window.Application = t),
           (window.GameManager = new r()),
           React.render(EditorGui, document.getElementById("game-container"));
@@ -358,7 +358,7 @@
           p = e("../chromeapp/bottommenu"),
           h = e("./vehiclepowerupbottomtooloptions"),
           v = e("./moveVehicle"),
-          vv = e("./importObject"),
+          vv = e("./objectImport"),
           vvv = e("./selectionAsObject"),
           f = n.createClass({
             displayName: "BottomMenu",
@@ -367,25 +367,25 @@
                 t = this.props.data.toolOptions,
                 mobile = GameManager.game && (GameManager.game.currentScene.mod.getVar("mobile") || GameManager.game.currentScene.mod.getVar("play")),
                 f = "";
-                var sidebar;
+              var sidebar;
 
-                if (typeof GameSettings !== 'undefined') {
-                  sidebar = GameSettings.sidebar ?? true;
-                  playMode = GameSettings.trackName !== 'track.txt';
-                } else {
-                  sidebar = true;
-                  playMode = false;
-                }
-                var width = sidebar ? "75%" : "100%";
-                var mediaWidth = sidebar ? "93.75%" : "125%";
-                var largeMediaWidth = sidebar ? "60%" : "80%";
-                var bottomMenuStyle = {
-                  width: window.innerHeight >= 1440
-                    ? largeMediaWidth
-                    : (window.innerHeight <= 800
-                      ? mediaWidth
-                      : width)
-                };
+              if (typeof GameSettings !== 'undefined') {
+                sidebar = GameSettings.sidebar ?? true;
+                //playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                sidebar = true;
+                //playMode = false;
+              }
+              var width = sidebar ? "75%" : "100%";
+              var mediaWidth = sidebar ? "93.75%" : "125%";
+              var largeMediaWidth = sidebar ? "60%" : "80%";
+              var bottomMenuStyle = {
+                width: window.innerHeight >= 1440
+                  ? largeMediaWidth
+                  : (window.innerHeight <= 800
+                    ? mediaWidth
+                    : width)
+              };
               switch (e) {
                 case "straightline":
                   f = n.createElement(c, { options: t });
@@ -395,10 +395,10 @@
                   break;
                 case "circle":
                   f = n.createElement(x, { options: t });
-                  break;    
+                  break;
                 case "brush":
                   f = n.createElement(a, { options: t });
-                  break;  
+                  break;
                 case "eraser":
                   f = n.createElement(s, { options: t });
                   break;
@@ -425,12 +425,12 @@
                     { className: "clearfix" },
                     f,
                     n.createElement(r, { vehicle: this.props.data.vehicle }),
-                    !playMode && !mobile ? n.createElement(i, {active: this.props.data.cameraLocked }) : null,
-                    !playMode && !mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
-                    !playMode && !mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
+                    /*!playMode && !mobile ? n.createElement(i, { active: this.props.data.cameraLocked }) : null,*/
+                    /*!playMode && */!mobile ? n.createElement(L) : null,
+                    /*!playMode && */!mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
+                    /*!playMode && */!mobile ? n.createElement(xxx, { active: this.props.data.snap }) : null,
+                    /*!playMode && */!mobile ? n.createElement(o, { active: this.props.data.grid }) : null,
                     //e !== "select" && n.createElement(vv),
-                    !playMode && !mobile ? n.createElement(xxxx, { active: this.props.data.object }) : null,
-                    !playMode && !mobile ? n.createElement(L) : null,
                     //e === "select" && n.createElement(vvv),
                     //n.createElement(v),
                     n.createElement("span", { className: "divider" })
@@ -454,12 +454,12 @@
         "./eraserbottomtooloptions": 9,
         "./grid": 10,
         "./object": 910,
+        "./objectImport": 245,
         "./layer": 9910,
         "./powerupbottomtooloptions": 11,
         "./straightlinebottomtooloptions": 12,
         "./vehicle": 13,
         "./moveVehicle": 913,
-        "./importObject": 9913,
         "./selectionAsObject": 99913,
         "./vehiclepowerupbottomtooloptions": 14,
         react: 230,
@@ -474,19 +474,31 @@
             adjustTrailSpeed: function (e) {
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool option", "trailSpeed", e);
-                GameSettings.brush.trailSpeed = e;
+              GameSettings.brush.trailSpeed = e;
             },
             adjustBreakLength: function (e) {
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool option", "breakLength", e);
-                GameSettings.brush.breakLength = e;
+              GameSettings.brush.breakLength = e;
             },
             getInitialState: function () {
               return { brushType: GameSettings.customBrush ? "CUSTOM" : "DEFAULT" };
             },
             toggleBrush: function () {
-                "undefined" != typeof GameManager &&
-                GameManager.command("dialog", "advancedBrush", this.props.options);
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+            var iframe = document.getElementById("toolsIframe");
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                action: 'showToolTab',
+                tool: 'brush'
+              }, '*');
+            }
+
+            if (typeof GameManager !== "undefined" && !sidebarOpen) {
+              GameSettings.dialogTool = 'brush';
+              GameManager.command("dialog", "toolsDialog", "tool");
+            }
             },
             render: function () {
               var brushType = GameSettings.customBrush ? "CUSTOM" : "DEFAULT";
@@ -538,7 +550,7 @@
                         onClick: this.toggleBrush,
                       }, "OPTIONS"))
                   ),
-                  n.createElement(
+                  /*n.createElement(
                     "div",
                     { className: "horizontal-slider-container" },
                     n.createElement(
@@ -562,7 +574,7 @@
                       value: s.toFixed(1),
                       readOnly: true
                   }),
-                  ),
+                  ),*/
                   /*n.createElement(
                     "div",
                     { className: "horizontal-slider-container" },
@@ -621,53 +633,53 @@
       },
       { react: 230, "react-slider": 75 },
     ],
-    905: [function(e, t) {
+    905: [function (e, t) {
       var n = e("react")
         , r = e("react-slider")
         , o = n.createClass({
           displayName: "circleBottomToolOptions",
-          adjustSegmentLength: function(e) {
-              "undefined" != typeof GameManager && GameManager.command("change tool option", "segmentLength", e)
+          adjustSegmentLength: function (e) {
+            "undefined" != typeof GameManager && GameManager.command("change tool option", "segmentLength", e)
           },
-          getInitialState: function() {
-            return { ellipse : true };
+          getInitialState: function () {
+            return { ellipse: true };
           },
           toggleCircleType: function () {
-              this.setState({ ellipse : !this.state.ellipse });
-              GameSettings.ellipse = !GameSettings.ellipse;
+            this.setState({ ellipse: !this.state.ellipse });
+            GameSettings.ellipse = !GameSettings.ellipse;
           },
-          render: function() {
-              var type = GameSettings.ellipse ? "ELLIPSE" : "CIRCLE";
-              var e = this.props.options
+          render: function () {
+            var type = GameSettings.ellipse ? "ELLIPSE" : "CIRCLE";
+            var e = this.props.options
               , s = 0.4
               , l = 0.1
               , c = 1
               , u = 0.1
               , d = 0;
-              return e && (s = e.segmentLength,
+            return e && (s = e.segmentLength,
               l = e.minSegmentLength,
               c = e.maxSegmentLength,
               u = e.segmentLengthSensitivity),
               n.createElement("div", {
-                  className: "bottomToolOptions bottomToolOptions_circle"
+                className: "bottomToolOptions bottomToolOptions_circle"
               }, n.createElement("div", {
-                  className: "bottomToolOptions-toolTitle"
+                className: "bottomToolOptions-toolTitle"
               }, n.createElement("span", {
-                  className: "editorgui_icons_bottom editorgui_icons-circle"
+                className: "editorgui_icons_bottom editorgui_icons-icon_circle"
               }), n.createElement("span", {
-                  className: "toolName"
+                className: "toolName"
               }, "CIRCLE : ", n.createElement("span", {
-                  className: "bottomMenu-bold"
+                className: "bottomMenu-bold"
               }, e.object ? "object" : e.lineType)),
-              n.createElement("span", {},
-              n.createElement("button", {
+                n.createElement("span", {},
+                  n.createElement("button", {
                     onClick: this.toggleCircleType
-                }, type))),
-              n.createElement("div", {
+                  }, type))),
+                n.createElement("div", {
                   className: "horizontal-slider-container"
-              }, n.createElement("span", {
+                }, n.createElement("span", {
                   className: "horizontal-slider-label"
-              }, "Segment Length"), n.createElement(r, {
+                }, "Segment Length"), n.createElement(r, {
                   withBars: !0,
                   className: "horizontal-slider Circle-slider_SegmentLength",
                   onChanged: this.adjustSegmentLength,
@@ -676,348 +688,349 @@
                   min: l,
                   step: u,
                   value: s
-              })), n.createElement("input", {
+                })), n.createElement("input", {
                   type: "text",
                   className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
                   value: s.toFixed(1),
                   readOnly: true
-              }), )
+                }),)
           }
-      });
+        });
       t.exports = o
-  }
-  , {
+    }
+      , {
       react: 230,
       "react-slider": 75
-  }],
-  /*6: [function(e, t) {
-      var n = e("react"),
-          r = n.createClass({
-              displayName: "CameraBottomToolOptions",
-              changeZoom: function() {},
-              toggleCameraType: function() {
-                  var vertical = GameSettings.cameraMovementVertical,
-                      horizontal = GameSettings.cameraMovementHorizontal;
-  
-                  if (vertical && horizontal) {
-                      // from normal to horizontal
-                      GameSettings.cameraMovementVertical = false;
-                  } else if (!vertical && horizontal) {
-                      // from horizontal to vertical
-                      GameSettings.cameraMovementVertical = true;
-                      GameSettings.cameraMovementHorizontal = false;
-                  } else if (vertical && !horizontal) {
-                      // from vertical to none
-                      GameSettings.cameraMovementVertical = false;
-                  } else {
-                      // from none to normal
-                      GameSettings.cameraMovementVertical = true;
-                      GameSettings.cameraMovementHorizontal = true;
-                  }
-              },
-              changeCameraSpeed: function (e) {
-                var t = e.target.value;
-                GameSettings.cameraSpeed = t,
-                  GameManager.command("redraw"),
-                  e.preventDefault(),
-                  e.stopPropagation();
-                return !1
-              },
-              renderCameraSpeedSelect: function () {
-                var e = GameSettings.cameraSpeed,
-                  t = [1, 2, 3, 4, 5, 10, 25, 50, 100];
-                return n.createElement("select", {
-                  ref: "cameraSpeed",
-                  defaultValue: e,
-                  onChange: this.changeCameraSpeed,
-                  onClick: this.stopClickPropagation
-                }, t.map(function (e) {
-                  return n.createElement("option", {
-                    key: e,
-                    value: e
-                  }, e)
-                }))
-              },
-              render: function() {
-                  var type;
-                  if (GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
-                      type = "NORMAL";
-                  } else if (!GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
-                      type = "HORIZONTAL";
-                  } else if (GameSettings.cameraMovementVertical && !GameSettings.cameraMovementHorizontal) {
-                      type = "VERTICAL";
-                  } else {
-                      type = "NONE";
-                  }
-  
-                  return n.createElement("div", {
-                      className: "bottomToolOptions bottomToolOptions_select"
-                  }, n.createElement("div", {
-                      className: "bottomToolOptions-toolTitle"
-                  }, n.createElement("span", {
-                      className: "editorgui_icons_bottom editorgui_icons-icon_camera"
-                  }), 
-                      )
-                  );
-              }
-          });
-      t.exports = r;
-  }, {
-      react: 230,
-      "react-slider": 75
-  }],*/
-  6: [function (e, t) {
-    var n = e("react"),
-      r = n.createClass({
-        displayName: "CameraBottomToolOptions",
-        changeZoom: function () { },
-        changeCameraType: function (e) {
-          var selectedType = e.target.value;
-          switch (selectedType) {
-            case "HORIZONTAL":
-              GameSettings.cameraMovementVertical = false;
-              GameSettings.cameraMovementHorizontal = true;
-              break;
-            case "VERTICAL":
-              GameSettings.cameraMovementVertical = true;
-              GameSettings.cameraMovementHorizontal = false;
-              break;
-            case "NORMAL":
-              GameSettings.cameraMovementVertical = true;
-              GameSettings.cameraMovementHorizontal = true;
-              break;
-            case "NONE":
-            default:
-              GameSettings.cameraMovementVertical = false;
-              GameSettings.cameraMovementHorizontal = false;
-              break;
-          }
-          e.preventDefault();
-          e.stopPropagation();
-          return !1;
-        },
-        renderCameraTypeSelect: function () {
-          var type;
-          if (GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
-            type = "NORMAL";
-          } else if (!GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
-            type = "HORIZONTAL";
-          } else if (GameSettings.cameraMovementVertical && !GameSettings.cameraMovementHorizontal) {
-            type = "VERTICAL";
-          } else {
-            type = "NONE";
-          }
-          var types = ["NORMAL", "HORIZONTAL", "VERTICAL", "NONE"];
-          return n.createElement("select", {
-            ref: "cameraType",
-            defaultValue: type,
-            onChange: this.changeCameraType,
-            onClick: this.stopClickPropagation
-          }, types.map(function (type) {
-            return n.createElement("option", {
-              key: type,
-              value: type
-            }, type);
-          }));
-        },
-        changeCameraSpeed: function (e) {
-          var selectedType = e.target.value;
-          switch (selectedType) {
-            case "FASTER":
-              GameSettings.cameraSpeed = 2;
-              break;
-            case "IMMEDIATE":
-              GameSettings.cameraSpeed = 1;
-              break;
-            case "SLOW":
-              GameSettings.cameraSpeed = 5;
-              break;
-            case "FAST":
-            default:
-              GameSettings.cameraSpeed = 3;
-              break;
-          }
-          e.preventDefault();
-          e.stopPropagation();
-          return !1;
-        },
-        renderCameraSpeedSelect: function () {
-          var speedType;
-          if (GameSettings.cameraSpeed === 3) {
-            speedType = "FAST";
-          } else if (GameSettings.cameraSpeed === 2) {
-            speedType = "FASTER";
-          } else if (GameSettings.cameraSpeed === 1) {
-            speedType = "IMMEDIATE";
-          } else if (GameSettings.cameraSpeed === 5) {
-            speedType = "SLOW";
-          }
-          var speeds = ["FAST", "FASTER", "IMMEDIATE", "SLOW"];
-          return n.createElement("select", {
-            ref: "cameraSpeed",
-            defaultValue: speedType,
-            onChange: this.changeCameraSpeed,
-            onClick: this.stopClickPropagation
-          }, speeds.map(function (speed) {
-            return n.createElement("option", {
-              key: speed,
-              value: speed
-            }, speed);
-          }));
-        },
-        render: function () {
-          return n.createElement("div", {
-            className: "bottomToolOptions bottomToolOptions_select"
-          },
-            n.createElement("div", {
-              className: "bottomToolOptions-toolTitle"
-            },
-              n.createElement("span", {
-                className: "editorgui_icons_bottom editorgui_icons-icon_camera"
-              }),
-              n.createElement("span", {
-                className: "toolName"
-              }, "Camera : ",
-                this.renderCameraTypeSelect(),
-                this.renderCameraSpeedSelect(),
-                
-              )
-            )
-          );
-        }
-      });
-    t.exports = r;
-  }, {
-    react: 230,
-    "react-slider": 75
-  }],
-  906: [function(e, t) {
-    var n = e("react")
-      , f = e("react-slider")
-      , r = n.createClass({
-            displayName: "SelectBottomToolOptions",
-            changeZoom: function() {},
-            toggleSelectType: function() {
-                GameSettings.copy = !GameSettings.copy;
-            },
-            toggleOptions: function () {
-              "undefined" != typeof GameManager &&
-              GameManager.command("dialog", "advancedSelect", this.props.options);
-            },
-            getInitialState: function() {
-                return { rotateFactor: 15, scaleFactor: 1.25, layerListOpen: false };
-            },
-            handleRotateChange: function(rotation) {
-                this.setState({ rotateFactor: rotation });
-                GameSettings.rotateFactor = rotation;
-            },
-            handleScaleChange: function(scale) {
-                this.setState({ scaleFactor: scale });
-                GameSettings.scaleFactor = scale;
-            },
-            selectionAsStamp: function() {
-              let tool = GameManager.game.currentScene.toolHandler.tools.select,
-                  p1 = tool.p1,
-                  p2 = tool.p2;
-              
-              if (!p1 || !p2) return;
-              
-              const commentText = prompt("Enter a comment for this selection:");
-              
-              let formattedUrl;
-              if (commentText && commentText.trim() !== "") {
-                  const safeComment = commentText
-                      .replace(/'/g, "\\'")
-                      .replace(/ /g, "%20");
-                  
-                  formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)},${safeComment})`;
-              } else {
-                  formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)})`;
-              }
-              
-              navigator.clipboard.writeText(formattedUrl)
-                  .then(() => {
-                      console.log("Link copied to clipboard:", formattedUrl);
-                      alert("Link copied to clipboard! Post the link on the forums to share your stamp.");
-                  })
-                  .catch(err => {
-                      console.error("Failed to copy link to clipboard:", err);
-                      alert("Failed to copy link to clipboard.");
-                  });
-            },
-            selectionAsObject: function() {
-              let tool = GameManager.game.currentScene.toolHandler.tools.select,
-                  selected = tool.selected;
-                  if (!selected?.length) return;
-              let { centerX, centerY } = tool.findCenter();
-
-          
-              let objectPhysics = [];
-              let objectScenery = [];
-              let objectPowerups = [];
-          
-              selected.forEach((i) => {
-                  if ('p1' in i && 'p2' in i) {
-                      let line = {
-                          x1: i.p1.x - centerX,
-                          x2: i.p2.x - centerX,
-                          y1: i.p1.y - centerY,
-                          y2: i.p2.y - centerY,
-                      };
-          
-                      if ('highlight' in i) {
-                          objectPhysics.push(line);
-                      } else {
-                          objectScenery.push(line);
-                      }}
-
-                  else if ('name' in i) {
-                      let powerup = {
-                          name: i.name,
-                          x: i.x - centerX,
-                          y: i.y - centerY
-                      };
-                    if (i.name === 'boost' || i.name === 'gravity') {
-                      if (i.hasOwnProperty('angle')) {
-                        powerup.angle = i.angle;
-                      }
-                    } else if (i.name === 'teleport') {
-                      if (i.hasOwnProperty('x2') && i.hasOwnProperty('y2')) {
-                        powerup.x2 = i.x2 - centerX;
-                        powerup.y2 = i.y2 - centerY;
-                      }
-                    } else if (['helicopter', 'truck', 'balloon', 'blob'].includes(i.name)) {
-                      if (i.hasOwnProperty('time')) {
-                        powerup.time = i.time;
-                      }
+    }],
+    /*6: [function(e, t) {
+        var n = e("react"),
+            r = n.createClass({
+                displayName: "CameraBottomToolOptions",
+                changeZoom: function() {},
+                toggleCameraType: function() {
+                    var vertical = GameSettings.cameraMovementVertical,
+                        horizontal = GameSettings.cameraMovementHorizontal;
+    
+                    if (vertical && horizontal) {
+                        // from normal to horizontal
+                        GameSettings.cameraMovementVertical = false;
+                    } else if (!vertical && horizontal) {
+                        // from horizontal to vertical
+                        GameSettings.cameraMovementVertical = true;
+                        GameSettings.cameraMovementHorizontal = false;
+                    } else if (vertical && !horizontal) {
+                        // from vertical to none
+                        GameSettings.cameraMovementVertical = false;
+                    } else {
+                        // from none to normal
+                        GameSettings.cameraMovementVertical = true;
+                        GameSettings.cameraMovementHorizontal = true;
                     }
-                  objectPowerups.push(powerup);
+                },
+                changeCameraSpeed: function (e) {
+                  var t = e.target.value;
+                  GameSettings.cameraSpeed = t,
+                    GameManager.command("redraw"),
+                    e.preventDefault(),
+                    e.stopPropagation();
+                  return !1
+                },
+                renderCameraSpeedSelect: function () {
+                  var e = GameSettings.cameraSpeed,
+                    t = [1, 2, 3, 4, 5, 10, 25, 50, 100];
+                  return n.createElement("select", {
+                    ref: "cameraSpeed",
+                    defaultValue: e,
+                    onChange: this.changeCameraSpeed,
+                    onClick: this.stopClickPropagation
+                  }, t.map(function (e) {
+                    return n.createElement("option", {
+                      key: e,
+                      value: e
+                    }, e)
+                  }))
+                },
+                render: function() {
+                    var type;
+                    if (GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
+                        type = "NORMAL";
+                    } else if (!GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
+                        type = "HORIZONTAL";
+                    } else if (GameSettings.cameraMovementVertical && !GameSettings.cameraMovementHorizontal) {
+                        type = "VERTICAL";
+                    } else {
+                        type = "NONE";
+                    }
+    
+                    return n.createElement("div", {
+                        className: "bottomToolOptions bottomToolOptions_select"
+                    }, n.createElement("div", {
+                        className: "bottomToolOptions-toolTitle"
+                    }, n.createElement("span", {
+                        className: "editorgui_icons_bottom editorgui_icons-icon_camera"
+                    }), 
+                        )
+                    );
                 }
-              });
-
-              GameManager.game.currentScene.objectPhysics = objectPhysics;
-              GameManager.game.currentScene.objectScenery = objectScenery;
-              GameManager.game.currentScene.objectPowerups = objectPowerups;
-              let name;
-              while (!name || GameManager.game.currentScene.objects[name])
-                name = `object-${String(GameManager.game.currentScene.objectNamegen++).padStart(2, '0')}`
-              GameManager.game.currentScene.objectName = name;
-              GameManager.game.currentScene.objects[name] = {objectPhysics, objectScenery, objectPowerups};
-              GameSettings.objectRotate = 0;
-              GameSettings.objectScale = 1;
-              GameSettings.objectStretchX = 1;
-              GameSettings.objectStretchY = 1;
-              GameSettings.objectOffsetX = 0;
-              GameSettings.objectOffsetY = 0;
-              GameSettings.objectFlipX = !1;
-              GameSettings.objectFlipY = !1;
-              GameSettings.objectInvert = !1;
-              GameManager.game.currentScene.transformObjects();
-              GameManager.game.currentScene.saveObjects();
-              GameSettings.customBrush = true;
-              !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
+            });
+        t.exports = r;
+    }, {
+        react: 230,
+        "react-slider": 75
+    }],*/
+    6: [function (e, t) {
+      var n = e("react"),
+        r = n.createClass({
+          displayName: "CameraBottomToolOptions",
+          changeZoom: function () { },
+          changeCameraType: function (e) {
+            var selectedType = e.target.value;
+            switch (selectedType) {
+              case "HORIZONTAL":
+                GameSettings.cameraMovementVertical = false;
+                GameSettings.cameraMovementHorizontal = true;
+                break;
+              case "VERTICAL":
+                GameSettings.cameraMovementVertical = true;
+                GameSettings.cameraMovementHorizontal = false;
+                break;
+              case "NORMAL":
+                GameSettings.cameraMovementVertical = true;
+                GameSettings.cameraMovementHorizontal = true;
+                break;
+              case "NONE":
+              default:
+                GameSettings.cameraMovementVertical = false;
+                GameSettings.cameraMovementHorizontal = false;
+                break;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            return !1;
           },
-          switchLayer: function(n) {
+          renderCameraTypeSelect: function () {
+            var type;
+            if (GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
+              type = "NORMAL";
+            } else if (!GameSettings.cameraMovementVertical && GameSettings.cameraMovementHorizontal) {
+              type = "HORIZONTAL";
+            } else if (GameSettings.cameraMovementVertical && !GameSettings.cameraMovementHorizontal) {
+              type = "VERTICAL";
+            } else {
+              type = "NONE";
+            }
+            var types = ["NORMAL", "HORIZONTAL", "VERTICAL", "NONE"];
+            return n.createElement("select", {
+              ref: "cameraType",
+              defaultValue: type,
+              onChange: this.changeCameraType,
+              onClick: this.stopClickPropagation
+            }, types.map(function (type) {
+              return n.createElement("option", {
+                key: type,
+                value: type
+              }, type);
+            }));
+          },
+          changeCameraSpeed: function (e) {
+            var selectedType = e.target.value;
+            switch (selectedType) {
+              case "FASTER":
+                GameSettings.cameraSpeed = 2;
+                break;
+              case "IMMEDIATE":
+                GameSettings.cameraSpeed = 1;
+                break;
+              case "SLOW":
+                GameSettings.cameraSpeed = 5;
+                break;
+              case "FAST":
+              default:
+                GameSettings.cameraSpeed = 3;
+                break;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            return !1;
+          },
+          renderCameraSpeedSelect: function () {
+            var speedType;
+            if (GameSettings.cameraSpeed === 3) {
+              speedType = "FAST";
+            } else if (GameSettings.cameraSpeed === 2) {
+              speedType = "FASTER";
+            } else if (GameSettings.cameraSpeed === 1) {
+              speedType = "IMMEDIATE";
+            } else if (GameSettings.cameraSpeed === 5) {
+              speedType = "SLOW";
+            }
+            var speeds = ["FAST", "FASTER", "IMMEDIATE", "SLOW"];
+            return n.createElement("select", {
+              ref: "cameraSpeed",
+              defaultValue: speedType,
+              onChange: this.changeCameraSpeed,
+              onClick: this.stopClickPropagation
+            }, speeds.map(function (speed) {
+              return n.createElement("option", {
+                key: speed,
+                value: speed
+              }, speed);
+            }));
+          },
+          render: function () {
+            return n.createElement("div", {
+              className: "bottomToolOptions bottomToolOptions_select"
+            },
+              n.createElement("div", {
+                className: "bottomToolOptions-toolTitle"
+              },
+                n.createElement("span", {
+                  className: "editorgui_icons_bottom editorgui_icons-icon_camera"
+                }),
+                n.createElement("span", {
+                  className: "toolName"
+                }, "Camera : ",
+                  this.renderCameraTypeSelect(),
+                  this.renderCameraSpeedSelect(),
+
+                )
+              )
+            );
+          }
+        });
+      t.exports = r;
+    }, {
+      react: 230,
+      "react-slider": 75
+    }],
+    906: [function (e, t) {
+      var n = e("react")
+        , f = e("react-slider")
+        , r = n.createClass({
+          displayName: "SelectBottomToolOptions",
+          changeZoom: function () { },
+          toggleSelectType: function () {
+            GameSettings.copy = !GameSettings.copy;
+          },
+          toggleOptions: function () {
+            "undefined" != typeof GameManager &&
+              GameManager.command("dialog", "advancedSelect", this.props.options);
+          },
+          getInitialState: function () {
+            return { rotateFactor: 15, scaleFactor: 1.25, layerListOpen: false };
+          },
+          handleRotateChange: function (rotation) {
+            this.setState({ rotateFactor: rotation });
+            GameSettings.rotateFactor = rotation;
+          },
+          handleScaleChange: function (scale) {
+            this.setState({ scaleFactor: scale });
+            GameSettings.scaleFactor = scale;
+          },
+          selectionAsStamp: function () {
+            let tool = GameManager.game.currentScene.toolHandler.tools.select,
+              p1 = tool.p1,
+              p2 = tool.p2;
+
+            if (!p1 || !p2) return;
+
+            const commentText = prompt("Enter a comment for this selection:");
+
+            let formattedUrl;
+            if (commentText && commentText.trim() !== "") {
+              const safeComment = commentText
+                .replace(/'/g, "\\'")
+                .replace(/ /g, "%20");
+
+              formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)},${safeComment})`;
+            } else {
+              formattedUrl = `https://forum.freerider.app/#(${Math.round(p1.x)},${Math.round(p1.y)},${Math.round(p2.x)},${Math.round(p2.y)})`;
+            }
+
+            navigator.clipboard.writeText(formattedUrl)
+              .then(() => {
+                console.log("Link copied to clipboard:", formattedUrl);
+                alert("Link copied to clipboard! Post the link on the forums to share your stamp.");
+              })
+              .catch(err => {
+                console.error("Failed to copy link to clipboard:", err);
+                alert("Failed to copy link to clipboard.");
+              });
+          },
+          selectionAsObject: function () {
+            let tool = GameManager.game.currentScene.toolHandler.tools.select,
+              selected = tool.selected;
+            if (!selected?.length) return;
+            let { centerX, centerY } = tool.findCenter();
+
+
+            let objectPhysics = [];
+            let objectScenery = [];
+            let objectPowerups = [];
+
+            selected.forEach((i) => {
+              if ('p1' in i && 'p2' in i) {
+                let line = {
+                  x1: i.p1.x - centerX,
+                  x2: i.p2.x - centerX,
+                  y1: i.p1.y - centerY,
+                  y2: i.p2.y - centerY,
+                };
+
+                if ('highlight' in i) {
+                  objectPhysics.push(line);
+                } else {
+                  objectScenery.push(line);
+                }
+              }
+
+              else if ('name' in i) {
+                let powerup = {
+                  name: i.name,
+                  x: i.x - centerX,
+                  y: i.y - centerY
+                };
+                if (i.name === 'boost' || i.name === 'gravity') {
+                  if (i.hasOwnProperty('angle')) {
+                    powerup.angle = i.angle;
+                  }
+                } else if (i.name === 'teleport') {
+                  if (i.hasOwnProperty('x2') && i.hasOwnProperty('y2')) {
+                    powerup.x2 = i.x2 - centerX;
+                    powerup.y2 = i.y2 - centerY;
+                  }
+                } else if (['helicopter', 'truck', 'balloon', 'blob'].includes(i.name)) {
+                  if (i.hasOwnProperty('time')) {
+                    powerup.time = i.time;
+                  }
+                }
+                objectPowerups.push(powerup);
+              }
+            });
+
+            GameManager.game.currentScene.objectPhysics = objectPhysics;
+            GameManager.game.currentScene.objectScenery = objectScenery;
+            GameManager.game.currentScene.objectPowerups = objectPowerups;
+            let name;
+            while (!name || GameManager.game.currentScene.objects[name])
+              name = `object-${String(GameManager.game.currentScene.objectNamegen++).padStart(2, '0')}`
+            GameManager.game.currentScene.objectName = name;
+            GameManager.game.currentScene.objects[name] = { objectPhysics, objectScenery, objectPowerups };
+            GameSettings.objectRotate = 0;
+            GameSettings.objectScale = 1;
+            GameSettings.objectStretchX = 1;
+            GameSettings.objectStretchY = 1;
+            GameSettings.objectOffsetX = 0;
+            GameSettings.objectOffsetY = 0;
+            GameSettings.objectFlipX = !1;
+            GameSettings.objectFlipY = !1;
+            GameSettings.objectInvert = !1;
+            GameManager.game.currentScene.transformObjects();
+            GameManager.game.currentScene.saveObjects();
+            GameSettings.customBrush = true;
+            !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
+          },
+          switchLayer: function (n) {
             let tool = GameManager.game.currentScene.toolHandler.tools.select,
               selected = tool.selected,
               layers = GameManager.game.currentScene.track.layers,
@@ -1045,111 +1058,106 @@
             GameManager.game.currentScene.track.undraw
             //
           },
-          modal: function(...children) {
-            return n.createElement("div", {className: "layer-modal hover-events", onClick: this.stopClickPropagation}, ...children);
+          modal: function (...children) {
+            return n.createElement("div", { className: "layer-modal hover-events", onClick: this.stopClickPropagation }, ...children);
           },
-          openLayerList: function() {
-            this.setState({layerListOpen: !this.state.layerListOpen});
+          openLayerList: function () {
+            this.setState({ layerListOpen: !this.state.layerListOpen });
           },
-          renderLayerList: function() {
+          renderLayerList: function () {
             let o = this.state.layerListOpen,
-                l = GameManager.game.currentScene.track.layers,
-                e = GameManager.game.currentScene.track.layerIndex;
+              l = GameManager.game.currentScene.track.layers,
+              e = GameManager.game.currentScene.track.layerIndex;
             return n.createElement("span", {},
-            n.createElement("button", {
-              onClick: this.openLayerList,
-              className: "margin"
-            }, "MOVE TO LAYER"),
-          o ? this.modal(
-            ...l.map((i, j) => n.createElement('div', {
-                    onClick: e => {
-                      e.stopPropagation(); 
-                      this.switchLayer(j);
-                    }, 
-                    className: "layer-item" + (j == e ? " current-layer" : "")
-                  }, 
+              n.createElement("button", {
+                onClick: this.openLayerList,
+                className: "margin"
+              }, "MOVE TO LAYER"),
+              o ? this.modal(
+                ...l.map((i, j) => n.createElement('div', {
+                  onClick: e => {
+                    e.stopPropagation();
+                    this.switchLayer(j);
+                  },
+                  className: "layer-item" + (j == e ? " current-layer" : "")
+                },
                   n.createElement('p', {}, i.name)
                 )
-            )) : null);
+                )) : null);
           },
-            render: function() {
-                var type = GameSettings.copy ? "COPY + PASTE" : "CUT + PASTE";
-                return n.createElement("div", {
-                        className: "bottomToolOptions bottomToolOptions_camera"
-                    }, n.createElement("div", {
-                        className: "bottomToolOptions-toolTitle"
-                    }, n.createElement("span", {
-                        className: "editorgui_icons_bottom editorgui_icons-icon_select"
-                    }), n.createElement("span", {
-                        className: "toolName"
-                    }, "Select : ",
-                    n.createElement("span", {},
-                      n.createElement("button", {
-                          onClick: this.toggleOptions
-                      }, "OPTIONS")),
-                      n.createElement("span", {},
-                        n.createElement("button", {
-                            className: "margin",
-                            onClick: this.selectionAsObject
-                        }, "SAVE AS OBJECT")),
-                      n.createElement("span", {},
-                          n.createElement("button", {
-                            className: "margin",
-                            onClick: this.selectionAsStamp
-                        }, "COPY AS STAMP"))
-                        , this.renderLayerList()
-                      ),
-                    ), 
-                    
-                    /*n.createElement("div", {
-                        className: "horizontal-slider-container"
-                    }, n.createElement("span", {
-                        className: "horizontal-slider-label"
-                    }, "Rotation Factor"), n.createElement(f, {
-                        withBars: true,
-                        className: "horizontal-slider Circle-slider_SegmentLength",
-                        onChange: this.handleRotateChange,
-                        defaultValue: GameSettings.rotateFactor || 15, // Fallback to 15 if GameSettings.rotateFactor is undefined
-                        max: 90,
-                        min: 5,
-                        step: 5,
-                        value: GameSettings.rotateFactor || this.state.rotateFactor // Reflect global or local state
-                    })), n.createElement("input", {
-                        type: "text",
-                        className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
-                        value: GameSettings.rotateFactor,
-                        readOnly: true
-                    }),
+          render: function () {
+            var type = GameSettings.copy ? "COPY + PASTE" : "CUT + PASTE";
+            return n.createElement("div", {
+              className: "bottomToolOptions bottomToolOptions_camera"
+            }, n.createElement("div", {
+              className: "bottomToolOptions-toolTitle"
+            }, n.createElement("span", {
+              className: "editorgui_icons_bottom editorgui_icons-icon_select"
+            }), n.createElement("span", {
+              className: "toolName"
+            }, "Select : ",
+              n.createElement("span", {},
+                n.createElement("button", {
+                  onClick: this.toggleOptions
+                }, "OPTIONS")),
+              n.createElement("span", {},
+                n.createElement("button", {
+                  className: "margin",
+                  onClick: this.selectionAsObject
+                }, "SAVE AS OBJECT")),
+              this.renderLayerList()
+            ),
+            ),
 
-                    n.createElement("div", {
-                        className: "horizontal-slider-container"
-                    }, n.createElement("span", {
-                        className: "horizontal-slider-label-2"
-                    }, "Scaling Factor"), n.createElement(f, {
-                        withBars: true,
-                        className: "horizontal-slider Circle-slider_SegmentLength",
-                        onChange: this.handleScaleChange,
-                        defaultValue: 1.25,
-                        max: 2,
-                        min: 0.05,
-                        step: 0.05,
-                        value: this.state.scaleFactor
-                    })), n.createElement("input", {
-                        type: "text",
-                        className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
-                        value: this.state.scaleFactor.toFixed(2),
-                        readOnly: true
-                    }), n.createElement("span", {
-                        className: "toolName"
-                    },), */
-                );
-            }
+              /*n.createElement("div", {
+                  className: "horizontal-slider-container"
+              }, n.createElement("span", {
+                  className: "horizontal-slider-label"
+              }, "Rotation Factor"), n.createElement(f, {
+                  withBars: true,
+                  className: "horizontal-slider Circle-slider_SegmentLength",
+                  onChange: this.handleRotateChange,
+                  defaultValue: GameSettings.rotateFactor || 15, // Fallback to 15 if GameSettings.rotateFactor is undefined
+                  max: 90,
+                  min: 5,
+                  step: 5,
+                  value: GameSettings.rotateFactor || this.state.rotateFactor // Reflect global or local state
+              })), n.createElement("input", {
+                  type: "text",
+                  className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
+                  value: GameSettings.rotateFactor,
+                  readOnly: true
+              }),
+
+              n.createElement("div", {
+                  className: "horizontal-slider-container"
+              }, n.createElement("span", {
+                  className: "horizontal-slider-label-2"
+              }, "Scaling Factor"), n.createElement(f, {
+                  withBars: true,
+                  className: "horizontal-slider Circle-slider_SegmentLength",
+                  onChange: this.handleScaleChange,
+                  defaultValue: 1.25,
+                  max: 2,
+                  min: 0.05,
+                  step: 0.05,
+                  value: this.state.scaleFactor
+              })), n.createElement("input", {
+                  type: "text",
+                  className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
+                  value: this.state.scaleFactor.toFixed(2),
+                  readOnly: true
+              }), n.createElement("span", {
+                  className: "toolName"
+              },), */
+            );
+          }
         });
-    t.exports = r;
-}, {
-    react: 230,
-    "react-slider": 75
-}],
+      t.exports = r;
+    }, {
+      react: 230,
+      "react-slider": 75
+    }],
     7: [
       function (e, t) {
         var n = e("react"),
@@ -1161,7 +1169,7 @@
             },
             render: function () {
               var e =
-                  "bottomMenu-button bottomMenu-button-right bottomMenu-button_cameralock",
+                "bottomMenu-button bottomMenu-button-right bottomMenu-button_cameralock",
                 t = "editorgui_icons_bottom editorgui_icons-icon_camera_lock_off icon";
               this.props.active &&
                 (t =
@@ -1190,57 +1198,57 @@
           z = e("react-slider"),
           r = n.createClass({
             displayName: "CurvedLineBottomToolOptions",
-            adjustSegmentLength: function(e) {
+            adjustSegmentLength: function (e) {
               "undefined" != typeof GameManager && GameManager.command("change tool option", "segmentLength", e)
-          },
+            },
             render: function () {
               var e = this.props.options;
               return e && (s = e.segmentLength),
-              n.createElement(
-                "div",
-                { className: "bottomToolOptions bottomToolOptions_curvedline" },
                 n.createElement(
                   "div",
-                  { className: "bottomToolOptions-toolTitle" },
-                  n.createElement("span", {
-                    className: "editorgui_icons_bottom editorgui_icons-icon_curve",
-                  }),
+                  { className: "bottomToolOptions bottomToolOptions_curvedline" },
                   n.createElement(
-                    "span",
-                    { className: "toolName" },
-                    "Curve : ",
+                    "div",
+                    { className: "bottomToolOptions-toolTitle" },
+                    n.createElement("span", {
+                      className: "editorgui_icons_bottom editorgui_icons-icon_curve",
+                    }),
                     n.createElement(
                       "span",
-                      { className: "bottomMenu-bold" },
-                      e.object ? "object" : e.lineType
+                      { className: "toolName" },
+                      "Curve : ",
+                      n.createElement(
+                        "span",
+                        { className: "bottomMenu-bold" },
+                        e.object ? "object" : e.lineType
+                      )
                     )
-                  )
-                ), 
-                n.createElement("div", {
-                  className: "horizontal-slider-container"
-              }, n.createElement("span", {
-                  className: "horizontal-slider-label"
-              }, "Segment Length"), n.createElement(z, {
-                  withBars: !0,
-                  className: "horizontal-slider Circle-slider_SegmentLength",
-                  onChange: this.adjustSegmentLength,
-                  defaultValue: 4,
-                  max: 10,
-                  min: 1,
-                  step: 1,
-                  value: s
-              })), n.createElement("input", {
-                  type: "text",
-                  className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
-                  value: (0.1 * s).toFixed(1),
-                  readOnly: true
-              }),
-              );
+                  ),
+                  n.createElement("div", {
+                    className: "horizontal-slider-container"
+                  }, n.createElement("span", {
+                    className: "horizontal-slider-label"
+                  }, "Segment Length"), n.createElement(z, {
+                    withBars: !0,
+                    className: "horizontal-slider Circle-slider_SegmentLength",
+                    onChange: this.adjustSegmentLength,
+                    defaultValue: 4,
+                    max: 10,
+                    min: 1,
+                    step: 1,
+                    value: s
+                  })), n.createElement("input", {
+                    type: "text",
+                    className: "bottomToolOptions-input bottomToolOptions-input_vehiclepoweruptime",
+                    value: (0.1 * s).toFixed(1),
+                    readOnly: true
+                  }),
+                );
             },
           });
         t.exports = r;
       },
-      { react: 230, "react-slider": 75},
+      { react: 230, "react-slider": 75 },
     ],
     9: [
       function (e, t) {
@@ -1255,7 +1263,7 @@
             toggleEraserType: function (e) {
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool option", "eraserType", e);
-                GameSettings.lineTrim = !GameSettings.lineTrim;
+              GameSettings.lineTrim = !GameSettings.lineTrim;
             },
             render: function () {
               var type = GameSettings.lineTrim ? "LINE TRIM" : "LINE ERASE";
@@ -1267,7 +1275,7 @@
                 s = 0;
               return (
                 e &&
-                  ((t = e.radius),
+                ((t = e.radius),
                   (o = e.maxRadius),
                   (i = e.minRadius),
                   (a = e.radiusSizeSensitivity)),
@@ -1282,10 +1290,10 @@
                     }),
                     n.createElement("span", {
                       className: "toolName"
-                  }, "Eraser : ", n.createElement("span", {},
-                  n.createElement("button", {
-                      onClick: this.toggleEraserType
-                  }, type)))),
+                    }, "Eraser : ", n.createElement("span", {},
+                      n.createElement("button", {
+                        onClick: this.toggleEraserType
+                      }, type)))),
                   n.createElement(
                     "div",
                     { className: "horizontal-slider-container" },
@@ -1324,7 +1332,21 @@
             return { open: false };
           },
           openOptions: function () {
-            this.setState({ open: !this.state.open });
+            //this.setState({ open: !this.state.open });
+            var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+            var iframe = document.getElementById("toolsIframe");
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                action: 'showToolTab',
+                tool: 'grid'
+              }, '*');
+            }
+
+            if (typeof GameManager !== "undefined" && !sidebarOpen) {
+              GameSettings.dialogTool = 'grid';
+              GameManager.command("dialog", "toolsDialog", "grid");
+            }
           },
           changeGridSize: function (e) {
             var t = e.target.value;
@@ -1338,20 +1360,20 @@
             GameSettings.toolHandler.isometricGrid = !GameSettings.toolHandler.isometricGrid,
               GameManager.command("redraw");
           },
-          changeGridVisible: function(e) {
+          changeGridVisible: function (e) {
             var selectedOption = e.target.value;
             if (selectedOption === "VISIBLE") {
-                GameSettings.toolHandler.visibleGrid = true;
-                GameSettings.toolHandler.snapGrid = true;
+              GameSettings.toolHandler.visibleGrid = true;
+              GameSettings.toolHandler.snapGrid = true;
             } else if (selectedOption === "HIDDEN") {
-                GameSettings.toolHandler.visibleGrid = false;
-                GameSettings.toolHandler.snapGrid = true;
+              GameSettings.toolHandler.visibleGrid = false;
+              GameSettings.toolHandler.snapGrid = true;
             } else if (selectedOption === "NO-SNAP") {
-                GameSettings.toolHandler.visibleGrid = true;
-                GameSettings.toolHandler.snapGrid = false;
+              GameSettings.toolHandler.visibleGrid = true;
+              GameSettings.toolHandler.snapGrid = false;
             }
             GameManager.command("redraw");
-        },
+          },
           stopClickPropagation: function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1387,30 +1409,30 @@
               }, f)
             }))
           },
-          renderGridVisibleSelect: function() {
+          renderGridVisibleSelect: function () {
             var v = GameSettings.toolHandler.visibleGrid,
-                s = GameSettings.toolHandler.snapGrid,
-                u = ["VISIBLE", "HIDDEN", "NO-SNAP"];
+              s = GameSettings.toolHandler.snapGrid,
+              u = ["VISIBLE", "HIDDEN", "NO-SNAP"];
             var gridVisible;
             if (v && s) {
-                gridVisible = "VISIBLE";
+              gridVisible = "VISIBLE";
             } else if (!v && s) {
-                gridVisible = "HIDDEN";
+              gridVisible = "HIDDEN";
             } else {
-                gridVisible = "NO-SNAP";
+              gridVisible = "NO-SNAP";
             }
             return n.createElement("select", {
-                ref: "gridVisible",
-                defaultValue: gridVisible,
-                onChange: this.changeGridVisible,
-                onClick: this.stopClickPropagation
-            }, u.map(function(v) {
-                return n.createElement("option", {
-                    key: v,
-                    value: v
-                }, v)
+              ref: "gridVisible",
+              defaultValue: gridVisible,
+              onChange: this.changeGridVisible,
+              onClick: this.stopClickPropagation
+            }, u.map(function (v) {
+              return n.createElement("option", {
+                key: v,
+                value: v
+              }, v)
             }))
-        },
+          },
           render: function () {
             var e = "bottomMenu-button bottomMenu-button-right bottomMenu-button_grid ",
               t = "editorgui_icons_bottom editorgui_icons-icon_grid_off",
@@ -1420,7 +1442,10 @@
             var o = this.state.open ? " : " : "";
             return n.createElement("div", {
               className: e,
-              onClick: this.openOptions
+              onClick: (event) => {
+                event.stopPropagation();
+                this.openOptions();
+              }
             }, n.createElement("span", {
               className: t,
               onClick: (event) => {
@@ -1428,14 +1453,14 @@
                 this.setGrid(event);
               }
             }), n.createElement("span", {
-              className: "name"
+              className: "name",
             }, "Grid", o), this.state.open ? n.createElement("div", {}, this.renderGridSizeSelect(), this.renderGridTypeSelect(), this.renderGridVisibleSelect()) : null)
           }
         });
       t.exports = a
     }, {
       react: 230
-    }],    
+    }],
     910: [function (e, t) {
       var n = e("react"),
         a = n.createClass({
@@ -1465,9 +1490,9 @@
               GameManager.game.currentScene.objects = {};
               this.clearObject();
             } else {
-            let name = GameManager.game.currentScene.objectName;
-            delete GameManager.game.currentScene.objects[name];
-            this.clearObject();
+              let name = GameManager.game.currentScene.objectName;
+              delete GameManager.game.currentScene.objects[name];
+              this.clearObject();
             }
             GameManager.game.currentScene.saveObjects();
             this.setState({ selectedObjectName: name });
@@ -1477,8 +1502,22 @@
             const objectName = currentScene ? currentScene.objectName || '' : '';
             return { open: false, selectedObjectName: objectName };
           },
-          openOptions: function (e) {
-            this.setState({ open: !this.state.open });
+          openOptions: function () {
+            //this.setState({ open: !this.state.open });
+            var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+            var iframe = document.getElementById("toolsIframe");
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({
+                action: 'showToolTab',
+                tool: 'object'
+              }, '*');
+            }
+
+            if (typeof GameManager !== "undefined" && !sidebarOpen) {
+              GameSettings.dialogTool = 'object';
+              GameManager.command("dialog", "toolsDialog", "object");
+            }
           },
           importObject: function () {
             if (typeof GameManager !== "undefined") {
@@ -1486,9 +1525,9 @@
             }
           },
           renameObject: function () {
-            if (!GameManager.game.currentScene.objectName || 
+            if (!GameManager.game.currentScene.objectName ||
               Object.keys(GameManager.game.currentScene.objects).length === 0) {
-            return;
+              return;
             }
             let oldName = GameManager.game.currentScene.objectName,
               name = prompt("What would you like to name the object?");
@@ -1597,12 +1636,12 @@
                 value: '',
                 disabled: true,
                 selected: true,
-                style: {display: "none"},
-              }, 'pick...'), 
-              ...names.map(name => n.createElement("option", {
-                key: name,
-                value: name
-              }, name)));
+                style: { display: "none" },
+              }, 'pick...'),
+                ...names.map(name => n.createElement("option", {
+                  key: name,
+                  value: name
+                }, name)));
             } else {
               return n.createElement("span", {}, " ");
             }
@@ -1632,19 +1671,19 @@
               }
             }), n.createElement("span", {
               className: "name"
-            }, "Object", o), this.state.open ? 
-            n.createElement("div", {}, 
-            Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {}, this.renderRotateSensitivitySelect()) : null, 
-            Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {}, this.renderScaleSensitivitySelect()) : null,
-            n.createElement("span", {}, this.renderObjectSelect()),
-              n.createElement("span", {},
-                n.createElement("button", {
-                  className: "margin",
-                  onClick: (event) => {
-                    event.stopPropagation();
-                    this.importObject(event);
-                  }
-                }, "IMPORT")),
+            }, "Object", o), this.state.open ?
+              n.createElement("div", {},
+                Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {}, this.renderRotateSensitivitySelect()) : null,
+                Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {}, this.renderScaleSensitivitySelect()) : null,
+                n.createElement("span", {}, this.renderObjectSelect()),
+                n.createElement("span", {},
+                  n.createElement("button", {
+                    className: "margin",
+                    onClick: (event) => {
+                      event.stopPropagation();
+                      this.importObject(event);
+                    }
+                  }, "IMPORT")),
                 Object.keys(GameManager.game.currentScene.objects).length !== 0 ? n.createElement("span", {},
                   n.createElement("button", {
                     className: "margin",
@@ -1667,68 +1706,82 @@
                       this.deleteObject(event.altKey);
                     }
                   }, "REMOVE")) : null) : null)
-            
+
           }
         });
       t.exports = a;
-      }, {
-        react: 230
-      }],
+    }, {
+      react: 230
+    }],
     9910: [
-      function(e, t) {
+      function (e, t) {
         var n = e("react"),
           a = n.createClass({
             displayName: "Layer",
-            getInitialState: function() {
-              return {open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default'};
+            getInitialState: function () {
+              return { open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default' };
             },
             stopClickPropagation: function (e) {
               //e.preventDefault();
               e.stopPropagation();
             },
-            openOptions: function() {
-              this.setState({open: !this.state.open, layerListOpen: this.state.open ? false : this.state.layerListOpen, settingsOpen: this.state.open ? false : this.state.settingsOpen});
+            openOptions: function () {
+              //this.setState({ open: !this.state.open, layerListOpen: this.state.open ? false : this.state.layerListOpen, settingsOpen: this.state.open ? false : this.state.settingsOpen });
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              var iframe = document.getElementById("toolsIframe");
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  action: 'showToolTab',
+                  tool: 'layer'
+                }, '*');
+              }
+
+              if (typeof GameManager !== "undefined" && !sidebarOpen) {
+                GameSettings.dialogTool = 'layer';
+                GameManager.command("dialog", "toolsDialog", "layer");
+              }
             },
-            openLayerList: function(e) {
+            openLayerList: function (e) {
               e && this.stopClickPropagation(e);
-              this.setState({layerListOpen: !this.state.layerListOpen, settingsOpen: false});
+              this.setState({ layerListOpen: !this.state.layerListOpen, settingsOpen: false });
             },
-            openSettings: function(e) {
+            openSettings: function (e) {
               this.stopClickPropagation(e);
-              this.setState({settingsOpen: !this.state.settingsOpen, layerListOpen: false});
+              this.setState({ settingsOpen: !this.state.settingsOpen, layerListOpen: false });
             },
-            modal: function(...children) {
-              return n.createElement("div", {className: "layer-modal hover-events", onClick: this.stopClickPropagation}, ...children);
+            modal: function (...children) {
+              return n.createElement("div", { className: "layer-modal hover-events", onClick: this.stopClickPropagation }, ...children);
             },
-            renderLayerList: function() {
+            renderLayerList: function () {
               let o = this.state.layerListOpen,
-                  l = GameManager.game.currentScene.track.layers,
-                  e = GameManager.game.currentScene.track.layerIndex;
+                l = GameManager.game.currentScene.track.layers,
+                e = GameManager.game.currentScene.track.layerIndex;
               return n.createElement("span", {},
-              n.createElement("button", {
-                onClick: this.openLayerList,
-                className: "margin"
-              }, GameManager.game.currentScene.track.currentLayer?.name || ""),
-            o ? this.modal(
-              ...l.map((i, j) => n.createElement('div', {
-                      onClick: e => {
-                        e.stopPropagation(); 
-                        this.switchLayer(j);
-                      }, 
-                      className: "layer-item" + (j == e ? " current-layer" : "")
-                    }, 
+                n.createElement("button", {
+                  onClick: this.openLayerList,
+                  className: "margin"
+                }, GameManager.game.currentScene.track.currentLayer?.name || ""),
+                o ? this.modal(
+                  ...l.map((i, j) => n.createElement('div', {
+                    onClick: e => {
+                      e.stopPropagation();
+                      this.switchLayer(j);
+                    },
+                    className: "layer-item" + (j == e ? " current-layer" : "")
+                  },
                     n.createElement('p', {}, i.name)
                   )
-              )) : null);
+                  )) : null);
             },
-            fixColor: function(c) {
+            fixColor: function (c) {
               if (/^rgba?/.test(c)) {
                 let d = c.match(/\((\d+), ?(\d+), ?(\d+)/);
                 return `#${('0' + d[1].toString(16)).slice(-2)}${('0' + d[2].toString(16)).slice(-2)}${('0' + d[3].toString(16)).slice(-2)}`;
               }
               return /^#[0-9A-Fa-f]{3}$/.test(c) ? c.replaceAll(/([0-9A-Fa-f])/g, '$1$1') : c;
             },
-            renderSettings: function() {
+            renderSettings: function () {
               let o = this.state.settingsOpen;
               let l = GameManager.game.currentScene.track.currentLayer;
               //this.state.name != l.name && this.setState({name: l.name});
@@ -1737,35 +1790,35 @@
                   onClick: this.openSettings,
                   className: "margin"
                 }, "Settings"),
-              o ? this.modal(
-                // name
-                // this does not work and i have no idea why; just use the console if you want to change a layer name
-                n.createElement('div', null,
-                //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
-                //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
-                n.createElement('button', {onClick: (e) => {this.stopClickPropagation(e); let n = prompt('What would you like to name this layer?', l.name); if (n) l.name = e.target.innerText = n;}}, l.name)
-                ),
-                // physics line color
-                n.createElement("label", {htmlFor: "layer-physics-color"}, "Physics line color: "),
-                n.createElement("input", {type: "color", id: "layer-physics-color", value: this.fixColor(l.physicsLineColor), onChange: (e) => {let c = e.target.value; l.physicsLineColor = c; l.update();}}),
-                // scenery line color
-                n.createElement("label", {htmlFor: "layer-scenery-color"}, "Scenery line color: "),
-                n.createElement("input", {type: "color", id: "layer-scenery-color", value: this.fixColor(l.sceneryLineColor), onChange: (e) => {let c = e.target.value; l.sceneryLineColor = c; l.update();}}),
-                // uses default colors
-                n.createElement("button", {onClick: l.resetColors.bind(l)}, "Reset colors"),
-                // show/hide
-                n.createElement("button", {
-                  onClick: (e) => {
-                    this.stopClickPropagation(e);
-                    if (!l) return;
-                    l.toggle();
-                    e.target.innerHTML = l.show ? "Hide" : "Show";
-                  }
-                }, GameManager.game.currentScene.track.currentLayer.show ? 'Hide': 'Show')
-                // end modal
-              ) : null);
+                o ? this.modal(
+                  // name
+                  // this does not work and i have no idea why; just use the console if you want to change a layer name
+                  n.createElement('div', null,
+                    //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
+                    //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
+                    n.createElement('button', { onClick: (e) => { this.stopClickPropagation(e); let n = prompt('What would you like to name this layer?', l.name); if (n) l.name = e.target.innerText = n; } }, l.name)
+                  ),
+                  // physics line color
+                  n.createElement("label", { htmlFor: "layer-physics-color" }, "Physics line color: "),
+                  n.createElement("input", { type: "color", id: "layer-physics-color", value: this.fixColor(l.physicsLineColor), onChange: (e) => { let c = e.target.value; l.physicsLineColor = c; l.update(); } }),
+                  // scenery line color
+                  n.createElement("label", { htmlFor: "layer-scenery-color" }, "Scenery line color: "),
+                  n.createElement("input", { type: "color", id: "layer-scenery-color", value: this.fixColor(l.sceneryLineColor), onChange: (e) => { let c = e.target.value; l.sceneryLineColor = c; l.update(); } }),
+                  // uses default colors
+                  n.createElement("button", { onClick: l.resetColors.bind(l) }, "Reset colors"),
+                  // show/hide
+                  n.createElement("button", {
+                    onClick: (e) => {
+                      this.stopClickPropagation(e);
+                      if (!l) return;
+                      l.toggle();
+                      e.target.innerHTML = l.show ? "Hide" : "Show";
+                    }
+                  }, GameManager.game.currentScene.track.currentLayer.show ? 'Hide' : 'Show')
+                  // end modal
+                ) : null);
             },
-            renderControls: function() {
+            renderControls: function () {
               let l = GameManager.game.currentScene.track.layers,
                 c = GameManager.game.currentScene.track.layerIndex,
                 f = c > 0,
@@ -1778,18 +1831,18 @@
                   onClick: this.openMergeModal,
                   className: "margin",
                   disabled: !f
-                }, "Merge Into", 
-                o ? this.modal(
-                  ...l.map((i, j) => j == c ? null : n.createElement('div', {
-                          onClick: e => {
-                            e.stopPropagation(); 
-                            this.mergeLayers(j);
-                          }, 
-                          className: "layer-item"
-                        }, 
-                        n.createElement('p', {}, i.name)
-                      )
-                  )) : null),
+                }, "Merge Into",
+                  o ? this.modal(
+                    ...l.map((i, j) => j == c ? null : n.createElement('div', {
+                      onClick: e => {
+                        e.stopPropagation();
+                        this.mergeLayers(j);
+                      },
+                      className: "layer-item"
+                    },
+                      n.createElement('p', {}, i.name)
+                    )
+                    )) : null),
                 n.createElement("button", {
                   onClick: this.deleteLayer,
                   className: "margin",
@@ -1797,17 +1850,17 @@
                 }, "Delete")
               );
             },
-            createLayer: function(e) {
+            createLayer: function (e) {
               e && this.stopClickPropagation(e);
               GameManager.game.currentScene.track.createLayer();
-              this.setState({name: GameManager.game.currentScene.track.currentLayer.name});
+              this.setState({ name: GameManager.game.currentScene.track.currentLayer.name });
             },
-            openMergeModal: function(e) {
+            openMergeModal: function (e) {
               e && this.stopClickPropagation(e);
-              this.setState({mergeOpen: !this.state.mergeOpen});
+              this.setState({ mergeOpen: !this.state.mergeOpen });
             },
-            mergeLayers: function(j) {
-              this.setState({mergeOpen: false});
+            mergeLayers: function (j) {
+              this.setState({ mergeOpen: false });
               let track = GameManager.game.currentScene.track,
                 l = track.currentLayer,
                 n = track.layers[j];
@@ -1838,7 +1891,7 @@
               track.setLayerIndex(j);
               track.canvasPool.update();
             },
-            deleteLayer: function(e) {
+            deleteLayer: function (e) {
               e && this.stopClickPropagation(e);
               let track = GameManager.game.currentScene.track,
                 l = track.currentLayer;
@@ -1852,15 +1905,15 @@
                 }
               }
             },
-            createFolder: function() {
+            createFolder: function () {
               //
             },
-            switchLayer: function(n) {
+            switchLayer: function (n) {
               GameManager.game.currentScene.track.setLayerIndex(n);
-              this.setState({name: GameManager.game.currentScene.track.currentLayer.name});
+              this.setState({ name: GameManager.game.currentScene.track.currentLayer.name });
               this.openLayerList();
             },
-            render: function() {
+            render: function () {
               let e = "bottomMenu-button bottomMenu-button-right bottomMenu-button_layer",
                 t = "layer layer-margin",
                 o = this.state.open ? " : " : "";
@@ -1877,9 +1930,9 @@
                 }
               }), n.createElement("span", {
                 className: "name",
-              }, "Layer", o), this.state.open ? 
-            n.createElement("div", {}, this.renderLayerList(),
-          this.renderSettings(), this.renderControls()) : null);
+              }, "Layer", o), this.state.open ?
+                n.createElement("div", {}, this.renderLayerList(),
+                  this.renderSettings(), this.renderControls()) : null);
             }
           });
         t.exports = a;
@@ -1970,11 +2023,26 @@
               return { open: false };
             },
             openOptions: function (e) {
-              if (GameManager.game.currentScene.mod.getVar("mobile")) // remove "play" when you want to have ghost imports
-              { this.toggleVehicle();
+              /*if (GameManager.game.currentScene.mod.getVar("mobile")) // remove "play" when you want to have ghost imports
+              {
+                this.toggleVehicle();
                 return;
               }
-              this.setState({ open: !this.state.open });
+              this.setState({ open: !this.state.open });*/
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              var iframe = document.getElementById("toolsIframe");
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  action: 'showToolTab',
+                  tool: 'vehicle'
+                }, '*');
+              }
+
+              if (typeof GameManager !== "undefined" && !sidebarOpen) {
+                GameSettings.dialogTool = 'vehicle';
+                GameManager.command("dialog", "toolsDialog", "vehicle");
+              }
             },
             moveVehicle: function () {
               "undefined" != typeof GameManager && GameManager.command("change tool", "pete");
@@ -2034,7 +2102,7 @@
                   r,
                   o
                 ),
-                this.state.open && !playMode && n.createElement("button", {
+                this.state.open && n.createElement("button", {
                   className: "margin",
                   onClick: (event) => {
                     event.stopPropagation();
@@ -2072,14 +2140,14 @@
             },
             render: function () {
               var e =
-                  "bottomMenu-button-right bottomMenu-button_moveVehicle ";
+                "bottomMenu-button-right bottomMenu-button_moveVehicle ";
               return (
                 n.createElement(
-                    "div", { className: e, onClick: this.moveVehicle},
+                  "div", { className: e, onClick: this.moveVehicle },
                   n.createElement("span", {},
                     n.createElement("button", {
-                        className: "margin",
-                        onClick: this.moveVehicle
+                      className: "margin",
+                      onClick: this.moveVehicle
                     }, "SET START POSITION")))
               );
             },
@@ -2106,19 +2174,19 @@
             },
             render: function () {
               var e =
-                  "bottomMenu-button-right bottomMenu-button-2 bottomMenu-button_importObject ";
+                "bottomMenu-button-right bottomMenu-button-2 bottomMenu-button_importObject ";
               return (
-                    n.createElement(
-                      "div", { className: e },
-                    n.createElement("span", {},
-                      n.createElement("button", {
-                        className: "margin",
-                        onClick: this.clearObject
+                n.createElement(
+                  "div", { className: e },
+                  n.createElement("span", {},
+                    n.createElement("button", {
+                      className: "margin",
+                      onClick: this.clearObject
                     }, "CLEAR OBJECT"),
-                      n.createElement("button", {
-                          className: "margin",
-                          onClick: this.importObject
-                      }, "IMPORT OBJECT")))
+                    n.createElement("button", {
+                      className: "margin",
+                      onClick: this.importObject
+                    }, "IMPORT OBJECT")))
               );
             },
           });
@@ -2131,52 +2199,53 @@
         var n = e("react"),
           r = n.createClass({
             displayName: "selectionAsObject",
-            selectionAsObject: function() {
+            selectionAsObject: function () {
               let tool = GameManager.game.currentScene.toolHandler.tools.select,
-                  selected = tool.selected;
-                  if (!selected?.length) return;
+                selected = tool.selected;
+              if (!selected?.length) return;
               let { centerX, centerY } = tool.findCenter();
 
-          
+
               let objectPhysics = [];
               let objectScenery = [];
               let objectPowerups = [];
-          
-              selected.forEach((i) => {
-                  if ('p1' in i && 'p2' in i) {
-                      let line = {
-                          x1: i.p1.x - centerX,
-                          x2: i.p2.x - centerX,
-                          y1: i.p1.y - centerY,
-                          y2: i.p2.y - centerY,
-                      };
-          
-                      if ('highlight' in i) {
-                          objectPhysics.push(line);
-                      } else {
-                          objectScenery.push(line);
-                      }}
 
-                  else if ('name' in i) {
-                      let powerup = {
-                          name: i.name,
-                          x: i.x - centerX,
-                          y: i.y - centerY
-                      };
-                    if (i.name === 'boost' || i.name === 'gravity') {
-                      if (i.hasOwnProperty('angle')) {
-                        powerup.angle = i.angle;
-                      }
-                    } else if (i.name === 'teleport') {
-                      if (i.hasOwnProperty('x2') && i.hasOwnProperty('y2')) {
-                        powerup.x2 = i.x2 - centerX;
-                        powerup.y2 = i.y2 - centerY;
-                      }
-                    } else if (['helicopter', 'truck', 'balloon', 'blob'].includes(i.name)) {
-                      if (i.hasOwnProperty('time')) {
-                        powerup.time = i.time;
-                      }
+              selected.forEach((i) => {
+                if ('p1' in i && 'p2' in i) {
+                  let line = {
+                    x1: i.p1.x - centerX,
+                    x2: i.p2.x - centerX,
+                    y1: i.p1.y - centerY,
+                    y2: i.p2.y - centerY,
+                  };
+
+                  if ('highlight' in i) {
+                    objectPhysics.push(line);
+                  } else {
+                    objectScenery.push(line);
+                  }
+                }
+
+                else if ('name' in i) {
+                  let powerup = {
+                    name: i.name,
+                    x: i.x - centerX,
+                    y: i.y - centerY
+                  };
+                  if (i.name === 'boost' || i.name === 'gravity') {
+                    if (i.hasOwnProperty('angle')) {
+                      powerup.angle = i.angle;
                     }
+                  } else if (i.name === 'teleport') {
+                    if (i.hasOwnProperty('x2') && i.hasOwnProperty('y2')) {
+                      powerup.x2 = i.x2 - centerX;
+                      powerup.y2 = i.y2 - centerY;
+                    }
+                  } else if (['helicopter', 'truck', 'balloon', 'blob'].includes(i.name)) {
+                    if (i.hasOwnProperty('time')) {
+                      powerup.time = i.time;
+                    }
+                  }
                   objectPowerups.push(powerup);
                 }
               });
@@ -2188,7 +2257,7 @@
               while (!name || GameManager.game.currentScene.objects[name])
                 name = `object-${String(GameManager.game.currentScene.objectNamegen++).padStart(2, '0')}`
               GameManager.game.currentScene.objectName = name;
-              GameManager.game.currentScene.objects[name] = {objectPhysics, objectScenery, objectPowerups};
+              GameManager.game.currentScene.objects[name] = { objectPhysics, objectScenery, objectPowerups };
               GameSettings.objectRotate = 0;
               GameSettings.objectScale = 1;
               GameSettings.objectStretchX = 1;
@@ -2202,16 +2271,16 @@
               GameManager.game.currentScene.saveObjects();
               GameSettings.customBrush = true;
               !GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
-          },
+            },
             render: function () {
               var e =
-                  "bottomMenu-button-right bottomMenu-button_selectionAsObject ";
+                "bottomMenu-button-right bottomMenu-button_selectionAsObject ";
               return (
                 n.createElement(
-                    "div", { className: e},
+                  "div", { className: e },
                   n.createElement("span", {},
                     n.createElement("button", {
-                        onClick: this.selectionAsObject
+                      onClick: this.selectionAsObject
                     }, "SELECTION AS OBJECT")))
               );
             },
@@ -2238,7 +2307,7 @@
                 a = 1;
               return (
                 e &&
-                  ((i = e.time),
+                ((i = e.time),
                   (t = e.maxTime),
                   (o = e.minTime),
                   (a = e.step)),
@@ -2297,122 +2366,122 @@
       },
       { react: 230, "react-slider": 75 },
     ],
-    15: [function(e, t) {
+    15: [function (e, t) {
       var n = e("react")
         , r = e("../../../libs/jquery")
         , o = n.createClass({
           displayName: "ChromeAppBottomMenu",
-          
-          componentDidMount: function() {
-              //this.initSlider()
+
+          componentDidMount: function () {
+            //this.initSlider()
           },
-          initSlider: function() {
-              var e = this.refs.content.getDOMNode()
-                , t = this.refs.sliderButtonLeft.getDOMNode()
-                , n = this.refs.sliderButtonRight.getDOMNode()
-                , o = r(e);
-              o.slick({
-                  dots: !1,
-                  infinite: !1,
-                  speed: 300,
-                  slidesToShow: 1,
-                  slidesToScroll: 1,
-                  touchThreshold: 12,
-                  nextArrow: r(n),
-                  prevArrow: r(t),
-                  mobileFirst: !0,
-                  responsive: [{
-                      breakpoint: 250,
-                      settings: {
-                          slidesToShow: 2,
-                          slidesToScroll: 1
-                      }
-                  }, {
-                      breakpoint: 500,
-                      settings: {
-                          slidesToShow: 3,
-                          slidesToScroll: 1
-                      }
-                  }, {
-                      breakpoint: 750,
-                      settings: {
-                          slidesToShow: 4,
-                          slidesToScroll: 2
-                      }
-                  }]
-              })
+          initSlider: function () {
+            var e = this.refs.content.getDOMNode()
+              , t = this.refs.sliderButtonLeft.getDOMNode()
+              , n = this.refs.sliderButtonRight.getDOMNode()
+              , o = r(e);
+            o.slick({
+              dots: !1,
+              infinite: !1,
+              speed: 300,
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              touchThreshold: 12,
+              nextArrow: r(n),
+              prevArrow: r(t),
+              mobileFirst: !0,
+              responsive: [{
+                breakpoint: 250,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 1
+                }
+              }, {
+                breakpoint: 500,
+                settings: {
+                  slidesToShow: 3,
+                  slidesToScroll: 1
+                }
+              }, {
+                breakpoint: 750,
+                settings: {
+                  slidesToShow: 4,
+                  slidesToScroll: 2
+                }
+              }]
+            })
           },
-          render: function() {
-              var e = GameSettings.portal
-                , t = {
-                  DOWNLOAD_MOBILE: {
-                      url: "https://www.freeriderhd.com/mobile",
-                      icon: "chromeapp_icons chromeapp_icons-mobile-icon",
-                      text: "Get the mobile game!"
-                  },
-                  PLAY_WEB: {
-                      url: "https://www.freeriderhd.com/",
-                      icon: "chromeapp_icons chromeapp_icons-web_promo_icon",
-                      text: "Play and Upload tracks at Freeriderhd.com"
-                  },
-                  ADD_GAME_TO_CHROME: {
-                      url: "https://chrome.google.com/webstore/detail/free-rider-hd/emikpifndnjfkgofoglceekhkbaicbde",
-                      icon: "chromeapp_icons chromeapp_icons-chrome_promo_icon",
-                      text: "Add the full game to Chrome"
-                  },
-                  RATE_IN_CHROME: {
-                      url: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn/reviews",
-                      icon: "chromeapp_icons chromeapp_icons-rate_promo_icon",
-                      text: "Rate in the Chrome Store"
-                  },
-                  SUBSCRIBE_TO_YOUTUBE: {
-                      url: "https://www.youtube.com/channel/UCTrw0oc3Is2YriS3VA28Ggw/?sub_confirmation=1",
-                      icon: "chromeapp_icons chromeapp_icons-youtube_promo_icon",
-                      text: "Subscribe to YouTube"
-                  },
-                  LIKE_ON_FACEBOOK: {
-                      url: "https://www.facebook.com/freeriderfans",
-                      icon: "chromeapp_icons chromeapp_icons-fb_like_promo_icon",
-                      text: "Like Us On Facebook"
-                  },
-                  FOLLOW_US_ON_TWITTER: {
-                      url: "https://twitter.com/FreeRider_HD",
-                      icon: "chromeapp_icons chromeapp_icons-twitter_icon",
-                      text: "Follow Us On Twitter"
-                  },
-                  JOIN_THE_COMMUNITY: {
-                      url: "https://www.youtube.com/channel/UCTrw0oc3Is2YriS3VA28Ggw/?sub_confirmation=1",
-                      icon: "chromeapp_icons chromeapp_icons-community_icon",
-                      text: "Join the Community"
-                  },
-                  PLAY_ON_FACEBOOK: {
-                      url: "https://apps.facebook.com/freeriderhd/",
-                      icon: "chromeapp_icons chromeapp_icons-fb_btn_icon",
-                      text: "Play and Upload Tracks on Facebook"
-                  }
+          render: function () {
+            var e = GameSettings.portal
+              , t = {
+                DOWNLOAD_MOBILE: {
+                  url: "https://www.freeriderhd.com/mobile",
+                  icon: "chromeapp_icons chromeapp_icons-mobile-icon",
+                  text: "Get the mobile game!"
+                },
+                PLAY_WEB: {
+                  url: "https://www.freeriderhd.com/",
+                  icon: "chromeapp_icons chromeapp_icons-web_promo_icon",
+                  text: "Play and Upload tracks at Freeriderhd.com"
+                },
+                ADD_GAME_TO_CHROME: {
+                  url: "https://chrome.google.com/webstore/detail/free-rider-hd/emikpifndnjfkgofoglceekhkbaicbde",
+                  icon: "chromeapp_icons chromeapp_icons-chrome_promo_icon",
+                  text: "Add the full game to Chrome"
+                },
+                RATE_IN_CHROME: {
+                  url: "https://chrome.google.com/webstore/detail/free-rider-hd-offline-edi/kffmoglgaljfcfaadaknkiipcclifcbn/reviews",
+                  icon: "chromeapp_icons chromeapp_icons-rate_promo_icon",
+                  text: "Rate in the Chrome Store"
+                },
+                SUBSCRIBE_TO_YOUTUBE: {
+                  url: "https://www.youtube.com/channel/UCTrw0oc3Is2YriS3VA28Ggw/?sub_confirmation=1",
+                  icon: "chromeapp_icons chromeapp_icons-youtube_promo_icon",
+                  text: "Subscribe to YouTube"
+                },
+                LIKE_ON_FACEBOOK: {
+                  url: "https://www.facebook.com/freeriderfans",
+                  icon: "chromeapp_icons chromeapp_icons-fb_like_promo_icon",
+                  text: "Like Us On Facebook"
+                },
+                FOLLOW_US_ON_TWITTER: {
+                  url: "https://twitter.com/FreeRider_HD",
+                  icon: "chromeapp_icons chromeapp_icons-twitter_icon",
+                  text: "Follow Us On Twitter"
+                },
+                JOIN_THE_COMMUNITY: {
+                  url: "https://www.youtube.com/channel/UCTrw0oc3Is2YriS3VA28Ggw/?sub_confirmation=1",
+                  icon: "chromeapp_icons chromeapp_icons-community_icon",
+                  text: "Join the Community"
+                },
+                PLAY_ON_FACEBOOK: {
+                  url: "https://apps.facebook.com/freeriderhd/",
+                  icon: "chromeapp_icons chromeapp_icons-fb_btn_icon",
+                  text: "Play and Upload Tracks on Facebook"
+                }
               }
-                , r = [];
-              switch (e) {
+              , r = [];
+            switch (e) {
               case "kong":
-                  t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=ref&t_2=kong-editor",
+                t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=ref&t_2=kong-editor",
                   t.DOWNLOAD_MOBILE.url = t.DOWNLOAD_MOBILE.url + "?t_1=ref&t_2=kong-editor",
                   r.push(t.DOWNLOAD_MOBILE),
                   r.push(t.PLAY_WEB),
                   r.push(t.SUBSCRIBE_TO_YOUTUBE),
                   r.push(t.LIKE_ON_FACEBOOK),
                   r.push(t.FOLLOW_US_ON_TWITTER);
-                  break;
+                break;
               case "web":
-                  t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=ref&t_2=web-editor",
+                t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=ref&t_2=web-editor",
                   t.DOWNLOAD_MOBILE.url = t.DOWNLOAD_MOBILE.url + "?t_1=ref&t_2=web-editor",
                   r.push(t.DOWNLOAD_MOBILE),
                   r.push(t.PLAY_WEB),
                   r.push(t.SUBSCRIBE_TO_YOUTUBE),
                   r.push(t.LIKE_ON_FACEBOOK),
                   r.push(t.FOLLOW_US_ON_TWITTER);
-                  break;
+                break;
               case "facebook":
-                  t.PLAY_ON_FACEBOOK.url = t.PLAY_WEB.url + "?t_1=fb_ref&t_2=editor",
+                t.PLAY_ON_FACEBOOK.url = t.PLAY_WEB.url + "?t_1=fb_ref&t_2=editor",
                   t.DOWNLOAD_MOBILE.url = t.DOWNLOAD_MOBILE.url + "?t_1=fb_ref&t_2=editor",
                   r.push(t.DOWNLOAD_MOBILE),
                   r.push(t.PLAY_ON_FACEBOOK),
@@ -2420,9 +2489,9 @@
                   r.push(t.JOIN_THE_COMMUNITY),
                   r.push(t.SUBSCRIBE_TO_YOUTUBE),
                   r.push(t.FOLLOW_US_ON_TWITTER);
-                  break;
+                break;
               default:
-                  t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=cws&t_2=editor",
+                t.PLAY_WEB.url = t.PLAY_WEB.url + "?t_1=cws&t_2=editor",
                   t.DOWNLOAD_MOBILE.url = t.DOWNLOAD_MOBILE.url + "?t_1=cws&t_2=editor",
                   r.push(t.DOWNLOAD_MOBILE),
                   r.push(t.PLAY_WEB),
@@ -2430,8 +2499,8 @@
                   r.push(t.RATE_IN_CHROME),
                   r.push(t.SUBSCRIBE_TO_YOUTUBE),
                   r.push(t.JOIN_THE_COMMUNITY)
-              }
-              return n.createElement("div"
+            }
+            return n.createElement("div"
               /*
               , {
                   className: "buttomMenuChrome"
@@ -2464,13 +2533,13 @@
               }))
           */)
           }
-      });
+        });
       t.exports = o
-  }
-  , {
+    }
+      , {
       "../../../libs/jquery": 237,
       react: 230
-  }],
+    }],
     16: [
       function (e, t) {
         var n = e("react"),
@@ -2524,22 +2593,22 @@
               var e = !1;
               return (
                 "undefined" != typeof isChromeApp &&
-                  (e = n.createElement(
-                    "div",
-                    { className: "controls" },
-                    n.createElement("span", {
-                      className: "chromeapp_icons chromeapp_icons-btn_min",
-                      onClick: this.minimizeApp,
-                    }),
-                    n.createElement("span", {
-                      className: "chromeapp_icons chromeapp_icons-btn_max",
-                      onClick: this.maximizeApp,
-                    }),
-                    n.createElement("span", {
-                      className: "chromeapp_icons chromeapp_icons-btn_close",
-                      onClick: this.closeApp,
-                    })
-                  )),
+                (e = n.createElement(
+                  "div",
+                  { className: "controls" },
+                  n.createElement("span", {
+                    className: "chromeapp_icons chromeapp_icons-btn_min",
+                    onClick: this.minimizeApp,
+                  }),
+                  n.createElement("span", {
+                    className: "chromeapp_icons chromeapp_icons-btn_max",
+                    onClick: this.maximizeApp,
+                  }),
+                  n.createElement("span", {
+                    className: "chromeapp_icons chromeapp_icons-btn_close",
+                    onClick: this.closeApp,
+                  })
+                )),
                 e
               );
             },
@@ -2620,7 +2689,7 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
             },
-            componentWillMount: function () {},
+            componentWillMount: function () { },
             showExportDialog: function () {
               GameSettings.object = false;
               "undefined" != typeof GameManager &&
@@ -2632,50 +2701,50 @@
                 r = GameSettings.portal;
               return (
                 (r && "kong" !== r) ||
-                  ((e = n.createElement(
-                    "a",
-                    {
-                      href: "http://www.freeriderhd.com/?t_1=cws&t_2=editor",
-                      target: "_blank",
-                      className: "promoButton left",
-                    },
+                ((e = n.createElement(
+                  "a",
+                  {
+                    href: "http://www.freeriderhd.com/?t_1=cws&t_2=editor",
+                    target: "_blank",
+                    className: "promoButton left",
+                  },
+                  n.createElement(
+                    "div",
+                    { className: "wrap" },
+                    n.createElement("span", {
+                      className:
+                        "part chromeapp_icons chromeapp_icons-web_btn_icon",
+                    }),
                     n.createElement(
-                      "div",
-                      { className: "wrap" },
-                      n.createElement("span", {
-                        className:
-                          "part chromeapp_icons chromeapp_icons-web_btn_icon",
-                      }),
-                      n.createElement(
-                        "span",
-                        { className: "part text" },
-                        "FreeRiderHD.com"
-                      )
+                      "span",
+                      { className: "part text" },
+                      "FreeRiderHD.com"
                     )
-                  )),
+                  )
+                )),
                   console.log("hit")),
                 (r && "facebook" !== r) ||
-                  (t = n.createElement(
-                    "a",
-                    {
-                      href: "https://apps.facebook.com/freeriderhd/?t_1=cws&t_2=editor",
-                      target: "_blank",
-                      className: "promoButton right",
-                    },
+                (t = n.createElement(
+                  "a",
+                  {
+                    href: "https://apps.facebook.com/freeriderhd/?t_1=cws&t_2=editor",
+                    target: "_blank",
+                    className: "promoButton right",
+                  },
+                  n.createElement(
+                    "div",
+                    { className: "wrap" },
+                    n.createElement("span", {
+                      className:
+                        "part chromeapp_icons chromeapp_icons-fb_btn_icon",
+                    }),
                     n.createElement(
-                      "div",
-                      { className: "wrap" },
-                      n.createElement("span", {
-                        className:
-                          "part chromeapp_icons chromeapp_icons-fb_btn_icon",
-                      }),
-                      n.createElement(
-                        "span",
-                        { className: "part text" },
-                        "Facebook App"
-                      )
+                      "span",
+                      { className: "part text" },
+                      "Facebook App"
                     )
-                  )),
+                  )
+                )),
                 n.createElement(
                   "div",
                   { className: "editorDialog-content chromeUpload-dialog" },
@@ -2777,7 +2846,7 @@
                 )
               );
             }
-            
+
           });
         t.exports = r;
       },
@@ -2856,288 +2925,288 @@
       },
       { react: 230 },
     ],
-        21: [function (e, t) {
-            var n = e("react")
-                , r = n.createClass({
-                    displayName: "ControlsDialog",
-                    closeDialog: function () {
-                        "undefined" != typeof GameManager && GameManager.command("dialog", !1)
-                    },
-                    handleKeyPress: function (event) {
-                      if (this.state.editingKey) {
-                          GameSettings.editorHotkeys[this.state.editingKey] = event.keyCode;
-                          this.setState({ editingKey: null });
-                          document.removeEventListener('keydown', this.handleKeyPress);
-                      }
-                    },
-                    handleHotkeyClick: function (key) {
-                      GameSettings.editorHotkeys[key] = null;
-                      this.setState({ editingKey: key });
-                      document.addEventListener('keydown', this.handleKeyPress);
-                    },
-                    render: function () {
-                      const keyChange = {
-                        8: 'Backspace',
-                        9: 'Tab',
-                        13: 'Enter',
-                        16: 'Shift',
-                        17: 'Control',
-                        18: 'Alt',
-                        19: 'Pause',
-                        20: 'CapsLock',
-                        27: 'Escape',
-                        32: 'Space',
-                        33: 'PageUp',
-                        34: 'PageDown',
-                        35: 'End',
-                        36: 'Home',
-                        37: '◄',
-                        38: '▲',
-                        39: '►',
-                        40: '▼',
-                        45: 'Insert',
-                        46: 'Delete',
-                        48: '0',
-                        49: '1',
-                        50: '2',
-                        51: '3',
-                        52: '4',
-                        53: '5',
-                        54: '6',
-                        55: '7',
-                        56: '8',
-                        57: '9',
-                        65: 'A',
-                        66: 'B',
-                        67: 'C',
-                        68: 'D',
-                        69: 'E',
-                        70: 'F',
-                        71: 'G',
-                        72: 'H',
-                        73: 'I',
-                        74: 'J',
-                        75: 'K',
-                        76: 'L',
-                        77: 'M',
-                        78: 'N',
-                        79: 'O',
-                        80: 'P',
-                        81: 'Q',
-                        82: 'R',
-                        83: 'S',
-                        84: 'T',
-                        85: 'U',
-                        86: 'V',
-                        87: 'W',
-                        88: 'X',
-                        89: 'Y',
-                        90: 'Z',
-                        91: 'MetaLeft',
-                        92: 'MetaRight',
-                        93: 'ContextMenu',
-                        96: 'Numpad0',
-                        97: 'Numpad1',
-                        98: 'Numpad2',
-                        99: 'Numpad3',
-                        100: 'Numpad4',
-                        101: 'Numpad5',
-                        102: 'Numpad6',
-                        103: 'Numpad7',
-                        104: 'Numpad8',
-                        105: 'Numpad9',
-                        106: 'NumpadMultiply',
-                        107: 'NumpadAdd',
-                        109: 'NumpadSubtract',
-                        110: 'NumpadDecimal',
-                        111: 'NumpadDivide',
-                        112: 'F1',
-                        113: 'F2',
-                        114: 'F3',
-                        115: 'F4',
-                        116: 'F5',
-                        117: 'F6',
-                        118: 'F7',
-                        119: 'F8',
-                        120: 'F9',
-                        121: 'F10',
-                        122: 'F11',
-                        123: 'F12',
-                        144: 'NumLock',
-                        145: 'ScrollLock',
-                        186: 'Semicolon',
-                        187: 'Equal',
-                        188: 'Comma',
-                        189: 'Minus',
-                        190: 'Period',
-                        191: 'Slash',
-                        192: 'Backquote',
-                        219: 'BracketLeft',
-                        220: 'Backslash',
-                        221: 'BracketRight',
-                        222: 'Quote'
-                    };
-                    const editorKeys = {};
-                      for (const key in GameSettings.editorHotkeys) {
-                        if (GameSettings.editorHotkeys.hasOwnProperty(key)) {
-                          editorKeys[key] = keyChange[GameSettings.editorHotkeys[key]];
-                        }
-                      };
-                    const t = editorKeys;
-                    return n.createElement("div", {
-                          className: "editorDialog-content editorDialog-content_controlsDialog"
-                      }, n.createElement("div", null, n.createElement("div", {
-                          className: "editorDialog-titleBar"
-                      }, n.createElement("span", {
-                          className: "editorDialog-close",
-                          onClick: this.closeDialog
-                      }, "×"), 
-                      
-                      /*n.createElement("div", {
-                        className: "hotkey"
-                    }, n.createElement("span", {
-                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                    }, "G"), n.createElement("span", {
-                        className: "helpDialog-hotkey-name"
-                    }, "Toggle Grid")),*/
-                    
-                    n.createElement("h1", {
-                          className: "editorDialog-content-title"
-                      }, "VEHICLE CONTROLS")), n.createElement("div", {
-                          className: "keysContainer"
-                      }, n.createElement("table", null, 
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('up')
-                    }, n.createElement("span", {
-                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                    }, t.up), n.createElement("span", {
-                        className: "helpDialog-hotkey-name"
-                    }, "Accelerate"))),
+    21: [function (e, t) {
+      var n = e("react")
+        , r = n.createClass({
+          displayName: "ControlsDialog",
+          closeDialog: function () {
+            "undefined" != typeof GameManager && GameManager.command("dialog", !1)
+          },
+          handleKeyPress: function (event) {
+            if (this.state.editingKey) {
+              GameSettings.editorHotkeys[this.state.editingKey] = event.keyCode;
+              this.setState({ editingKey: null });
+              document.removeEventListener('keydown', this.handleKeyPress);
+            }
+          },
+          handleHotkeyClick: function (key) {
+            GameSettings.editorHotkeys[key] = null;
+            this.setState({ editingKey: key });
+            document.addEventListener('keydown', this.handleKeyPress);
+          },
+          render: function () {
+            const keyChange = {
+              8: 'Backspace',
+              9: 'Tab',
+              13: 'Enter',
+              16: 'Shift',
+              17: 'Control',
+              18: 'Alt',
+              19: 'Pause',
+              20: 'CapsLock',
+              27: 'Escape',
+              32: 'Space',
+              33: 'PageUp',
+              34: 'PageDown',
+              35: 'End',
+              36: 'Home',
+              37: '◄',
+              38: '▲',
+              39: '►',
+              40: '▼',
+              45: 'Insert',
+              46: 'Delete',
+              48: '0',
+              49: '1',
+              50: '2',
+              51: '3',
+              52: '4',
+              53: '5',
+              54: '6',
+              55: '7',
+              56: '8',
+              57: '9',
+              65: 'A',
+              66: 'B',
+              67: 'C',
+              68: 'D',
+              69: 'E',
+              70: 'F',
+              71: 'G',
+              72: 'H',
+              73: 'I',
+              74: 'J',
+              75: 'K',
+              76: 'L',
+              77: 'M',
+              78: 'N',
+              79: 'O',
+              80: 'P',
+              81: 'Q',
+              82: 'R',
+              83: 'S',
+              84: 'T',
+              85: 'U',
+              86: 'V',
+              87: 'W',
+              88: 'X',
+              89: 'Y',
+              90: 'Z',
+              91: 'MetaLeft',
+              92: 'MetaRight',
+              93: 'ContextMenu',
+              96: 'Numpad0',
+              97: 'Numpad1',
+              98: 'Numpad2',
+              99: 'Numpad3',
+              100: 'Numpad4',
+              101: 'Numpad5',
+              102: 'Numpad6',
+              103: 'Numpad7',
+              104: 'Numpad8',
+              105: 'Numpad9',
+              106: 'NumpadMultiply',
+              107: 'NumpadAdd',
+              109: 'NumpadSubtract',
+              110: 'NumpadDecimal',
+              111: 'NumpadDivide',
+              112: 'F1',
+              113: 'F2',
+              114: 'F3',
+              115: 'F4',
+              116: 'F5',
+              117: 'F6',
+              118: 'F7',
+              119: 'F8',
+              120: 'F9',
+              121: 'F10',
+              122: 'F11',
+              123: 'F12',
+              144: 'NumLock',
+              145: 'ScrollLock',
+              186: 'Semicolon',
+              187: 'Equal',
+              188: 'Comma',
+              189: 'Minus',
+              190: 'Period',
+              191: 'Slash',
+              192: 'Backquote',
+              219: 'BracketLeft',
+              220: 'Backslash',
+              221: 'BracketRight',
+              222: 'Quote'
+            };
+            const editorKeys = {};
+            for (const key in GameSettings.editorHotkeys) {
+              if (GameSettings.editorHotkeys.hasOwnProperty(key)) {
+                editorKeys[key] = keyChange[GameSettings.editorHotkeys[key]];
+              }
+            };
+            const t = editorKeys;
+            return n.createElement("div", {
+              className: "editorDialog-content editorDialog-content_controlsDialog"
+            }, n.createElement("div", null, n.createElement("div", {
+              className: "editorDialog-titleBar"
+            }, n.createElement("span", {
+              className: "editorDialog-close",
+              onClick: this.closeDialog
+            }, "×"),
 
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('down')
-                    }, n.createElement("span", {
-                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                    }, t.down), n.createElement("span", {
-                        className: "helpDialog-hotkey-name"
-                    }, "Brake"))),
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('left')
-                    }, n.createElement("span", {
-                          className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.left), n.createElement("span", {
-                          className: "helpDialog-hotkey-name"
-                      }, "Lean Left"))),
+              /*n.createElement("div", {
+                className: "hotkey"
+            }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+            }, "G"), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+            }, "Toggle Grid")),*/
 
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('right')
-                    }, n.createElement("span", {
-                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                    }, t.right), n.createElement("span", {
-                        className: "helpDialog-hotkey-name"
-                    }, "Lean Right"))), 
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('z')
-                    }, n.createElement("span", {
-                          className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.z), n.createElement("span", {
-                          className: "helpDialog-hotkey-name"
-                      }, "Turn Around"))), 
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('x')
-                    }, n.createElement("span", {
-                          className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.x), n.createElement("span", {
-                          className: "helpDialog-hotkey-name"
-                      }, "Special Ability"))), 
+              n.createElement("h1", {
+                className: "editorDialog-content-title"
+              }, "VEHICLE CONTROLS")), n.createElement("div", {
+                className: "keysContainer"
+              }, n.createElement("table", null,
 
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('pause')
-                    }, n.createElement("span", {
-                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.pause), n.createElement("span", {
-                        className: "helpDialog-hotkey-name"
-                      }, "Pause"))),
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('enter')
-                    }, n.createElement("span", {
-                          className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.enter), n.createElement("span", {
-                          className: "helpDialog-hotkey-name"
-                      }, "Back to Checkpoint"))), 
-                      
-                      n.createElement("tr", null, n.createElement("td", {
-                        onClick: () => this.handleHotkeyClick('backspace')
-                    }, n.createElement("span", {
-                          className: "helpDialog-hotkey helpDialog-hotkey_light"
-                      }, t.backspace), n.createElement("span", {
-                          className: "helpDialog-hotkey-name"
-                      }, "Remove Checkpoint")))))
-                    
-                      ))
-                  }
-              });
-                    /*render: function () {
-                        return n.createElement("div", {
-                            className: "editorDialog-content editorDialog-content_controlsDialog"
-                        }, n.createElement("div", null, n.createElement("div", {
-                            className: "editorDialog-titleBar"
-                        }, n.createElement("span", {
-                            className: "editorDialog-close",
-                            onClick: this.closeDialog
-                        }, "×"), n.createElement("h1", {
-                            className: "editorDialog-content-title"
-                        }, "VEHICLE CONTROLS")), n.createElement("div", {
-                            className: "keysContainer"
-                        }, n.createElement("table", null, n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-accelerate_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Accelerate")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-left_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Lean Left")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-change_direction_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Turn Around"))), n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-brake_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Brake")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-right_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Lean Right")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-crouch_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Crouch / Fly"))), n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-enter_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Back to Checkpoint")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-cancel_checkpoint_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Remove Checkpoint")), n.createElement("td", null, n.createElement("span", {
-                            className: "keyboard_keys keyboard_keys-pause_key_small"
-                        }), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Pause")))))))
-                    }
-                });*/
-            t.exports = r
-        }
-            , {
-            react: 230
-        }],
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('up')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.up), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Accelerate"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('down')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.down), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Brake"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('left')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.left), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Lean Left"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('right')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.right), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Lean Right"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('z')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.z), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Turn Around"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('x')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.x), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Special Ability"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('pause')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.pause), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Pause"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('enter')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.enter), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Back to Checkpoint"))),
+
+                n.createElement("tr", null, n.createElement("td", {
+                  onClick: () => this.handleHotkeyClick('backspace')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.backspace), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Remove Checkpoint")))))
+
+            ))
+          }
+        });
+      /*render: function () {
+          return n.createElement("div", {
+              className: "editorDialog-content editorDialog-content_controlsDialog"
+          }, n.createElement("div", null, n.createElement("div", {
+              className: "editorDialog-titleBar"
+          }, n.createElement("span", {
+              className: "editorDialog-close",
+              onClick: this.closeDialog
+          }, "×"), n.createElement("h1", {
+              className: "editorDialog-content-title"
+          }, "VEHICLE CONTROLS")), n.createElement("div", {
+              className: "keysContainer"
+          }, n.createElement("table", null, n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-accelerate_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Accelerate")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-left_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Lean Left")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-change_direction_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Turn Around"))), n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-brake_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Brake")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-right_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Lean Right")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-crouch_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Crouch / Fly"))), n.createElement("tr", null, n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-enter_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Back to Checkpoint")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-cancel_checkpoint_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Remove Checkpoint")), n.createElement("td", null, n.createElement("span", {
+              className: "keyboard_keys keyboard_keys-pause_key_small"
+          }), n.createElement("span", {
+              className: "helpDialog-hotkey-name"
+          }, "Pause")))))))
+      }
+  });*/
+      t.exports = r
+    }
+      , {
+      react: 230
+    }],
     22: [
       function (e, t) {
         var n = e("react"),
@@ -3155,36 +3224,72 @@
           xx = e("./advancedBrush"),
           xxx = e("./importGhost"),
           xxxx = e("./advancedSelect"),
-          db = e("./dbimport"),
+          db = e("./dbImport"),
+          object = e("./objectImport"),
+          tools = e("./toolsDialog"),
           h = n.createClass({
             displayName: "Dialogs",
             className: "editorDialog",
+
+            componentDidMount: function () {
+              var self = this;
+
+              // Listen for popstate to reset hasShownInitial
+              window.addEventListener('popstate', function () {
+                self.hasShownInitial = false;
+              });
+
+              // Listen for track loaded events to close dialog
+              window.addEventListener('message', function (event) {
+                if (event.data && event.data.action === 'linkClicked') {
+                  // Close the dialog when a track is clicked
+                  if (typeof GameManager !== 'undefined') {
+                    GameManager.command('dialog', false);
+                  }
+                }
+              });
+            },
+
             closeDialog: function (e) {
               e.target.className === this.className &&
                 "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
               !this.hasShownPromo ? this.hasShownPromo = true : null;
+
+              if (typeof GameSettings !== 'undefined' && GameSettings.initialDialog) {
+                this.hasShownInitial = true;
+              }
             },
+
             render: function () {
               var sidebar;
 
-                if (typeof GameSettings !== 'undefined') {
-                  sidebar = GameSettings.sidebar ?? true;
-                  playMode = GameSettings.trackName !== 'track.txt';
-                } else {
-                  sidebar = true;
-                  playMode = false;
-                }
-              var e = this.props.data.showDialog;
+              if (typeof GameSettings !== 'undefined') {
+                sidebar = GameSettings.sidebar ?? true;
+                playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                sidebar = true;
+                playMode = false;
+              }
 
-              if (!e && !this.hasShownPromo && !playMode) {
+              var e = this.props.data.showDialog;
+              var hasInitialDialog = typeof GameSettings !== 'undefined' && GameSettings.initialDialog;
+
+              if (!e && hasInitialDialog && !this.hasShownInitial) {
+                e = GameSettings.initialDialog;
+              }
+
+              if (!e && !this.hasShownPromo && !playMode && !hasInitialDialog) {
                 e = "offline_editor";
               }
 
               var t = this.props.data.dialogOptions,
                 h = {},
                 f = "";
-                h.width = sidebar ? "75%" : "100%";
+              h.width = sidebar ? "75%" : "100%";
+
+              var dialogFilter = (typeof GameSettings !== 'undefined' && GameSettings.dialogFilter) || {};
+
               switch (e) {
                 case "import":
                   f = n.createElement(r, null);
@@ -3219,17 +3324,26 @@
                   f = n.createElement(x, null);
                   break;
                 case "advancedBrush":
-                    f = n.createElement(xx, null);
-                    break;
+                  f = n.createElement(xx, null);
+                  break;
                 case "importGhost":
-                    f = n.createElement(xxx, null);
-                    break;
+                  f = n.createElement(xxx, null);
+                  break;
                 case "advancedSelect":
-                    f = n.createElement(xxxx, null);
-                    break;
-                case "dbimport":
-                    f = n.createElement(db, null);
-                    break;
+                  f = n.createElement(xxxx, null);
+                  break;
+                case "dbImport":
+                  f = n.createElement(db, { filter: dialogFilter });
+                  break;
+                case "objectImport":
+                  f = n.createElement(object, { patternMode: false });
+                  break;
+                case "patternImport":
+                  f = n.createElement(object, { patternMode: true });
+                  break;
+                case "toolsDialog":
+                  f = n.createElement(tools, { data: this.props.data });
+                  break;
                 default:
                   h = { display: "none" };
               }
@@ -3257,7 +3371,9 @@
         "./import": 25,
         "./importObject": 925,
         "./advancedBrush": 9925,
-        "./dbimport": 99925,
+        "./dbImport": 247,
+        "./objectImport": 246,
+        "./toolsDialog": 248,
         "./importGhost": 241,
         "./advancedSelect": 242,
         "./offline_editor_promo": 26,
@@ -3282,8 +3398,8 @@
                 GameManager.command("dialog", !1);
             },
             cleanTrack: function () {
-                GameManager.game.currentScene.cleanCode = true;
-                setTimeout(GameManager.game.currentScene.getTrackCode.bind(GameManager.game.currentScene), 750);
+              GameManager.game.currentScene.cleanCode = true;
+              setTimeout(GameManager.game.currentScene.getTrackCode.bind(GameManager.game.currentScene), 750);
             },
             chromeApp: !1,
             fileSaverSupport: !1,
@@ -3291,7 +3407,7 @@
               var e = !1;
               try {
                 e = !!new r();
-              } catch (t) {}
+              } catch (t) { }
               this.fileSaverSupport = e;
             },
             isChromeApp: function () {
@@ -3313,9 +3429,9 @@
                 c = n.getMinutes(),
                 u = n.getSeconds(),
                 defaultFilename = "frhd_track_" + i + "-" + (a + 1) + "-" + s + "_" + l + "_" + c + "_" + u + ".txt"; // Generate default filename
-            
+
               var userFilename = prompt("Enter a filename for your track:", defaultFilename); // Use the default filename as the prompt's default
-            
+
               if (userFilename) { // Check if the user entered a filename
                 var t = new r([e], { type: "text/plain" });
                 if (this.chromeApp) {
@@ -3335,18 +3451,18 @@
                     chrome.runtime.lastError
                       ? console.warn("User Canceled File Save")
                       : t &&
-                        t.createWriter(function (t) {
-                          (t.onerror = function (e) {
-                            console.log(e);
+                      t.createWriter(function (t) {
+                        (t.onerror = function (e) {
+                          console.log(e);
+                        }),
+                          (t.onwriteend = function () {
+                            console.log("write complete");
                           }),
-                            (t.onwriteend = function () {
-                              console.log("write complete");
-                            }),
-                            t.write(e);
-                        }, this.chromeAppSaveFail);
+                          t.write(e);
+                      }, this.chromeAppSaveFail);
                   }
                 );
-              } catch (t) {}
+              } catch (t) { }
             },
             chromeAppSaveFail: function () {
               console.error("There was a problem saving your file");
@@ -3359,22 +3475,22 @@
               var e = this.props.options;
               if (!this.state.flat) {
                 GameManager.game.currentScene.trackcode = JSON.parse(e.code)
-                .reduce(
+                  .reduce(
                     (a, b, n) => {
-                        let c = b.code.split('#');
-                        return [
-                            a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
-                            a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
-                            a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
-                        ];
+                      let c = b.code.split('#');
+                      return [
+                        a[0] + (c[0] ? (n ? ',' : '') + c[0] : ''),
+                        a[1] + (c[1] ? (n ? ',' : '') + c[1] : ''),
+                        a[2] + (c[2] ? (n ? ',' : '') + c[2] : ''),
+                      ];
                     },
                     ['', '', '']
-                )
-                .join('#');
+                  )
+                  .join('#');
               } else {
                 GameManager.game.currentScene.trackcode = e.code;
               }
-              this.setState({flat: !this.state.flat});
+              this.setState({ flat: !this.state.flat });
             },
             render: function () {
               var e = this.props.options,
@@ -3414,16 +3530,16 @@
                 e &&
                 e.code &&
                 ((t = (GameSettings.object ? GameManager.game.currentScene.getObjectCode() : GameManager.game.currentScene.trackcode)),
-                this.fileSaverSupport &&
-                (r = n.createElement(
-                  "button",
-                  {
-                    className:
-                      "primary-button primary-button-blue float-right",
-                    onClick: this.createSaveFile,
-                  },
-                  "Save as File"
-                ))),
+                  this.fileSaverSupport &&
+                  (r = n.createElement(
+                    "button",
+                    {
+                      className:
+                        "primary-button primary-button-blue float-right",
+                      onClick: this.createSaveFile,
+                    },
+                    "Save as File"
+                  ))),
                 n.createElement(
                   "div",
                   {
@@ -3518,7 +3634,7 @@
                         className:
                           "primary-button primary-button-blue float-right",
                         onClick: this.flattenTrack,
-                        style: {marginLeft: '5px'}
+                        style: { marginLeft: '5px' }
                       },
                       this.state.flat ? "Unflatten" : "Flatten"
                     ) : null,
@@ -3532,605 +3648,605 @@
       },
       { "../utils/blob": 72, "../utils/filesaver": 73, react: 230 },
     ],
-        24: [function (e, t) {
-            var n = e("react")
-                , r = n.createClass({
-                    displayName: "HelpDialog",
-                    getInitialState: function () {
-                        return {
-                            advancedSettings: false,
-                            isometricGrid: false,
-                            scaleLock: true,
-                        }
-                    },
-                    closeDialog: function () {
-                        if (typeof GameManager !== "undefined") {
-                            GameManager.command("dialog", false);
-                        }
-                    },
-                    handleKeyPress: function (event) {
-                      if (this.state.editingKey) {
-                          GameSettings.editorHotkeys[this.state.editingKey] = event.keyCode;
-                          this.setState({ editingKey: null });
-                          document.removeEventListener('keydown', this.handleKeyPress);
-                      }
-                    },
-                    handleHotkeyClick: function (key) {
-                      GameSettings.editorHotkeys[key] = null;
-                      this.setState({ editingKey: key });
-                      document.addEventListener('keydown', this.handleKeyPress);
-                    },
-                    getKeyboardShortcuts: function () {
-                        const keyChange = {
-                          8: 'Backspace',
-                          9: 'Tab',
-                          13: 'Enter',
-                          16: 'Shift',
-                          17: 'Control',
-                          18: 'Alt',
-                          19: 'Pause',
-                          20: 'CapsLock',
-                          27: 'Escape',
-                          32: 'Space',
-                          33: 'PageUp',
-                          34: 'PageDown',
-                          35: 'End',
-                          36: 'Home',
-                          37: '◄',
-                          38: '▲',
-                          39: '►',
-                          40: '▼',
-                          45: 'Insert',
-                          46: 'Delete',
-                          48: '0',
-                          49: '1',
-                          50: '2',
-                          51: '3',
-                          52: '4',
-                          53: '5',
-                          54: '6',
-                          55: '7',
-                          56: '8',
-                          57: '9',
-                          65: 'A',
-                          66: 'B',
-                          67: 'C',
-                          68: 'D',
-                          69: 'E',
-                          70: 'F',
-                          71: 'G',
-                          72: 'H',
-                          73: 'I',
-                          74: 'J',
-                          75: 'K',
-                          76: 'L',
-                          77: 'M',
-                          78: 'N',
-                          79: 'O',
-                          80: 'P',
-                          81: 'Q',
-                          82: 'R',
-                          83: 'S',
-                          84: 'T',
-                          85: 'U',
-                          86: 'V',
-                          87: 'W',
-                          88: 'X',
-                          89: 'Y',
-                          90: 'Z',
-                          91: 'MetaLeft',
-                          92: 'MetaRight',
-                          93: 'ContextMenu',
-                          96: 'Numpad0',
-                          97: 'Numpad1',
-                          98: 'Numpad2',
-                          99: 'Numpad3',
-                          100: 'Numpad4',
-                          101: 'Numpad5',
-                          102: 'Numpad6',
-                          103: 'Numpad7',
-                          104: 'Numpad8',
-                          105: 'Numpad9',
-                          106: 'NumpadMultiply',
-                          107: 'NumpadAdd',
-                          109: 'NumpadSubtract',
-                          110: 'NumpadDecimal',
-                          111: 'NumpadDivide',
-                          112: 'F1',
-                          113: 'F2',
-                          114: 'F3',
-                          115: 'F4',
-                          116: 'F5',
-                          117: 'F6',
-                          118: 'F7',
-                          119: 'F8',
-                          120: 'F9',
-                          121: 'F10',
-                          122: 'F11',
-                          123: 'F12',
-                          144: 'NumLock',
-                          145: 'ScrollLock',
-                          186: 'Semicolon',
-                          187: 'Equal',
-                          188: 'Comma',
-                          189: 'Minus',
-                          190: 'Period',
-                          191: 'Slash',
-                          192: 'Backquote',
-                          219: 'BracketLeft',
-                          220: 'Backslash',
-                          221: 'BracketRight',
-                          222: 'Quote'
-                      };
-                      const editorKeys = {};
-                        for (const key in GameSettings.editorHotkeys) {
-                          if (GameSettings.editorHotkeys.hasOwnProperty(key)) {
-                            editorKeys[key] = keyChange[GameSettings.editorHotkeys[key]];
-                          }
-                        };
-                      const t = editorKeys;
-                        return n.createElement("div", null, n.createElement("div", {
-                            className: "editorDialog-titleBar"
-                        }, n.createElement("span", {
-                            className: "editorDialog-close",
-                            onClick: this.closeDialog
-                        }, "×"), n.createElement("h1", {
-                            className: "editorDialog-content-title"
-                        }, "KEYBOARD SHORTCUTS")), n.createElement("div", {
-                            className: "hotkeys clearfix"
-                        }, n.createElement("div", {
-                            className: "hotkeys_tools"
-                        }, n.createElement("div", {
-                            className: "hotkeys-title"
-                        }, "Tools"), 
-                        
-                        n.createElement("div", {
-                          className: "hotkey", onClick: () => this.handleHotkeyClick('straightline')
-                        }, n.createElement("span", {
-                            className: "helpDialog-hotkey helpDialog-hotkey_light"
-                        }, t.straightline), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Straight Line")), 
-                        
-                        n.createElement("div", {
-                          className: "hotkey", onClick: () => this.handleHotkeyClick('curve')
-                        }, n.createElement("span", {
-                            className: "helpDialog-hotkey helpDialog-hotkey_light"
-                        }, t.curve), n.createElement("span", {
-                            className: "helpDialog-hotkey-name"
-                        }, "Curve")),
+    24: [function (e, t) {
+      var n = e("react")
+        , r = n.createClass({
+          displayName: "HelpDialog",
+          getInitialState: function () {
+            return {
+              advancedSettings: false,
+              isometricGrid: false,
+              scaleLock: true,
+            }
+          },
+          closeDialog: function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("dialog", false);
+            }
+          },
+          handleKeyPress: function (event) {
+            if (this.state.editingKey) {
+              GameSettings.editorHotkeys[this.state.editingKey] = event.keyCode;
+              this.setState({ editingKey: null });
+              document.removeEventListener('keydown', this.handleKeyPress);
+            }
+          },
+          handleHotkeyClick: function (key) {
+            GameSettings.editorHotkeys[key] = null;
+            this.setState({ editingKey: key });
+            document.addEventListener('keydown', this.handleKeyPress);
+          },
+          getKeyboardShortcuts: function () {
+            const keyChange = {
+              8: 'Backspace',
+              9: 'Tab',
+              13: 'Enter',
+              16: 'Shift',
+              17: 'Control',
+              18: 'Alt',
+              19: 'Pause',
+              20: 'CapsLock',
+              27: 'Escape',
+              32: 'Space',
+              33: 'PageUp',
+              34: 'PageDown',
+              35: 'End',
+              36: 'Home',
+              37: '◄',
+              38: '▲',
+              39: '►',
+              40: '▼',
+              45: 'Insert',
+              46: 'Delete',
+              48: '0',
+              49: '1',
+              50: '2',
+              51: '3',
+              52: '4',
+              53: '5',
+              54: '6',
+              55: '7',
+              56: '8',
+              57: '9',
+              65: 'A',
+              66: 'B',
+              67: 'C',
+              68: 'D',
+              69: 'E',
+              70: 'F',
+              71: 'G',
+              72: 'H',
+              73: 'I',
+              74: 'J',
+              75: 'K',
+              76: 'L',
+              77: 'M',
+              78: 'N',
+              79: 'O',
+              80: 'P',
+              81: 'Q',
+              82: 'R',
+              83: 'S',
+              84: 'T',
+              85: 'U',
+              86: 'V',
+              87: 'W',
+              88: 'X',
+              89: 'Y',
+              90: 'Z',
+              91: 'MetaLeft',
+              92: 'MetaRight',
+              93: 'ContextMenu',
+              96: 'Numpad0',
+              97: 'Numpad1',
+              98: 'Numpad2',
+              99: 'Numpad3',
+              100: 'Numpad4',
+              101: 'Numpad5',
+              102: 'Numpad6',
+              103: 'Numpad7',
+              104: 'Numpad8',
+              105: 'Numpad9',
+              106: 'NumpadMultiply',
+              107: 'NumpadAdd',
+              109: 'NumpadSubtract',
+              110: 'NumpadDecimal',
+              111: 'NumpadDivide',
+              112: 'F1',
+              113: 'F2',
+              114: 'F3',
+              115: 'F4',
+              116: 'F5',
+              117: 'F6',
+              118: 'F7',
+              119: 'F8',
+              120: 'F9',
+              121: 'F10',
+              122: 'F11',
+              123: 'F12',
+              144: 'NumLock',
+              145: 'ScrollLock',
+              186: 'Semicolon',
+              187: 'Equal',
+              188: 'Comma',
+              189: 'Minus',
+              190: 'Period',
+              191: 'Slash',
+              192: 'Backquote',
+              219: 'BracketLeft',
+              220: 'Backslash',
+              221: 'BracketRight',
+              222: 'Quote'
+            };
+            const editorKeys = {};
+            for (const key in GameSettings.editorHotkeys) {
+              if (GameSettings.editorHotkeys.hasOwnProperty(key)) {
+                editorKeys[key] = keyChange[GameSettings.editorHotkeys[key]];
+              }
+            };
+            const t = editorKeys;
+            return n.createElement("div", null, n.createElement("div", {
+              className: "editorDialog-titleBar"
+            }, n.createElement("span", {
+              className: "editorDialog-close",
+              onClick: this.closeDialog
+            }, "×"), n.createElement("h1", {
+              className: "editorDialog-content-title"
+            }, "KEYBOARD SHORTCUTS")), n.createElement("div", {
+              className: "hotkeys clearfix"
+            }, n.createElement("div", {
+              className: "hotkeys_tools"
+            }, n.createElement("div", {
+              className: "hotkeys-title"
+            }, "Tools"),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('circle')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.circle), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Circle")),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('straightline')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.straightline), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Straight Line")),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('brush')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.brush), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Brush ")),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('curve')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.curve), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Curve")),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('eraser')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.eraser), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Eraser")),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('circle')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.circle), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Circle")),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('powerup')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.powerup), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Powerups")),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('brush')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.brush), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Brush ")),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('vehiclepowerup')
-                            }, n.createElement("span", {
-                              className: "helpDialog-hotkey helpDialog-hotkey_light"
-                          }, t.vehiclepowerup), n.createElement("span", {
-                              className: "helpDialog-hotkey-name"
-                          }, "Vehicle Powerups")),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('eraser')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.eraser), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Eraser")),
 
-                            
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('powerup')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.powerup), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Powerups")),
 
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('select')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.select), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Select")),
-
-                            
-
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('camera')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.camera), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Camera")),
-
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('lineType')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.lineType), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Toggle Line Type")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('alt')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.alt), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Toggle Snap")),), 
-                            
-                            n.createElement("div", {
-                                className: "hotkeys_powerups"
-                            }, n.createElement("div", {
-                                className: "hotkeys-title"
-                            }, "Powerups"), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt1')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt1), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Goal")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt2')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt2), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Boost")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt3')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt3), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Gravity")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt4')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt4), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Slowmotion")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt5')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt5), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Bomb")), 
-                            
-                            n.createElement("div", {
-                              className: "hotkey", onClick: () => this.handleHotkeyClick('opt6')
-                            }, n.createElement("span", {
-                                className: "helpDialog-hotkey helpDialog-hotkey_light"
-                            }, t.opt6), n.createElement("span", {
-                                className: "helpDialog-hotkey-name"
-                            }, "Checkpoint")),
-
-                                n.createElement("div", {
-                                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt7')
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                }, t.opt7), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Antigravity")),
-
-                                n.createElement("div", {
-                                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt8')
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                }, t.opt8), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Teleport")),
-
-                                n.createElement("div", {
-                                    className: "hotkeys-title"
-                                }, "Undo / Redo"), 
-                                
-                                n.createElement("div", {
-                                    className: "hotkey"
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('ctrl')
-                                }, t.ctrl), " + ", n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('z')
-                                }, t.z), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Undo")),
-
-                                n.createElement("div", {
-                                    className: "hotkey"
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('ctrl')
-                                }, t.ctrl), " + ", n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('y')
-                                }, t.y), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name" 
-                                }, "Redo"))), 
-                                
-                                n.createElement("div", {
-                                    className: "hotkeys_more"
-                                }, n.createElement("div", {
-                                    className: "hotkeys-title"
-                                }, "Settings"), 
-
-                                n.createElement("div", {
-                                  className: "hotkey"
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
-                                }, t.shift), " + ", n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                }, "Click"), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Move Camera")), 
-                                
-                                n.createElement("div", {
-                                  className: "hotkey", onClick: () => this.handleHotkeyClick('grid')
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                }, t.grid), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Toggle Grid")), 
-                                
-                                n.createElement("div", {
-                                  className: "hotkey", onClick: () => this.handleHotkeyClick('change_vehicle')
-                                }, n.createElement("span", {
-                                    className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                }, t.change_vehicle), n.createElement("span", {
-                                    className: "helpDialog-hotkey-name"
-                                }, "Change Vehicle")), //
-
-
-                                
-                                    n.createElement("div", {
-                                        className: "hotkeys-title"
-                                    }, "OBJECTS / SELECT"),
-
-                                    n.createElement("div", {
-                                      className: "hotkey", onClick: () => this.handleHotkeyClick('rotate')
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                    }, t.rotate), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Rotate Clockwise")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey", onClick: () => this.handleHotkeyClick('scale')
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                    }, t.scale), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Scale Up")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey", onClick: () => this.handleHotkeyClick('flip')
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                    }, t.flip), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Flip Horizontally")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey", onClick: () => this.handleHotkeyClick('invert')
-                                    }, n.createElement("span", {
-                                      className: "helpDialog-hotkey helpDialog-hotkey_light"
-                                    }, t.invert), n.createElement("span", {
-                                      className: "helpDialog-hotkey-name"
-                                    }, "Invert Line Type")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey"
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
-                                    }, t.shift), " + ", n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('rotate')
-                                    }, t.rotate), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Rotate Counterclockwise")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey"
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
-                                    }, t.shift), " + ", n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('scale')
-                                    }, t.scale), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Scale Down")),
-
-                                    n.createElement("div", {
-                                      className: "hotkey"
-                                    }, n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
-                                    }, t.shift), " + ", n.createElement("span", {
-                                        className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('flip')
-                                    }, t.flip), n.createElement("span", {
-                                        className: "helpDialog-hotkey-name"
-                                    }, "Flip Vertically")), 
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('vehiclepowerup')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.vehiclepowerup), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Vehicle Powerups")),
 
 
 
-                                /*)),
-
-                            n.createElement("div", null, n.createElement("span", {
-                                className: "helpDialog-advanced_settings link",
-                                onClick: this.gotoAdvancedSettings
-                            }, "Advanced Settings"*/
-                          ))
-                          )
-                    },
-                    getAdvancedSettings: function () {
-                        var e = GameSettings,
-                            t = e.toolHandler,
-                            r = t.visibleGrid,
-                            o = t.rightClickMove,
-                            z = e.switchHotkeys,
-                            q = e.snapNear,
-                            isometricGrid = t.isometricGrid,
-                            scaleLock = e.scaleLock; // Added isometricGrid variable
-
-                        return n.createElement("div", null, n.createElement("div", {
-                            className: "editorDialog-titleBar"
-                        }, n.createElement("span", {
-                            className: "editorDialog-close",
-                            onClick: this.closeDialog
-                        }, "×"), n.createElement("h1", {
-                            className: "editorDialog-content-title"
-                        }, "ADVANCED SETTINGS")), n.createElement("div", {
-                            className: "helpDialogAdvanced"
-                        }, n.createElement("table", null,
-
-                            /* n.createElement("tr", null, n.createElement("td", {
-                                className: "settingTitle"
-                            }, n.createElement("span", {
-                                className: "name"
-                            }, "Isometric Grid")), n.createElement("td", {
-                                className: "settingInput"
-                            }, n.createElement("input", {
-                                type: "checkbox",
-                                ref: "isometricGrid",
-                                defaultChecked: isometricGrid,
-                                onChange: this.toggleIsometricGrid
-                            }))), */
-
-                            
-                            n.createElement("tr", null, n.createElement("td", {
-                                className: "settingTitle"
-                            }, n.createElement("span", {
-                                className: "name"
-                            }, "Scale Lock")), n.createElement("td", {
-                                className: "settingInput"
-                            }, n.createElement("input", {
-                                type: "checkbox",
-                                ref: "scaleLock",
-                                defaultChecked: scaleLock,
-                                onChange: this.toggleScaleLock
-                            }))),
-
-                            /*n.createElement("tr", null, n.createElement("td", {
-                              className: "settingTitle"
-                          }, n.createElement("span", {
-                              className: "name"
-                          }, "Line Snap to Nearest Line")), n.createElement("td", {
-                              className: "settingInput"
-                          }, n.createElement("input", {
-                              type: "checkbox",
-                              ref: "snapNear",
-                              defaultChecked: q,
-                              onChange: this.toggleSnapNear
-                          })))*/
-
-                            /* n.createElement("tr", null, n.createElement("td", {
-                                className: "settingTitle"
-                            }, n.createElement("span", {
-                                className: "name"
-                            }, "Grid Size")), n.createElement("td", {
-                                className: "settingInput"
-                            }, this.renderGridSizeSelect()))*/
-
-                        )),
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('select')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.select), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Select")),
 
 
-                            n.createElement("div", null, n.createElement("span", {
-                                className: "helpDialog-advanced_settings link",
-                                onClick: this.gotoKeyboardShortcuts
-                            }, "Back To Keyboard Shortcuts")))
-                    },
 
-                    toggleIsometricGrid: function () {
-                        var e = this.refs.isometricGrid.getDOMNode().checked;
-                        GameSettings.toolHandler.isometricGrid = e
-                    },
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('camera')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.camera), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Camera")),
 
-                    toggleScaleLock: function () {
-                        var e = this.refs.scaleLock.getDOMNode().checked;
-                        GameSettings.scaleLock = e
-                    },
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('lineType')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.lineType), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Toggle Line Type")),
 
-                    changeGridSize: function (e) {
-                        var gridSize = e.target.value;
-                        // Update normal grid size
-                        GameSettings.toolHandler.gridSize = gridSize;
-                        // Update isometric grid size if isometric grid is enabled
-                        if (this.state.isometricGrid) {
-                            GameSettings.toolHandler.isometricGridSize = gridSize;
-                        }
-                        GameManager.command("redraw");
-                    },
-                    renderGridSizeSelect: function () {
-                        var e = GameSettings.toolHandler.gridSize
-                            , t = [2, 4, 5, 10, 20, 25, 40, 50, 100];
-                        return n.createElement("select", {
-                            ref: "gridSize",
-                            defaultValue: e,
-                            onChange: this.changeGridSize
-                        }, t.map(function (e) {
-                            return n.createElement("option", {
-                                value: e
-                            }, e)
-                        }))
-                    },
-                    toggleVisibleGrid: function () {
-                        var e = this.refs.visibleGrid.getDOMNode().checked;
-                        GameSettings.toolHandler.visibleGrid = e
-                    },
-                    toggleRightClickMove: function () {
-                        var e = this.refs.rightClickMove.getDOMNode().checked;
-                        GameSettings.toolHandler.rightClickMove = e
-                    },
-                    toggleSnapNear: function () {
-                      var e = this.refs.snapNear.getDOMNode().checked;
-                      GameSettings.snapNear = e
-                  },
-                    toggleSwitchHotkeys: function () {
-                      var e = this.refs.switchHotkeys.getDOMNode().checked;
-                      GameSettings.switchHotkeys = e
-                    },
-                    gotoAdvancedSettings: function () {
-                        this.setState({
-                            advancedSettings: !0
-                        })
-                    },
-                    gotoKeyboardShortcuts: function () {
-                        this.setState({
-                            advancedSettings: !1
-                        })
-                    },
-                    render: function () {
-                        var e = !1;
-                        return e = this.state.advancedSettings ? this.getAdvancedSettings() : this.getKeyboardShortcuts(),
-                            n.createElement("div", {
-                                className: "editorDialog-content editorDialog-content_helpDialog"
-                            }, e)
-                    }
-                });
-            t.exports = r
-        }
-            , {
-            react: 230
-        }],
+              n.createElement("div", {
+                className: "hotkey", onClick: () => this.handleHotkeyClick('alt')
+              }, n.createElement("span", {
+                className: "helpDialog-hotkey helpDialog-hotkey_light"
+              }, t.alt), n.createElement("span", {
+                className: "helpDialog-hotkey-name"
+              }, "Toggle Snap")),),
+
+              n.createElement("div", {
+                className: "hotkeys_powerups"
+              }, n.createElement("div", {
+                className: "hotkeys-title"
+              }, "Powerups"),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt1')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt1), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Goal")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt2')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt2), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Boost")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt3')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt3), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Gravity")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt4')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt4), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Slowmotion")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt5')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt5), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Bomb")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt6')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt6), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Checkpoint")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt7')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt7), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Antigravity")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('opt8')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.opt8), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Teleport")),
+
+                n.createElement("div", {
+                  className: "hotkeys-title"
+                }, "Undo / Redo"),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('ctrl')
+                }, t.ctrl), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('z')
+                }, t.z), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Undo")),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('ctrl')
+                }, t.ctrl), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('y')
+                }, t.y), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Redo"))),
+
+              n.createElement("div", {
+                className: "hotkeys_more"
+              }, n.createElement("div", {
+                className: "hotkeys-title"
+              }, "Settings"),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
+                }, t.shift), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, "Click"), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Move Camera")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('grid')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.grid), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Toggle Grid")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('change_vehicle')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.change_vehicle), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Change Vehicle")), //
+
+
+
+                n.createElement("div", {
+                  className: "hotkeys-title"
+                }, "OBJECTS / SELECT"),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('rotate')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.rotate), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Rotate Clockwise")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('scale')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.scale), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Scale Up")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('flip')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.flip), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Flip Horizontally")),
+
+                n.createElement("div", {
+                  className: "hotkey", onClick: () => this.handleHotkeyClick('invert')
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light"
+                }, t.invert), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Invert Line Type")),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
+                }, t.shift), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('rotate')
+                }, t.rotate), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Rotate Counterclockwise")),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
+                }, t.shift), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('scale')
+                }, t.scale), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Scale Down")),
+
+                n.createElement("div", {
+                  className: "hotkey"
+                }, n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('shift')
+                }, t.shift), " + ", n.createElement("span", {
+                  className: "helpDialog-hotkey helpDialog-hotkey_light", onClick: () => this.handleHotkeyClick('flip')
+                }, t.flip), n.createElement("span", {
+                  className: "helpDialog-hotkey-name"
+                }, "Flip Vertically")),
+
+
+
+                /*)),
+
+            n.createElement("div", null, n.createElement("span", {
+                className: "helpDialog-advanced_settings link",
+                onClick: this.gotoAdvancedSettings
+            }, "Advanced Settings"*/
+              ))
+            )
+          },
+          getAdvancedSettings: function () {
+            var e = GameSettings,
+              t = e.toolHandler,
+              r = t.visibleGrid,
+              o = t.rightClickMove,
+              z = e.switchHotkeys,
+              q = e.snapNear,
+              isometricGrid = t.isometricGrid,
+              scaleLock = e.scaleLock; // Added isometricGrid variable
+
+            return n.createElement("div", null, n.createElement("div", {
+              className: "editorDialog-titleBar"
+            }, n.createElement("span", {
+              className: "editorDialog-close",
+              onClick: this.closeDialog
+            }, "×"), n.createElement("h1", {
+              className: "editorDialog-content-title"
+            }, "ADVANCED SETTINGS")), n.createElement("div", {
+              className: "helpDialogAdvanced"
+            }, n.createElement("table", null,
+
+              /* n.createElement("tr", null, n.createElement("td", {
+                  className: "settingTitle"
+              }, n.createElement("span", {
+                  className: "name"
+              }, "Isometric Grid")), n.createElement("td", {
+                  className: "settingInput"
+              }, n.createElement("input", {
+                  type: "checkbox",
+                  ref: "isometricGrid",
+                  defaultChecked: isometricGrid,
+                  onChange: this.toggleIsometricGrid
+              }))), */
+
+
+              n.createElement("tr", null, n.createElement("td", {
+                className: "settingTitle"
+              }, n.createElement("span", {
+                className: "name"
+              }, "Scale Lock")), n.createElement("td", {
+                className: "settingInput"
+              }, n.createElement("input", {
+                type: "checkbox",
+                ref: "scaleLock",
+                defaultChecked: scaleLock,
+                onChange: this.toggleScaleLock
+              }))),
+
+              /*n.createElement("tr", null, n.createElement("td", {
+                className: "settingTitle"
+            }, n.createElement("span", {
+                className: "name"
+            }, "Line Snap to Nearest Line")), n.createElement("td", {
+                className: "settingInput"
+            }, n.createElement("input", {
+                type: "checkbox",
+                ref: "snapNear",
+                defaultChecked: q,
+                onChange: this.toggleSnapNear
+            })))*/
+
+              /* n.createElement("tr", null, n.createElement("td", {
+                  className: "settingTitle"
+              }, n.createElement("span", {
+                  className: "name"
+              }, "Grid Size")), n.createElement("td", {
+                  className: "settingInput"
+              }, this.renderGridSizeSelect()))*/
+
+            )),
+
+
+              n.createElement("div", null, n.createElement("span", {
+                className: "helpDialog-advanced_settings link",
+                onClick: this.gotoKeyboardShortcuts
+              }, "Back To Keyboard Shortcuts")))
+          },
+
+          toggleIsometricGrid: function () {
+            var e = this.refs.isometricGrid.getDOMNode().checked;
+            GameSettings.toolHandler.isometricGrid = e
+          },
+
+          toggleScaleLock: function () {
+            var e = this.refs.scaleLock.getDOMNode().checked;
+            GameSettings.scaleLock = e
+          },
+
+          changeGridSize: function (e) {
+            var gridSize = e.target.value;
+            // Update normal grid size
+            GameSettings.toolHandler.gridSize = gridSize;
+            // Update isometric grid size if isometric grid is enabled
+            if (this.state.isometricGrid) {
+              GameSettings.toolHandler.isometricGridSize = gridSize;
+            }
+            GameManager.command("redraw");
+          },
+          renderGridSizeSelect: function () {
+            var e = GameSettings.toolHandler.gridSize
+              , t = [2, 4, 5, 10, 20, 25, 40, 50, 100];
+            return n.createElement("select", {
+              ref: "gridSize",
+              defaultValue: e,
+              onChange: this.changeGridSize
+            }, t.map(function (e) {
+              return n.createElement("option", {
+                value: e
+              }, e)
+            }))
+          },
+          toggleVisibleGrid: function () {
+            var e = this.refs.visibleGrid.getDOMNode().checked;
+            GameSettings.toolHandler.visibleGrid = e
+          },
+          toggleRightClickMove: function () {
+            var e = this.refs.rightClickMove.getDOMNode().checked;
+            GameSettings.toolHandler.rightClickMove = e
+          },
+          toggleSnapNear: function () {
+            var e = this.refs.snapNear.getDOMNode().checked;
+            GameSettings.snapNear = e
+          },
+          toggleSwitchHotkeys: function () {
+            var e = this.refs.switchHotkeys.getDOMNode().checked;
+            GameSettings.switchHotkeys = e
+          },
+          gotoAdvancedSettings: function () {
+            this.setState({
+              advancedSettings: !0
+            })
+          },
+          gotoKeyboardShortcuts: function () {
+            this.setState({
+              advancedSettings: !1
+            })
+          },
+          render: function () {
+            var e = !1;
+            return e = this.state.advancedSettings ? this.getAdvancedSettings() : this.getKeyboardShortcuts(),
+              n.createElement("div", {
+                className: "editorDialog-content editorDialog-content_helpDialog"
+              }, e)
+          }
+        });
+      t.exports = r
+    }
+      , {
+      react: 230
+    }],
     25: [
       function (e, t) {
         var n = e("react"),
@@ -4163,8 +4279,8 @@
               let imageUrl = `https://freerider.app/assets/images/tracks/${trackName}.png`;
 
               if (trackName.endsWith(".txt")) {
-              trackName = trackName.slice(0, -4);
-              imageUrl = 'https://freerider.app/assets/images/tracks/freeriderapp.png';
+                trackName = trackName.slice(0, -4);
+                imageUrl = 'https://freerider.app/assets/images/tracks/freeriderapp.png';
               }
 
               const safeTrackName = trackName.replace(/'/g, "");
@@ -4613,7 +4729,7 @@
 
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                  GameManager.command("import", n, !0),
+                GameManager.command("import", n, !0),
                 (GameSettings.trackName = `track.txt`);
             },
             addTrack: function () {
@@ -4686,7 +4802,7 @@
 
               t && (n = t),
                 "undefined" != typeof GameManager &&
-                  GameManager.command("add", n, !0);
+                GameManager.command("add", n, !0);
             },
             processTrackData(data) {
               if ("undefined" != typeof GameManager) {
@@ -4702,8 +4818,8 @@
               var t = e.target;
               t.getAttribute("data-ignoredragleave") ||
                 (this.setState({ isDragActive: !1 }),
-                (this.refs.dropFile.getDOMNode().style.display = "none"),
-                (this.refs.placeholder.getDOMNode().style.display = "block"));
+                  (this.refs.dropFile.getDOMNode().style.display = "none"),
+                  (this.refs.placeholder.getDOMNode().style.display = "block"));
             },
             onDragOver: function (e) {
               e.preventDefault(),
@@ -4749,7 +4865,7 @@
                 e.clipBoardData
                   ? ((t = e.clipboardData), (n = t.getData("text/plain")))
                   : window.clipboardData &&
-                    (n = window.clipboardData.getData("Text"));
+                  (n = window.clipboardData.getData("Text"));
                 var r = n.length,
                   o = n.slice(0, 5e4);
                 r > 5e4 &&
@@ -4799,7 +4915,7 @@
                   {
                     className: "link",
                     onClick: function () {
-                      GameManager.command("dialog", "dbimport");
+                      GameManager.command("dialog", "dbImport");
                     }
                   },
                   "browse the database"
@@ -4916,7 +5032,7 @@
           });
         t.exports = r;
       },
-      { 
+      {
         react: 230,
         autocomplete: 240,
       },
@@ -4932,10 +5048,10 @@
             closeDialog: function () {
               "undefined" != typeof GameManager &&
                 GameManager.command("dialog", !1);
-                if (GameManager.game.currentScene.objectPhysics.length === 0 && GameManager.game.currentScene.objectScenery.length === 0 && GameManager.game.currentScene.objectPowerups.length === 0) {
-                  GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
-                  GameManager.game.currentScene.toolHandler.options.lineType = "physics";
-                }
+              if (GameManager.game.currentScene.objectPhysics.length === 0 && GameManager.game.currentScene.objectScenery.length === 0 && GameManager.game.currentScene.objectPowerups.length === 0) {
+                GameManager.game.currentScene.toolHandler.options.object && "undefined" != typeof GameManager && GameManager.command("object");
+                GameManager.game.currentScene.toolHandler.options.lineType = "physics";
+              }
             },
             getInitialState: function () {
               return { isDragActive: !1 };
@@ -4946,17 +5062,17 @@
                 n = e.value,
                 trackName = e.value.replace(/(\.\.\/)/g, ''),
                 url = `assets/tracks/object/${trackName}.txt`;
-            
+
               if (e.value.includes('$')) {
                 e.value = `$use import to change settings`;
                 return;
               }
-            
+
               if (e.value === 'random') {
                 e.value = `$cannot add track as object`;
                 return;
 
-              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {            
+              } else if (!e.value.includes('$') && !e.value.includes('#') && !t) {
                 fetch(url)
                   .then(response => {
                     if (!response.ok) {
@@ -4973,7 +5089,7 @@
                   });
                 return;
               }
-            
+
               t && (n = t),
                 "undefined" != typeof GameManager &&
                 GameManager.command("addObject", n, !0);
@@ -4987,8 +5103,8 @@
               var t = e.target;
               t.getAttribute("data-ignoredragleave") ||
                 (this.setState({ isDragActive: !1 }),
-                (this.refs.dropFile.getDOMNode().style.display = "none"),
-                (this.refs.placeholder.getDOMNode().style.display = "block"));
+                  (this.refs.dropFile.getDOMNode().style.display = "none"),
+                  (this.refs.placeholder.getDOMNode().style.display = "block"));
             },
             onDragOver: function (e) {
               e.preventDefault(),
@@ -5007,13 +5123,13 @@
               (n.onload = (event) => this.fileDropComplete(event, t[0].name)),
                 (n.onerror = this.fileDropError),
                 n.readAsText(t[0]);
-                
+
             },
             fileDropComplete: function (e, fileName) {
               var fileContent = e.target.result;
               var isSettingsFile = fileContent.includes('$');
               var n = this.refs.code.getDOMNode();
-            
+
               if (isSettingsFile) {
                 n.value = fileContent;
                 n.setAttribute("data-paste-code", fileContent);
@@ -5035,7 +5151,7 @@
                 e.clipBoardData
                   ? ((t = e.clipboardData), (n = t.getData("text/plain")))
                   : window.clipboardData &&
-                    (n = window.clipboardData.getData("Text"));
+                  (n = window.clipboardData.getData("Text"));
                 var r = n.length,
                   o = n.slice(0, 5e4);
                 r > 5e4 &&
@@ -5076,6 +5192,21 @@
                     "select a file"
                   )
                 ));
+              var x = n.createElement(
+                "span",
+                null,
+                n.createElement(
+                  "span",
+                  {
+                    className: "link",
+                    onClick: function () {
+                      GameManager.command("dialog", "objectImport");
+                    }
+                  },
+                  "browse the database"
+                ),
+                ", "
+              );
               var o = n.createElement(
                 "span",
                 {
@@ -5083,7 +5214,8 @@
                   ref: "placeholder",
                   "data-ignoredragleave": "true",
                 },
-                "Paste track code, drag and drop text files here, ",
+                "Paste object code, drag and drop text files here, ",  // Changed "track" to "object"
+                x,
                 r,
                 " to import"
               );
@@ -5166,7 +5298,7 @@
                     "Cancel"
                   )
                 ),
-                n.createElement(auto, {baseURL: "assets/tracks/object/", onInput: this.onInput })
+                n.createElement(auto, { baseURL: "assets/tracks/object/", onInput: this.onInput })
               );
             },
           });
@@ -5222,13 +5354,13 @@
                 brushScale = e.brushScale,
                 brushRotate = e.brushRotate;
 
-                var v = this.props.options,
+              var v = this.props.options,
                 t = 1,
                 l = 0;
-                if (v) {
-                  t = v.trailSpeed;
-                  l = v.breakLength;
-                }
+              if (v) {
+                t = v.trailSpeed;
+                l = v.breakLength;
+              }
               return (
                 n.createElement("div", null,
                   n.createElement("div", { className: "editorDialog-titleBar" },
@@ -5421,61 +5553,200 @@
     ],
     99925: [
       function (e, t) {
-    var n = e("react"),
-      auto = e("autocomplete"),
-      r = n.createClass({
-        displayName: "DBImportDialog",
-        hasFileAPI: !!(window.File && window.FileList && window.FileReader),
-        closeDialog: function () {
-          "undefined" != typeof GameManager &&
-            GameManager.command("dialog", !1);
-        },
-        getInitialState: function () {
-          return { isDragActive: !1 };
-        },
-        render: function () {
-          var e = this.state.isDragActive,
-            t = "editorDialog-db editorDialog-content_importDialog";
-          e && (t += " editorDialog-content-dragActive");
-          
-          return n.createElement(
-            "div",
-            { className: t },
-            n.createElement(
-              "div",
-              { className: "editorDialog-titleBar" },
-              n.createElement(
-                "span",
-                {
-                  className: "editorDialog-close",
-                  onClick: this.closeDialog,
-                },
-                "×"
-              ),
-              n.createElement(
-                "h1",
-                { className: "editorDialog-content-title" },
-                "IMPORT TRACK"
-              )
-            ),
-            n.createElement("iframe", {
-              src: "/db",  // Change this URL
-              style: {
-                width: "100%",
-                height: "calc(100% - 39px)",  // Subtract titlebar height
-                border: "none",
-                display: "block"
+        var n = e("react"),
+          auto = e("autocomplete"),
+          r = n.createClass({
+            displayName: "dbImportDialog",
+            hasFileAPI: !!(window.File && window.FileList && window.FileReader),
+            closeDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", !1);
+            },
+            getInitialState: function () {
+              return { isDragActive: !1 };
+            },
+            render: function () {
+              var e = this.state.isDragActive,
+                t = "editorDialog-db editorDialog-content_importDialog";
+              e && (t += " editorDialog-content-dragActive");
+
+              return n.createElement(
+                "div",
+                { className: t },
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-titleBar" },
+                  n.createElement(
+                    "span",
+                    {
+                      className: "editorDialog-close",
+                      onClick: this.closeDialog,
+                    },
+                    "×"
+                  ),
+                  n.createElement(
+                    "h1",
+                    { className: "editorDialog-content-title" },
+                    "IMPORT TRACK"
+                  )
+                ),
+                n.createElement("iframe", {
+                  src: "/db",  // Change this URL
+                  style: {
+                    width: "100%",
+                    height: "calc(100% - 39px)",  // Subtract titlebar height
+                    border: "none",
+                    display: "block"
+                  }
+                })
+              );
+            },
+          });
+        t.exports = r;
+      },
+      {
+        react: 230,
+        autocomplete: 240,
+      },
+    ],
+    999925: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "ObjectDialog",
+            dialogName: "importObject",
+
+            closeDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", !1);
+            },
+
+            getInitialState: function () {
+              return {
+                selectedObject: null,
+                isLoading: false
+              };
+            },
+
+            componentDidMount: function () {
+              // Listen for messages from the iframe
+              window.addEventListener('message', this.handleIframeMessage);
+            },
+
+            componentWillUnmount: function () {
+              window.removeEventListener('message', this.handleIframeMessage);
+            },
+
+            handleIframeMessage: function (event) {
+              var self = this;
+
+              if (event.data.action === 'objectSelected') {
+                self.setState({ selectedObject: event.data.object });
               }
-            })
-          );
-        },
-      });
-    t.exports = r;
-  },
-  { 
-    react: 230,
-    autocomplete: 240,
-  },
+
+              if (event.data.action === 'objectCode') {
+                // Object code received, add it to the game
+                if ("undefined" != typeof GameManager) {
+                  GameManager.command("addObject", event.data.code, true);
+                }
+                self.closeDialog();
+              }
+            },
+
+            addSelectedObject: function () {
+              var self = this;
+              var obj = this.state.selectedObject;
+
+              if (!obj || !obj.codeUrl) return;
+
+              self.setState({ isLoading: true });
+
+              // Fetch the object code
+              fetch(obj.codeUrl)
+                .then(function (response) {
+                  if (!response.ok) throw new Error('Failed to load object');
+                  return response.text();
+                })
+                .then(function (code) {
+                  if ("undefined" != typeof GameManager) {
+                    GameManager.command("addObject", code, true);
+                  }
+                  self.closeDialog();
+                })
+                .catch(function (error) {
+                  console.error('Failed to load object:', error);
+                  self.setState({ isLoading: false });
+                });
+            },
+
+            render: function () {
+              var self = this;
+              var selectedObj = this.state.selectedObject;
+              var isLoading = this.state.isLoading;
+
+              var buttonText = isLoading ? "Loading..." :
+                (selectedObj ? "Add " + selectedObj.name : "Select an Object");
+              var buttonDisabled = !selectedObj || isLoading;
+
+              return n.createElement(
+                "div",
+                { className: "editorDialog-db editorDialog-content_importDialog" },
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-titleBar" },
+                  n.createElement(
+                    "span",
+                    {
+                      className: "editorDialog-close",
+                      onClick: this.closeDialog,
+                    },
+                    "×"
+                  ),
+                  n.createElement(
+                    "h1",
+                    { className: "editorDialog-content-title" },
+                    "IMPORT OBJECT"
+                  )
+                ),
+                n.createElement("iframe", {
+                  src: "/objects",
+                  style: {
+                    width: "100%",
+                    height: "calc(100% - 90px)",
+                    border: "none",
+                    display: "block"
+                  }
+                }),
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-bottomBar clearfix" },
+                  n.createElement(
+                    "button",
+                    {
+                      className: "primary-button primary-button-blue float-right margin-0-5",
+                      onClick: this.addSelectedObject,
+                      disabled: buttonDisabled,
+                      style: { opacity: buttonDisabled ? 0.5 : 1 }
+                    },
+                    buttonText
+                  ),
+                  n.createElement(
+                    "button",
+                    {
+                      className: "primary-button primary-button-black float-right margin-0-5",
+                      onClick: this.closeDialog,
+                    },
+                    "Cancel"
+                  )
+                )
+              );
+            },
+          });
+        t.exports = r;
+      },
+      {
+        react: 230
+      },
     ],
     26: [
       function (e, t) {
@@ -5648,38 +5919,38 @@
                 this.checkEnableUpload();
             },
             onCollaboratorsChange: function (event) {
-                var rawText = event.target.value;
-                var collaborators = this.state.collaborators.slice();
-                var currentInput = rawText;
-                
-                var lastChars = rawText.slice(-2); 
+              var rawText = event.target.value;
+              var collaborators = this.state.collaborators.slice();
+              var currentInput = rawText;
 
-                if (rawText.length > 2 && lastChars === ", ") {
-                    var name = rawText.substring(0, rawText.length - 2).trim();
+              var lastChars = rawText.slice(-2);
 
-                    if (name.length > 0 && collaborators.indexOf(name) === -1) {
-                        collaborators.push(name);
-                    }
-                    
-                    currentInput = ""; 
+              if (rawText.length > 2 && lastChars === ", ") {
+                var name = rawText.substring(0, rawText.length - 2).trim();
+
+                if (name.length > 0 && collaborators.indexOf(name) === -1) {
+                  collaborators.push(name);
                 }
-                
-                this.setState({ 
-                    collaborators: collaborators,
-                    currentCollaboratorInput: currentInput
-                });
+
+                currentInput = "";
+              }
+
+              this.setState({
+                collaborators: collaborators,
+                currentCollaboratorInput: currentInput
+              });
             },
             onRemoveCollaborator: function (name) {
-                var collaborators = this.state.collaborators.filter(function (c) {
-                    return c !== name;
-                });
-                this.setState({ collaborators: collaborators });
+              var collaborators = this.state.collaborators.filter(function (c) {
+                return c !== name;
+              });
+              this.setState({ collaborators: collaborators });
             },
             onCollaboratorsKeyDown: function (e) {
-                if (e.key === 'Backspace' && e.target.value === '' && this.state.collaborators.length > 0) {
-                    e.preventDefault();
-                    this.onRemoveCollaborator(this.state.collaborators[this.state.collaborators.length - 1]);
-                }
+              if (e.key === 'Backspace' && e.target.value === '' && this.state.collaborators.length > 0) {
+                e.preventDefault();
+                this.onRemoveCollaborator(this.state.collaborators[this.state.collaborators.length - 1]);
+              }
             },
             checkEnableUpload: function () {
               var e = this.refs,
@@ -5694,16 +5965,16 @@
                 u = !0,
                 d = !1;
               //l.length < n.minTitleChars && (u = !1),
-                //c.length <= n.minDescChars && (u = !1),
-                a === !1 && s === !1 && (u = !1);
-                /*n.options.verified ||
-                  ((u = !1),
-                  (d = "You must complete your track before uploading"));*/
+              //c.length <= n.minDescChars && (u = !1),
+              a === !1 && s === !1 && (u = !1);
+              /*n.options.verified ||
+                ((u = !1),
+                (d = "You must complete your track before uploading"));*/
               var p = this.getUser(),
                 h = r.trackUploadCost,
                 f = p.tot_cns;
               //h > f && ((u = !1), (d = "Not enough coins")),
-                this.setState({ uploadingEnabled: u, errorMsg: d });
+              this.setState({ uploadingEnabled: u, errorMsg: d });
             },
             closeDialog: function () {
               this.state.canClose &&
@@ -5720,16 +5991,16 @@
                 this.setState(r),
                 this.checkEnableUpload();
             },
-            uploadTrack: async function () { 
+            uploadTrack: async function () {
               var e = this.state;
               var p = GameSettings.id;
 
               var t = this.refs,
-                n = t.trackTitle.getDOMNode().value,
+                n = t.trackTitle.getDOMNode().value,
                 r = t.trackDesc.getDOMNode().value;
 
               const pagePath = n.trim() ? `${GameSettings.id}` : "";
-              
+
               if (e.uploadingEnabled) {
                 this.setState({
                   uploading: !0,
@@ -5738,7 +6009,7 @@
                   loading: !0,
                   showErrorMsg: !1,
                 });
-                
+
                 var i = e.defaultVehicle,
                   a = e.vehiclesAllowed.mtb,
                   s = e.vehiclesAllowed.bmx,
@@ -5759,7 +6030,7 @@
                 this.uploadData = u;
 
                 try {
-                    // using track code 'c' as content
+                  // using track code 'c' as content
                   const trackBlob = new Blob([c], { type: 'text/plain' });
                   const base64Content = await new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -5797,48 +6068,48 @@
 
                   const defaultImageBase = (n.trim() === '') ? GameSettings.id : n;
 
-                    const res = await fetch("/api/upload-track", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            pagePath: pagePath, 
-                            fileName: finalTrackFileName, 
-                            fileContent: base64Content,
-                            fileType: 'text/plain',
-                            imageContent: base64ImageContent,
-                            imageFileName: finalImageFileName || `${defaultImageBase.toLowerCase()}.jpg`,
-                            trackMetadata: u 
-                        }),
-                    });
+                  const res = await fetch("/api/upload-track", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      pagePath: pagePath,
+                      fileName: finalTrackFileName,
+                      fileContent: base64Content,
+                      fileType: 'text/plain',
+                      imageContent: base64ImageContent,
+                      imageFileName: finalImageFileName || `${defaultImageBase.toLowerCase()}.jpg`,
+                      trackMetadata: u
+                    }),
+                  });
 
-                    if (!res.ok) throw new Error(`Proxy upload failed: ${res.statusText}`);
+                  if (!res.ok) throw new Error(`Proxy upload failed: ${res.statusText}`);
 
-                    const proxyResponse = await res.json();
-                    
-                    const successResponse = {
-                        result: true,
-                        data: {
-                            track: { 
-                                url: proxyResponse.permalink,
-                                title: n,
-                                author: p.display_name || p,
-                                imageUrl: proxyResponse.imageUrl
-                            },
-                            user_stats: { tot_cns: 99999 }
-                        }
-                    };
+                  const proxyResponse = await res.json();
 
-                    this.uploadTrackComplete(successResponse); 
+                  const successResponse = {
+                    result: true,
+                    data: {
+                      track: {
+                        url: proxyResponse.permalink,
+                        title: n,
+                        author: p.display_name || p,
+                        imageUrl: proxyResponse.imageUrl
+                      },
+                      user_stats: { tot_cns: 99999 }
+                    }
+                  };
+
+                  this.uploadTrackComplete(successResponse);
 
                 } catch (err) {
-                    console.error("Track upload failed:", err);
-                    this.uploadTrackFail({ msg: "Upload Failed: " + err.message });
-                    this.setState({
-                        uploading: !1,
-                        canClose: !0,
-                        errorMsg: "Upload failed! Check console for details.",
-                        showErrorMsg: !0,
-                    });
+                  console.error("Track upload failed:", err);
+                  this.uploadTrackFail({ msg: "Upload Failed: " + err.message });
+                  this.setState({
+                    uploading: !1,
+                    canClose: !0,
+                    errorMsg: "Upload failed! Check console for details.",
+                    showErrorMsg: !0,
+                  });
                 }
               }
             },
@@ -5892,9 +6163,9 @@
               var a = "";
               return (
                 e.uploading &&
-                  (a = n.createElement("div", {
-                    className: "ud-form-overlay",
-                  })),
+                (a = n.createElement("div", {
+                  className: "ud-form-overlay",
+                })),
                 n.createElement(
                   "div",
                   { className: "ud-form" },
@@ -6018,26 +6289,26 @@
                   n.createElement(
                     "div",
                     { className: "ud-form-input" },
-                      n.createElement(
-                        "span",
-                        { className: "title" },
-                        "Track Thumbnail Image: "
-                      ),
-                      n.createElement(
-                        "span",
-                        { className: "input-desc" },
-                        "(optional, JPG/PNG only)"
-                      ),
-                      n.createElement(
-                        "div",
-                        null,
-                        n.createElement("input", {
-                          type: "file",
-                          ref: "trackImage", 
-                          accept: "image/jpeg,image/png",
-                          className: "ud-form-file-input", 
-                        })
-                      )
+                    n.createElement(
+                      "span",
+                      { className: "title" },
+                      "Track Thumbnail Image: "
+                    ),
+                    n.createElement(
+                      "span",
+                      { className: "input-desc" },
+                      "(optional, JPG/PNG only)"
+                    ),
+                    n.createElement(
+                      "div",
+                      null,
+                      n.createElement("input", {
+                        type: "file",
+                        ref: "trackImage",
+                        accept: "image/jpeg,image/png",
+                        className: "ud-form-file-input",
+                      })
+                    )
                   ),
                   n.createElement(
                     "div",
@@ -6257,7 +6528,7 @@
               this.state.uploadComplete &&
                 this.refs.trackLink.getDOMNode().click();
             },
-            copyLinkToClipboard: function() {
+            copyLinkToClipboard: function () {
               var trackUrl = this.state.trackUrl;
               const originalText = "Copy link";
 
@@ -6303,16 +6574,16 @@
               if (
                 (e.uploadComplete &&
                   ((l = "Close"),
-                  (c = n.createElement(
-                    "button",
-                    {
-                      className:
-                        "primary-button primary-button-blue float-right margin-0-5",
-                      onClick: this.copyLinkToClipboard,
-                    },
-                    this.state.copyButtonText
-                  ))),
-                e.uploadComplete === !1)
+                    (c = n.createElement(
+                      "button",
+                      {
+                        className:
+                          "primary-button primary-button-blue float-right margin-0-5",
+                        onClick: this.copyLinkToClipboard,
+                      },
+                      this.state.copyButtonText
+                    ))),
+                  e.uploadComplete === !1)
               ) {
                 var u = "disabled";
                 e.uploadingEnabled && (u = ""),
@@ -6378,21 +6649,21 @@
                   )
                 )),
                 e.uploadComplete &&
-                  (a = n.createElement(
-                    "div",
-                    { className: "ud-uploading-message" },
-                    n.createElement(
-                      "span",
-                      { className: "text" },
-                      "Upload Complete"
-                    )
-                  )),
-                e.errorMsg &&
-                  ((a = n.createElement(
+                (a = n.createElement(
+                  "div",
+                  { className: "ud-uploading-message" },
+                  n.createElement(
                     "span",
-                    { className: "ud-bottom-message" },
-                    e.errorMsg
-                  )),
+                    { className: "text" },
+                    "Upload Complete"
+                  )
+                )),
+                e.errorMsg &&
+                ((a = n.createElement(
+                  "span",
+                  { className: "ud-bottom-message" },
+                  e.errorMsg
+                )),
                   (i = "error"));
               var v = n.createElement(
                 "div",
@@ -6422,8 +6693,8 @@
                 r && e.uploadComplete === !1
                   ? this.getForm()
                   : e.uploadComplete === !0
-                  ? this.getUploadCompleteScreen()
-                  : o;
+                    ? this.getUploadCompleteScreen()
+                    : o;
               var a = this.getFooter(),
                 s = "disabled";
               return (
@@ -6491,6 +6762,7 @@
           c = e("../tools/cameratool"),
           x = e("../tools/circletool"),
           xx = e("../tools/selecttool"),
+          pa = e("../tools/patterntool"),
           //xxx = e("../tools/objecttool"),
           u = n.createClass({
             displayName: "LeftMenu",
@@ -6506,10 +6778,10 @@
               } else {
                 playMode = false;
               }
-              
+
               return (
-                (d.marginTop = -((9 * u) / 2)),
-                (t || playMode) && (d.display = "none"),
+                (d.marginTop = -((9 * u) / 2)), //(d.marginTop = -((10 * u) / 2)),
+                (t/*|| playMode*/) && (d.display = "none"),
                 n.createElement(
                   "div",
                   { className: "leftMenu", style: d },
@@ -6518,6 +6790,7 @@
                   n.createElement(x, { active: "circle" === e }),
                   //n.createElement(xxx, { active: "object" === e }),
                   n.createElement(i, { active: "brush" === e }),
+                  //n.createElement(pa, { active: "pattern" === e }),
                   n.createElement(a, { active: "eraser" === e }),
                   n.createElement(s, { active: "powerup" === e }),
                   n.createElement(l, { active: "vehiclepowerup" === e }),
@@ -6538,6 +6811,7 @@
         "../tools/erasertool": 44,
         "../tools/poweruptool": 48,
         "../tools/selecttool": 50,
+        "../tools/patterntool": 255,
         "../tools/straightlinetool": 53,
         "../tools/vehicletool": 59,
         react: 230,
@@ -6600,11 +6874,11 @@
         "../tools/physicsline": 47,
         "../tools/sceneryline": 49,
         "../tools/snap": 52,
-        "../tools/object": 947,
+        "../tools/object": 244,
         react: 230,
       },
     ],
-    931: [function(e, t) {
+    931: [function (e, t) {
       var n = e("react")
         , r = e("../tools/physicsline")
         , o = e("../tools/sceneryline")
@@ -6612,28 +6886,28 @@
         , x = e("../tools/object")
         , a = n.createClass({
           displayName: "circleToolOptions",
-          render: function() {
-              var e = this.props.options;
-              return n.createElement("div", null, n.createElement(r, {
-                  active: "physics" === e.lineType
-              }), n.createElement(o, {
-                  active: "scenery" === e.lineType
-              }), n.createElement(x, {
-                  active: e.object === !0
-            //}), n.createElement(i, {
-            //    active: e.snap === !0
-              }))
+          render: function () {
+            var e = this.props.options;
+            return n.createElement("div", null, n.createElement(r, {
+              active: "physics" === e.lineType
+            }), n.createElement(o, {
+              active: "scenery" === e.lineType
+            }), n.createElement(x, {
+              active: e.object === !0
+              //}), n.createElement(i, {
+              //    active: e.snap === !0
+            }))
           }
-      });
+        });
       t.exports = a
-  }
-  , {
+    }
+      , {
       "../tools/physicsline": 47,
       "../tools/sceneryline": 49,
       "../tools/snap": 52,
-      "../tools/object": 947,
+      "../tools/object": 244,
       react: 230
-  }],
+    }],
     32: [
       function (e, t) {
         var n = e("react"),
@@ -6661,7 +6935,7 @@
         "../tools/physicsline": 47,
         "../tools/sceneryline": 49,
         "../tools/snap": 52,
-        "../tools/object": 947,
+        "../tools/object": 244,
         react: 230,
       },
     ],
@@ -6670,134 +6944,134 @@
         var n = e("react"),
           r =
             (e("../tools/physicsline"),
-            e("../tools/sceneryline"),
-            e("../tools/poweruptool"),
-            n.createClass({
-              displayName: "EraserToolOptions",
-              togglePhysicsEraser: function () {
-                "undefined" != typeof GameManager &&
-                  ((this.props.options.types.physics =
-                    !this.props.options.types.physics),
-                  GameManager.command(
-                    "change tool option",
-                    "types",
-                    this.props.options.types
-                  ));
-              },
-              toggleSceneryEraser: function () {
-                "undefined" != typeof GameManager &&
-                  ((this.props.options.types.scenery =
-                    !this.props.options.types.scenery),
-                  GameManager.command(
-                    "change tool option",
-                    "types",
-                    this.props.options.types
-                  ));
-              },
-              togglePowerupEraser: function () {
-                "undefined" != typeof GameManager &&
-                  ((this.props.options.types.powerups =
-                    !this.props.options.types.powerups),
-                  GameManager.command(
-                    "change tool option",
-                    "types",
-                    this.props.options.types
-                  ));
-              },
-              setMode: function (m) {
-                GameManager && ((this.props.options.mode = m),
-                GameManager.command(
-                  "change tool option",
-                  "mode",
-                  this.props.options.mode
-                ));
-              },
-              render: function () {
-                var e = this.props.options,
-                  t = "sideButton",
-                  r = t + " sideButton_eraserPhysics",
-                  o = t + " sideButton_eraserScenery",
-                  i = t + " sideButton_eraserPowerups",
-                  R = t + " sideButton_eraserLayer",
-                  s = t + " sideButton_eraserVisible",
-                  O = t + " sideButton_eraserAll";
-                switch (e.mode) {
-                  case "layer":
-                    R += " active";
-                    break;
-                  case "visible":
-                    s += " active";
-                    break;
-                  case "all":
-                    O += " active";
-                    break;
-                  default:
-                    console.warn('unrecognized tool mode', e.mode);
-                }
-                return (
-                  e.types &&
+              e("../tools/sceneryline"),
+              e("../tools/poweruptool"),
+              n.createClass({
+                displayName: "EraserToolOptions",
+                togglePhysicsEraser: function () {
+                  "undefined" != typeof GameManager &&
+                    ((this.props.options.types.physics =
+                      !this.props.options.types.physics),
+                      GameManager.command(
+                        "change tool option",
+                        "types",
+                        this.props.options.types
+                      ));
+                },
+                toggleSceneryEraser: function () {
+                  "undefined" != typeof GameManager &&
+                    ((this.props.options.types.scenery =
+                      !this.props.options.types.scenery),
+                      GameManager.command(
+                        "change tool option",
+                        "types",
+                        this.props.options.types
+                      ));
+                },
+                togglePowerupEraser: function () {
+                  "undefined" != typeof GameManager &&
+                    ((this.props.options.types.powerups =
+                      !this.props.options.types.powerups),
+                      GameManager.command(
+                        "change tool option",
+                        "types",
+                        this.props.options.types
+                      ));
+                },
+                setMode: function (m) {
+                  GameManager && ((this.props.options.mode = m),
+                    GameManager.command(
+                      "change tool option",
+                      "mode",
+                      this.props.options.mode
+                    ));
+                },
+                render: function () {
+                  var e = this.props.options,
+                    t = "sideButton",
+                    r = t + " sideButton_eraserPhysics",
+                    o = t + " sideButton_eraserScenery",
+                    i = t + " sideButton_eraserPowerups",
+                    R = t + " sideButton_eraserLayer",
+                    s = t + " sideButton_eraserVisible",
+                    O = t + " sideButton_eraserAll";
+                  switch (e.mode) {
+                    case "layer":
+                      R += " active";
+                      break;
+                    case "visible":
+                      s += " active";
+                      break;
+                    case "all":
+                      O += " active";
+                      break;
+                    default:
+                      console.warn('unrecognized tool mode', e.mode);
+                  }
+                  return (
+                    e.types &&
                     (e.types.physics && (r += " active"),
-                    e.types.scenery && (o += " active"),
-                    e.types.powerups && (i += " active")),
-                  n.createElement(
-                    "div",
-                    null,
+                      e.types.scenery && (o += " active"),
+                      e.types.powerups && (i += " active")),
                     n.createElement(
                       "div",
-                      { className: r, onClick: this.togglePhysicsEraser },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_physics",
-                      })
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: o, onClick: this.toggleSceneryEraser },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_scenery",
-                      })
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: i, onClick: this.togglePowerupEraser },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_powerups",
-                      })
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: "sideDivider" }
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: R, onClick: _ => this.setMode("layer"), title: 'current layer' },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_layer",
-                      })
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: s, onClick: _ => this.setMode("visible"), title: 'visible layers' },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_visible",
-                      })
-                    ),
-                    n.createElement(
-                      "div",
-                      { className: O, onClick: _ => this.setMode("all"), title: 'all layers' },
-                      n.createElement("span", {
-                        className:
-                          "editorgui_icons editorgui_icons-icon_all",
-                      })
-                    ),
-                  )
-                );
-              },
-            }));
+                      null,
+                      n.createElement(
+                        "div",
+                        { className: r, onClick: this.togglePhysicsEraser },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_physics",
+                        })
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: o, onClick: this.toggleSceneryEraser },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_scenery",
+                        })
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: i, onClick: this.togglePowerupEraser },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_powerups",
+                        })
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: "sideDivider" }
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: R, onClick: _ => this.setMode("layer"), title: 'current layer' },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_layer",
+                        })
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: s, onClick: _ => this.setMode("visible"), title: 'visible layers' },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_visible",
+                        })
+                      ),
+                      n.createElement(
+                        "div",
+                        { className: O, onClick: _ => this.setMode("all"), title: 'all layers' },
+                        n.createElement("span", {
+                          className:
+                            "editorgui_icons editorgui_icons-icon_all",
+                        })
+                      ),
+                    )
+                  );
+                },
+              }));
         t.exports = r;
       },
       {
@@ -6807,7 +7081,7 @@
         react: 230,
       },
     ],
-    34: [function(e, t) {
+    34: [function (e, t) {
       var n = e("react")
         , a = e("../tools/goalpoweruptool")
         , o = e("../tools/boostpoweruptool")
@@ -6819,30 +7093,30 @@
         , u = e("../tools/teleportpoweruptool")
         , p = n.createClass({
           displayName: "PowerupToolOptions",
-          render: function() {
-              var e = this.props.options;
-              return n.createElement("div", null, n.createElement(a, {
-                  options: e
-              }), n.createElement(o, {
-                  options: e
-              }), n.createElement(r, {
-                  options: e
-              }), n.createElement(i, {
-                  options: e
-              }), n.createElement(s, {
-                  options: e
-              }), n.createElement(c, {
-                  options: e
-              }), n.createElement(l, {
-                  options: e
-              }), n.createElement(u, {
-                  options: e
-              }))
+          render: function () {
+            var e = this.props.options;
+            return n.createElement("div", null, n.createElement(a, {
+              options: e
+            }), n.createElement(o, {
+              options: e
+            }), n.createElement(r, {
+              options: e
+            }), n.createElement(i, {
+              options: e
+            }), n.createElement(s, {
+              options: e
+            }), n.createElement(c, {
+              options: e
+            }), n.createElement(l, {
+              options: e
+            }), n.createElement(u, {
+              options: e
+            }))
           }
-      });
+        });
       t.exports = p
-  }
-  , {
+    }
+      , {
       "../tools/bombpoweruptool": 38,
       "../tools/boostpoweruptool": 39,
       "../tools/checkpointpoweruptool": 42,
@@ -6852,60 +7126,60 @@
       "../tools/teleportpoweruptool": 935,
       "../tools/antigravitypoweruptool": 936,
       react: 230
-  }],
-  935: [function(e, t) {
+    }],
+    935: [function (e, t) {
       var n = e("react")
         , a = n.createClass({
           displayName: "teleportpoweruptool",
           name: "teleport",
-          changePowerup: function() {
-              "undefined" != typeof GameManager && (GameManager.command("change tool", "powerup"),
+          changePowerup: function () {
+            "undefined" != typeof GameManager && (GameManager.command("change tool", "powerup"),
               GameManager.command("change tool option", "selected", this.name))
           },
-          render: function() {
-              var e = "sideButton sideButton_powerupTool"
-                , t = "";
-              return this.props.options.selected === this.name && (t = "",
+          render: function () {
+            var e = "sideButton sideButton_powerupTool"
+              , t = "";
+            return this.props.options.selected === this.name && (t = "",
               e = "sideButton sideButton_powerupTool active"),
               n.createElement("div", {
-                  className: e,
-                  onClick: this.changePowerup
+                className: e,
+                onClick: this.changePowerup
               }, n.createElement("span", {
-                  className: "editorgui_icons editorgui_icons-portal",
-                  title: t
+                className: "editorgui_icons editorgui_icons-portal",
+                title: t
               }))
           }
-      });
+        });
       t.exports = a
-  }
-  , {
+    }
+      , {
       react: "230"
-  }],
-  936: [function(e, t) {
+    }],
+    936: [function (e, t) {
       var n = e("react")
         , a = n.createClass({
           displayName: "antigravitypoweruptool",
           name: "antigravity",
-          changePowerup: function() {
-              "undefined" != typeof GameManager && (GameManager.command("change tool", "powerup"),
+          changePowerup: function () {
+            "undefined" != typeof GameManager && (GameManager.command("change tool", "powerup"),
               GameManager.command("change tool option", "selected", this.name))
           },
-          render: function() {
-              var e = "sideButton sideButton_powerupTool";
-              return this.props.options.selected === this.name && (e += " active"),
+          render: function () {
+            var e = "sideButton sideButton_powerupTool";
+            return this.props.options.selected === this.name && (e += " active"),
               n.createElement("div", {
-                  className: e,
-                  onClick: this.changePowerup
+                className: e,
+                onClick: this.changePowerup
               }, n.createElement("span", {
-                  className: "editorgui_icons editorgui_icons-antigravity"
+                className: "editorgui_icons editorgui_icons-antigravity"
               }))
           }
-      });
+        });
       t.exports = a
-  }
-  , {
+    }
+      , {
       react: "230"
-  }],
+    }],
     35: [
       function (e, t) {
         var n = e("react"),
@@ -6926,19 +7200,21 @@
                 d = 48.6,
                 p = this.props.data.hideMenus,
                 fullscreen = GameSettings.editorFullscreen;
-                var sidebar;
+              var sidebar;
 
-                if (typeof GameSettings !== 'undefined') {
-                  sidebar = GameSettings.sidebar ?? true;
-                  playMode = GameSettings.trackName !== 'track.txt';
-                } else {
-                  sidebar = true;
-                  playMode = false;
-                }
+              if (typeof GameSettings !== 'undefined') {
+                sidebar = GameSettings.sidebar ?? true;
+                //playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                sidebar = true;
+                //playMode = false;
+              }
 
-                if (playMode || p) {
+
+              if (p) {
                 c.display = "none";
-                }
+              }
+
 
               c.right = sidebar
                 ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
@@ -6953,9 +7229,9 @@
                     (u = n.createElement(o, { options: t }));
                   break;
                 case "circle":
-                      (c.marginTop = -((3 * d) / 2)),
-                        (u = n.createElement(x, { options: t }));
-                      break;
+                  (c.marginTop = -((3 * d) / 2)),
+                    (u = n.createElement(x, { options: t }));
+                  break;
                 case "brush":
                   (c.marginTop = -((3 * d) / 2)),
                     (u = n.createElement(i, { options: t }));
@@ -7029,11 +7305,11 @@
         "../tools/physicsline": 47,
         "../tools/sceneryline": 49,
         "../tools/snap": 52,
-        "../tools/object": 947,
+        "../tools/object": 244,
         react: 230,
       },
     ],
-    37: [function(e, t) {
+    37: [function (e, t) {
       var n = e("react")
         , a = e("../tools/vehicles/helicoptertool")
         , o = e("../tools/vehicles/balloontool")
@@ -7042,29 +7318,29 @@
         , i = e("../tools/vehicles/blobtool")
         , s = n.createClass({
           displayName: "PowerupToolOptions",
-          render: function() {
-              var e = this.props.options;
-              return n.createElement("div", null, n.createElement(a, {
-                  options: e
-              }), n.createElement(r, {
-                  options: e
-              }), n.createElement(o, {
-                  options: e
-              }), n.createElement(i, {
-                  options: e
-              }))
+          render: function () {
+            var e = this.props.options;
+            return n.createElement("div", null, n.createElement(a, {
+              options: e
+            }), n.createElement(r, {
+              options: e
+            }), n.createElement(o, {
+              options: e
+            }), n.createElement(i, {
+              options: e
+            }))
           }
-      });
+        });
       t.exports = s
-  }
-  , {
+    }
+      , {
       "../tools/vehicles/balloontool": 54,
       "../tools/vehicles/blobtool": 55,
       "../tools/vehicles/helicoptertool": 56,
       "../tools/vehicles/trucktool": 57,
       "../tools/vehicles/unicycletool": 58,
       react: 230
-  }],
+    }],
     38: [
       function (e, t) {
         var n = e("react"),
@@ -7074,11 +7350,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7107,11 +7383,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7140,13 +7416,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "brush");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'brush'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'brush';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "brush");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_brushTool";
+              var e = "sideButton sideButton_brushTool",
+                r = "Brush";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_brush",
                   })
@@ -7158,29 +7462,58 @@
       },
       { react: 230 },
     ],
-    940: [function(e, t) {
+    940: [function (e, t) {
       var n = e("react")
         , r = n.createClass({
           displayName: "circleTool",
-          changeTool: function() {
-              "undefined" != typeof GameManager && GameManager.command("change tool", "circle")
+          changeTool: function () {
+            "undefined" != typeof GameManager && GameManager.command("change tool", "circle")
           },
-          render: function() {
-              var e = "sideButton sideButton_circleTool";
-              return this.props.active && (e += " active"),
+          handleClick: function () {
+            var isActive = this.props.active;
+            var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+            if (isActive) {
+              if (sidebarOpen) {
+                var iframe = document.getElementById("toolsIframe");
+                if (iframe && iframe.contentWindow) {
+                  iframe.contentWindow.postMessage({
+                    action: 'showToolTab',
+                    tool: 'circle'
+                  }, '*');
+                }
+              } else {
+                if (typeof GameSettings !== 'undefined') {
+                  GameSettings.dialogTool = 'circle';
+                }
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("dialog", "toolsDialog", "tool");
+                }
+              }
+            } else {
+              if (typeof GameManager !== "undefined") {
+                GameManager.command("change tool", "circle");
+              }
+            }
+          },
+          render: function () {
+            var e = "sideButton sideButton_circleTool",
+              r = "Circle";
+            return this.props.active && (e += " active"),
               n.createElement("div", {
-                  className: e,
-                  onClick: this.changeTool
+                className: e,
+                onClick: this.handleClick,
+                title: r,
               }, n.createElement("span", {
-                  className: "editorgui_icons editorgui_icons-circle"
+                className: "editorgui_icons editorgui_icons-icon_circle"
               }))
           }
-      });
+        });
       t.exports = r
-  }
-  , {
+    }
+      , {
       react: 230
-  }],
+    }],
     41: [
       function (e, t) {
         var n = e("react"),
@@ -7190,13 +7523,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "camera");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'camera'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'camera';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "camera");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton-bottom sideButton_cameraTool ";
+              var e = "sideButton sideButton-bottom sideButton_cameraTool ",
+                r = "Camera";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_camera",
                   })
@@ -7245,11 +7606,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7278,13 +7639,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "curve");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'curve'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'curve';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "curve");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_curvedLineTool";
+              var e = "sideButton sideButton_curvedLineTool",
+                r = "Curve";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_curve",
                   })
@@ -7305,13 +7694,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "eraser");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'eraser'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'eraser';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "eraser");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_eraserTool";
+              var e = "sideButton sideButton_eraserTool",
+                r = "Eraser";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_eraser",
                   })
@@ -7332,11 +7749,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7365,11 +7782,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7399,40 +7816,15 @@
                 GameManager.command("change lineType", "physics");
             },
             render: function () {
-              var e = "sideButton sideButton_physicsLine";
+              var e = "sideButton sideButton_physicsLine",
+                r = "Physics Line";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeLineType },
+                  { className: e, onClick: this.changeLineType, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_physics",
-                  })
-                )
-              );
-            },
-          });
-        t.exports = r;
-      },
-      { react: 230 },
-    ],
-    947: [
-      function (e, t) {
-        var n = e("react"),
-          r = n.createClass({
-            displayName: "Object",
-            toggleObject: function () {
-              "undefined" != typeof GameManager && GameManager.command("object");
-            },
-            render: function () {
-              var e = "sideButton sideButton_physicsLine";
-              return (
-                this.props.active && (e += " active"),
-                n.createElement(
-                  "div",
-                  { className: e, onClick: this.toggleObject },
-                  n.createElement("span", {
-                    className: "cube",
                   })
                 )
               );
@@ -7451,13 +7843,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "powerup");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'powerup'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'powerup';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "powerup");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_powerupTool";
+              var e = "sideButton sideButton_powerupTool",
+                r = "Powerups";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_powerups",
                   })
@@ -7479,12 +7899,13 @@
                 GameManager.command("change lineType", "scenery");
             },
             render: function () {
-              var e = "sideButton sideButton_sceneryLine";
+              var e = "sideButton sideButton_sceneryLine",
+                r = "Scenery Line";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeLineType },
+                  { className: e, onClick: this.changeLineType, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_scenery",
                   })
@@ -7505,13 +7926,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "select");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'select'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'select';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "select");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_selectTool";
+              var e = "sideButton sideButton_selectTool",
+                r = "Select"
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_select",
                   })
@@ -7532,11 +7981,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "powerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7569,7 +8018,7 @@
                 t = "editorgui_icons editorgui_icons-icon_snap";
               return (
                 this.props.active &&
-                  ((e += " active"),
+                ((e += " active"),
                   (t = "editorgui_icons editorgui_icons-icon_snap_on")),
                 n.createElement(
                   "div",
@@ -7594,7 +8043,21 @@
             return { open: false };
           },
           openOptions: function (e) {
-            this.setState({ open: !this.state.open });
+            //this.setState({ open: !this.state.open });
+            var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              var iframe = document.getElementById("toolsIframe");
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  action: 'showToolTab',
+                  tool: 'snap'
+                }, '*');
+              }
+
+              if (typeof GameManager !== "undefined" && !sidebarOpen) {
+                GameSettings.dialogTool = 'snap';
+                GameManager.command("dialog", "toolsDialog", "snap");
+              }
           },
           changeSnapSize: function (e) {
             var t = e.target.value;
@@ -7608,21 +8071,21 @@
             GameSettings.snapNear = !GameSettings.snapNear,
               GameManager.command("redraw");
           },*/
-          changeSnapType: function(e) {
+          changeSnapType: function (e) {
             var selectedOption = e.target.value;
             if (selectedOption === "Line Snap") {
-                GameSettings.snapNear = true;
-                GameSettings.snapClick = false;
+              GameSettings.snapNear = true;
+              GameSettings.snapClick = false;
             } else if (selectedOption === "Point Snap") {
-                GameSettings.snapNear = false;
-                GameSettings.snapClick = false;
+              GameSettings.snapNear = false;
+              GameSettings.snapClick = false;
             } else if (selectedOption === "Click Snap") {
-                GameSettings.snapNear = true;
-                GameSettings.snapClick = true;
+              GameSettings.snapNear = true;
+              GameSettings.snapClick = true;
             }
             GameManager.command("redraw");
           },
-          changeSnapCursor: function(e) {
+          changeSnapCursor: function (e) {
             var selectedOption = e.target.value;
             if (selectedOption === "Cross") {
               GameSettings.snapCursor = true;
@@ -7724,13 +8187,13 @@
               }
             }), n.createElement("span", {
               className: "name"
-            }, "Snap", o),  this.state.open ? n.createElement("div", {}, this.renderSnapSizeSelect(), this.renderSnapTypeSelect(), this.renderSnapCursorSelect()) : null)
+            }, "Snap", o), this.state.open ? n.createElement("div", {}, this.renderSnapSizeSelect(), this.renderSnapTypeSelect(), this.renderSnapCursorSelect()) : null)
           }
         });
       t.exports = a
     }, {
       react: 230
-    }],    
+    }],
     /*952: [
       function (e, t) {
         var n = e("react"),
@@ -7767,13 +8230,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "straightline");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'straightline'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'straightline';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "straightline");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton-top sideButton_straightLineTool";
+              var e = "sideButton sideButton-top sideButton_straightLineTool",
+                r = "Line";
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className: "editorgui_icons editorgui_icons-icon_line",
                   })
@@ -7791,10 +8282,10 @@
           r = n.createClass({
             displayName: "Balloontool",
             name: "balloon",
-            changePowerup: function() {
+            changePowerup: function () {
               "undefined" != typeof GameManager && (GameManager.command("change tool", "vehiclepowerup"),
-              GameManager.command("change tool option", "selected", this.name))
-          },
+                GameManager.command("change tool option", "selected", this.name))
+            },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
               return (
@@ -7819,10 +8310,10 @@
           r = n.createClass({
             displayName: "BlobTool",
             name: "blob",
-            changePowerup: function() {
+            changePowerup: function () {
               "undefined" != typeof GameManager && (GameManager.command("change tool", "vehiclepowerup"),
-              GameManager.command("change tool option", "selected", this.name))
-          },
+                GameManager.command("change tool option", "selected", this.name))
+            },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
               return (
@@ -7850,11 +8341,11 @@
             changePowerup: function () {
               "undefined" != typeof GameManager &&
                 (GameManager.command("change tool", "vehiclepowerup"),
-                GameManager.command(
-                  "change tool option",
-                  "selected",
-                  this.name
-                ));
+                  GameManager.command(
+                    "change tool option",
+                    "selected",
+                    this.name
+                  ));
             },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
@@ -7874,41 +8365,41 @@
       },
       { react: 230 },
     ],
-    57: [function(e, t) {
+    57: [function (e, t) {
       var n = e("react")
         , r = n.createClass({
           displayName: "TruckTool",
           name: "truck",
-          changePowerup: function() {
-              "undefined" != typeof GameManager && (GameManager.command("change tool", "vehiclepowerup"),
+          changePowerup: function () {
+            "undefined" != typeof GameManager && (GameManager.command("change tool", "vehiclepowerup"),
               GameManager.command("change tool option", "selected", this.name))
           },
-          render: function() {
-              var e = "sideButton sideButton_powerupTool";
-              return this.props.options.selected === this.name && (e += " active"),
+          render: function () {
+            var e = "sideButton sideButton_powerupTool";
+            return this.props.options.selected === this.name && (e += " active"),
               n.createElement("div", {
-                  className: e,
-                  onClick: this.changePowerup
+                className: e,
+                onClick: this.changePowerup
               }, n.createElement("span", {
-                  className: "editorgui_icons editorgui_icons-truck"
+                className: "editorgui_icons editorgui_icons-truck"
               }))
           }
-      });
+        });
       t.exports = r
-  }
-  , {
+    }
+      , {
       react: 230
-  }],
+    }],
     58: [
       function (e, t) {
         var n = e("react"),
           r = n.createClass({
             displayName: "UnicycleTool",
             name: "unicycle",
-            changePowerup: function() {
+            changePowerup: function () {
               "undefined" != typeof GameManager && (GameManager.command("change tool", "vehiclepowerup"),
-              GameManager.command("change tool option", "selected", this.name))
-          },
+                GameManager.command("change tool option", "selected", this.name))
+            },
             render: function () {
               var e = "sideButton sideButton_powerupTool";
               return (
@@ -7936,13 +8427,41 @@
               "undefined" != typeof GameManager &&
                 GameManager.command("change tool", "vehiclepowerup");
             },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'vehiclePowerup'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'vehiclePowerup';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "vehiclePowerup");
+                }
+              }
+            },
             render: function () {
-              var e = "sideButton sideButton_powerupTool";
+              var e = "sideButton sideButton_powerupTool",
+                r = "Vehicle Powerups"
               return (
                 this.props.active && (e += " active"),
                 n.createElement(
                   "div",
-                  { className: e, onClick: this.changeTool },
+                  { className: e, onClick: this.handleClick, title: r },
                   n.createElement("span", {
                     className:
                       "editorgui_icons editorgui_icons-icon_vehicle_swap",
@@ -8149,8 +8668,8 @@
       function (e, t) {
         var n = e("react"),
           r = n.createClass({
-            displayName: "DBImportTrack",
-            dialogName: "dbimport",
+            displayName: "dbImportTrack",
+            dialogName: "dbImport",
             openDialog: function () {
               "undefined" != typeof GameManager &&
                 GameManager.command("dialog", this.dialogName);
@@ -8174,6 +8693,35 @@
       },
       { react: 230 },
     ],
+    9965: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "dbImportObject",
+            dialogName: "objectImport",
+            openDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", this.dialogName);
+            },
+            render: function () {
+              var e = "topMenu-button topMenu-button_import",
+                t = "editorgui_icons editorgui_icons-icon_import";
+              return n.createElement(
+                "div",
+                {
+                  className: e,
+                  onClick: this.openDialog,
+                  title: "Import Object",
+                },
+                n.createElement("span", { className: t }),
+                n.createElement("span", { className: "text" }, "Import")
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
     66: [
       function (e, t) {
         var n = e("react"),
@@ -8185,7 +8733,7 @@
             },
             render: function () {
               var e =
-                  "topMenu-button topMenu-button-right topMenu-button_increase_zoom",
+                "topMenu-button topMenu-button-right topMenu-button_increase_zoom",
                 t = "editorgui_icons editorgui_icons-icon_zoom_in";
               return n.createElement(
                 "div",
@@ -8237,7 +8785,7 @@
             },
             render: function () {
               var e =
-                  "topMenu-button topMenu-button-right topMenu-button_reduce_zoom",
+                "topMenu-button topMenu-button-right topMenu-button_reduce_zoom",
                 t = "editorgui_icons editorgui_icons-icon_zoom_out";
               return n.createElement(
                 "div",
@@ -8265,43 +8813,44 @@
           p = e("./fullscreen"),
           h = e("./offlineeditor"),
           x = e("./sidebar"),
-          xx = e("./dbimporttrack"),
+          xx = e("./dbImportTrack"),
+          //xxx = e("./dbImportObject"),
           f = n.createClass({
             displayName: "TopMenu",
             render: function () {
               var sidebar;
 
-                if (typeof GameSettings !== 'undefined') {
-                  sidebar = GameSettings.sidebar ?? true;
-                  playMode = GameSettings.trackName !== 'track.txt';
-                } else {
-                  sidebar = true;
-                  playMode = false;
-                }
+              if (typeof GameSettings !== 'undefined') {
+                sidebar = GameSettings.sidebar ?? true;
+                playMode = GameSettings.trackName !== 'track.txt';
+              } else {
+                sidebar = true;
+                playMode = false;
+              }
               var width = sidebar ? "75%" : "100%";
               var mediaWidth = sidebar ? "93.75%" : "125%";
               var largeMediaWidth = sidebar ? "60%" : "80%";
               var topMenuStyle = {
-                  width: window.innerHeight >= 1440
-                    ? largeMediaWidth
-                    : (window.innerHeight <= 800
-                      ? mediaWidth
-                      : width)
-                };
+                width: window.innerHeight >= 1440
+                  ? largeMediaWidth
+                  : (window.innerHeight <= 800
+                    ? mediaWidth
+                    : width)
+              };
               return n.createElement(
                 "div",
-                { className: "topMenu unselectable", style: topMenuStyle},
-                !playMode && n.createElement(r, null),
+                { className: "topMenu unselectable", style: topMenuStyle },
+                /*!playMode && */n.createElement(r, null),
                 !playMode && n.createElement(o, null),
                 playMode && n.createElement(xx, null),
-                !playMode && n.createElement(i, null),
-                !playMode && GameSettings.beta && n.createElement(a, null),
-                !playMode && this.showHelp(),
+                /*!playMode && */n.createElement(i, null),
+                /*!playMode && */GameSettings.beta && n.createElement(a, null),
+                /*!playMode && */this.showHelp(),
                 n.createElement(l, null),
                 //this.showControls(),
                 //this.showOfflineEditorIcon(),
                 this.showFullscreen(),
-                n.createElement(x, null),
+                n.createElement(x, { data: this.props.data }),
                 n.createElement(p, null),
                 n.createElement(u, null),
                 n.createElement(d, { percent: this.props.data.zoomPercentage }),
@@ -8313,8 +8862,8 @@
                 t = navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
               return (
                 t &&
-                  "undefined" == typeof isChromeApp &&
-                  (e = n.createElement(h, null)),
+                "undefined" == typeof isChromeApp &&
+                (e = n.createElement(h, null)),
                 e
               );
             },
@@ -8334,8 +8883,8 @@
               var e = !1;
               return (
                 GameSettings.fullscreenAvailable &&
-                  !GameSettings.isStandalone &&
-                  (e = n.createElement(p, null)),
+                !GameSettings.isStandalone &&
+                (e = n.createElement(p, null)),
                 e
               );
             },
@@ -8349,7 +8898,8 @@
         "./fullscreen": 63,
         "./help": 64,
         "./importtrack": 65,
-        "./dbimporttrack": 965,
+        "./dbImportTrack": 965,
+        //"./dbImportObject": 965,
         "./increasezoom": 66,
         "./offlineeditor": 67,
         "./reducezoom": 68,
@@ -8368,10 +8918,10 @@
             openDialog: function () {
               GameSettings.isStandalone
                 ? "undefined" != typeof GameManager &&
-                  GameManager.command("dialog", this.dialogName)
+                GameManager.command("dialog", this.dialogName)
                 : Application.User.is_logged_in() === !1
-                ? Application.events.publish("prompt.login")
-                : "undefined" != typeof GameManager &&
+                  ? Application.events.publish("prompt.login")
+                  : "undefined" != typeof GameManager &&
                   GameManager.command("dialog", this.dialogName);
             },
             render: function () {
@@ -8425,17 +8975,17 @@
           if (((e.URL = e.URL || e.webkitURL), e.Blob && e.URL))
             try {
               return void new Blob();
-            } catch (t) {}
+            } catch (t) { }
           var n =
             e.BlobBuilder ||
             e.WebKitBlobBuilder ||
             e.MozBlobBuilder ||
             (function (e) {
               var t = function (e) {
-                  return Object.prototype.toString
-                    .call(e)
-                    .match(/^\[object\s(.*)\]$/)[1];
-                },
+                return Object.prototype.toString
+                  .call(e)
+                  .match(/^\[object\s(.*)\]$/)[1];
+              },
                 n = function () {
                   this.data = [];
                 },
@@ -8465,25 +9015,25 @@
                 v = e.ArrayBuffer,
                 g = e.Uint8Array,
                 y = /^[\w-]+:\/*\[?[\w\.:-]+\]?(?::[0-9]+)?/;
-              for (r.fake = i.fake = !0; c--; ) s.prototype[l[c]] = c + 1;
+              for (r.fake = i.fake = !0; c--;) s.prototype[l[c]] = c + 1;
               return (
                 u.createObjectURL ||
-                  (h = e.URL =
-                    function (e) {
-                      var t,
-                        n = document.createElementNS(
-                          "http://www.w3.org/1999/xhtml",
-                          "a"
-                        );
-                      return (
-                        (n.href = e),
-                        "origin" in n ||
-                          ("data:" === n.protocol.toLowerCase()
-                            ? (n.origin = null)
-                            : ((t = e.match(y)), (n.origin = t && t[1]))),
-                        n
+                (h = e.URL =
+                  function (e) {
+                    var t,
+                      n = document.createElementNS(
+                        "http://www.w3.org/1999/xhtml",
+                        "a"
                       );
-                    }),
+                    return (
+                      (n.href = e),
+                      "origin" in n ||
+                      ("data:" === n.protocol.toLowerCase()
+                        ? (n.origin = null)
+                        : ((t = e.match(y)), (n.origin = t && t[1]))),
+                      n
+                    );
+                  }),
                 (h.createObjectURL = function (e) {
                   var t,
                     n = e.type;
@@ -8494,13 +9044,13 @@
                         "base64" === e.encoding
                           ? t + ";base64," + e.data
                           : "URI" === e.encoding
-                          ? t + "," + decodeURIComponent(e.data)
-                          : f
-                          ? t + ";base64," + f(e.data)
-                          : t + "," + encodeURIComponent(e.data))
+                            ? t + "," + decodeURIComponent(e.data)
+                            : f
+                              ? t + ";base64," + f(e.data)
+                              : t + "," + encodeURIComponent(e.data))
                       : d
-                      ? d.call(u, e)
-                      : void 0
+                        ? d.call(u, e)
+                        : void 0
                   );
                 }),
                 (h.revokeObjectURL = function (e) {
@@ -8525,8 +9075,8 @@
                       ? "base64" === e.encoding && m
                         ? n.push(m(e.data))
                         : "URI" === e.encoding
-                        ? n.push(decodeURIComponent(e.data))
-                        : "raw" === e.encoding && n.push(e.data)
+                          ? n.push(decodeURIComponent(e.data))
+                          : "raw" === e.encoding && n.push(e.data)
                       : ("string" != typeof e && (e += ""),
                         n.push(unescape(encodeURIComponent(e))));
                 }),
@@ -8567,18 +9117,18 @@
           };
         })(
           ("undefined" != typeof self && self) ||
-            ("undefined" != typeof window && window) ||
-            this.content ||
-            this
+          ("undefined" != typeof window && window) ||
+          this.content ||
+          this
         ),
           "undefined" != typeof t && t.exports
             ? (t.exports.saveAs = Blob)
             : "undefined" != typeof define &&
-              null !== define &&
-              null != define.amd &&
-              define([], function () {
-                return Blob;
-              });
+            null !== define &&
+            null != define.amd &&
+            define([], function () {
+              return Blob;
+            });
       },
       {},
     ],
@@ -8640,7 +9190,7 @@
                 },
                 h = function (e, t, n) {
                   t = [].concat(t);
-                  for (var r = t.length; r--; ) {
+                  for (var r = t.length; r--;) {
                     var o = e["on" + t[r]];
                     if ("function" == typeof o)
                       try {
@@ -8691,12 +9241,12 @@
                         _(),
                         void p(d))
                       : (/^\s*(?:text\/(?:plain|xml)|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(
-                          t.type
-                        ) && (t = new Blob(["﻿", t], { type: t.type })),
+                        t.type
+                      ) && (t = new Blob(["﻿", t], { type: t.type })),
                         e.chrome &&
-                          g &&
-                          g !== c &&
-                          ((m = t.slice || t.webkitSlice),
+                        g &&
+                        g !== c &&
+                        ((m = t.slice || t.webkitSlice),
                           (t = m.call(t, 0, t.size, c)),
                           (y = !0)),
                         a && "download" !== l && (l += ".download"),
@@ -8784,23 +9334,23 @@
                   m.onabort =
                   m.onerror =
                   m.onwriteend =
-                    null),
+                  null),
                 v
               );
             }
           })(
             ("undefined" != typeof self && self) ||
-              ("undefined" != typeof window && window) ||
-              this.content
+            ("undefined" != typeof window && window) ||
+            this.content
           );
         "undefined" != typeof t && t.exports
           ? (t.exports.saveAs = n)
           : "undefined" != typeof define &&
-            null !== define &&
-            null != define.amd &&
-            define([], function () {
-              return n;
-            });
+          null !== define &&
+          null != define.amd &&
+          define([], function () {
+            return n;
+          });
       },
       {},
     ],
@@ -8816,27 +9366,27 @@
           l = e("./components/dialogs/dialogs"),
           c =
             (e("./components/focusoverlay/focusoverlay"),
-            e("./components/chromeapp/header")),
+              e("./components/chromeapp/header")),
           u = n.createClass({
             displayName: "EditorGui",
             render: function () {
               var e = "";
               return (e = this.state.preloading
                 ? n.createElement(r, {
-                    percent: this.state.loadingPercent,
-                    itemName: this.state.loadingItem,
-                  })
+                  percent: this.state.loadingPercent,
+                  itemName: this.state.loadingItem,
+                })
                 : n.createElement(
-                    "div",
-                    { className: "editorGui" },
-                    this.showHeader(),
-                    n.createElement(a, { data: this.state }),
-                    n.createElement(o, { data: this.state }),
-                    n.createElement(i, { data: this.state }),
-                    n.createElement(s, { data: this.state }),
-                    n.createElement(l, { data: this.state }),
-                    this.showFocusOverlay()
-                  ));
+                  "div",
+                  { className: "editorGui" },
+                  this.showHeader(),
+                  n.createElement(a, { data: this.state }),
+                  n.createElement(o, { data: this.state }),
+                  n.createElement(i, { data: this.state }),
+                  n.createElement(s, { data: this.state }),
+                  n.createElement(l, { data: this.state }),
+                  this.showFocusOverlay()
+                ));
             },
             showHeader: function () {
               var e = !1;
@@ -8868,7 +9418,7 @@
             handleGameStateChange: function (e) {
               this.setState(e);
             },
-            componentWillUpdate: function () {},
+            componentWillUpdate: function () { },
             bindToGame: function () {
               GameManager.on("stateChange", this.handleGameStateChange);
             },
@@ -8895,8 +9445,8 @@
           "function" == typeof define && define.amd
             ? define(["react"], o)
             : "object" == typeof n
-            ? (t.exports = o(e("react")))
-            : (r.ReactSlider = o(r.React));
+              ? (t.exports = o(e("react")))
+              : (r.ReactSlider = o(r.React));
         })(this, function (e) {
           function t(e) {
             return (
@@ -8992,8 +9542,8 @@
               return t.every(i)
                 ? t
                 : r.every(i)
-                ? r
-                : n(
+                  ? r
+                  : n(
                     this.props.min,
                     this.props.max,
                     e.Children.count(this.props.children)
@@ -9101,12 +9651,12 @@
               return this.props.disabled
                 ? void 0
                 : function (o) {
-                    document.activeElement && document.activeElement.blur();
-                    var i = n(o);
-                    this._start(e, i);
-                    for (var a in r) document.addEventListener(a, r[a], !1);
-                    t(o);
-                  }.bind(this);
+                  document.activeElement && document.activeElement.blur();
+                  var i = n(o);
+                  this._start(e, i);
+                  for (var a in r) document.addEventListener(a, r[a], !1);
+                  t(o);
+                }.bind(this);
             },
             _start: function (e, t) {
               var n = this.state.zIndices;
@@ -9167,7 +9717,7 @@
                     (r[e] > n[e]
                       ? (this._pearlNext(e, r), this._limitNext(o, r))
                       : r[e] < n[e] &&
-                        (this._pearlPrev(e, r), this._limitPrev(o, r)));
+                      (this._pearlPrev(e, r), this._limitPrev(o, r)));
                 }
                 var i = r.reduce(function (e, t, r) {
                   return e && t === n[r];
@@ -9422,9 +9972,9 @@
             (b
               ? (l = o(e))
               : k
-              ? a(e, r) && (l = D.compositionEnd)
-              : i(e, r) && (l = D.compositionStart),
-            !l)
+                ? a(e, r) && (l = D.compositionEnd)
+                : i(e, r) && (l = D.compositionStart),
+              !l)
           )
             return null;
           C &&
@@ -9580,24 +10130,24 @@
           return e + t.charAt(0).toUpperCase() + t.substring(1);
         }
         var r = {
-            boxFlex: !0,
-            boxFlexGroup: !0,
-            columnCount: !0,
-            flex: !0,
-            flexGrow: !0,
-            flexShrink: !0,
-            fontWeight: !0,
-            lineClamp: !0,
-            lineHeight: !0,
-            opacity: !0,
-            order: !0,
-            orphans: !0,
-            widows: !0,
-            zIndex: !0,
-            zoom: !0,
-            fillOpacity: !0,
-            strokeOpacity: !0,
-          },
+          boxFlex: !0,
+          boxFlexGroup: !0,
+          columnCount: !0,
+          flex: !0,
+          flexGrow: !0,
+          flexShrink: !0,
+          fontWeight: !0,
+          lineClamp: !0,
+          lineHeight: !0,
+          opacity: !0,
+          order: !0,
+          orphans: !0,
+          widows: !0,
+          zIndex: !0,
+          zoom: !0,
+          fillOpacity: !0,
+          strokeOpacity: !0,
+        },
           o = ["Webkit", "ms", "Moz", "O"];
         Object.keys(r).forEach(function (e) {
           o.forEach(function (t) {
@@ -9605,42 +10155,42 @@
           });
         });
         var i = {
-            background: {
-              backgroundImage: !0,
-              backgroundPosition: !0,
-              backgroundRepeat: !0,
-              backgroundColor: !0,
-            },
-            border: { borderWidth: !0, borderStyle: !0, borderColor: !0 },
-            borderBottom: {
-              borderBottomWidth: !0,
-              borderBottomStyle: !0,
-              borderBottomColor: !0,
-            },
-            borderLeft: {
-              borderLeftWidth: !0,
-              borderLeftStyle: !0,
-              borderLeftColor: !0,
-            },
-            borderRight: {
-              borderRightWidth: !0,
-              borderRightStyle: !0,
-              borderRightColor: !0,
-            },
-            borderTop: {
-              borderTopWidth: !0,
-              borderTopStyle: !0,
-              borderTopColor: !0,
-            },
-            font: {
-              fontStyle: !0,
-              fontVariant: !0,
-              fontWeight: !0,
-              fontSize: !0,
-              lineHeight: !0,
-              fontFamily: !0,
-            },
+          background: {
+            backgroundImage: !0,
+            backgroundPosition: !0,
+            backgroundRepeat: !0,
+            backgroundColor: !0,
           },
+          border: { borderWidth: !0, borderStyle: !0, borderColor: !0 },
+          borderBottom: {
+            borderBottomWidth: !0,
+            borderBottomStyle: !0,
+            borderBottomColor: !0,
+          },
+          borderLeft: {
+            borderLeftWidth: !0,
+            borderLeftStyle: !0,
+            borderLeftColor: !0,
+          },
+          borderRight: {
+            borderRightWidth: !0,
+            borderRightStyle: !0,
+            borderRightColor: !0,
+          },
+          borderTop: {
+            borderTopWidth: !0,
+            borderTopStyle: !0,
+            borderTopColor: !0,
+          },
+          font: {
+            fontStyle: !0,
+            fontVariant: !0,
+            fontWeight: !0,
+            fontSize: !0,
+            lineHeight: !0,
+            fontFamily: !0,
+          },
+        },
           a = { isUnitlessNumber: r, shorthandPropertyExpansions: i };
         t.exports = a;
       },
@@ -9665,7 +10215,7 @@
             (o.canUseDOM &&
               void 0 === document.documentElement.style.cssFloat &&
               (d = "styleFloat"),
-            "production" !== n.env.NODE_ENV)
+              "production" !== n.env.NODE_ENV)
           )
             var p = /^(?:webkit|moz|o)[A-Z]/,
               h = /;\s*$/,
@@ -9674,45 +10224,45 @@
               v = function (e) {
                 (f.hasOwnProperty(e) && f[e]) ||
                   ((f[e] = !0),
-                  "production" !== n.env.NODE_ENV
-                    ? c(
+                    "production" !== n.env.NODE_ENV
+                      ? c(
                         !1,
                         "Unsupported style property %s. Did you mean %s?",
                         e,
                         i(e)
                       )
-                    : null);
+                      : null);
               },
               g = function (e) {
                 (f.hasOwnProperty(e) && f[e]) ||
                   ((f[e] = !0),
-                  "production" !== n.env.NODE_ENV
-                    ? c(
+                    "production" !== n.env.NODE_ENV
+                      ? c(
                         !1,
                         "Unsupported vendor-prefixed style property %s. Did you mean %s?",
                         e,
                         e.charAt(0).toUpperCase() + e.slice(1)
                       )
-                    : null);
+                      : null);
               },
               y = function (e, t) {
                 (m.hasOwnProperty(t) && m[t]) ||
                   ((m[t] = !0),
-                  "production" !== n.env.NODE_ENV
-                    ? c(
+                    "production" !== n.env.NODE_ENV
+                      ? c(
                         !1,
                         'Style property values shouldn\'t contain a semicolon. Try "%s: %s" instead.',
                         e,
                         t.replace(h, "")
                       )
-                    : null);
+                      : null);
               },
               _ = function (e, t) {
                 e.indexOf("-") > -1
                   ? v(e)
                   : p.test(e)
-                  ? g(e)
-                  : h.test(t) && y(e, t);
+                    ? g(e)
+                    : h.test(t) && y(e, t);
               };
           var E = {
             createMarkupForStyles: function (e) {
@@ -9777,9 +10327,9 @@
               if (e) {
                 "production" !== n.env.NODE_ENV
                   ? a(
-                      e.length === t.length,
-                      "Mismatched list of contexts in callback queue"
-                    )
+                    e.length === t.length,
+                    "Mismatched list of contexts in callback queue"
+                  )
                   : a(e.length === t.length),
                   (this._callbacks = null),
                   (this._contexts = null);
@@ -9847,11 +10397,11 @@
         function u() {
           D &&
             (delete D.value,
-            D.detachEvent("onpropertychange", d),
-            (D = null),
-            (R = null),
-            (k = null),
-            (O = null));
+              D.detachEvent("onpropertychange", d),
+              (D = null),
+              (R = null),
+              (k = null),
+              (O = null));
         }
         function d(e) {
           if ("value" === e.propertyName) {
@@ -9926,13 +10476,13 @@
             T("input") &&
             (!("documentMode" in document) || document.documentMode > 9));
         var A = {
-            get: function () {
-              return O.get.call(this);
-            },
-            set: function (e) {
-              (k = "" + e), O.set.call(this, e);
-            },
+          get: function () {
+            return O.get.call(this);
           },
+          set: function (e) {
+            (k = "" + e), O.set.call(this, e);
+          },
+        },
           L = {
             eventTypes: S,
             extractEvents: function (e, t, r, o) {
@@ -9943,11 +10493,11 @@
                     ? (i = s)
                     : (a = l)
                   : C(t)
-                  ? M
-                    ? (i = p)
-                    : ((i = f), (a = h))
-                  : m(t) && (i = v),
-                i)
+                    ? M
+                      ? (i = p)
+                      : ((i = f), (a = h))
+                    : m(t) && (i = v),
+                  i)
               ) {
                 var c = i(e, t, r);
                 if (c) {
@@ -10004,18 +10554,18 @@
                 for (var l, c = null, u = null, d = 0; d < e.length; d++)
                   if (
                     ((l = e[d]),
-                    l.type === i.MOVE_EXISTING || l.type === i.REMOVE_NODE)
+                      l.type === i.MOVE_EXISTING || l.type === i.REMOVE_NODE)
                   ) {
                     var p = l.fromIndex,
                       h = l.parentNode.childNodes[p],
                       f = l.parentID;
                     "production" !== n.env.NODE_ENV
                       ? s(
-                          h,
-                          "processUpdates(): Unable to find child %s of element. This probably means the DOM was unexpectedly mutated (e.g., by the browser), usually due to forgetting a <tbody> when using tables, nesting tags like <form>, <p>, or <a>, or using non-SVG elements in an <svg> parent. Try inspecting the child nodes of the element with React ID `%s`.",
-                          p,
-                          f
-                        )
+                        h,
+                        "processUpdates(): Unable to find child %s of element. This probably means the DOM was unexpectedly mutated (e.g., by the browser), usually due to forgetting a <tbody> when using tables, nesting tags like <form>, <p>, or <a>, or using non-SVG elements in an <svg> parent. Try inspecting the child nodes of the element with React ID `%s`.",
+                        p,
+                        f
+                      )
                       : s(h),
                       (c = c || {}),
                       (c[f] = c[f] || []),
@@ -10079,10 +10629,10 @@
                 for (var u in t) {
                   "production" !== n.env.NODE_ENV
                     ? o(
-                        !s.isStandardName.hasOwnProperty(u),
-                        "injectDOMPropertyConfig(...): You're trying to inject DOM property '%s' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.",
-                        u
-                      )
+                      !s.isStandardName.hasOwnProperty(u),
+                      "injectDOMPropertyConfig(...): You're trying to inject DOM property '%s' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.",
+                      u
+                    )
                     : o(!s.isStandardName.hasOwnProperty(u)),
                     (s.isStandardName[u] = !0);
                   var d = u.toLowerCase();
@@ -10113,33 +10663,33 @@
                     )),
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          !s.mustUseAttribute[u] || !s.mustUseProperty[u],
-                          "DOMProperty: Cannot require using both attribute and property: %s",
-                          u
-                        )
+                        !s.mustUseAttribute[u] || !s.mustUseProperty[u],
+                        "DOMProperty: Cannot require using both attribute and property: %s",
+                        u
+                      )
                       : o(!s.mustUseAttribute[u] || !s.mustUseProperty[u]),
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          s.mustUseProperty[u] || !s.hasSideEffects[u],
-                          "DOMProperty: Properties that have side effects must use property: %s",
-                          u
-                        )
+                        s.mustUseProperty[u] || !s.hasSideEffects[u],
+                        "DOMProperty: Properties that have side effects must use property: %s",
+                        u
+                      )
                       : o(s.mustUseProperty[u] || !s.hasSideEffects[u]),
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          !!s.hasBooleanValue[u] +
-                            !!s.hasNumericValue[u] +
-                            !!s.hasOverloadedBooleanValue[u] <=
-                            1,
-                          "DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s",
-                          u
-                        )
+                        !!s.hasBooleanValue[u] +
+                        !!s.hasNumericValue[u] +
+                        !!s.hasOverloadedBooleanValue[u] <=
+                        1,
+                        "DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s",
+                        u
+                      )
                       : o(
-                          !!s.hasBooleanValue[u] +
-                            !!s.hasNumericValue[u] +
-                            !!s.hasOverloadedBooleanValue[u] <=
-                            1
-                        );
+                        !!s.hasBooleanValue[u] +
+                        !!s.hasNumericValue[u] +
+                        !!s.hasOverloadedBooleanValue[u] <=
+                        1
+                      );
                 }
               },
             },
@@ -10200,11 +10750,11 @@
             a = e("./warning");
           if ("production" !== n.env.NODE_ENV)
             var s = {
-                children: !0,
-                dangerouslySetInnerHTML: !0,
-                key: !0,
-                ref: !0,
-              },
+              children: !0,
+              dangerouslySetInnerHTML: !0,
+              key: !0,
+              ref: !0,
+            },
               l = {},
               c = function (e) {
                 if (
@@ -10218,15 +10768,15 @@
                     r = o.isCustomAttribute(t)
                       ? t
                       : o.getPossibleStandardName.hasOwnProperty(t)
-                      ? o.getPossibleStandardName[t]
-                      : null;
+                        ? o.getPossibleStandardName[t]
+                        : null;
                   "production" !== n.env.NODE_ENV
                     ? a(
-                        null == r,
-                        "Unknown DOM property %s. Did you mean %s?",
-                        e,
-                        r
-                      )
+                      null == r,
+                      "Unknown DOM property %s. Did you mean %s?",
+                      e,
+                      r
+                    )
                     : null;
                 }
               };
@@ -10312,9 +10862,9 @@
               dangerouslyRenderMarkup: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? l(
-                      o.canUseDOM,
-                      "dangerouslyRenderMarkup(...): Cannot render markup in a worker thread. Make sure `window` and `document` are available globally before requiring React when unit testing or use React.renderToString for server rendering."
-                    )
+                    o.canUseDOM,
+                    "dangerouslyRenderMarkup(...): Cannot render markup in a worker thread. Make sure `window` and `document` are available globally before requiring React when unit testing or use React.renderToString for server rendering."
+                  )
                   : l(o.canUseDOM);
                 for (var t, d = {}, p = 0; p < e.length; p++)
                   "production" !== n.env.NODE_ENV
@@ -10342,33 +10892,33 @@
                           E.removeAttribute(u),
                           "production" !== n.env.NODE_ENV
                             ? l(
-                                !h.hasOwnProperty(m),
-                                "Danger: Assigning to an already-occupied result index."
-                              )
+                              !h.hasOwnProperty(m),
+                              "Danger: Assigning to an already-occupied result index."
+                            )
                             : l(!h.hasOwnProperty(m)),
                           (h[m] = E),
                           (f += 1))
                         : "production" !== n.env.NODE_ENV &&
-                          console.error(
-                            "Danger: Discarding unexpected node:",
-                            E
-                          );
+                        console.error(
+                          "Danger: Discarding unexpected node:",
+                          E
+                        );
                     }
                   }
                 return (
                   "production" !== n.env.NODE_ENV
                     ? l(
-                        f === h.length,
-                        "Danger: Did not assign to every index of resultList."
-                      )
+                      f === h.length,
+                      "Danger: Did not assign to every index of resultList."
+                    )
                     : l(f === h.length),
                   "production" !== n.env.NODE_ENV
                     ? l(
-                        h.length === e.length,
-                        "Danger: Expected markup to render %s nodes, but rendered %s.",
-                        e.length,
-                        h.length
-                      )
+                      h.length === e.length,
+                      "Danger: Expected markup to render %s nodes, but rendered %s.",
+                      e.length,
+                      h.length
+                    )
                     : l(h.length === e.length),
                   h
                 );
@@ -10376,21 +10926,21 @@
               dangerouslyReplaceNodeWithMarkup: function (e, t) {
                 "production" !== n.env.NODE_ENV
                   ? l(
-                      o.canUseDOM,
-                      "dangerouslyReplaceNodeWithMarkup(...): Cannot render markup in a worker thread. Make sure `window` and `document` are available globally before requiring React when unit testing or use React.renderToString for server rendering."
-                    )
+                    o.canUseDOM,
+                    "dangerouslyReplaceNodeWithMarkup(...): Cannot render markup in a worker thread. Make sure `window` and `document` are available globally before requiring React when unit testing or use React.renderToString for server rendering."
+                  )
                   : l(o.canUseDOM),
                   "production" !== n.env.NODE_ENV
                     ? l(
-                        t,
-                        "dangerouslyReplaceNodeWithMarkup(...): Missing markup."
-                      )
+                      t,
+                      "dangerouslyReplaceNodeWithMarkup(...): Missing markup."
+                    )
                     : l(t),
                   "production" !== n.env.NODE_ENV
                     ? l(
-                        "html" !== e.tagName.toLowerCase(),
-                        "dangerouslyReplaceNodeWithMarkup(...): Cannot replace markup of the <html> node. This is because browser quirks make this unreliable and/or slow. If you want to render to the root you must use server rendering. See React.renderToString()."
-                      )
+                      "html" !== e.tagName.toLowerCase(),
+                      "dangerouslyReplaceNodeWithMarkup(...): Cannot replace markup of the <html> node. This is because browser quirks make this unreliable and/or slow. If you want to render to the root you must use server rendering. See React.renderToString()."
+                    )
                     : l("html" !== e.tagName.toLowerCase());
                 var r = i(t, a)[0];
                 e.parentNode.replaceChild(r, e);
@@ -10465,7 +11015,7 @@
                 (e === s.topMouseOut
                   ? ((h = t), (f = l(a.relatedTarget || a.toElement) || d))
                   : ((h = d), (f = t)),
-                h === f)
+                  h === f)
               )
                 return null;
               var m = h ? i.getID(h) : "",
@@ -10555,35 +11105,35 @@
               listen: function (e, t, n) {
                 return e.addEventListener
                   ? (e.addEventListener(t, n, !1),
-                    {
-                      remove: function () {
-                        e.removeEventListener(t, n, !1);
-                      },
-                    })
+                  {
+                    remove: function () {
+                      e.removeEventListener(t, n, !1);
+                    },
+                  })
                   : e.attachEvent
-                  ? (e.attachEvent("on" + t, n),
+                    ? (e.attachEvent("on" + t, n),
                     {
                       remove: function () {
                         e.detachEvent("on" + t, n);
                       },
                     })
-                  : void 0;
+                    : void 0;
               },
               capture: function (e, t, o) {
                 return e.addEventListener
                   ? (e.addEventListener(t, o, !0),
-                    {
-                      remove: function () {
-                        e.removeEventListener(t, o, !0);
-                      },
-                    })
+                  {
+                    remove: function () {
+                      e.removeEventListener(t, o, !0);
+                    },
+                  })
                   : ("production" !== n.env.NODE_ENV &&
-                      console.error(
-                        "Attempted to listen to events during the capture phase on a browser that does not support the capture phase. Your application will not receive some events."
-                      ),
+                    console.error(
+                      "Attempted to listen to events during the capture phase on a browser that does not support the capture phase. Your application will not receive some events."
+                    ),
                     { remove: r });
               },
-              registerDefault: function () {},
+              registerDefault: function () { },
             };
           t.exports = o;
         }).call(this, e("_process"));
@@ -10634,11 +11184,11 @@
               putListener: function (e, t, r) {
                 "production" !== n.env.NODE_ENV
                   ? l(
-                      !r || "function" == typeof r,
-                      "Expected %s listener to be a function, instead got type %s",
-                      t,
-                      typeof r
-                    )
+                    !r || "function" == typeof r,
+                    "Expected %s listener to be a function, instead got type %s",
+                    t,
+                    typeof r
+                  )
                   : l(!r || "function" == typeof r);
                 var o = c[t] || (c[t] = {});
                 o[e] = r;
@@ -10673,9 +11223,9 @@
                   s(e, d),
                   "production" !== n.env.NODE_ENV
                     ? l(
-                        !u,
-                        "processEventQueue(): Additional events were enqueued while processing an event queue. Support for this has not yet been implemented."
-                      )
+                      !u,
+                      "processEventQueue(): Additional events were enqueued while processing an event queue. Support for this has not yet been implemented."
+                    )
                     : l(!u);
               },
               __purge: function () {
@@ -10709,30 +11259,30 @@
                 if (
                   ("production" !== n.env.NODE_ENV
                     ? a(
-                        r > -1,
-                        "EventPluginRegistry: Cannot inject event plugins that do not exist in the plugin ordering, `%s`.",
-                        e
-                      )
+                      r > -1,
+                      "EventPluginRegistry: Cannot inject event plugins that do not exist in the plugin ordering, `%s`.",
+                      e
+                    )
                     : a(r > -1),
-                  !c.plugins[r])
+                    !c.plugins[r])
                 ) {
                   "production" !== n.env.NODE_ENV
                     ? a(
-                        t.extractEvents,
-                        "EventPluginRegistry: Event plugins must implement an `extractEvents` method, but `%s` does not.",
-                        e
-                      )
+                      t.extractEvents,
+                      "EventPluginRegistry: Event plugins must implement an `extractEvents` method, but `%s` does not.",
+                      e
+                    )
                     : a(t.extractEvents),
                     (c.plugins[r] = t);
                   var i = t.eventTypes;
                   for (var u in i)
                     "production" !== n.env.NODE_ENV
                       ? a(
-                          o(i[u], t, u),
-                          "EventPluginRegistry: Failed to publish event `%s` for plugin `%s`.",
-                          u,
-                          e
-                        )
+                        o(i[u], t, u),
+                        "EventPluginRegistry: Failed to publish event `%s` for plugin `%s`.",
+                        u,
+                        e
+                      )
                       : a(o(i[u], t, u));
                 }
               }
@@ -10740,10 +11290,10 @@
           function o(e, t, r) {
             "production" !== n.env.NODE_ENV
               ? a(
-                  !c.eventNameDispatchConfigs.hasOwnProperty(r),
-                  "EventPluginHub: More than one plugin attempted to publish the same event name, `%s`.",
-                  r
-                )
+                !c.eventNameDispatchConfigs.hasOwnProperty(r),
+                "EventPluginHub: More than one plugin attempted to publish the same event name, `%s`.",
+                r
+              )
               : a(!c.eventNameDispatchConfigs.hasOwnProperty(r)),
               (c.eventNameDispatchConfigs[r] = e);
             var o = e.phasedRegistrationNames;
@@ -10760,10 +11310,10 @@
           function i(e, t, r) {
             "production" !== n.env.NODE_ENV
               ? a(
-                  !c.registrationNameModules[e],
-                  "EventPluginHub: More than one plugin attempted to publish the same registration name, `%s`.",
-                  e
-                )
+                !c.registrationNameModules[e],
+                "EventPluginHub: More than one plugin attempted to publish the same registration name, `%s`.",
+                e
+              )
               : a(!c.registrationNameModules[e]),
               (c.registrationNameModules[e] = t),
               (c.registrationNameDependencies[e] =
@@ -10780,9 +11330,9 @@
               injectEventPluginOrder: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? a(
-                      !s,
-                      "EventPluginRegistry: Cannot inject event plugin ordering more than once. You are likely trying to load more than one copy of React."
-                    )
+                    !s,
+                    "EventPluginRegistry: Cannot inject event plugin ordering more than once. You are likely trying to load more than one copy of React."
+                  )
                   : a(!s),
                   (s = Array.prototype.slice.call(e)),
                   r();
@@ -10795,13 +11345,13 @@
                     (l.hasOwnProperty(o) && l[o] === i) ||
                       ("production" !== n.env.NODE_ENV
                         ? a(
-                            !l[o],
-                            "EventPluginRegistry: Cannot inject two different event plugins using the same name, `%s`.",
-                            o
-                          )
+                          !l[o],
+                          "EventPluginRegistry: Cannot inject two different event plugins using the same name, `%s`.",
+                          o
+                        )
                         : a(!l[o]),
-                      (l[o] = i),
-                      (t = !0));
+                        (l[o] = i),
+                        (t = !0));
                   }
                 t && r();
               },
@@ -10884,9 +11434,9 @@
               r = e._dispatchIDs;
             "production" !== n.env.NODE_ENV
               ? m(
-                  !Array.isArray(t),
-                  "executeDirectDispatch(...): Invalid `event`."
-                )
+                !Array.isArray(t),
+                "executeDirectDispatch(...): Invalid `event`."
+              )
               : m(!Array.isArray(t));
             var o = t ? t(e, r) : null;
             return (e._dispatchListeners = null), (e._dispatchIDs = null), o;
@@ -10902,12 +11452,12 @@
               injectMount: function (e) {
                 (v.Mount = e),
                   "production" !== n.env.NODE_ENV &&
-                    ("production" !== n.env.NODE_ENV
-                      ? m(
-                          e && e.getNode,
-                          "EventPluginUtils.injection.injectMount(...): Injected Mount module is missing getNode."
-                        )
-                      : m(e && e.getNode));
+                  ("production" !== n.env.NODE_ENV
+                    ? m(
+                      e && e.getNode,
+                      "EventPluginUtils.injection.injectMount(...): Injected Mount module is missing getNode."
+                    )
+                    : m(e && e.getNode));
               },
             },
             g = f.topLevelTypes;
@@ -10955,7 +11505,7 @@
               a = r(e, o, i);
             a &&
               ((o._dispatchListeners = h(o._dispatchListeners, a)),
-              (o._dispatchIDs = h(o._dispatchIDs, e)));
+                (o._dispatchIDs = h(o._dispatchIDs, e)));
           }
           function i(e) {
             e &&
@@ -10970,7 +11520,7 @@
                 o = v(e, r);
               o &&
                 ((n._dispatchListeners = h(n._dispatchListeners, o)),
-                (n._dispatchIDs = h(n._dispatchIDs, e)));
+                  (n._dispatchIDs = h(n._dispatchIDs, e)));
             }
           }
           function s(e) {
@@ -11013,10 +11563,10 @@
       function (e, t) {
         "use strict";
         var n = !(
-            "undefined" == typeof window ||
-            !window.document ||
-            !window.document.createElement
-          ),
+          "undefined" == typeof window ||
+          !window.document ||
+          !window.document.createElement
+        ),
           r = {
             canUseDOM: n,
             canUseWorkers: "undefined" != typeof Worker,
@@ -11237,27 +11787,27 @@
           function r(e) {
             "production" !== n.env.NODE_ENV
               ? c(
-                  null == e.props.checkedLink || null == e.props.valueLink,
-                  "Cannot provide a checkedLink and a valueLink. If you want to use checkedLink, you probably don't want to use valueLink and vice versa."
-                )
+                null == e.props.checkedLink || null == e.props.valueLink,
+                "Cannot provide a checkedLink and a valueLink. If you want to use checkedLink, you probably don't want to use valueLink and vice versa."
+              )
               : c(null == e.props.checkedLink || null == e.props.valueLink);
           }
           function o(e) {
             r(e),
               "production" !== n.env.NODE_ENV
                 ? c(
-                    null == e.props.value && null == e.props.onChange,
-                    "Cannot provide a valueLink and a value or onChange event. If you want to use value or onChange, you probably don't want to use valueLink."
-                  )
+                  null == e.props.value && null == e.props.onChange,
+                  "Cannot provide a valueLink and a value or onChange event. If you want to use value or onChange, you probably don't want to use valueLink."
+                )
                 : c(null == e.props.value && null == e.props.onChange);
           }
           function i(e) {
             r(e),
               "production" !== n.env.NODE_ENV
                 ? c(
-                    null == e.props.checked && null == e.props.onChange,
-                    "Cannot provide a checkedLink and a checked property or onChange event. If you want to use checked or onChange, you probably don't want to use checkedLink"
-                  )
+                  null == e.props.checked && null == e.props.onChange,
+                  "Cannot provide a checkedLink and a checked property or onChange event. If you want to use checked or onChange, you probably don't want to use checkedLink"
+                )
                 : c(null == e.props.checked && null == e.props.onChange);
           }
           function a(e) {
@@ -11288,15 +11838,15 @@
                       e.disabled
                       ? null
                       : new Error(
-                          "You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`."
-                        );
+                        "You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`."
+                      );
                   },
                   checked: function (e, t) {
                     return !e[t] || e.onChange || e.readOnly || e.disabled
                       ? null
                       : new Error(
-                          "You provided a `checked` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultChecked`. Otherwise, set either `onChange` or `readOnly`."
-                        );
+                        "You provided a `checked` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultChecked`. Otherwise, set either `onChange` or `readOnly`."
+                      );
                   },
                   onChange: l.func,
                 },
@@ -11315,8 +11865,8 @@
                 return e.props.valueLink
                   ? (o(e), a)
                   : e.props.checkedLink
-                  ? (i(e), s)
-                  : e.props.onChange;
+                    ? (i(e), s)
+                    : e.props.onChange;
               },
             };
           t.exports = d;
@@ -11343,9 +11893,9 @@
                 var r = this.getDOMNode();
                 "production" !== n.env.NODE_ENV
                   ? s(
-                      r,
-                      "LocalEventTrapMixin.trapBubbledEvent(...): Requires node to be rendered."
-                    )
+                    r,
+                    "LocalEventTrapMixin.trapBubbledEvent(...): Requires node to be rendered."
+                  )
                   : s(r);
                 var a = o.trapBubbledEvent(e, t, r);
                 this._localEventListeners = i(this._localEventListeners, a);
@@ -11450,9 +12000,9 @@
               var t = this;
               "production" !== n.env.NODE_ENV
                 ? r(
-                    e instanceof t,
-                    "Trying to release an instance into a pool of a different type."
-                  )
+                  e instanceof t,
+                  "Trying to release an instance into a pool of a different type."
+                )
                 : r(e instanceof t),
                 e.destructor && e.destructor(),
                 t.instancePool.length < t.poolSize && t.instancePool.push(e);
@@ -11511,8 +12061,8 @@
             w = c.cloneElement;
           "production" !== n.env.NODE_ENV &&
             ((T = u.createElement),
-            (C = u.createFactory),
-            (w = u.cloneElement));
+              (C = u.createFactory),
+              (w = u.cloneElement));
           var x = v.measure("React", "render", m.render),
             S = {
               Children: {
@@ -11556,7 +12106,7 @@
                 Reconciler: y,
                 TextComponent: p,
               }),
-            "production" !== n.env.NODE_ENV)
+              "production" !== n.env.NODE_ENV)
           ) {
             var D = e("./ExecutionEnvironment");
             if (D.canUseDOM && window.top === window.self) {
@@ -11567,20 +12117,20 @@
                 );
               for (
                 var R = [
-                    Array.isArray,
-                    Array.prototype.every,
-                    Array.prototype.forEach,
-                    Array.prototype.indexOf,
-                    Array.prototype.map,
-                    Date.now,
-                    Function.prototype.bind,
-                    Object.keys,
-                    String.prototype.split,
-                    String.prototype.trim,
-                    Object.create,
-                    Object.freeze,
-                  ],
-                  k = 0;
+                  Array.isArray,
+                  Array.prototype.every,
+                  Array.prototype.forEach,
+                  Array.prototype.indexOf,
+                  Array.prototype.map,
+                  Date.now,
+                  Function.prototype.bind,
+                  Object.keys,
+                  String.prototype.split,
+                  String.prototype.trim,
+                  Object.create,
+                  Object.freeze,
+                ],
+                k = 0;
                 k < R.length;
                 k++
               )
@@ -11639,7 +12189,7 @@
         function n(e) {
           return (
             Object.prototype.hasOwnProperty.call(e, f) ||
-              ((e[f] = p++), (u[e[f]] = {})),
+            ((e[f] = p++), (u[e[f]] = {})),
             u[e[f]]
           );
         }
@@ -11712,11 +12262,11 @@
             listenTo: function (e, t) {
               for (
                 var o = t,
-                  a = n(o),
-                  s = i.registrationNameDependencies[e],
-                  l = r.topLevelTypes,
-                  u = 0,
-                  d = s.length;
+                a = n(o),
+                s = i.registrationNameDependencies[e],
+                l = r.topLevelTypes,
+                u = 0,
+                d = s.length;
                 d > u;
                 u++
               ) {
@@ -11725,61 +12275,61 @@
                   (p === l.topWheel
                     ? c("wheel")
                       ? m.ReactEventListener.trapBubbledEvent(
-                          l.topWheel,
-                          "wheel",
-                          o
-                        )
+                        l.topWheel,
+                        "wheel",
+                        o
+                      )
                       : c("mousewheel")
-                      ? m.ReactEventListener.trapBubbledEvent(
+                        ? m.ReactEventListener.trapBubbledEvent(
                           l.topWheel,
                           "mousewheel",
                           o
                         )
-                      : m.ReactEventListener.trapBubbledEvent(
+                        : m.ReactEventListener.trapBubbledEvent(
                           l.topWheel,
                           "DOMMouseScroll",
                           o
                         )
                     : p === l.topScroll
-                    ? c("scroll", !0)
-                      ? m.ReactEventListener.trapCapturedEvent(
+                      ? c("scroll", !0)
+                        ? m.ReactEventListener.trapCapturedEvent(
                           l.topScroll,
                           "scroll",
                           o
                         )
-                      : m.ReactEventListener.trapBubbledEvent(
+                        : m.ReactEventListener.trapBubbledEvent(
                           l.topScroll,
                           "scroll",
                           m.ReactEventListener.WINDOW_HANDLE
                         )
-                    : p === l.topFocus || p === l.topBlur
-                    ? (c("focus", !0)
-                        ? (m.ReactEventListener.trapCapturedEvent(
+                      : p === l.topFocus || p === l.topBlur
+                        ? (c("focus", !0)
+                          ? (m.ReactEventListener.trapCapturedEvent(
                             l.topFocus,
                             "focus",
                             o
                           ),
-                          m.ReactEventListener.trapCapturedEvent(
-                            l.topBlur,
-                            "blur",
-                            o
-                          ))
-                        : c("focusin") &&
+                            m.ReactEventListener.trapCapturedEvent(
+                              l.topBlur,
+                              "blur",
+                              o
+                            ))
+                          : c("focusin") &&
                           (m.ReactEventListener.trapBubbledEvent(
                             l.topFocus,
                             "focusin",
                             o
                           ),
-                          m.ReactEventListener.trapBubbledEvent(
-                            l.topBlur,
-                            "focusout",
-                            o
-                          )),
-                      (a[l.topBlur] = !0),
-                      (a[l.topFocus] = !0))
-                    : h.hasOwnProperty(p) &&
-                      m.ReactEventListener.trapBubbledEvent(p, h[p], o),
-                  (a[p] = !0));
+                            m.ReactEventListener.trapBubbledEvent(
+                              l.topBlur,
+                              "focusout",
+                              o
+                            )),
+                          (a[l.topBlur] = !0),
+                          (a[l.topFocus] = !0))
+                        : h.hasOwnProperty(p) &&
+                        m.ReactEventListener.trapBubbledEvent(p, h[p], o),
+                    (a[p] = !0));
               }
             },
             trapBubbledEvent: function (e, t, n) {
@@ -11896,12 +12446,12 @@
               ("production" !== n.env.NODE_ENV &&
                 ("production" !== n.env.NODE_ENV
                   ? f(
-                      s,
-                      "ReactChildren.map(...): Encountered two children with the same key, `%s`. Child keys must be unique; when two children share a key, only the first child will be used.",
-                      r
-                    )
+                    s,
+                    "ReactChildren.map(...): Encountered two children with the same key, `%s`. Child keys must be unique; when two children share a key, only the first child will be used.",
+                    r
+                  )
                   : null),
-              s)
+                s)
             ) {
               var l = i.mapFunction.call(i.mapContext, t, o);
               a[r] = l;
@@ -11947,12 +12497,12 @@
               t.hasOwnProperty(o) &&
                 ("production" !== n.env.NODE_ENV
                   ? w(
-                      "function" == typeof t[o],
-                      "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
-                      e.displayName || "ReactClass",
-                      _[r],
-                      o
-                    )
+                    "function" == typeof t[o],
+                    "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
+                    e.displayName || "ReactClass",
+                    _[r],
+                    o
+                  )
                   : null);
           }
           function o(e, t) {
@@ -11960,33 +12510,33 @@
             P.hasOwnProperty(t) &&
               ("production" !== n.env.NODE_ENV
                 ? N(
-                    r === S.OVERRIDE_BASE,
-                    "ReactClassInterface: You are attempting to override `%s` from your class specification. Ensure that your method names do not overlap with React methods.",
-                    t
-                  )
+                  r === S.OVERRIDE_BASE,
+                  "ReactClassInterface: You are attempting to override `%s` from your class specification. Ensure that your method names do not overlap with React methods.",
+                  t
+                )
                 : N(r === S.OVERRIDE_BASE)),
               e.hasOwnProperty(t) &&
-                ("production" !== n.env.NODE_ENV
-                  ? N(
-                      r === S.DEFINE_MANY || r === S.DEFINE_MANY_MERGED,
-                      "ReactClassInterface: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.",
-                      t
-                    )
-                  : N(r === S.DEFINE_MANY || r === S.DEFINE_MANY_MERGED));
+              ("production" !== n.env.NODE_ENV
+                ? N(
+                  r === S.DEFINE_MANY || r === S.DEFINE_MANY_MERGED,
+                  "ReactClassInterface: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.",
+                  t
+                )
+                : N(r === S.DEFINE_MANY || r === S.DEFINE_MANY_MERGED));
           }
           function i(e, t) {
             if (t) {
               "production" !== n.env.NODE_ENV
                 ? N(
-                    "function" != typeof t,
-                    "ReactClass: You're attempting to use a component class as a mixin. Instead, just use a regular object."
-                  )
+                  "function" != typeof t,
+                  "ReactClass: You're attempting to use a component class as a mixin. Instead, just use a regular object."
+                )
                 : N("function" != typeof t),
                 "production" !== n.env.NODE_ENV
                   ? N(
-                      !f.isValidElement(t),
-                      "ReactClass: You're attempting to use a component as a mixin. Instead, just use a regular object."
-                    )
+                    !f.isValidElement(t),
+                    "ReactClass: You're attempting to use a component as a mixin. Instead, just use a regular object."
+                  )
                   : N(!f.isValidElement(t));
               var r = e.prototype;
               t.hasOwnProperty(x) && k.mixins(e, t.mixins);
@@ -12008,27 +12558,27 @@
                       var m = R[i];
                       "production" !== n.env.NODE_ENV
                         ? N(
-                            s &&
-                              (m === S.DEFINE_MANY_MERGED ||
-                                m === S.DEFINE_MANY),
-                            "ReactClass: Unexpected spec policy %s for key %s when mixing in component specs.",
-                            m,
-                            i
-                          )
+                          s &&
+                          (m === S.DEFINE_MANY_MERGED ||
+                            m === S.DEFINE_MANY),
+                          "ReactClass: Unexpected spec policy %s for key %s when mixing in component specs.",
+                          m,
+                          i
+                        )
                         : N(
-                            s &&
-                              (m === S.DEFINE_MANY_MERGED ||
-                                m === S.DEFINE_MANY)
-                          ),
+                          s &&
+                          (m === S.DEFINE_MANY_MERGED ||
+                            m === S.DEFINE_MANY)
+                        ),
                         m === S.DEFINE_MANY_MERGED
                           ? (r[i] = l(r[i], a))
                           : m === S.DEFINE_MANY && (r[i] = c(r[i], a));
                     } else
                       (r[i] = a),
                         "production" !== n.env.NODE_ENV &&
-                          "function" == typeof a &&
-                          t.displayName &&
-                          (r[i].displayName = t.displayName + "_" + i);
+                        "function" == typeof a &&
+                        t.displayName &&
+                        (r[i].displayName = t.displayName + "_" + i);
                   }
                 }
             }
@@ -12041,18 +12591,18 @@
                   var i = r in k;
                   "production" !== n.env.NODE_ENV
                     ? N(
-                        !i,
-                        'ReactClass: You are attempting to define a reserved property, `%s`, that shouldn\'t be on the "statics" key. Define it as an instance property instead; it will still be accessible on the constructor.',
-                        r
-                      )
+                      !i,
+                      'ReactClass: You are attempting to define a reserved property, `%s`, that shouldn\'t be on the "statics" key. Define it as an instance property instead; it will still be accessible on the constructor.',
+                      r
+                    )
                     : N(!i);
                   var a = r in e;
                   "production" !== n.env.NODE_ENV
                     ? N(
-                        !a,
-                        "ReactClass: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.",
-                        r
-                      )
+                      !a,
+                      "ReactClass: You are attempting to define `%s` on your component more than once. This conflict may be due to a mixin.",
+                      r
+                    )
                     : N(!a),
                     (e[r] = o);
                 }
@@ -12061,20 +12611,20 @@
           function s(e, t) {
             "production" !== n.env.NODE_ENV
               ? N(
-                  e && t && "object" == typeof e && "object" == typeof t,
-                  "mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects."
-                )
+                e && t && "object" == typeof e && "object" == typeof t,
+                "mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects."
+              )
               : N(e && t && "object" == typeof e && "object" == typeof t);
             for (var r in t)
               t.hasOwnProperty(r) &&
                 ("production" !== n.env.NODE_ENV
                   ? N(
-                      void 0 === e[r],
-                      "mergeIntoWithNoDuplicateKeys(): Tried to merge two objects with the same key: `%s`. This conflict may be due to a mixin; in particular, this may be caused by two getInitialState() or getDefaultProps() methods returning objects with clashing keys.",
-                      r
-                    )
+                    void 0 === e[r],
+                    "mergeIntoWithNoDuplicateKeys(): Tried to merge two objects with the same key: `%s`. This conflict may be due to a mixin; in particular, this may be caused by two getInitialState() or getDefaultProps() methods returning objects with clashing keys.",
+                    r
+                  )
                   : N(void 0 === e[r]),
-                (e[r] = t[r]));
+                  (e[r] = t[r]));
             return e;
           }
           function l(e, t) {
@@ -12106,19 +12656,19 @@
                 if (a !== e && null !== a)
                   "production" !== n.env.NODE_ENV
                     ? w(
-                        !1,
-                        "bind(): React component methods may only be bound to the component instance. See %s",
-                        o
-                      )
+                      !1,
+                      "bind(): React component methods may only be bound to the component instance. See %s",
+                      o
+                    )
                     : null;
                 else if (!s.length)
                   return (
                     "production" !== n.env.NODE_ENV
                       ? w(
-                          !1,
-                          "bind(): You are binding a component method to the component. React does this for you automatically in a high-performance way, so you can safely remove this call. See %s",
-                          o
-                        )
+                        !1,
+                        "bind(): You are binding a component method to the component. React does this for you automatically in a high-performance way, so you can safely remove this call. See %s",
+                        o
+                      )
                       : null,
                     r
                   );
@@ -12216,11 +12766,11 @@
                 return (
                   "production" !== n.env.NODE_ENV
                     ? w(
-                        !1,
-                        "%s.type is deprecated. Use %s directly to access the class.",
-                        e,
-                        e
-                      )
+                      !1,
+                      "%s.type is deprecated. Use %s directly to access the class.",
+                      e,
+                      e
+                    )
                     : null,
                   Object.defineProperty(this, "type", { value: this }),
                   this
@@ -12237,12 +12787,12 @@
                   null !== e &&
                     ("production" !== n.env.NODE_ENV
                       ? w(
-                          e._warnedAboutRefsInRender,
-                          "%s is accessing isMounted inside its render() function. render() should be a pure function of props and state. It should never access something that requires stale data from the previous render, such as refs. Move this logic to componentDidMount and componentDidUpdate instead.",
-                          e.getName() || "A component"
-                        )
+                        e._warnedAboutRefsInRender,
+                        "%s is accessing isMounted inside its render() function. render() should be a pure function of props and state. It should never access something that requires stale data from the previous render, such as refs. Move this logic to componentDidMount and componentDidUpdate instead.",
+                        e.getName() || "A component"
+                      )
                       : null,
-                    (e._warnedAboutRefsInRender = !0));
+                      (e._warnedAboutRefsInRender = !0));
                 }
                 var t = v.get(this);
                 return t && t !== g.currentlyMountingInstance;
@@ -12254,7 +12804,7 @@
                 E.enqueueReplaceProps(this, e), t && E.enqueueCallback(this, t);
               },
             },
-            M = function () {};
+            M = function () { };
           b(M.prototype, p.prototype, P);
           var A = {
             createClass: function (e) {
@@ -12262,9 +12812,9 @@
                 "production" !== n.env.NODE_ENV &&
                   ("production" !== n.env.NODE_ENV
                     ? w(
-                        this instanceof t,
-                        "Something is calling a React component directly. Use a factory or JSX instead. See: http://fb.me/react-legacyfactory"
-                      )
+                      this instanceof t,
+                      "Something is calling a React component directly. Use a factory or JSX instead. See: http://fb.me/react-legacyfactory"
+                    )
                     : null),
                   this.__reactAutoBindMap && d(this),
                   (this.props = e),
@@ -12277,10 +12827,10 @@
                   (o = null),
                   "production" !== n.env.NODE_ENV
                     ? N(
-                        "object" == typeof o && !Array.isArray(o),
-                        "%s.getInitialState(): must return an object or null",
-                        t.displayName || "ReactCompositeComponent"
-                      )
+                      "object" == typeof o && !Array.isArray(o),
+                      "%s.getInitialState(): must return an object or null",
+                      t.displayName || "ReactCompositeComponent"
+                    )
                     : N("object" == typeof o && !Array.isArray(o)),
                   (this.state = o);
               };
@@ -12290,29 +12840,29 @@
                 i(t, e),
                 t.getDefaultProps && (t.defaultProps = t.getDefaultProps()),
                 "production" !== n.env.NODE_ENV &&
-                  (t.getDefaultProps &&
-                    (t.getDefaultProps.isReactClassApproved = {}),
+                (t.getDefaultProps &&
+                  (t.getDefaultProps.isReactClassApproved = {}),
                   t.prototype.getInitialState &&
-                    (t.prototype.getInitialState.isReactClassApproved = {})),
+                  (t.prototype.getInitialState.isReactClassApproved = {})),
                 "production" !== n.env.NODE_ENV
                   ? N(
-                      t.prototype.render,
-                      "createClass(...): Class specification must implement a `render` method."
-                    )
+                    t.prototype.render,
+                    "createClass(...): Class specification must implement a `render` method."
+                  )
                   : N(t.prototype.render),
                 "production" !== n.env.NODE_ENV &&
-                  ("production" !== n.env.NODE_ENV
-                    ? w(
-                        !t.prototype.componentShouldUpdate,
-                        "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
-                        e.displayName || "A component"
-                      )
-                    : null);
+                ("production" !== n.env.NODE_ENV
+                  ? w(
+                    !t.prototype.componentShouldUpdate,
+                    "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
+                    e.displayName || "A component"
+                  )
+                  : null);
               for (var r in R) t.prototype[r] || (t.prototype[r] = null);
               if (((t.type = t), "production" !== n.env.NODE_ENV))
                 try {
                   Object.defineProperty(t, "type", O);
-                } catch (o) {}
+                } catch (o) { }
               return t;
             },
             injection: {
@@ -12356,48 +12906,48 @@
             ((r.prototype.setState = function (e, t) {
               "production" !== n.env.NODE_ENV
                 ? i(
-                    "object" == typeof e || "function" == typeof e || null == e,
-                    "setState(...): takes an object of state variables to update or a function which returns an object of state variables."
-                  )
+                  "object" == typeof e || "function" == typeof e || null == e,
+                  "setState(...): takes an object of state variables to update or a function which returns an object of state variables."
+                )
                 : i(
-                    "object" == typeof e || "function" == typeof e || null == e
-                  ),
+                  "object" == typeof e || "function" == typeof e || null == e
+                ),
                 "production" !== n.env.NODE_ENV &&
-                  ("production" !== n.env.NODE_ENV
-                    ? a(
-                        null != e,
-                        "setState(...): You passed an undefined or null state object; instead, use forceUpdate()."
-                      )
-                    : null),
+                ("production" !== n.env.NODE_ENV
+                  ? a(
+                    null != e,
+                    "setState(...): You passed an undefined or null state object; instead, use forceUpdate()."
+                  )
+                  : null),
                 o.enqueueSetState(this, e),
                 t && o.enqueueCallback(this, t);
             }),
-            (r.prototype.forceUpdate = function (e) {
-              o.enqueueForceUpdate(this), e && o.enqueueCallback(this, e);
-            }),
-            "production" !== n.env.NODE_ENV)
+              (r.prototype.forceUpdate = function (e) {
+                o.enqueueForceUpdate(this), e && o.enqueueCallback(this, e);
+              }),
+              "production" !== n.env.NODE_ENV)
           ) {
             var s = {
-                getDOMNode: "getDOMNode",
-                isMounted: "isMounted",
-                replaceProps: "replaceProps",
-                replaceState: "replaceState",
-                setProps: "setProps",
-              },
+              getDOMNode: "getDOMNode",
+              isMounted: "isMounted",
+              replaceProps: "replaceProps",
+              replaceState: "replaceState",
+              setProps: "setProps",
+            },
               l = function (e, t) {
                 try {
                   Object.defineProperty(r.prototype, e, {
                     get: function () {
                       return void ("production" !== n.env.NODE_ENV
                         ? a(
-                            !1,
-                            "%s(...) is deprecated in plain JavaScript React classes.",
-                            t
-                          )
+                          !1,
+                          "%s(...) is deprecated in plain JavaScript React classes.",
+                          t
+                        )
                         : null);
                     },
                   });
-                } catch (o) {}
+                } catch (o) { }
               };
             for (var c in s) s.hasOwnProperty(c) && l(c, s[c]);
           }
@@ -12441,9 +12991,9 @@
                 injectEnvironment: function (e) {
                   "production" !== n.env.NODE_ENV
                     ? r(
-                        !o,
-                        "ReactCompositeComponent: injectEnvironment() can only be called once."
-                      )
+                      !o,
+                      "ReactCompositeComponent: injectEnvironment() can only be called once."
+                    )
                     : r(!o),
                     (i.unmountIDFromEnvironment = e.unmountIDFromEnvironment),
                     (i.replaceNodeWithMarkupByID = e.replaceNodeWithMarkupByID),
@@ -12514,10 +13064,10 @@
                 "production" !== n.env.NODE_ENV &&
                   ("production" !== n.env.NODE_ENV
                     ? b(
-                        null != s.render,
-                        "%s(...): No `render` method found on the returned component instance: you may have forgotten to define `render` in your component or you may have accidentally tried to render an element whose type is a function that isn't a React component.",
-                        a.displayName || a.name || "Component"
-                      )
+                      null != s.render,
+                      "%s(...): No `render` method found on the returned component instance: you may have forgotten to define `render` in your component or you may have accidentally tried to render an element whose type is a function that isn't a React component.",
+                      a.displayName || a.name || "Component"
+                    )
                     : null),
                   (s.props = o),
                   (s.context = i),
@@ -12525,48 +13075,48 @@
                   (this._instance = s),
                   c.set(s, this),
                   "production" !== n.env.NODE_ENV &&
-                    this._warnIfContextsDiffer(
-                      this._currentElement._context,
-                      r
-                    ),
+                  this._warnIfContextsDiffer(
+                    this._currentElement._context,
+                    r
+                  ),
                   "production" !== n.env.NODE_ENV &&
-                    ("production" !== n.env.NODE_ENV
+                  ("production" !== n.env.NODE_ENV
+                    ? b(
+                      !s.getInitialState ||
+                      s.getInitialState.isReactClassApproved,
+                      "getInitialState was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?",
+                      this.getName() || "a component"
+                    )
+                    : null,
+                    "production" !== n.env.NODE_ENV
                       ? b(
-                          !s.getInitialState ||
-                            s.getInitialState.isReactClassApproved,
-                          "getInitialState was defined on %s, a plain JavaScript class. This is only supported for classes created using React.createClass. Did you mean to define a state property instead?",
-                          this.getName() || "a component"
-                        )
+                        !s.propTypes,
+                        "propTypes was defined as an instance property on %s. Use a static property to define propTypes instead.",
+                        this.getName() || "a component"
+                      )
                       : null,
                     "production" !== n.env.NODE_ENV
                       ? b(
-                          !s.propTypes,
-                          "propTypes was defined as an instance property on %s. Use a static property to define propTypes instead.",
-                          this.getName() || "a component"
-                        )
+                        !s.contextTypes,
+                        "contextTypes was defined as an instance property on %s. Use a static property to define contextTypes instead.",
+                        this.getName() || "a component"
+                      )
                       : null,
                     "production" !== n.env.NODE_ENV
                       ? b(
-                          !s.contextTypes,
-                          "contextTypes was defined as an instance property on %s. Use a static property to define contextTypes instead.",
-                          this.getName() || "a component"
-                        )
-                      : null,
-                    "production" !== n.env.NODE_ENV
-                      ? b(
-                          "function" != typeof s.componentShouldUpdate,
-                          "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
-                          this.getName() || "A component"
-                        )
+                        "function" != typeof s.componentShouldUpdate,
+                        "%s has a method called componentShouldUpdate(). Did you mean shouldComponentUpdate()? The name is phrased as a question because the function is expected to return a value.",
+                        this.getName() || "A component"
+                      )
                       : null);
                 var l = s.state;
                 void 0 === l && (s.state = l = null),
                   "production" !== n.env.NODE_ENV
                     ? _(
-                        "object" == typeof l && !Array.isArray(l),
-                        "%s.state: must be set to an object or null",
-                        this.getName() || "ReactCompositeComponent"
-                      )
+                      "object" == typeof l && !Array.isArray(l),
+                      "%s.state: must be set to an object or null",
+                      this.getName() || "ReactCompositeComponent"
+                    )
                     : _("object" == typeof l && !Array.isArray(l)),
                   (this._pendingStateQueue = null),
                   (this._pendingReplaceState = !1),
@@ -12577,7 +13127,7 @@
                 try {
                   s.componentWillMount &&
                     (s.componentWillMount(),
-                    this._pendingStateQueue &&
+                      this._pendingStateQueue &&
                       (s.state = this._processPendingState(
                         s.props,
                         s.context
@@ -12598,7 +13148,7 @@
                 );
                 return (
                   s.componentDidMount &&
-                    t.getReactMountReady().enqueue(s.componentDidMount, s),
+                  t.getReactMountReady().enqueue(s.componentDidMount, s),
                   f
                 );
               },
@@ -12656,25 +13206,25 @@
                 if (r) {
                   "production" !== n.env.NODE_ENV
                     ? _(
-                        "object" == typeof t.constructor.childContextTypes,
-                        "%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().",
-                        this.getName() || "ReactCompositeComponent"
-                      )
+                      "object" == typeof t.constructor.childContextTypes,
+                      "%s.getChildContext(): childContextTypes must be defined in order to use getChildContext().",
+                      this.getName() || "ReactCompositeComponent"
+                    )
                     : _("object" == typeof t.constructor.childContextTypes),
                     "production" !== n.env.NODE_ENV &&
-                      this._checkPropTypes(
-                        t.constructor.childContextTypes,
-                        r,
-                        h.childContext
-                      );
+                    this._checkPropTypes(
+                      t.constructor.childContextTypes,
+                      r,
+                      h.childContext
+                    );
                   for (var o in r)
                     "production" !== n.env.NODE_ENV
                       ? _(
-                          o in t.constructor.childContextTypes,
-                          '%s.getChildContext(): key "%s" is not defined in childContextTypes.',
-                          this.getName() || "ReactCompositeComponent",
-                          o
-                        )
+                        o in t.constructor.childContextTypes,
+                        '%s.getChildContext(): key "%s" is not defined in childContextTypes.',
+                        this.getName() || "ReactCompositeComponent",
+                        o
+                      )
                       : _(o in t.constructor.childContextTypes);
                   return g({}, e, r);
                 }
@@ -12695,12 +13245,12 @@
                     try {
                       "production" !== n.env.NODE_ENV
                         ? _(
-                            "function" == typeof e[a],
-                            "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
-                            i || "React class",
-                            f[o],
-                            a
-                          )
+                          "function" == typeof e[a],
+                          "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
+                          i || "React class",
+                          f[o],
+                          a
+                        )
                         : _("function" == typeof e[a]),
                         (s = e[a](t, a, i, o));
                     } catch (l) {
@@ -12711,15 +13261,15 @@
                       o === h.prop
                         ? "production" !== n.env.NODE_ENV
                           ? b(
-                              !1,
-                              "Failed Composite propType: %s%s",
-                              s.message,
-                              c
-                            )
+                            !1,
+                            "Failed Composite propType: %s%s",
+                            s.message,
+                            c
+                          )
                           : null
                         : "production" !== n.env.NODE_ENV
-                        ? b(!1, "Failed Context Types: %s%s", s.message, c)
-                        : null;
+                          ? b(!1, "Failed Context Types: %s%s", s.message, c)
+                          : null;
                     }
                   }
               },
@@ -12739,8 +13289,8 @@
                   ),
                   (null !== this._pendingStateQueue ||
                     this._pendingForceUpdate) &&
-                    ("production" !== n.env.NODE_ENV &&
-                      l.checkAndWarnForMutatedProps(this._currentElement),
+                  ("production" !== n.env.NODE_ENV &&
+                    l.checkAndWarnForMutatedProps(this._currentElement),
                     this.updateComponent(
                       e,
                       this._currentElement,
@@ -12753,21 +13303,21 @@
                 (e = this._maskContext(e)), (t = this._maskContext(t));
                 for (
                   var r = Object.keys(t).sort(),
-                    o = this.getName() || "ReactCompositeComponent",
-                    i = 0;
+                  o = this.getName() || "ReactCompositeComponent",
+                  i = 0;
                   i < r.length;
                   i++
                 ) {
                   var a = r[i];
                   "production" !== n.env.NODE_ENV
                     ? b(
-                        e[a] === t[a],
-                        "owner-based and parent-based contexts differ (values: `%s` vs `%s`) for key (%s) while mounting %s (see: http://fb.me/react-context-by-parent)",
-                        e[a],
-                        t[a],
-                        a,
-                        o
-                      )
+                      e[a] === t[a],
+                      "owner-based and parent-based contexts differ (values: `%s` vs `%s`) for key (%s) while mounting %s (see: http://fb.me/react-context-by-parent)",
+                      e[a],
+                      t[a],
+                      a,
+                      o
+                    )
                     : null;
                 }
               },
@@ -12777,11 +13327,11 @@
                   l = a.props;
                 t !== r &&
                   ((s = this._processContext(r._context)),
-                  (l = this._processProps(r.props)),
-                  "production" !== n.env.NODE_ENV &&
+                    (l = this._processProps(r.props)),
+                    "production" !== n.env.NODE_ENV &&
                     null != i &&
                     this._warnIfContextsDiffer(r._context, i),
-                  a.componentWillReceiveProps &&
+                    a.componentWillReceiveProps &&
                     a.componentWillReceiveProps(l, s));
                 var c = this._processPendingState(l, s),
                   u =
@@ -12791,10 +13341,10 @@
                 "production" !== n.env.NODE_ENV &&
                   ("production" !== n.env.NODE_ENV
                     ? b(
-                        "undefined" != typeof u,
-                        "%s.shouldComponentUpdate(): Returned undefined instead of a boolean value. Make sure to return true or false.",
-                        this.getName() || "ReactCompositeComponent"
-                      )
+                      "undefined" != typeof u,
+                      "%s.shouldComponentUpdate(): Returned undefined instead of a boolean value. Make sure to return true or false.",
+                      this.getName() || "ReactCompositeComponent"
+                    )
                     : null),
                   u
                     ? ((this._pendingForceUpdate = !1),
@@ -12811,8 +13361,8 @@
                   o = this._pendingReplaceState;
                 if (
                   ((this._pendingReplaceState = !1),
-                  (this._pendingStateQueue = null),
-                  !r)
+                    (this._pendingStateQueue = null),
+                    !r)
                 )
                   return n.state;
                 for (
@@ -12838,9 +13388,9 @@
                   (a.context = r),
                   this._updateRenderedComponent(o, i),
                   a.componentDidUpdate &&
-                    o
-                      .getReactMountReady()
-                      .enqueue(a.componentDidUpdate.bind(a, s, l, c), a);
+                  o
+                    .getReactMountReady()
+                    .enqueue(a.componentDidUpdate.bind(a, s, l, c), a);
               },
               _updateRenderedComponent: function (e, t) {
                 var n = this._renderedComponent,
@@ -12868,9 +13418,9 @@
                   t = e.render();
                 return (
                   "production" !== n.env.NODE_ENV &&
-                    "undefined" == typeof t &&
-                    e.render._isMockFunction &&
-                    (t = null),
+                  "undefined" == typeof t &&
+                  e.render._isMockFunction &&
+                  (t = null),
                   t
                 );
               },
@@ -12889,10 +13439,10 @@
                 return (
                   "production" !== n.env.NODE_ENV
                     ? _(
-                        null === e || e === !1 || s.isValidElement(e),
-                        "%s.render(): A valid ReactComponent must be returned. You may have returned undefined, an array or some other invalid object.",
-                        this.getName() || "ReactCompositeComponent"
-                      )
+                      null === e || e === !1 || s.isValidElement(e),
+                      "%s.render(): A valid ReactComponent must be returned. You may have returned undefined, an array or some other invalid object.",
+                      this.getName() || "ReactCompositeComponent"
+                    )
                     : _(null === e || e === !1 || s.isValidElement(e)),
                   e
                 );
@@ -12967,11 +13517,11 @@
                 "production" !== n.env.NODE_ENV &&
                   ("production" !== n.env.NODE_ENV
                     ? i(
-                        a,
-                        "withContext is deprecated and will be removed in a future version. Use a wrapper component with getChildContext instead."
-                      )
+                      a,
+                      "withContext is deprecated and will be removed in a future version. Use a wrapper component with getChildContext instead."
+                    )
                     : null,
-                  (a = !0));
+                    (a = !0));
                 var o,
                   l = s.current;
                 s.current = r({}, l, e);
@@ -13210,43 +13760,43 @@
               (null != e.dangerouslySetInnerHTML &&
                 ("production" !== n.env.NODE_ENV
                   ? g(
-                      null == e.children,
-                      "Can only set one of `children` or `props.dangerouslySetInnerHTML`."
-                    )
+                    null == e.children,
+                    "Can only set one of `children` or `props.dangerouslySetInnerHTML`."
+                  )
                   : g(null == e.children),
-                "production" !== n.env.NODE_ENV
-                  ? g(
+                  "production" !== n.env.NODE_ENV
+                    ? g(
                       null != e.dangerouslySetInnerHTML.__html,
                       "`props.dangerouslySetInnerHTML` must be in the form `{__html: ...}`. Please visit http://fb.me/react-invariant-dangerously-set-inner-html for more information."
                     )
-                  : g(null != e.dangerouslySetInnerHTML.__html)),
-              "production" !== n.env.NODE_ENV &&
+                    : g(null != e.dangerouslySetInnerHTML.__html)),
+                "production" !== n.env.NODE_ENV &&
                 ("production" !== n.env.NODE_ENV
                   ? E(
-                      null == e.innerHTML,
-                      "Directly setting property `innerHTML` is not permitted. For more information, lookup documentation on `dangerouslySetInnerHTML`."
-                    )
+                    null == e.innerHTML,
+                    "Directly setting property `innerHTML` is not permitted. For more information, lookup documentation on `dangerouslySetInnerHTML`."
+                  )
                   : null,
-                "production" !== n.env.NODE_ENV
-                  ? E(
+                  "production" !== n.env.NODE_ENV
+                    ? E(
                       !e.contentEditable || null == e.children,
                       "A component is `contentEditable` and contains `children` managed by React. It is now your responsibility to guarantee that none of those nodes are unexpectedly modified or duplicated. This is probably not intentional."
                     )
-                  : null),
-              "production" !== n.env.NODE_ENV
-                ? g(
+                    : null),
+                "production" !== n.env.NODE_ENV
+                  ? g(
                     null == e.style || "object" == typeof e.style,
                     "The `style` prop expects a mapping from style properties to values, not a string. For example, style={{marginRight: spacing + 'em'}} when using JSX."
                   )
-                : g(null == e.style || "object" == typeof e.style));
+                  : g(null == e.style || "object" == typeof e.style));
           }
           function o(e, t, r, o) {
             "production" !== n.env.NODE_ENV &&
               ("production" !== n.env.NODE_ENV
                 ? E(
-                    "onScroll" !== t || y("scroll", !0),
-                    "This browser doesn't support the `onScroll` event"
-                  )
+                  "onScroll" !== t || y("scroll", !0),
+                  "This browser doesn't support the `onScroll` event"
+                )
                 : null);
             var i = p.findReactContainerForID(e);
             if (i) {
@@ -13260,7 +13810,7 @@
               ("production" !== n.env.NODE_ENV
                 ? g(R.test(e), "Invalid tag: %s", e)
                 : g(R.test(e)),
-              (k[e] = !0));
+                (k[e] = !0));
           }
           function a(e) {
             i(e),
@@ -13335,7 +13885,7 @@
                       else {
                         r === w &&
                           (i && (i = this._previousStyleCopy = m({}, t.style)),
-                          (i = s.createMarkupForStyles(i)));
+                            (i = s.createMarkupForStyles(i)));
                         var a = c.createMarkupForProperty(r, i);
                         a && (n += " " + a);
                       }
@@ -13390,7 +13940,7 @@
                       T.hasOwnProperty(n)
                         ? b(this._rootNodeID, n)
                         : (l.isStandardName[n] || l.isCustomAttribute(n)) &&
-                          S.deletePropertyByID(this._rootNodeID, n);
+                        S.deletePropertyByID(this._rootNodeID, n);
                 for (n in a) {
                   var c = a[n],
                     u = n === w ? this._previousStyleCopy : e[n];
@@ -13410,7 +13960,7 @@
                       T.hasOwnProperty(n)
                         ? o(this._rootNodeID, n, c, t)
                         : (l.isStandardName[n] || l.isCustomAttribute(n)) &&
-                          S.updatePropertyByID(this._rootNodeID, n, c);
+                        S.updatePropertyByID(this._rootNodeID, n, c);
                 }
                 i && S.updateStylesByID(this._rootNodeID, i);
               },
@@ -13434,8 +13984,8 @@
                   null != i
                     ? o !== i && this.updateTextContent("" + i)
                     : null != s
-                    ? a !== s && S.updateInnerHTMLByID(this._rootNodeID, s)
-                    : null != c && this.updateChildren(c, t, n);
+                      ? a !== s && S.updateInnerHTMLByID(this._rootNodeID, s)
+                      : null != c && this.updateChildren(c, t, n);
               },
               unmountComponent: function () {
                 this.unmountChildren(),
@@ -13711,16 +14261,16 @@
                 o && (t = o.call(this, e)), d.asap(r, this);
                 var i = this.props.name;
                 if ("radio" === this.props.type && null != i) {
-                  for (var s = this.getDOMNode(), l = s; l.parentNode; )
+                  for (var s = this.getDOMNode(), l = s; l.parentNode;)
                     l = l.parentNode;
                   for (
                     var c = l.querySelectorAll(
-                        "input[name=" +
-                          JSON.stringify("" + i) +
-                          '][type="radio"]'
-                      ),
-                      p = 0,
-                      f = c.length;
+                      "input[name=" +
+                      JSON.stringify("" + i) +
+                      '][type="radio"]'
+                    ),
+                    p = 0,
+                    f = c.length;
                     f > p;
                     p++
                   ) {
@@ -13729,9 +14279,9 @@
                       var g = u.getID(v);
                       "production" !== n.env.NODE_ENV
                         ? h(
-                            g,
-                            "ReactDOMInput: Mixing React and non-React radio inputs with the same `name` is not supported."
-                          )
+                          g,
+                          "ReactDOMInput: Mixing React and non-React radio inputs with the same `name` is not supported."
+                        )
                         : h(g);
                       var y = m[g];
                       "production" !== n.env.NODE_ENV
@@ -13778,9 +14328,9 @@
                 "production" !== n.env.NODE_ENV &&
                   ("production" !== n.env.NODE_ENV
                     ? a(
-                        null == this.props.selected,
-                        "Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>."
-                      )
+                      null == this.props.selected,
+                      "Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>."
+                    )
                     : null);
               },
               render: function () {
@@ -13814,14 +14364,14 @@
             if (!Array.isArray(e[t]))
               return new Error(
                 "The `" +
-                  t +
-                  "` prop supplied to <select> must be an array if `multiple` is true."
+                t +
+                "` prop supplied to <select> must be an array if `multiple` is true."
               );
           } else if (Array.isArray(e[t]))
             return new Error(
               "The `" +
-                t +
-                "` prop supplied to <select> must be a scalar value if `multiple` is false."
+              t +
+              "` prop supplied to <select> must be a scalar value if `multiple` is false."
             );
         }
         function o(e, t) {
@@ -13870,16 +14420,16 @@
               null != e
                 ? o(this, e)
                 : null != this.props.defaultValue &&
-                  o(this, this.props.defaultValue);
+                o(this, this.props.defaultValue);
             },
             componentDidUpdate: function (e) {
               var t = a.getValue(this);
               null != t
                 ? ((this._pendingUpdate = !1), o(this, t))
                 : !e.multiple != !this.props.multiple &&
-                  (null != this.props.defaultValue
-                    ? o(this, this.props.defaultValue)
-                    : o(this, this.props.multiple ? [] : ""));
+                (null != this.props.defaultValue
+                  ? o(this, this.props.defaultValue)
+                  : o(this, this.props.multiple ? [] : ""));
             },
             _handleChange: function (e) {
               var t,
@@ -13933,11 +14483,11 @@
             u = s.cloneRange();
           u.selectNodeContents(e), u.setEnd(s.startContainer, s.startOffset);
           var d = n(
-              u.startContainer,
-              u.startOffset,
-              u.endContainer,
-              u.endOffset
-            ),
+            u.startContainer,
+            u.startOffset,
+            u.endContainer,
+            u.endOffset
+          ),
             p = d ? 0 : u.toString().length,
             h = p + c,
             f = document.createRange();
@@ -13952,8 +14502,8 @@
           "undefined" == typeof t.end
             ? ((n = t.start), (r = n))
             : t.start > t.end
-            ? ((n = t.end), (r = t.start))
-            : ((n = t.start), (r = t.end)),
+              ? ((n = t.end), (r = t.start))
+              : ((n = t.start), (r = t.end)),
             o.moveToElementText(e),
             o.moveStart("character", n),
             o.setEndPoint("EndToStart", o),
@@ -14006,7 +14556,7 @@
           o = e("./ReactDOMComponent"),
           i = e("./Object.assign"),
           a = e("./escapeTextContentForBrowser"),
-          s = function () {};
+          s = function () { };
         i(s.prototype, {
           construct: function (e) {
             (this._currentElement = e),
@@ -14027,10 +14577,10 @@
               var t = "" + e;
               t !== this._stringText &&
                 ((this._stringText = t),
-                o.BackendIDOperations.updateTextContentByID(
-                  this._rootNodeID,
-                  t
-                ));
+                  o.BackendIDOperations.updateTextContentByID(
+                    this._rootNodeID,
+                    t
+                  ));
             }
           },
           unmountComponent: function () {
@@ -14076,25 +14626,25 @@
                   ("production" !== n.env.NODE_ENV &&
                     ("production" !== n.env.NODE_ENV
                       ? h(
-                          !1,
-                          "Use the `defaultValue` or `value` props instead of setting children on <textarea>."
-                        )
+                        !1,
+                        "Use the `defaultValue` or `value` props instead of setting children on <textarea>."
+                      )
                       : null),
-                  "production" !== n.env.NODE_ENV
-                    ? p(
+                    "production" !== n.env.NODE_ENV
+                      ? p(
                         null == e,
                         "If you supply `defaultValue` on a <textarea>, do not pass children."
                       )
-                    : p(null == e),
-                  Array.isArray(t) &&
+                      : p(null == e),
+                    Array.isArray(t) &&
                     ("production" !== n.env.NODE_ENV
                       ? p(
-                          t.length <= 1,
-                          "<textarea> can only have at most one child."
-                        )
+                        t.length <= 1,
+                        "<textarea> can only have at most one child."
+                      )
                       : p(t.length <= 1),
-                    (t = t[0])),
-                  (e = "" + t)),
+                      (t = t[0])),
+                    (e = "" + t)),
                   null == e && (e = "");
                 var r = a.getValue(this);
                 return { initialValue: "" + (null != r ? r : e) };
@@ -14104,9 +14654,9 @@
                 return (
                   "production" !== n.env.NODE_ENV
                     ? p(
-                        null == e.dangerouslySetInnerHTML,
-                        "`dangerouslySetInnerHTML` does not make sense on <textarea>."
-                      )
+                      null == e.dangerouslySetInnerHTML,
+                      "`dangerouslySetInnerHTML` does not make sense on <textarea>."
+                    )
                     : p(null == e.dangerouslySetInnerHTML),
                   (e.defaultValue = null),
                   (e.value = null),
@@ -14200,45 +14750,45 @@
           function o() {
             if (
               (k.EventEmitter.injectReactEventListener(R),
-              k.EventPluginHub.injectEventPluginOrder(l),
-              k.EventPluginHub.injectInstanceHandle(O),
-              k.EventPluginHub.injectMount(P),
-              k.EventPluginHub.injectEventPluginsByName({
-                SimpleEventPlugin: I,
-                EnterLeaveEventPlugin: c,
-                ChangeEventPlugin: a,
-                MobileSafariClickEventPlugin: p,
-                SelectEventPlugin: A,
-                BeforeInputEventPlugin: i,
-              }),
-              k.NativeComponent.injectGenericComponentClass(g),
-              k.NativeComponent.injectTextComponentClass(S),
-              k.NativeComponent.injectAutoWrapper(r),
-              k.Class.injectMixin(h),
-              k.NativeComponent.injectComponentClasses({
-                button: y,
-                form: _,
-                iframe: N,
-                img: E,
-                input: T,
-                option: C,
-                select: w,
-                textarea: x,
-                html: U("html"),
-                head: U("head"),
-                body: U("body"),
-              }),
-              k.DOMProperty.injectDOMPropertyConfig(d),
-              k.DOMProperty.injectDOMPropertyConfig(j),
-              k.EmptyComponent.injectEmptyComponent("noscript"),
-              k.Updates.injectReconcileTransaction(M),
-              k.Updates.injectBatchingStrategy(v),
-              k.RootIndex.injectCreateReactRootIndex(
-                u.canUseDOM ? s.createReactRootIndex : L.createReactRootIndex
-              ),
-              k.Component.injectEnvironment(m),
-              k.DOMComponent.injectIDOperations(b),
-              "production" !== n.env.NODE_ENV)
+                k.EventPluginHub.injectEventPluginOrder(l),
+                k.EventPluginHub.injectInstanceHandle(O),
+                k.EventPluginHub.injectMount(P),
+                k.EventPluginHub.injectEventPluginsByName({
+                  SimpleEventPlugin: I,
+                  EnterLeaveEventPlugin: c,
+                  ChangeEventPlugin: a,
+                  MobileSafariClickEventPlugin: p,
+                  SelectEventPlugin: A,
+                  BeforeInputEventPlugin: i,
+                }),
+                k.NativeComponent.injectGenericComponentClass(g),
+                k.NativeComponent.injectTextComponentClass(S),
+                k.NativeComponent.injectAutoWrapper(r),
+                k.Class.injectMixin(h),
+                k.NativeComponent.injectComponentClasses({
+                  button: y,
+                  form: _,
+                  iframe: N,
+                  img: E,
+                  input: T,
+                  option: C,
+                  select: w,
+                  textarea: x,
+                  html: U("html"),
+                  head: U("head"),
+                  body: U("body"),
+                }),
+                k.DOMProperty.injectDOMPropertyConfig(d),
+                k.DOMProperty.injectDOMPropertyConfig(j),
+                k.EmptyComponent.injectEmptyComponent("noscript"),
+                k.Updates.injectReconcileTransaction(M),
+                k.Updates.injectBatchingStrategy(v),
+                k.RootIndex.injectCreateReactRootIndex(
+                  u.canUseDOM ? s.createReactRootIndex : L.createReactRootIndex
+                ),
+                k.Component.injectEnvironment(m),
+                k.DOMComponent.injectIDOperations(b),
+                "production" !== n.env.NODE_ENV)
             ) {
               var t = (u.canUseDOM && window.location.href) || "";
               if (/[?&]react_perf\b/.test(t)) {
@@ -14459,30 +15009,30 @@
                 ) {
                   if (
                     ((p = l()),
-                    (d = n.apply(this, o)),
-                    (u = l() - p),
-                    "_mountImageIntoNode" === t)
+                      (d = n.apply(this, o)),
+                      (u = l() - p),
+                      "_mountImageIntoNode" === t)
                   ) {
                     var h = a.getID(o[1]);
                     c._recordWrite(h, t, u, o[0]);
                   } else
                     "dangerouslyProcessChildrenUpdates" === t
                       ? o[0].forEach(function (e) {
-                          var t = {};
-                          null !== e.fromIndex && (t.fromIndex = e.fromIndex),
-                            null !== e.toIndex && (t.toIndex = e.toIndex),
-                            null !== e.textContent &&
-                              (t.textContent = e.textContent),
-                            null !== e.markupIndex &&
-                              (t.markup = o[1][e.markupIndex]),
-                            c._recordWrite(e.parentID, e.type, u, t);
-                        })
+                        var t = {};
+                        null !== e.fromIndex && (t.fromIndex = e.fromIndex),
+                          null !== e.toIndex && (t.toIndex = e.toIndex),
+                          null !== e.textContent &&
+                          (t.textContent = e.textContent),
+                          null !== e.markupIndex &&
+                          (t.markup = o[1][e.markupIndex]),
+                          c._recordWrite(e.parentID, e.type, u, t);
+                      })
                       : c._recordWrite(
-                          o[0],
-                          t,
-                          u,
-                          Array.prototype.slice.call(o, 1)
-                        );
+                        o[0],
+                        t,
+                        u,
+                        Array.prototype.slice.call(o, 1)
+                      );
                   return d;
                 }
                 if (
@@ -14501,10 +15051,10 @@
                   y = c._allMeasurements[c._allMeasurements.length - 1];
                 if (
                   (m ? r(y.counts, f, 1) : v && g.push(0),
-                  (p = l()),
-                  (d = n.apply(this, o)),
-                  (u = l() - p),
-                  m)
+                    (p = l()),
+                    (d = n.apply(this, o)),
+                    (u = l() - p),
+                    m)
                 )
                   r(y.render, f, u);
                 else if (v) {
@@ -14658,10 +15208,10 @@
               set: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? l(
-                      !1,
-                      "Don't set the %s property of the React element. Instead, specify the correct value when initially creating the element.",
-                      t
-                    )
+                    !1,
+                    "Don't set the %s property of the React element. Instead, specify the correct value when initially creating the element.",
+                    t
+                  )
                   : null,
                   (this._store[t] = e);
               },
@@ -14672,7 +15222,7 @@
               var t = { props: !0 };
               for (var n in t) r(e, n);
               u = !0;
-            } catch (o) {}
+            } catch (o) { }
           }
           var i = e("./ReactContext"),
             a = e("./ReactCurrentOwner"),
@@ -14683,11 +15233,11 @@
             d = function (e, t, r, o, i, a) {
               if (
                 ((this.type = e),
-                (this.key = t),
-                (this.ref = r),
-                (this._owner = o),
-                (this._context = i),
-                "production" !== n.env.NODE_ENV)
+                  (this.key = t),
+                  (this.ref = r),
+                  (this._owner = o),
+                  (this._context = i),
+                  "production" !== n.env.NODE_ENV)
               ) {
                 this._store = { props: a, originalProps: s({}, a) };
                 try {
@@ -14696,7 +15246,7 @@
                     enumerable: !1,
                     writable: !0,
                   });
-                } catch (l) {}
+                } catch (l) { }
                 if (((this._store.validated = !1), u))
                   return void Object.freeze(this);
               }
@@ -14736,7 +15286,7 @@
               var r = new d(e.type, e.key, e.ref, e._owner, e._context, t);
               return (
                 "production" !== n.env.NODE_ENV &&
-                  (r._store.validated = e._store.validated),
+                (r._store.validated = e._store.validated),
                 r
               );
             }),
@@ -14801,11 +15351,11 @@
             e._store.validated ||
               null != e.key ||
               ((e._store.validated = !0),
-              l(
-                'Each child in an array or iterator should have a unique "key" prop.',
-                e,
-                t
-              ));
+                l(
+                  'Each child in an array or iterator should have a unique "key" prop.',
+                  e,
+                  t
+                ));
           }
           function s(e, t, n) {
             x.test(e) &&
@@ -14823,8 +15373,8 @@
             if (!c.hasOwnProperty(l)) {
               c[l] = !0;
               var u = a
-                  ? " Check the render method of " + a + "."
-                  : s
+                ? " Check the render method of " + a + "."
+                : s
                   ? " Check the React.render call using <" + s + ">."
                   : "",
                 d = "";
@@ -14834,12 +15384,12 @@
               }
               "production" !== n.env.NODE_ENV
                 ? T(
-                    !1,
-                    e +
-                      "%s%s See http://fb.me/react-warning-keys for more information.",
-                    u,
-                    d
-                  )
+                  !1,
+                  e +
+                  "%s%s See http://fb.me/react-warning-keys for more information.",
+                  u,
+                  d
+                )
                 : null;
             }
           }
@@ -14854,7 +15404,7 @@
               var o = b(e);
               if (o) {
                 if (o !== e.entries)
-                  for (var i, l = o.call(e); !(i = l.next()).done; )
+                  for (var i, l = o.call(e); !(i = l.next()).done;)
                     m.isValidElement(i.value) && a(i.value, t);
               } else if ("object" == typeof e) {
                 var c = v.extractIfFragment(e);
@@ -14869,12 +15419,12 @@
                 try {
                   "production" !== n.env.NODE_ENV
                     ? N(
-                        "function" == typeof t[a],
-                        "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
-                        e || "React class",
-                        y[i],
-                        a
-                      )
+                      "function" == typeof t[a],
+                      "%s: %s type `%s` is invalid; it must be a function, usually from React.PropTypes.",
+                      e || "React class",
+                      y[i],
+                      a
+                    )
                     : N("function" == typeof t[a]),
                     (s = t[a](o, a, e, i));
                 } catch (l) {
@@ -14904,12 +15454,12 @@
               i && (l = " The element was created by " + i + "."),
                 "production" !== n.env.NODE_ENV
                   ? T(
-                      !1,
-                      "Don't set .props.%s of the React component%s. Instead, specify the correct value when initially creating the element.%s",
-                      e,
-                      s,
-                      l
-                    )
+                    !1,
+                    "Don't set .props.%s of the React component%s. Instead, specify the correct value when initially creating the element.%s",
+                    e,
+                    s,
+                    l
+                  )
                   : null;
             }
           }
@@ -14917,8 +15467,8 @@
             return e !== e
               ? t !== t
               : 0 === e && 0 === t
-              ? 1 / e === 1 / t
-              : e === t;
+                ? 1 / e === 1 / t
+                : e === t;
           }
           function h(e) {
             if (e._store) {
@@ -14936,12 +15486,12 @@
                 r = t.displayName || t.name;
               t.propTypes && u(r, t.propTypes, e.props, g.prop),
                 "function" == typeof t.getDefaultProps &&
-                  ("production" !== n.env.NODE_ENV
-                    ? T(
-                        t.getDefaultProps.isReactClassApproved,
-                        "getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead."
-                      )
-                    : null);
+                ("production" !== n.env.NODE_ENV
+                  ? T(
+                    t.getDefaultProps.isReactClassApproved,
+                    "getDefaultProps is only used on classic React.createClass definitions. Use a static property named `defaultProps` instead."
+                  )
+                  : null);
             }
           }
           var m = e("./ReactElement"),
@@ -14962,9 +15512,9 @@
               createElement: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? T(
-                      null != e,
-                      "React.createElement: type should not be null or undefined. It should be a string (for DOM elements) or a ReactClass (for composite components)."
-                    )
+                    null != e,
+                    "React.createElement: type should not be null or undefined. It should be a string (for DOM elements) or a ReactClass (for composite components)."
+                  )
                   : null;
                 var t = m.createElement.apply(this, arguments);
                 if (null == t) return t;
@@ -14981,16 +15531,16 @@
                         return (
                           "production" !== n.env.NODE_ENV
                             ? T(
-                                !1,
-                                "Factory.type is deprecated. Access the class directly before passing it to createFactory."
-                              )
+                              !1,
+                              "Factory.type is deprecated. Access the class directly before passing it to createFactory."
+                            )
                             : null,
                           Object.defineProperty(this, "type", { value: e }),
                           e
                         );
                       },
                     });
-                  } catch (r) {}
+                  } catch (r) { }
                 return t;
               },
               cloneElement: function () {
@@ -15042,7 +15592,7 @@
                 a = s.createFactory(e);
               },
             },
-            p = function () {};
+            p = function () { };
           (p.prototype.componentDidMount = function () {
             var e = l.get(this);
             e && r(e._rootNodeID);
@@ -15055,9 +15605,9 @@
               return (
                 "production" !== n.env.NODE_ENV
                   ? c(
-                      a,
-                      "Trying to return null from a render, but no null placeholder component was injected."
-                    )
+                    a,
+                    "Trying to return null from a render, but no null placeholder component was injected."
+                  )
                   : c(a),
                 a()
               );
@@ -15219,34 +15769,34 @@
               Object.defineProperty({}, i, { enumerable: !1, value: !0 }),
                 Object.defineProperty({}, "key", { enumerable: !0, get: l }),
                 (s = !0);
-            } catch (c) {}
+            } catch (c) { }
             var u = function (e, t) {
-                Object.defineProperty(e, t, {
-                  enumerable: !0,
-                  get: function () {
-                    return (
-                      "production" !== n.env.NODE_ENV
-                        ? o(
-                            this[a],
-                            "A ReactFragment is an opaque type. Accessing any of its properties is deprecated. Pass it to one of the React.Children helpers."
-                          )
-                        : null,
-                      (this[a] = !0),
-                      this[i][t]
-                    );
-                  },
-                  set: function (e) {
+              Object.defineProperty(e, t, {
+                enumerable: !0,
+                get: function () {
+                  return (
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          this[a],
-                          "A ReactFragment is an immutable opaque type. Mutating its properties is deprecated."
-                        )
+                        this[a],
+                        "A ReactFragment is an opaque type. Accessing any of its properties is deprecated. Pass it to one of the React.Children helpers."
+                      )
                       : null,
-                      (this[a] = !0),
-                      (this[i][t] = e);
-                  },
-                });
-              },
+                    (this[a] = !0),
+                    this[i][t]
+                  );
+                },
+                set: function (e) {
+                  "production" !== n.env.NODE_ENV
+                    ? o(
+                      this[a],
+                      "A ReactFragment is an immutable opaque type. Mutating its properties is deprecated."
+                    )
+                    : null,
+                    (this[a] = !0),
+                    (this[i][t] = e);
+                },
+              });
+            },
               d = {},
               p = function (e) {
                 var t = "";
@@ -15262,10 +15812,10 @@
                   return (
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          !1,
-                          "React.addons.createFragment only accepts a single object.",
-                          e
-                        )
+                        !1,
+                        "React.addons.createFragment only accepts a single object.",
+                        e
+                      )
                       : null,
                     e
                   );
@@ -15273,9 +15823,9 @@
                   return (
                     "production" !== n.env.NODE_ENV
                       ? o(
-                          !1,
-                          "React.addons.createFragment does not accept a ReactElement without a wrapper object."
-                        )
+                        !1,
+                        "React.addons.createFragment does not accept a ReactElement without a wrapper object."
+                      )
                       : null,
                     e
                   );
@@ -15298,11 +15848,11 @@
                 ? e[i]
                   ? e[i]
                   : ("production" !== n.env.NODE_ENV
-                      ? o(
-                          p(e),
-                          "Any use of a keyed object should be wrapped in React.addons.createFragment(object) before being passed as a child."
-                        )
-                      : null,
+                    ? o(
+                      p(e),
+                      "Any use of a keyed object should be wrapped in React.addons.createFragment(object) before being passed as a child."
+                    )
+                    : null,
                     e)
                 : e;
             },
@@ -15463,21 +16013,21 @@
             if (
               ("production" !== n.env.NODE_ENV
                 ? p(
-                    i(e) && i(t),
-                    "getNextDescendantID(%s, %s): Received an invalid React DOM ID.",
-                    e,
-                    t
-                  )
+                  i(e) && i(t),
+                  "getNextDescendantID(%s, %s): Received an invalid React DOM ID.",
+                  e,
+                  t
+                )
                 : p(i(e) && i(t)),
-              "production" !== n.env.NODE_ENV
-                ? p(
+                "production" !== n.env.NODE_ENV
+                  ? p(
                     a(e, t),
                     "getNextDescendantID(...): React has made an invalid assumption about the DOM hierarchy. Expected `%s` to be an ancestor of `%s`.",
                     e,
                     t
                   )
-                : p(a(e, t)),
-              e === t)
+                  : p(a(e, t)),
+                e === t)
             )
               return e;
             var r,
@@ -15495,12 +16045,12 @@
             return (
               "production" !== n.env.NODE_ENV
                 ? p(
-                    i(l),
-                    "getFirstCommonAncestorID(%s, %s): Expected a valid React DOM ID: %s",
-                    e,
-                    t,
-                    l
-                  )
+                  i(l),
+                  "getFirstCommonAncestorID(%s, %s): Expected a valid React DOM ID: %s",
+                  e,
+                  t,
+                  l
+                )
                 : p(i(l)),
               l
             );
@@ -15510,34 +16060,34 @@
               (t = t || ""),
               "production" !== n.env.NODE_ENV
                 ? p(
-                    e !== t,
-                    "traverseParentPath(...): Cannot traverse from and to the same ID, `%s`.",
-                    e
-                  )
+                  e !== t,
+                  "traverseParentPath(...): Cannot traverse from and to the same ID, `%s`.",
+                  e
+                )
                 : p(e !== t);
             var u = a(t, e);
             "production" !== n.env.NODE_ENV
               ? p(
-                  u || a(e, t),
-                  "traverseParentPath(%s, %s, ...): Cannot traverse from two IDs that do not have a parent path.",
-                  e,
-                  t
-                )
+                u || a(e, t),
+                "traverseParentPath(%s, %s, ...): Cannot traverse from two IDs that do not have a parent path.",
+                e,
+                t
+              )
               : p(u || a(e, t));
             for (var d = 0, h = u ? s : l, f = e; ; f = h(f, t)) {
               var v;
               if (
                 ((i && f === e) || (c && f === t) || (v = r(f, u, o)),
-                v === !1 || f === t)
+                  v === !1 || f === t)
               )
                 break;
               "production" !== n.env.NODE_ENV
                 ? p(
-                    d++ < m,
-                    "traverseParentPath(%s, %s, ...): Detected an infinite loop while traversing the React DOM ID tree. This may be due to malformed IDs: %s",
-                    e,
-                    t
-                  )
+                  d++ < m,
+                  "traverseParentPath(%s, %s, ...): Detected an infinite loop while traversing the React DOM ID tree. This may be due to malformed IDs: %s",
+                  e,
+                  t
+                )
                 : p(d++ < m);
             }
           }
@@ -15658,13 +16208,13 @@
                 r !== e &&
                   ("production" !== n.env.NODE_ENV
                     ? M(
-                        !u(r, t),
-                        "ReactMount: Two valid but unequal nodes with the same `%s`: %s",
-                        U,
-                        t
-                      )
+                      !u(r, t),
+                      "ReactMount: Two valid but unequal nodes with the same `%s`: %s",
+                      U,
+                      t
+                    )
                     : M(!u(r, t)),
-                  (B[t] = e));
+                    (B[t] = e));
               } else B[t] = e;
             return t;
           }
@@ -15678,7 +16228,7 @@
           function l(e) {
             return (
               (B.hasOwnProperty(e) && u(B[e], e)) ||
-                (B[e] = z.findReactNodeByID(e)),
+              (B[e] = z.findReactNodeByID(e)),
               B[e]
             );
           }
@@ -15687,17 +16237,17 @@
             return b.isNullComponentID(t)
               ? null
               : ((B.hasOwnProperty(t) && u(B[t], t)) ||
-                  (B[t] = z.findReactNodeByID(t)),
+                (B[t] = z.findReactNodeByID(t)),
                 B[t]);
           }
           function u(e, t) {
             if (e) {
               "production" !== n.env.NODE_ENV
                 ? M(
-                    a(e) === t,
-                    "ReactMount: Unexpected modification of `%s`",
-                    U
-                  )
+                  a(e) === t,
+                  "ReactMount: Unexpected modification of `%s`",
+                  U
+                )
                 : M(a(e) === t);
               var r = z.findReactContainerForID(t);
               if (r && k(r, e)) return !0;
@@ -15764,7 +16314,7 @@
               _updateRootComponent: function (e, t, r, i) {
                 return (
                   "production" !== n.env.NODE_ENV &&
-                    E.checkAndWarnForMutatedProps(t),
+                  E.checkAndWarnForMutatedProps(t),
                   z.scrollMonitor(r, function () {
                     S.enqueueElementInternal(e, t),
                       i && S.enqueueCallbackInternal(e, i);
@@ -15776,9 +16326,9 @@
               _registerComponent: function (e, t) {
                 "production" !== n.env.NODE_ENV
                   ? M(
-                      t && (t.nodeType === V || t.nodeType === F),
-                      "_registerComponent(...): Target container is not a DOM element."
-                    )
+                    t && (t.nodeType === V || t.nodeType === F),
+                    "_registerComponent(...): Target container is not a DOM element."
+                  )
                   : M(t && (t.nodeType === V || t.nodeType === F)),
                   g.ensureScrollValueMonitoring();
                 var r = z.registerContainer(t);
@@ -15787,9 +16337,9 @@
               _renderNewRootComponent: function (e, t, r) {
                 "production" !== n.env.NODE_ENV
                   ? I(
-                      null == y.current,
-                      "_renderNewRootComponent(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
-                    )
+                    null == y.current,
+                    "_renderNewRootComponent(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
+                  )
                   : null;
                 var o = P(e, null),
                   i = z._registerComponent(o, t);
@@ -15802,16 +16352,16 @@
               render: function (e, t, r) {
                 "production" !== n.env.NODE_ENV
                   ? M(
-                      _.isValidElement(e),
-                      "React.render(): Invalid component element.%s",
-                      "string" == typeof e
-                        ? " Instead of passing an element string, make sure to instantiate it by passing it to React.createElement."
-                        : "function" == typeof e
+                    _.isValidElement(e),
+                    "React.render(): Invalid component element.%s",
+                    "string" == typeof e
+                      ? " Instead of passing an element string, make sure to instantiate it by passing it to React.createElement."
+                      : "function" == typeof e
                         ? " Instead of passing a component class, make sure to instantiate it by passing it to React.createElement."
                         : null != e && void 0 !== e.props
-                        ? " This may be caused by unintentionally loading two independent copies of React."
-                        : ""
-                    )
+                          ? " This may be caused by unintentionally loading two independent copies of React."
+                          : ""
+                  )
                   : M(_.isValidElement(e));
                 var i = H[o(t)];
                 if (i) {
@@ -15825,13 +16375,13 @@
                 var s = O(t),
                   l = s && z.isRenderedByReact(s);
                 if ("production" !== n.env.NODE_ENV && (!l || s.nextSibling))
-                  for (var c = s; c; ) {
+                  for (var c = s; c;) {
                     if (z.isRenderedByReact(c)) {
                       "production" !== n.env.NODE_ENV
                         ? I(
-                            !1,
-                            "render(): Target node has markup rendered by React, but there are unrelated nodes as well. This is most commonly caused by white-space inserted around server-rendered markup."
-                          )
+                          !1,
+                          "render(): Target node has markup rendered by React, but there are unrelated nodes as well. This is most commonly caused by white-space inserted around server-rendered markup."
+                        )
                         : null;
                       break;
                     }
@@ -15850,10 +16400,10 @@
                 return (
                   "production" !== n.env.NODE_ENV
                     ? M(
-                        o,
-                        'Tried to get element with id of "%s" but it is not present on the page.',
-                        r
-                      )
+                      o,
+                      'Tried to get element with id of "%s" but it is not present on the page.',
+                      r
+                    )
                     : M(o),
                   z.constructAndRenderComponent(e, t, o)
                 );
@@ -15870,15 +16420,15 @@
               unmountComponentAtNode: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? I(
-                      null == y.current,
-                      "unmountComponentAtNode(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
-                    )
+                    null == y.current,
+                    "unmountComponentAtNode(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
+                  )
                   : null,
                   "production" !== n.env.NODE_ENV
                     ? M(
-                        e && (e.nodeType === V || e.nodeType === F),
-                        "unmountComponentAtNode(...): Target container is not a DOM element."
-                      )
+                      e && (e.nodeType === V || e.nodeType === F),
+                      "unmountComponentAtNode(...): Target container is not a DOM element."
+                    )
                     : M(e && (e.nodeType === V || e.nodeType === F));
                 var t = o(e),
                   r = H[t];
@@ -15893,7 +16443,7 @@
               unmountComponentFromNode: function (e, t) {
                 for (
                   x.unmountComponent(e),
-                    t.nodeType === F && (t = t.documentElement);
+                  t.nodeType === F && (t = t.documentElement);
                   t.lastChild;
 
                 )
@@ -15907,20 +16457,20 @@
                   if (o && o.parentNode !== r) {
                     "production" !== n.env.NODE_ENV
                       ? M(
-                          a(o) === t,
-                          "ReactMount: Root element ID differed from reactRootID."
-                        )
+                        a(o) === t,
+                        "ReactMount: Root element ID differed from reactRootID."
+                      )
                       : M(a(o) === t);
                     var i = r.firstChild;
                     i && t === a(i)
                       ? ($[t] = i)
                       : "production" !== n.env.NODE_ENV
-                      ? I(
+                        ? I(
                           !1,
                           "ReactMount: Root element has been removed from its original container. New container:",
                           o.parentNode
                         )
-                      : null;
+                        : null;
                   }
                 }
                 return r;
@@ -15935,7 +16485,7 @@
                 return t ? t.charAt(0) === j : !1;
               },
               getFirstReactDOM: function (e) {
-                for (var t = e; t && t.parentNode !== t; ) {
+                for (var t = e; t && t.parentNode !== t;) {
                   if (z.isRenderedByReact(t)) return t;
                   t = t.parentNode;
                 }
@@ -15945,14 +16495,14 @@
                 var r = G,
                   o = 0,
                   i = h(t) || e;
-                for (r[0] = i.firstChild, r.length = 1; o < r.length; ) {
-                  for (var a, s = r[o++]; s; ) {
+                for (r[0] = i.firstChild, r.length = 1; o < r.length;) {
+                  for (var a, s = r[o++]; s;) {
                     var l = z.getID(s);
                     l
                       ? t === l
                         ? (a = s)
                         : N.isAncestorIDOf(l, t) &&
-                          ((r.length = o = 0), r.push(s.firstChild))
+                        ((r.length = o = 0), r.push(s.firstChild))
                       : r.push(s.firstChild),
                       (s = s.nextSibling);
                   }
@@ -15961,22 +16511,22 @@
                 (r.length = 0),
                   "production" !== n.env.NODE_ENV
                     ? M(
-                        !1,
-                        "findComponentRoot(..., %s): Unable to find element. This probably means the DOM was unexpectedly mutated (e.g., by the browser), usually due to forgetting a <tbody> when using tables, nesting tags like <form>, <p>, or <a>, or using non-SVG elements in an <svg> parent. Try inspecting the child nodes of the element with React ID `%s`.",
-                        t,
-                        z.getID(e)
-                      )
+                      !1,
+                      "findComponentRoot(..., %s): Unable to find element. This probably means the DOM was unexpectedly mutated (e.g., by the browser), usually due to forgetting a <tbody> when using tables, nesting tags like <form>, <p>, or <a>, or using non-SVG elements in an <svg> parent. Try inspecting the child nodes of the element with React ID `%s`.",
+                      t,
+                      z.getID(e)
+                    )
                     : M(!1);
               },
               _mountImageIntoNode: function (e, t, o) {
                 if (
                   ("production" !== n.env.NODE_ENV
                     ? M(
-                        t && (t.nodeType === V || t.nodeType === F),
-                        "mountComponentIntoNode(...): Target container is not valid."
-                      )
+                      t && (t.nodeType === V || t.nodeType === F),
+                      "mountComponentIntoNode(...): Target container is not valid."
+                    )
                     : M(t && (t.nodeType === V || t.nodeType === F)),
-                  o)
+                    o)
                 ) {
                   var i = O(t);
                   if (C.canReuseMarkup(e, i)) return;
@@ -15992,25 +16542,25 @@
                       s.substring(l - 20, l + 20);
                   "production" !== n.env.NODE_ENV
                     ? M(
-                        t.nodeType !== F,
-                        "You're trying to render a component to the document using server rendering but the checksum was invalid. This usually means you rendered a different component type or props on the client from the one on the server, or your render() methods are impure. React cannot handle this case due to cross-browser quirks by rendering at the document root. You should look for environment dependent code in your components and ensure the props are the same client and server side:\n%s",
-                        c
-                      )
+                      t.nodeType !== F,
+                      "You're trying to render a component to the document using server rendering but the checksum was invalid. This usually means you rendered a different component type or props on the client from the one on the server, or your render() methods are impure. React cannot handle this case due to cross-browser quirks by rendering at the document root. You should look for environment dependent code in your components and ensure the props are the same client and server side:\n%s",
+                      c
+                    )
                     : M(t.nodeType !== F),
                     "production" !== n.env.NODE_ENV &&
-                      ("production" !== n.env.NODE_ENV
-                        ? I(
-                            !1,
-                            "React attempted to reuse markup in a container but the checksum was invalid. This generally means that you are using server rendering and the markup generated on the server was not what the client was expecting. React injected new markup to compensate which works but you have lost many of the benefits of server rendering. Instead, figure out why the markup being generated is different on the client or server:\n%s",
-                            c
-                          )
-                        : null);
+                    ("production" !== n.env.NODE_ENV
+                      ? I(
+                        !1,
+                        "React attempted to reuse markup in a container but the checksum was invalid. This generally means that you are using server rendering and the markup generated on the server was not what the client was expecting. React injected new markup to compensate which works but you have lost many of the benefits of server rendering. Instead, figure out why the markup being generated is different on the client or server:\n%s",
+                        c
+                      )
+                      : null);
                 }
                 "production" !== n.env.NODE_ENV
                   ? M(
-                      t.nodeType !== F,
-                      "You're trying to render a component to the document but you didn't use server rendering. We can't do this without using server rendering due to cross-browser quirks. See React.renderToString() for server rendering."
-                    )
+                    t.nodeType !== F,
+                    "You're trying to render a component to the document but you didn't use server rendering. We can't do this without using server rendering due to cross-browser quirks. See React.renderToString() for server rendering."
+                  )
                   : M(t.nodeType !== F),
                   A(t, e);
               },
@@ -16167,7 +16717,7 @@
                           (a = Math.max(l._mountIndex, a)),
                           (l._mountIndex = s))
                         : (l &&
-                            ((a = Math.max(l._mountIndex, a)),
+                          ((a = Math.max(l._mountIndex, a)),
                             this._unmountChildByName(l, i)),
                           this._mountChildByNameAtIndex(c, i, s, t, n)),
                         s++;
@@ -16241,10 +16791,10 @@
             return (
               "production" !== n.env.NODE_ENV
                 ? l(
-                    u,
-                    "There is no registered component for the tag %s",
-                    e.type
-                  )
+                  u,
+                  "There is no registered component for the tag %s",
+                  e.type
+                )
                 : l(u),
               new u(e.type, e.props)
             );
@@ -16303,21 +16853,21 @@
               addComponentAsRefTo: function (e, t, i) {
                 "production" !== n.env.NODE_ENV
                   ? r(
-                      o.isValidOwner(i),
-                      "addComponentAsRefTo(...): Only a ReactOwner can have refs. This usually means that you're trying to add a ref to a component that doesn't have an owner (that is, was not created inside of another component's `render` method). Try rendering this component inside of a new top-level component which will hold the ref."
-                    )
+                    o.isValidOwner(i),
+                    "addComponentAsRefTo(...): Only a ReactOwner can have refs. This usually means that you're trying to add a ref to a component that doesn't have an owner (that is, was not created inside of another component's `render` method). Try rendering this component inside of a new top-level component which will hold the ref."
+                  )
                   : r(o.isValidOwner(i)),
                   i.attachRef(t, e);
               },
               removeComponentAsRefFrom: function (e, t, i) {
                 "production" !== n.env.NODE_ENV
                   ? r(
-                      o.isValidOwner(i),
-                      "removeComponentAsRefFrom(...): Only a ReactOwner can have refs. This usually means that you're trying to remove a ref to a component that doesn't have an owner (that is, was not created inside of another component's `render` method). Try rendering this component inside of a new top-level component which will hold the ref."
-                    )
+                    o.isValidOwner(i),
+                    "removeComponentAsRefFrom(...): Only a ReactOwner can have refs. This usually means that you're trying to remove a ref to a component that doesn't have an owner (that is, was not created inside of another component's `render` method). Try rendering this component inside of a new top-level component which will hold the ref."
+                  )
                   : r(o.isValidOwner(i)),
                   i.getPublicInstance().refs[t] === e.getPublicInstance() &&
-                    i.detachRef(t);
+                  i.detachRef(t);
               },
             };
           t.exports = o;
@@ -16398,13 +16948,13 @@
               var a = y[i];
               return t
                 ? new Error(
-                    "Required " +
-                      a +
-                      " `" +
-                      r +
-                      "` was not specified in " +
-                      ("`" + o + "`.")
-                  )
+                  "Required " +
+                  a +
+                  " `" +
+                  r +
+                  "` was not specified in " +
+                  ("`" + o + "`.")
+                )
                 : null;
             }
             return e(n, r, o, i);
@@ -16421,13 +16971,13 @@
                 l = m(i);
               return new Error(
                 "Invalid " +
-                  s +
-                  " `" +
-                  n +
-                  "` of type `" +
-                  l +
-                  "` " +
-                  ("supplied to `" + r + "`, expected `" + e + "`.")
+                s +
+                " `" +
+                n +
+                "` of type `" +
+                l +
+                "` " +
+                ("supplied to `" + r + "`, expected `" + e + "`.")
               );
             }
             return null;
@@ -16445,11 +16995,11 @@
                 s = f(i);
               return new Error(
                 "Invalid " +
-                  a +
-                  " `" +
-                  n +
-                  "` of type " +
-                  ("`" + s + "` supplied to `" + r + "`, expected an array.")
+                a +
+                " `" +
+                n +
+                "` of type " +
+                ("`" + s + "` supplied to `" + r + "`, expected an array.")
               );
             }
             for (var l = 0; l < i.length; l++) {
@@ -16466,11 +17016,11 @@
               var o = y[r];
               return new Error(
                 "Invalid " +
-                  o +
-                  " `" +
-                  t +
-                  "` supplied to " +
-                  ("`" + n + "`, expected a ReactElement.")
+                o +
+                " `" +
+                t +
+                "` supplied to " +
+                ("`" + n + "`, expected a ReactElement.")
               );
             }
             return null;
@@ -16484,11 +17034,11 @@
                 a = e.name || E;
               return new Error(
                 "Invalid " +
-                  i +
-                  " `" +
-                  n +
-                  "` supplied to " +
-                  ("`" + r + "`, expected instance of `" + a + "`.")
+                i +
+                " `" +
+                n +
+                "` supplied to " +
+                ("`" + r + "`, expected instance of `" + a + "`.")
               );
             }
             return null;
@@ -16503,13 +17053,13 @@
               l = JSON.stringify(e);
             return new Error(
               "Invalid " +
-                s +
-                " `" +
-                n +
-                "` of value `" +
-                i +
-                "` " +
-                ("supplied to `" + r + "`, expected one of " + l + ".")
+              s +
+              " `" +
+              n +
+              "` of value `" +
+              i +
+              "` " +
+              ("supplied to `" + r + "`, expected one of " + l + ".")
             );
           }
           return n(t);
@@ -16522,11 +17072,11 @@
               var s = y[o];
               return new Error(
                 "Invalid " +
-                  s +
-                  " `" +
-                  n +
-                  "` of type " +
-                  ("`" + a + "` supplied to `" + r + "`, expected an object.")
+                s +
+                " `" +
+                n +
+                "` of type " +
+                ("`" + a + "` supplied to `" + r + "`, expected an object.")
               );
             }
             for (var l in i)
@@ -16557,11 +17107,11 @@
               var o = y[r];
               return new Error(
                 "Invalid " +
-                  o +
-                  " `" +
-                  t +
-                  "` supplied to " +
-                  ("`" + n + "`, expected a ReactNode.")
+                o +
+                " `" +
+                t +
+                "` supplied to " +
+                ("`" + n + "`, expected a ReactNode.")
               );
             }
             return null;
@@ -16576,13 +17126,13 @@
               var s = y[o];
               return new Error(
                 "Invalid " +
-                  s +
-                  " `" +
-                  n +
-                  "` of type `" +
-                  a +
-                  "` " +
-                  ("supplied to `" + r + "`, expected `object`.")
+                s +
+                " `" +
+                n +
+                "` of type `" +
+                a +
+                "` " +
+                ("supplied to `" + r + "`, expected `object`.")
               );
             }
             for (var l in e) {
@@ -16619,8 +17169,8 @@
           return Array.isArray(e)
             ? "array"
             : e instanceof RegExp
-            ? "object"
-            : t;
+              ? "object"
+              : t;
         }
         function m(e) {
           var t = f(e);
@@ -16791,7 +17341,7 @@
                 var s = e.mountComponent(t, o, a);
                 return (
                   "production" !== n.env.NODE_ENV &&
-                    i.checkAndWarnForMutatedProps(e._currentElement),
+                  i.checkAndWarnForMutatedProps(e._currentElement),
                   o.getReactMountReady().enqueue(r, e),
                   s
                 );
@@ -16853,10 +17403,10 @@
       function (e, t) {
         "use strict";
         var n = {
-            injectCreateReactRootIndex: function (e) {
-              r.createReactRootIndex = e;
-            },
+          injectCreateReactRootIndex: function (e) {
+            r.createReactRootIndex = e;
           },
+        },
           r = { createReactRootIndex: null, injection: n };
         t.exports = r;
       },
@@ -16869,9 +17419,9 @@
           function r(e) {
             "production" !== n.env.NODE_ENV
               ? d(
-                  i.isValidElement(e),
-                  "renderToString(): You must pass a valid ReactElement."
-                )
+                i.isValidElement(e),
+                "renderToString(): You must pass a valid ReactElement."
+              )
               : d(i.isValidElement(e));
             var t;
             try {
@@ -16891,9 +17441,9 @@
           function o(e) {
             "production" !== n.env.NODE_ENV
               ? d(
-                  i.isValidElement(e),
-                  "renderToStaticMarkup(): You must pass a valid ReactElement."
-                )
+                i.isValidElement(e),
+                "renderToStaticMarkup(): You must pass a valid ReactElement."
+              )
               : d(i.isValidElement(e));
             var t;
             try {
@@ -16996,10 +17546,10 @@
           function o(e, t) {
             "production" !== n.env.NODE_ENV
               ? d(
-                  null == a.current,
-                  "%s(...): Cannot update during an existing state transition (such as within `render`). Render methods should be a pure function of props and state.",
-                  t
-                )
+                null == a.current,
+                "%s(...): Cannot update during an existing state transition (such as within `render`). Render methods should be a pure function of props and state.",
+                t
+              )
               : d(null == a.current);
             var r = l.get(e);
             return r
@@ -17007,14 +17557,14 @@
                 ? null
                 : r
               : ("production" !== n.env.NODE_ENV &&
-                  ("production" !== n.env.NODE_ENV
-                    ? p(
-                        !t,
-                        "%s(...): Can only update a mounted or mounting component. This usually means you called %s() on an unmounted component. This is a no-op.",
-                        t,
-                        t
-                      )
-                    : null),
+                ("production" !== n.env.NODE_ENV
+                  ? p(
+                    !t,
+                    "%s(...): Can only update a mounted or mounting component. This usually means you called %s() on an unmounted component. This is a no-op.",
+                    t,
+                    t
+                  )
+                  : null),
                 null);
           }
           var i = e("./ReactLifeCycle"),
@@ -17029,24 +17579,24 @@
               enqueueCallback: function (e, t) {
                 "production" !== n.env.NODE_ENV
                   ? d(
-                      "function" == typeof t,
-                      "enqueueCallback(...): You called `setProps`, `replaceProps`, `setState`, `replaceState`, or `forceUpdate` with a callback that isn't callable."
-                    )
+                    "function" == typeof t,
+                    "enqueueCallback(...): You called `setProps`, `replaceProps`, `setState`, `replaceState`, or `forceUpdate` with a callback that isn't callable."
+                  )
                   : d("function" == typeof t);
                 var a = o(e);
                 return a && a !== i.currentlyMountingInstance
                   ? (a._pendingCallbacks
-                      ? a._pendingCallbacks.push(t)
-                      : (a._pendingCallbacks = [t]),
+                    ? a._pendingCallbacks.push(t)
+                    : (a._pendingCallbacks = [t]),
                     void r(a))
                   : null;
               },
               enqueueCallbackInternal: function (e, t) {
                 "production" !== n.env.NODE_ENV
                   ? d(
-                      "function" == typeof t,
-                      "enqueueCallback(...): You called `setProps`, `replaceProps`, `setState`, `replaceState`, or `forceUpdate` with a callback that isn't callable."
-                    )
+                    "function" == typeof t,
+                    "enqueueCallback(...): You called `setProps`, `replaceProps`, `setState`, `replaceState`, or `forceUpdate` with a callback that isn't callable."
+                  )
                   : d("function" == typeof t),
                   e._pendingCallbacks
                     ? e._pendingCallbacks.push(t)
@@ -17061,8 +17611,8 @@
                 var n = o(e, "replaceState");
                 n &&
                   ((n._pendingStateQueue = [t]),
-                  (n._pendingReplaceState = !0),
-                  r(n));
+                    (n._pendingReplaceState = !0),
+                    r(n));
               },
               enqueueSetState: function (e, t) {
                 var n = o(e, "setState");
@@ -17076,9 +17626,9 @@
                 if (i) {
                   "production" !== n.env.NODE_ENV
                     ? d(
-                        i._isTopLevel,
-                        "setProps(...): You called `setProps` on a component with a parent. This is an anti-pattern since props will get reactively updated when rendered. Instead, change the owner's `render` method to pass the correct value as props to the component where it is created."
-                      )
+                      i._isTopLevel,
+                      "setProps(...): You called `setProps` on a component with a parent. This is an anti-pattern since props will get reactively updated when rendered. Instead, change the owner's `render` method to pass the correct value as props to the component where it is created."
+                    )
                     : d(i._isTopLevel);
                   var a = i._pendingElement || i._currentElement,
                     l = u({}, a.props, t);
@@ -17090,9 +17640,9 @@
                 if (i) {
                   "production" !== n.env.NODE_ENV
                     ? d(
-                        i._isTopLevel,
-                        "replaceProps(...): You called `replaceProps` on a component with a parent. This is an anti-pattern since props will get reactively updated when rendered. Instead, change the owner's `render` method to pass the correct value as props to the component where it is created."
-                      )
+                      i._isTopLevel,
+                      "replaceProps(...): You called `replaceProps` on a component with a parent. This is an anti-pattern since props will get reactively updated when rendered. Instead, change the owner's `render` method to pass the correct value as props to the component where it is created."
+                    )
                     : d(i._isTopLevel);
                   var a = i._pendingElement || i._currentElement;
                   (i._pendingElement = s.cloneAndReplaceProps(a, t)), r(i);
@@ -17124,9 +17674,9 @@
           function r() {
             "production" !== n.env.NODE_ENV
               ? g(
-                  D.ReactReconcileTransaction && N,
-                  "ReactUpdates: must inject a reconcile transaction class and batching strategy"
-                )
+                D.ReactReconcileTransaction && N,
+                "ReactUpdates: must inject a reconcile transaction class and batching strategy"
+              )
               : g(D.ReactReconcileTransaction && N);
           }
           function o() {
@@ -17146,11 +17696,11 @@
             var t = e.dirtyComponentsLength;
             "production" !== n.env.NODE_ENV
               ? g(
-                  t === _.length,
-                  "Expected flush transaction's stored dirty-components length (%s) to match dirty-components array length (%s).",
-                  t,
-                  _.length
-                )
+                t === _.length,
+                "Expected flush transaction's stored dirty-components length (%s) to match dirty-components array length (%s).",
+                t,
+                _.length
+              )
               : g(t === _.length),
               _.sort(a);
             for (var r = 0; t > r; r++) {
@@ -17158,8 +17708,8 @@
                 i = o._pendingCallbacks;
               if (
                 ((o._pendingCallbacks = null),
-                f.performUpdateIfNecessary(o, e.reconcileTransaction),
-                i)
+                  f.performUpdateIfNecessary(o, e.reconcileTransaction),
+                  i)
               )
                 for (var s = 0; s < i.length; s++)
                   e.callbackQueue.enqueue(i[s], o.getPublicInstance());
@@ -17170,9 +17720,9 @@
               r(),
               "production" !== n.env.NODE_ENV
                 ? y(
-                    null == p.current,
-                    "enqueueUpdate(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
-                  )
+                  null == p.current,
+                  "enqueueUpdate(): Render methods should be a pure function of props and state; triggering nested component updates from render is not allowed. If necessary, trigger nested updates in componentDidUpdate."
+                )
                 : null,
               N.isBatchingUpdates ? void _.push(e) : void N.batchedUpdates(l, e)
             );
@@ -17180,9 +17730,9 @@
           function c(e, t) {
             "production" !== n.env.NODE_ENV
               ? g(
-                  N.isBatchingUpdates,
-                  "ReactUpdates.asap: Can't enqueue an asap callback in a context whereupdates are not being batched."
-                )
+                N.isBatchingUpdates,
+                "ReactUpdates.asap: Can't enqueue an asap callback in a context whereupdates are not being batched."
+              )
               : g(N.isBatchingUpdates),
               E.enqueue(e, t),
               (b = !0);
@@ -17243,7 +17793,7 @@
           }),
             d.addPoolingTo(o);
           var x = function () {
-            for (; _.length || b; ) {
+            for (; _.length || b;) {
               if (_.length) {
                 var e = o.getPooled();
                 e.perform(s, null, e), o.release(e);
@@ -17257,34 +17807,34 @@
           };
           x = h.measure("ReactUpdates", "flushBatchedUpdates", x);
           var S = {
-              injectReconcileTransaction: function (e) {
+            injectReconcileTransaction: function (e) {
+              "production" !== n.env.NODE_ENV
+                ? g(
+                  e,
+                  "ReactUpdates: must provide a reconcile transaction class"
+                )
+                : g(e),
+                (D.ReactReconcileTransaction = e);
+            },
+            injectBatchingStrategy: function (e) {
+              "production" !== n.env.NODE_ENV
+                ? g(e, "ReactUpdates: must provide a batching strategy")
+                : g(e),
                 "production" !== n.env.NODE_ENV
                   ? g(
-                      e,
-                      "ReactUpdates: must provide a reconcile transaction class"
-                    )
-                  : g(e),
-                  (D.ReactReconcileTransaction = e);
-              },
-              injectBatchingStrategy: function (e) {
+                    "function" == typeof e.batchedUpdates,
+                    "ReactUpdates: must provide a batchedUpdates() function"
+                  )
+                  : g("function" == typeof e.batchedUpdates),
                 "production" !== n.env.NODE_ENV
-                  ? g(e, "ReactUpdates: must provide a batching strategy")
-                  : g(e),
-                  "production" !== n.env.NODE_ENV
-                    ? g(
-                        "function" == typeof e.batchedUpdates,
-                        "ReactUpdates: must provide a batchedUpdates() function"
-                      )
-                    : g("function" == typeof e.batchedUpdates),
-                  "production" !== n.env.NODE_ENV
-                    ? g(
-                        "boolean" == typeof e.isBatchingUpdates,
-                        "ReactUpdates: must provide an isBatchingUpdates boolean attribute"
-                      )
-                    : g("boolean" == typeof e.isBatchingUpdates),
-                  (N = e);
-              },
+                  ? g(
+                    "boolean" == typeof e.isBatchingUpdates,
+                    "ReactUpdates: must provide an isBatchingUpdates boolean attribute"
+                  )
+                  : g("boolean" == typeof e.isBatchingUpdates),
+                (N = e);
             },
+          },
             D = {
               ReactReconcileTransaction: null,
               batchedUpdates: i,
@@ -17783,9 +18333,9 @@
               var i = o.executeDispatch(e, t, r);
               "production" !== n.env.NODE_ENV
                 ? y(
-                    "boolean" != typeof i,
-                    "Returning `false` from an event handler is deprecated and will be ignored in a future release. Instead, manually call e.stopPropagation() or e.preventDefault(), as appropriate."
-                  )
+                  "boolean" != typeof i,
+                  "Returning `false` from an event handler is deprecated and will be ignored in a future release. Instead, manually call e.stopPropagation() or e.preventDefault(), as appropriate."
+                )
                 : null,
                 i === !1 && (e.stopPropagation(), e.preventDefault());
             },
@@ -18059,8 +18609,8 @@
               return "keypress" === e.type
                 ? o(e)
                 : "keydown" === e.type || "keyup" === e.type
-                ? e.keyCode
-                : 0;
+                  ? e.keyCode
+                  : 0;
             },
           };
         r.augmentClass(n, s), (t.exports = n);
@@ -18175,17 +18725,17 @@
               return "deltaX" in e
                 ? e.deltaX
                 : "wheelDeltaX" in e
-                ? -e.wheelDeltaX
-                : 0;
+                  ? -e.wheelDeltaX
+                  : 0;
             },
             deltaY: function (e) {
               return "deltaY" in e
                 ? e.deltaY
                 : "wheelDeltaY" in e
-                ? -e.wheelDeltaY
-                : "wheelDelta" in e
-                ? -e.wheelDelta
-                : 0;
+                  ? -e.wheelDeltaY
+                  : "wheelDelta" in e
+                    ? -e.wheelDelta
+                    : 0;
             },
             deltaZ: null,
             deltaMode: null,
@@ -18215,9 +18765,9 @@
               perform: function (e, t, o, i, a, s, l, c) {
                 "production" !== n.env.NODE_ENV
                   ? r(
-                      !this.isInTransaction(),
-                      "Transaction.perform(...): Cannot initialize a transaction when there is already an outstanding transaction."
-                    )
+                    !this.isInTransaction(),
+                    "Transaction.perform(...): Cannot initialize a transaction when there is already an outstanding transaction."
+                  )
                   : r(!this.isInTransaction());
                 var u, d;
                 try {
@@ -18231,7 +18781,7 @@
                     if (u)
                       try {
                         this.closeAll(0);
-                      } catch (p) {}
+                      } catch (p) { }
                     else this.closeAll(0);
                   } finally {
                     this._isInTransaction = !1;
@@ -18255,16 +18805,16 @@
                     if (this.wrapperInitData[n] === i.OBSERVED_ERROR)
                       try {
                         this.initializeAll(n + 1);
-                      } catch (o) {}
+                      } catch (o) { }
                   }
                 }
               },
               closeAll: function (e) {
                 "production" !== n.env.NODE_ENV
                   ? r(
-                      this.isInTransaction(),
-                      "Transaction.closeAll(): Cannot close transaction when none are open."
-                    )
+                    this.isInTransaction(),
+                    "Transaction.closeAll(): Cannot close transaction when none are open."
+                  )
                   : r(this.isInTransaction());
                 for (
                   var t = this.transactionWrappers, o = e;
@@ -18277,14 +18827,14 @@
                   try {
                     (a = !0),
                       l !== i.OBSERVED_ERROR &&
-                        s.close &&
-                        s.close.call(this, l),
+                      s.close &&
+                      s.close.call(this, l),
                       (a = !1);
                   } finally {
                     if (a)
                       try {
                         this.closeAll(o + 1);
-                      } catch (c) {}
+                      } catch (c) { }
                   }
                 }
                 this.wrapperInitData.length = 0;
@@ -18318,11 +18868,11 @@
             if (
               ("production" !== n.env.NODE_ENV
                 ? o(
-                    null != t,
-                    "accumulateInto(...): Accumulated items must not be null or undefined."
-                  )
+                  null != t,
+                  "accumulateInto(...): Accumulated items must not be null or undefined."
+                )
                 : o(null != t),
-              null == e)
+                null == e)
             )
               return t;
             var r = Array.isArray(e),
@@ -18330,10 +18880,10 @@
             return r && i
               ? (e.push.apply(e, t), e)
               : r
-              ? (e.push(t), e)
-              : i
-              ? [e].concat(t)
-              : [e, t];
+                ? (e.push(t), e)
+                : i
+                  ? [e].concat(t)
+                  : [e, t];
           }
           var o = e("./invariant");
           t.exports = r;
@@ -18385,14 +18935,14 @@
             ? e === t
               ? !0
               : r(e)
-              ? !1
-              : r(t)
-              ? n(e, t.parentNode)
-              : e.contains
-              ? e.contains(t)
-              : e.compareDocumentPosition
-              ? !!(16 & e.compareDocumentPosition(t))
-              : !1
+                ? !1
+                : r(t)
+                  ? n(e, t.parentNode)
+                  : e.contains
+                    ? e.contains(t)
+                    : e.compareDocumentPosition
+                      ? !!(16 & e.compareDocumentPosition(t))
+                      : !1
             : !1;
         }
         var r = e("./isTextNode");
@@ -18432,10 +18982,10 @@
                 componentWillUnmount: function () {
                   "production" !== n.env.NODE_ENV
                     ? a(
-                        !1,
-                        "%s tried to unmount. Because of cross-browser quirks it is impossible to unmount some top-level components (eg <html>, <head>, and <body>) reliably and efficiently. To fix this, have a single top-level component that never unmounts render these elements.",
-                        this.constructor.displayName
-                      )
+                      !1,
+                      "%s tried to unmount. Because of cross-browser quirks it is impossible to unmount some top-level components (eg <html>, <head>, and <body>) reliably and efficiently. To fix this, have a single top-level component that never unmounts render these elements.",
+                      this.constructor.displayName
+                    )
                     : a(!1);
                 },
                 render: function () {
@@ -18473,18 +19023,18 @@
               u = i && s(i);
             if (u) {
               o.innerHTML = u[1] + e + u[2];
-              for (var d = u[0]; d--; ) o = o.lastChild;
+              for (var d = u[0]; d--;) o = o.lastChild;
             } else o.innerHTML = e;
             var p = o.getElementsByTagName("script");
             p.length &&
               ("production" !== n.env.NODE_ENV
                 ? l(
-                    t,
-                    "createNodesFromMarkup(...): Unexpected <script> element rendered."
-                  )
+                  t,
+                  "createNodesFromMarkup(...): Unexpected <script> element rendered."
+                )
                 : l(t),
-              a(p).forEach(t));
-            for (var h = a(o.childNodes); o.lastChild; )
+                a(p).forEach(t));
+            for (var h = a(o.childNodes); o.lastChild;)
               o.removeChild(o.lastChild);
             return h;
           }
@@ -18529,7 +19079,7 @@
             return e;
           };
         }
-        function r() {}
+        function r() { }
         (r.thatReturns = n),
           (r.thatReturnsFalse = n(!1)),
           (r.thatReturnsTrue = n(!0)),
@@ -18564,12 +19114,12 @@
           return ("" + e).replace(i, n);
         }
         var o = {
-            "&": "&amp;",
-            ">": "&gt;",
-            "<": "&lt;",
-            '"': "&quot;",
-            "'": "&#x27;",
-          },
+          "&": "&amp;",
+          ">": "&gt;",
+          "<": "&lt;",
+          '"': "&quot;",
+          "'": "&#x27;",
+        },
           i = /[&><"']/g;
         t.exports = r;
       },
@@ -18585,33 +19135,33 @@
               null !== t &&
                 ("production" !== n.env.NODE_ENV
                   ? c(
-                      t._warnedAboutRefsInRender,
-                      "%s is accessing getDOMNode or findDOMNode inside its render(). render() should be a pure function of props and state. It should never access something that requires stale data from the previous render, such as refs. Move this logic to componentDidMount and componentDidUpdate instead.",
-                      t.getName() || "A component"
-                    )
+                    t._warnedAboutRefsInRender,
+                    "%s is accessing getDOMNode or findDOMNode inside its render(). render() should be a pure function of props and state. It should never access something that requires stale data from the previous render, such as refs. Move this logic to componentDidMount and componentDidUpdate instead.",
+                    t.getName() || "A component"
+                  )
                   : null,
-                (t._warnedAboutRefsInRender = !0));
+                  (t._warnedAboutRefsInRender = !0));
             }
             return null == e
               ? null
               : l(e)
-              ? e
-              : i.has(e)
-              ? a.getNodeFromInstance(e)
-              : ("production" !== n.env.NODE_ENV
-                  ? s(
+                ? e
+                : i.has(e)
+                  ? a.getNodeFromInstance(e)
+                  : ("production" !== n.env.NODE_ENV
+                    ? s(
                       null == e.render || "function" != typeof e.render,
                       "Component (with keys: %s) contains `render` method but is not mounted in the DOM",
                       Object.keys(e)
                     )
-                  : s(null == e.render || "function" != typeof e.render),
-                void ("production" !== n.env.NODE_ENV
-                  ? s(
-                      !1,
-                      "Element appears to be neither ReactComponent nor DOMNode (keys: %s)",
-                      Object.keys(e)
-                    )
-                  : s(!1)));
+                    : s(null == e.render || "function" != typeof e.render),
+                    void ("production" !== n.env.NODE_ENV
+                      ? s(
+                        !1,
+                        "Element appears to be neither ReactComponent nor DOMNode (keys: %s)",
+                        Object.keys(e)
+                      )
+                      : s(!1)));
           }
           var o = e("./ReactCurrentOwner"),
             i = e("./ReactInstanceMap"),
@@ -18642,10 +19192,10 @@
             "production" !== n.env.NODE_ENV &&
               ("production" !== n.env.NODE_ENV
                 ? a(
-                    i,
-                    "flattenChildren(...): Encountered two children with the same key, `%s`. Child keys must be unique; when two children share a key, only the first child will be used.",
-                    r
-                  )
+                  i,
+                  "flattenChildren(...): Encountered two children with the same key, `%s`. Child keys must be unique; when two children share a key, only the first child will be used.",
+                  r
+                )
                 : null),
               i && null != t && (o[r] = t);
           }
@@ -18667,7 +19217,7 @@
         function n(e) {
           try {
             e.focus();
-          } catch (t) {}
+          } catch (t) { }
         }
         t.exports = n;
       },
@@ -18843,8 +19393,8 @@
                 : i(!!a),
               p.hasOwnProperty(e) || (e = "*"),
               s.hasOwnProperty(e) ||
-                ((a.innerHTML =
-                  "*" === e ? "<link />" : "<" + e + "></" + e + ">"),
+              ((a.innerHTML =
+                "*" === e ? "<link />" : "<" + e + "></" + e + ">"),
                 (s[e] = !a.firstChild)),
               s[e] ? p[e] : null
             );
@@ -18914,17 +19464,17 @@
       function (e, t) {
         "use strict";
         function n(e) {
-          for (; e && e.firstChild; ) e = e.firstChild;
+          for (; e && e.firstChild;) e = e.firstChild;
           return e;
         }
         function r(e) {
-          for (; e; ) {
+          for (; e;) {
             if (e.nextSibling) return e.nextSibling;
             e = e.parentNode;
           }
         }
         function o(e, t) {
-          for (var o = n(e), i = 0, a = 0; o; ) {
+          for (var o = n(e), i = 0, a = 0; o;) {
             if (3 === o.nodeType) {
               if (((a = i + o.textContent.length), t >= i && a >= t))
                 return { node: o, offset: t - i };
@@ -18958,11 +19508,11 @@
         function n() {
           return (
             !o &&
-              r.canUseDOM &&
-              (o =
-                "textContent" in document.documentElement
-                  ? "textContent"
-                  : "innerText"),
+            r.canUseDOM &&
+            (o =
+              "textContent" in document.documentElement
+                ? "textContent"
+                : "innerText"),
             o
           );
         }
@@ -18978,9 +19528,9 @@
         function n(e) {
           return e === window
             ? {
-                x: window.pageXOffset || document.documentElement.scrollLeft,
-                y: window.pageYOffset || document.documentElement.scrollTop,
-              }
+              x: window.pageXOffset || document.documentElement.scrollLeft,
+              y: window.pageYOffset || document.documentElement.scrollTop,
+            }
             : { x: e.scrollLeft, y: e.scrollTop };
         }
         t.exports = n;
@@ -19024,49 +19574,49 @@
             var o;
             if (
               ((null === e || e === !1) && (e = a.emptyElement),
-              "object" == typeof e)
+                "object" == typeof e)
             ) {
               var i = e;
               "production" !== n.env.NODE_ENV &&
                 ("production" !== n.env.NODE_ENV
                   ? u(
-                      i &&
-                        ("function" == typeof i.type ||
-                          "string" == typeof i.type),
-                      "Only functions or strings can be mounted as React components."
-                    )
+                    i &&
+                    ("function" == typeof i.type ||
+                      "string" == typeof i.type),
+                    "Only functions or strings can be mounted as React components."
+                  )
                   : null),
                 (o =
                   t === i.type && "string" == typeof i.type
                     ? s.createInternalComponent(i)
                     : r(i.type)
-                    ? new i.type(i)
-                    : new d());
+                      ? new i.type(i)
+                      : new d());
             } else
               "string" == typeof e || "number" == typeof e
                 ? (o = s.createInstanceForText(e))
                 : "production" !== n.env.NODE_ENV
-                ? c(!1, "Encountered invalid React node of type %s", typeof e)
-                : c(!1);
+                  ? c(!1, "Encountered invalid React node of type %s", typeof e)
+                  : c(!1);
             return (
               "production" !== n.env.NODE_ENV &&
-                ("production" !== n.env.NODE_ENV
-                  ? u(
-                      "function" == typeof o.construct &&
-                        "function" == typeof o.mountComponent &&
-                        "function" == typeof o.receiveComponent &&
-                        "function" == typeof o.unmountComponent,
-                      "Only React Components can be mounted."
-                    )
-                  : null),
+              ("production" !== n.env.NODE_ENV
+                ? u(
+                  "function" == typeof o.construct &&
+                  "function" == typeof o.mountComponent &&
+                  "function" == typeof o.receiveComponent &&
+                  "function" == typeof o.unmountComponent,
+                  "Only React Components can be mounted."
+                )
+                : null),
               o.construct(e),
               (o._mountIndex = 0),
               (o._mountImage = null),
               "production" !== n.env.NODE_ENV &&
-                ((o._isOwnerNecessary = !1), (o._warnedAboutRefsInRender = !1)),
+              ((o._isOwnerNecessary = !1), (o._warnedAboutRefsInRender = !1)),
               "production" !== n.env.NODE_ENV &&
-                Object.preventExtensions &&
-                Object.preventExtensions(o),
+              Object.preventExtensions &&
+              Object.preventExtensions(o),
               o
             );
           }
@@ -19076,7 +19626,7 @@
             l = e("./Object.assign"),
             c = e("./invariant"),
             u = e("./warning"),
-            d = function () {};
+            d = function () { };
           l(d.prototype, i.Mixin, { _instantiateReactComponent: o }),
             (t.exports = o);
         }).call(this, e("_process"));
@@ -19109,9 +19659,9 @@
                   d = 0;
                 c = new Error(
                   "Invariant Violation: " +
-                    n.replace(/%s/g, function () {
-                      return u[d++];
-                    })
+                  n.replace(/%s/g, function () {
+                    return u[d++];
+                  })
                 );
               }
               throw ((c.framesToPop = 1), c);
@@ -19136,9 +19686,9 @@
           }
           return (
             !i &&
-              r &&
-              "wheel" === e &&
-              (i = document.implementation.hasFeature("Events.wheel", "3.0")),
+            r &&
+            "wheel" === e &&
+            (i = document.implementation.hasFeature("Events.wheel", "3.0")),
             i
           );
         }
@@ -19161,8 +19711,8 @@
             !("function" == typeof Node
               ? e instanceof Node
               : "object" == typeof e &&
-                "number" == typeof e.nodeType &&
-                "string" == typeof e.nodeName)
+              "number" == typeof e.nodeType &&
+              "string" == typeof e.nodeName)
           );
         }
         t.exports = n;
@@ -19219,9 +19769,9 @@
                 o = {};
               "production" !== n.env.NODE_ENV
                 ? r(
-                    e instanceof Object && !Array.isArray(e),
-                    "keyMirror(...): Argument must be an object."
-                  )
+                  e instanceof Object && !Array.isArray(e),
+                  "keyMirror(...): Argument must be an object."
+                )
                 : r(e instanceof Object && !Array.isArray(e));
               for (t in e) e.hasOwnProperty(t) && (o[t] = t);
               return o;
@@ -19277,9 +19827,9 @@
             return (
               "production" !== n.env.NODE_ENV
                 ? i(
-                    o.isValidElement(e),
-                    "onlyChild must be passed a children with exactly one child."
-                  )
+                  o.isValidElement(e),
+                  "onlyChild must be passed a children with exactly one child."
+                )
                 : i(o.isValidElement(e)),
               e
             );
@@ -19342,21 +19892,21 @@
                 e.innerHTML = t;
               });
             }),
-          n.canUseDOM)
+            n.canUseDOM)
         ) {
           var a = document.createElement("div");
           (a.innerHTML = " "),
             "" === a.innerHTML &&
-              (i = function (e, t) {
-                if (
-                  (e.parentNode && e.parentNode.replaceChild(e, e),
+            (i = function (e, t) {
+              if (
+                (e.parentNode && e.parentNode.replaceChild(e, e),
                   r.test(t) || ("<" === t[0] && o.test(t)))
-                ) {
-                  e.innerHTML = "﻿" + t;
-                  var n = e.firstChild;
-                  1 === n.data.length ? e.removeChild(n) : n.deleteData(0, 1);
-                } else e.innerHTML = t;
-              });
+              ) {
+                e.innerHTML = "﻿" + t;
+                var n = e.firstChild;
+                1 === n.data.length ? e.removeChild(n) : n.deleteData(0, 1);
+              } else e.innerHTML = t;
+            });
         }
         t.exports = i;
       },
@@ -19418,41 +19968,41 @@
                   c = null;
                 return (
                   "production" !== n.env.NODE_ENV &&
-                    (a ||
-                      (null != e._owner &&
-                        null != e._owner.getPublicInstance() &&
-                        null != e._owner.getPublicInstance().constructor &&
-                        (s =
-                          e._owner.getPublicInstance().constructor.displayName),
+                  (a ||
+                    (null != e._owner &&
+                      null != e._owner.getPublicInstance() &&
+                      null != e._owner.getPublicInstance().constructor &&
+                      (s =
+                        e._owner.getPublicInstance().constructor.displayName),
                       null != t._owner &&
-                        null != t._owner.getPublicInstance() &&
-                        null != t._owner.getPublicInstance().constructor &&
-                        (l =
-                          t._owner.getPublicInstance().constructor.displayName),
+                      null != t._owner.getPublicInstance() &&
+                      null != t._owner.getPublicInstance().constructor &&
+                      (l =
+                        t._owner.getPublicInstance().constructor.displayName),
                       null != t.type &&
-                        null != t.type.displayName &&
-                        (c = t.type.displayName),
+                      null != t.type.displayName &&
+                      (c = t.type.displayName),
                       null != t.type &&
-                        "string" == typeof t.type &&
-                        (c = t.type),
+                      "string" == typeof t.type &&
+                      (c = t.type),
                       ("string" != typeof t.type ||
                         "input" === t.type ||
                         "textarea" === t.type) &&
-                        ((null != e._owner &&
-                          e._owner._isOwnerNecessary === !1) ||
-                          (null != t._owner &&
-                            t._owner._isOwnerNecessary === !1)) &&
-                        (null != e._owner && (e._owner._isOwnerNecessary = !0),
+                      ((null != e._owner &&
+                        e._owner._isOwnerNecessary === !1) ||
+                        (null != t._owner &&
+                          t._owner._isOwnerNecessary === !1)) &&
+                      (null != e._owner && (e._owner._isOwnerNecessary = !0),
                         null != t._owner && (t._owner._isOwnerNecessary = !0),
                         "production" !== n.env.NODE_ENV
                           ? o(
-                              !1,
-                              "<%s /> is being rendered by both %s and %s using the same key (%s) in the same place. Currently, this means that they don't preserve state. This behavior should be very rare so we're considering deprecating it. Please contact the React team and explain your use case so that we can take that into consideration.",
-                              c || "Unknown Component",
-                              s || "[Unknown]",
-                              l || "[Unknown]",
-                              e.key
-                            )
+                            !1,
+                            "<%s /> is being rendered by both %s and %s using the same key (%s) in the same place. Currently, this means that they don't preserve state. This behavior should be very rare so we're considering deprecating it. Please contact the React team and explain your use case so that we can take that into consideration.",
+                            c || "Unknown Component",
+                            s || "[Unknown]",
+                            l || "[Unknown]",
+                            e.key
+                          )
                           : null))),
                   a
                 );
@@ -19474,31 +20024,31 @@
             if (
               ("production" !== n.env.NODE_ENV
                 ? o(
-                    !Array.isArray(e) &&
-                      ("object" == typeof e || "function" == typeof e),
-                    "toArray: Array-like object expected"
-                  )
+                  !Array.isArray(e) &&
+                  ("object" == typeof e || "function" == typeof e),
+                  "toArray: Array-like object expected"
+                )
                 : o(
-                    !Array.isArray(e) &&
-                      ("object" == typeof e || "function" == typeof e)
-                  ),
-              "production" !== n.env.NODE_ENV
-                ? o(
+                  !Array.isArray(e) &&
+                  ("object" == typeof e || "function" == typeof e)
+                ),
+                "production" !== n.env.NODE_ENV
+                  ? o(
                     "number" == typeof t,
                     "toArray: Object needs a length property"
                   )
-                : o("number" == typeof t),
-              "production" !== n.env.NODE_ENV
-                ? o(
+                  : o("number" == typeof t),
+                "production" !== n.env.NODE_ENV
+                  ? o(
                     0 === t || t - 1 in e,
                     "toArray: Object should have keys for indices"
                   )
-                : o(0 === t || t - 1 in e),
-              e.hasOwnProperty)
+                  : o(0 === t || t - 1 in e),
+                e.hasOwnProperty)
             )
               try {
                 return Array.prototype.slice.call(e);
-              } catch (r) {}
+              } catch (r) { }
             for (var i = Array(t), a = 0; t > a; a++) i[a] = e[a];
             return i;
           }
@@ -19528,7 +20078,7 @@
             var d = typeof e;
             if (
               (("undefined" === d || "boolean" === d) && (e = null),
-              null === e ||
+                null === e ||
                 "string" === d ||
                 "number" === d ||
                 c.isValidElement(e))
@@ -19550,7 +20100,7 @@
                 var C,
                   w = T.call(e);
                 if (T !== e.entries)
-                  for (var x = 0; !(C = w.next()).done; )
+                  for (var x = 0; !(C = w.next()).done;)
                     (g = C.value),
                       (y = ("" !== t ? t + v : m) + o(g, x++)),
                       (E = r + b),
@@ -19560,35 +20110,35 @@
                     "production" !== n.env.NODE_ENV &&
                     ("production" !== n.env.NODE_ENV
                       ? f(
-                          _,
-                          "Using Maps as children is not yet fully supported. It is an experimental feature that might be removed. Convert it to a sequence / iterable of keyed ReactElements instead."
-                        )
+                        _,
+                        "Using Maps as children is not yet fully supported. It is an experimental feature that might be removed. Convert it to a sequence / iterable of keyed ReactElements instead."
+                      )
                       : null,
-                    (_ = !0));
+                      (_ = !0));
                     !(C = w.next()).done;
 
                   ) {
                     var S = C.value;
                     S &&
                       ((g = S[1]),
-                      (y = ("" !== t ? t + v : m) + a(S[0]) + v + o(g, 0)),
-                      (E = r + b),
-                      (b += s(g, y, E, i, l)));
+                        (y = ("" !== t ? t + v : m) + a(S[0]) + v + o(g, 0)),
+                        (E = r + b),
+                        (b += s(g, y, E, i, l)));
                   }
               } else if ("object" === d) {
                 "production" !== n.env.NODE_ENV
                   ? h(
-                      1 !== e.nodeType,
-                      "traverseAllChildren(...): Encountered an invalid child; DOM elements are not valid children of React components."
-                    )
+                    1 !== e.nodeType,
+                    "traverseAllChildren(...): Encountered an invalid child; DOM elements are not valid children of React components."
+                  )
                   : h(1 !== e.nodeType);
                 var D = u.extract(e);
                 for (var R in D)
                   D.hasOwnProperty(R) &&
                     ((g = D[R]),
-                    (y = ("" !== t ? t + v : m) + a(R) + v + o(g, 0)),
-                    (E = r + b),
-                    (b += s(g, y, E, i, l)));
+                      (y = ("" !== t ? t + v : m) + a(R) + v + o(g, 0)),
+                      (E = r + b),
+                      (b += s(g, y, E, i, l)));
               }
             }
             return b;
@@ -19637,7 +20187,7 @@
               if (t.length < 10 || /^[s\W]*$/.test(t))
                 throw new Error(
                   "The warning format should be able to uniquely identify this warning. Please, use a more descriptive format than: " +
-                    t
+                  t
                 );
               if (0 !== t.indexOf("Failed Composite propType: ") && !e) {
                 var i = 0,
@@ -19649,7 +20199,7 @@
                 console.warn(a);
                 try {
                   throw new Error(a);
-                } catch (s) {}
+                } catch (s) { }
               }
             }),
             (t.exports = o);
@@ -19665,27 +20215,27 @@
     ],
     231: [
       function (e, t) {
-        function n() {}
+        function n() { }
         var r = n.prototype;
-        (r.post = function () {}), (r.get = function () {}), (t.exports = n);
+        (r.post = function () { }), (r.get = function () { }), (t.exports = n);
       },
       {},
     ],
     232: [
       function (e, t) {
-        function n() {}
+        function n() { }
         var r = n.prototype;
-        (r.set_user_id = function () {}),
-          (r.set_custom = function () {}),
-          (r.track_user_timing = function () {}),
-          (r.track_event = function () {}),
+        (r.set_user_id = function () { }),
+          (r.set_custom = function () { }),
+          (r.track_user_timing = function () { }),
+          (r.track_event = function () { }),
           (t.exports = n);
       },
       {},
     ],
     233: [
       function (e, t) {
-        function n() {}
+        function n() { }
         t.exports = n;
       },
       {},
@@ -19892,7 +20442,7 @@
                   e
                     ? (this._listeners && delete this._listeners[e],
                       this._captureListeners &&
-                        delete this._captureListeners[e])
+                      delete this._captureListeners[e])
                     : (this._listeners = this._captureListeners = null);
                 }),
                 (t.dispatchEvent = function (e) {
@@ -19903,9 +20453,9 @@
                   } else e.target && e.clone && (e = e.clone());
                   try {
                     e.target = this;
-                  } catch (n) {}
+                  } catch (n) { }
                   if (e.bubbles && this.parent) {
-                    for (var r = this, o = [r]; r.parent; )
+                    for (var r = this, o = [r]; r.parent;)
                       o.push((r = r.parent));
                     var i,
                       a = o.length;
@@ -19922,7 +20472,7 @@
                   return !!((t && t[e]) || (n && n[e]));
                 }),
                 (t.willTrigger = function (e) {
-                  for (var t = this; t; ) {
+                  for (var t = this; t;) {
                     if (t.hasEventListener(e)) return !0;
                     t = t.parent;
                   }
@@ -19939,10 +20489,10 @@
                     if (!o || !(n = o.length)) return;
                     try {
                       e.currentTarget = this;
-                    } catch (i) {}
+                    } catch (i) { }
                     try {
                       e.eventPhase = t;
-                    } catch (i) {}
+                    } catch (i) { }
                     (e.removed = !1), (o = o.slice());
                     for (
                       var a = 0;
@@ -19952,7 +20502,7 @@
                       var s = o[a];
                       s.handleEvent ? s.handleEvent(e) : s(e),
                         e.removed &&
-                          (this.off(e.type, s, 1 == t), (e.removed = !1));
+                        (this.off(e.type, s, 1 == t), (e.removed = !1));
                     }
                   }
                 }),
@@ -20008,11 +20558,11 @@
                             "1" === l(null, i) &&
                             "[\n 1,\n 2\n]" == l([1, 2], null, 1) &&
                             '"-271821-04-20T00:00:00.000Z"' ==
-                              l(new c(-864e13)) &&
+                            l(new c(-864e13)) &&
                             '"+275760-09-13T00:00:00.000Z"' ==
-                              l(new c(864e13)) &&
+                            l(new c(864e13)) &&
                             '"-000001-01-01T00:00:00.000Z"' ==
-                              l(new c(-621987552e5)) &&
+                            l(new c(-621987552e5)) &&
                             '"1969-12-31T23:59:59.999Z"' == l(new c(-1));
                         } catch (d) {
                           u = !1;
@@ -20030,15 +20580,15 @@
                             if (h) {
                               try {
                                 h = !p('"	"');
-                              } catch (d) {}
+                              } catch (d) { }
                               if (h)
                                 try {
                                   h = 1 !== p("01");
-                                } catch (d) {}
+                                } catch (d) { }
                               if (h)
                                 try {
                                   h = 1 !== p("1.");
-                                } catch (d) {}
+                                } catch (d) { }
                             }
                           }
                         } catch (d) {
@@ -20076,7 +20626,7 @@
                     37 == _.getUTCMinutes() &&
                     6 == _.getUTCSeconds() &&
                     708 == _.getUTCMilliseconds();
-                } catch (E) {}
+                } catch (E) { }
                 if (!n("json")) {
                   var b = "[object Function]",
                     N = "[object Date]",
@@ -20106,13 +20656,13 @@
                           n = {};
                         return (
                           ((n.__proto__ = null),
-                          (n.__proto__ = { toString: 1 }),
-                          n).toString != y
+                            (n.__proto__ = { toString: 1 }),
+                            n).toString != y
                             ? (f = function (e) {
-                                var t = this.__proto__,
-                                  n = e in ((this.__proto__ = null), this);
-                                return (this.__proto__ = t), n;
-                              })
+                              var t = this.__proto__,
+                                n = e in ((this.__proto__ = null), this);
+                              return (this.__proto__ = t), n;
+                            })
                             : ((t = n.constructor),
                               (f = function (e) {
                                 var n = (this.constructor || t).prototype;
@@ -20124,45 +20674,45 @@
                           f.call(this, e)
                         );
                       }),
-                    (m = function (e, t) {
-                      var n,
-                        r,
-                        o,
-                        a = 0;
-                      ((n = function () {
-                        this.valueOf = 0;
-                      }).prototype.valueOf = 0),
-                        (r = new n());
-                      for (o in r) f.call(r, o) && a++;
-                      return (
-                        (n = r = null),
-                        a
-                          ? (m =
+                      (m = function (e, t) {
+                        var n,
+                          r,
+                          o,
+                          a = 0;
+                        ((n = function () {
+                          this.valueOf = 0;
+                        }).prototype.valueOf = 0),
+                          (r = new n());
+                        for (o in r) f.call(r, o) && a++;
+                        return (
+                          (n = r = null),
+                          a
+                            ? (m =
                               2 == a
                                 ? function (e, t) {
-                                    var n,
-                                      r = {},
-                                      o = y.call(e) == b;
-                                    for (n in e)
-                                      (o && "prototype" == n) ||
-                                        f.call(r, n) ||
-                                        !(r[n] = 1) ||
-                                        !f.call(e, n) ||
-                                        t(n);
-                                  }
-                                : function (e, t) {
-                                    var n,
-                                      r,
-                                      o = y.call(e) == b;
-                                    for (n in e)
-                                      (o && "prototype" == n) ||
-                                        !f.call(e, n) ||
-                                        (r = "constructor" === n) ||
-                                        t(n);
-                                    (r || f.call(e, (n = "constructor"))) &&
+                                  var n,
+                                    r = {},
+                                    o = y.call(e) == b;
+                                  for (n in e)
+                                    (o && "prototype" == n) ||
+                                      f.call(r, n) ||
+                                      !(r[n] = 1) ||
+                                      !f.call(e, n) ||
                                       t(n);
-                                  })
-                          : ((r = [
+                                }
+                                : function (e, t) {
+                                  var n,
+                                    r,
+                                    o = y.call(e) == b;
+                                  for (n in e)
+                                    (o && "prototype" == n) ||
+                                      !f.call(e, n) ||
+                                      (r = "constructor" === n) ||
+                                      t(n);
+                                  (r || f.call(e, (n = "constructor"))) &&
+                                    t(n);
+                                })
+                            : ((r = [
                               "valueOf",
                               "toString",
                               "toLocaleString",
@@ -20171,40 +20721,40 @@
                               "hasOwnProperty",
                               "constructor",
                             ]),
-                            (m = function (e, t) {
-                              var n,
-                                o,
-                                a = y.call(e) == b,
-                                s =
-                                  (!a &&
-                                    "function" != typeof e.constructor &&
-                                    i[typeof e.hasOwnProperty] &&
-                                    e.hasOwnProperty) ||
-                                  f;
-                              for (n in e)
-                                (a && "prototype" == n) ||
-                                  !s.call(e, n) ||
-                                  t(n);
-                              for (
-                                o = r.length;
-                                (n = r[--o]);
-                                s.call(e, n) && t(n)
-                              );
-                            })),
-                        m(e, t)
-                      );
-                    }),
-                    !n("json-stringify"))
+                              (m = function (e, t) {
+                                var n,
+                                  o,
+                                  a = y.call(e) == b,
+                                  s =
+                                    (!a &&
+                                      "function" != typeof e.constructor &&
+                                      i[typeof e.hasOwnProperty] &&
+                                      e.hasOwnProperty) ||
+                                    f;
+                                for (n in e)
+                                  (a && "prototype" == n) ||
+                                    !s.call(e, n) ||
+                                    t(n);
+                                for (
+                                  o = r.length;
+                                  (n = r[--o]);
+                                  s.call(e, n) && t(n)
+                                );
+                              })),
+                          m(e, t)
+                        );
+                      }),
+                      !n("json-stringify"))
                   ) {
                     var O = {
-                        92: "\\\\",
-                        34: '\\"',
-                        8: "\\b",
-                        12: "\\f",
-                        10: "\\n",
-                        13: "\\r",
-                        9: "\\t",
-                      },
+                      92: "\\\\",
+                      34: '\\"',
+                      8: "\\b",
+                      12: "\\f",
+                      10: "\\n",
+                      13: "\\r",
+                      9: "\\t",
+                    },
                       P = "000000",
                       M = function (e, t) {
                         return (P + (t || 0)).slice(-e);
@@ -20213,10 +20763,10 @@
                       L = function (e) {
                         for (
                           var t = '"',
-                            n = 0,
-                            r = e.length,
-                            o = !S || r > 10,
-                            i = o && (S ? e.split("") : e);
+                          n = 0,
+                          r = e.length,
+                          o = !S || r > 10,
+                          i = o && (S ? e.split("") : e);
                           r > n;
                           n++
                         ) {
@@ -20245,7 +20795,7 @@
                         var s, l, c, u, p, h, g, _, E, b, S, R, O, P, A, j;
                         try {
                           s = t[e];
-                        } catch (U) {}
+                        } catch (U) { }
                         if ("object" == typeof s && s)
                           if (((l = y.call(s)), l != N || f.call(s, "toJSON")))
                             "function" == typeof s.toJSON &&
@@ -20256,7 +20806,7 @@
                             if (k) {
                               for (
                                 p = D(s / 864e5),
-                                  c = D(p / 365.2425) + 1970 - 1;
+                                c = D(p / 365.2425) + 1970 - 1;
                                 k(c + 1, 0) <= p;
                                 c++
                               );
@@ -20304,7 +20854,7 @@
                           return s > -1 / 0 && 1 / 0 > s ? "" + s : "null";
                         if (l == C) return L("" + s);
                         if ("object" == typeof s) {
-                          for (P = a.length; P--; ) if (a[P] === s) throw d();
+                          for (P = a.length; P--;) if (a[P] === s) throw d();
                           if (
                             (a.push(s), (S = []), (A = i), (i += o), l == w)
                           ) {
@@ -20325,11 +20875,11 @@
                               (j = S.length
                                 ? o
                                   ? "{\n" +
-                                    i +
-                                    S.join(",\n" + i) +
-                                    "\n" +
-                                    A +
-                                    "}"
+                                  i +
+                                  S.join(",\n" + i) +
+                                  "\n" +
+                                  A +
+                                  "}"
                                   : "{" + S.join(",") + "}"
                                 : "{}");
                           return a.pop(), j;
@@ -20345,8 +20895,8 @@
                             var l, c = 0, u = t.length;
                             u > c;
                             l = t[c++],
-                              s = y.call(l),
-                              (s == C || s == T) && (a[l] = 1)
+                            s = y.call(l),
+                            (s == C || s == T) && (a[l] = 1)
                           );
                         }
                       if (n)
@@ -20380,7 +20930,7 @@
                         throw ((j = U = null), u());
                       },
                       H = function () {
-                        for (var e, t, n, r, o, i = U, a = i.length; a > j; )
+                        for (var e, t, n, r, o, i = U, a = i.length; a > j;)
                           switch ((o = i.charCodeAt(j))) {
                             case 9:
                             case 10:
@@ -20396,7 +20946,7 @@
                             case 44:
                               return (e = S ? i.charAt(j) : i[j]), j++, e;
                             case 34:
-                              for (e = "@", j++; a > j; )
+                              for (e = "@", j++; a > j;)
                                 if (((o = i.charCodeAt(j)), 32 > o)) F();
                                 else if (92 == o)
                                   switch ((o = i.charCodeAt(++j))) {
@@ -20414,9 +20964,9 @@
                                       for (t = ++j, n = j + 4; n > j; j++)
                                         (o = i.charCodeAt(j)),
                                           (o >= 48 && 57 >= o) ||
-                                            (o >= 97 && 102 >= o) ||
-                                            (o >= 65 && 70 >= o) ||
-                                            F();
+                                          (o >= 97 && 102 >= o) ||
+                                          (o >= 65 && 70 >= o) ||
+                                          F();
                                       e += B("0x" + i.slice(t, j));
                                       break;
                                     default:
@@ -20437,15 +20987,15 @@
                             default:
                               if (
                                 ((t = j),
-                                45 == o && ((r = !0), (o = i.charCodeAt(++j))),
-                                o >= 48 && 57 >= o)
+                                  45 == o && ((r = !0), (o = i.charCodeAt(++j))),
+                                  o >= 48 && 57 >= o)
                               ) {
                                 for (
                                   48 == o &&
-                                    ((o = i.charCodeAt(j + 1)),
+                                  ((o = i.charCodeAt(j + 1)),
                                     o >= 48 && 57 >= o) &&
-                                    F(),
-                                    r = !1;
+                                  F(),
+                                  r = !1;
                                   a > j &&
                                   ((o = i.charCodeAt(j)), o >= 48 && 57 >= o);
                                   j++
@@ -20464,8 +21014,8 @@
                                 ) {
                                   for (
                                     o = i.charCodeAt(++j),
-                                      (43 == o || 45 == o) && j++,
-                                      n = j;
+                                    (43 == o || 45 == o) && j++,
+                                    n = j;
                                     a > n &&
                                     ((o = i.charCodeAt(n)), o >= 48 && 57 >= o);
                                     n++
@@ -20505,7 +21055,7 @@
                                   "string" != typeof e ||
                                   "@" != (S ? e.charAt(0) : e[0]) ||
                                   ":" != H()) &&
-                                  F(),
+                                F(),
                                 (t[e.slice(1)] = q(H()));
                             return t;
                           }
@@ -20522,7 +21072,7 @@
                           o = e[t];
                         if ("object" == typeof o && o)
                           if (y.call(o) == w)
-                            for (r = o.length; r--; ) $(o, r, n);
+                            for (r = o.length; r--;) $(o, r, n);
                           else
                             m(o, function (e) {
                               $(o, e, n);
@@ -20561,7 +21111,7 @@
                 (!l ||
                   (l.global !== l && l.window !== l && l.self !== l) ||
                   (s = l),
-                a && !o)
+                  a && !o)
               )
                 r(s, a);
               else {
@@ -20574,7 +21124,7 @@
                       noConflict: function () {
                         return (
                           d ||
-                            ((d = !0),
+                          ((d = !0),
                             (s.JSON = c),
                             (s.JSON3 = u),
                             (c = u = null)),
@@ -20616,7 +21166,7 @@
                     var r = new DOMParser();
                     n = r.parseFromString(e, t);
                   }
-                } catch (o) {}
+                } catch (o) { }
                 if (!n)
                   try {
                     (n = new ActiveXObject("Microsoft.XMLDOM")),
@@ -20667,7 +21217,7 @@
                   if (t instanceof Object && t.src)
                     return (
                       null == t.loadTimeout &&
-                        (t.loadTimeout = n.LOAD_TIMEOUT_DEFAULT),
+                      (t.loadTimeout = n.LOAD_TIMEOUT_DEFAULT),
                       t
                     );
                   throw new Error("Type not recognized.");
@@ -20694,7 +21244,7 @@
                       ? (n.absolute = !0)
                       : e.RELATIVE_PATT.test(t) && (n.relative = !0),
                     (o = t.match(e.EXTENSION_PATT)) &&
-                      (n.extension = o[1].toLowerCase()),
+                    (n.extension = o[1].toLowerCase()),
                     n
                   );
                 }),
@@ -20871,7 +21421,7 @@
                 (t.destroy = function () {
                   this._request &&
                     (this._request.removeAllEventListeners(),
-                    this._request.destroy()),
+                      this._request.destroy()),
                     (this._request = null),
                     (this._item = null),
                     (this._rawResult = null),
@@ -20886,10 +21436,10 @@
                   this._request = this._preferXHR
                     ? new createjs.XHRRequest(this._item)
                     : new createjs.TagRequest(
-                        this._item,
-                        this._tag || this._createTag(),
-                        this._tagSrcAttribute
-                      );
+                      this._item,
+                      this._tag || this._createTag(),
+                      this._tagSrcAttribute
+                    );
                 }),
                 (t._createTag = function () {
                   return null;
@@ -20907,9 +21457,9 @@
                         (this.progress = e.loaded / e.total),
                         (t.progress = this.progress),
                         (isNaN(this.progress) || 1 / 0 == this.progress) &&
-                          (this.progress = 0)),
+                        (this.progress = 0)),
                       this.hasEventListener("progress") &&
-                        this.dispatchEvent(t);
+                      this.dispatchEvent(t);
                   }
                 }),
                 (t._sendComplete = function () {
@@ -20926,7 +21476,7 @@
                     this.hasEventListener("error") &&
                     (null == e &&
                       (e = new createjs.ErrorEvent("PRELOAD_ERROR_EMPTY")),
-                    this.dispatchEvent(e));
+                      this.dispatchEvent(e));
                 }),
                 (t._isCanceled = function () {
                   return null == window.createjs || this.canceled ? !0 : !1;
@@ -20937,12 +21487,12 @@
                     case "complete":
                       this._rawResult = e.target._response;
                       var t =
-                          this.resultFormatter && this.resultFormatter(this),
+                        this.resultFormatter && this.resultFormatter(this),
                         n = this;
                       t instanceof Function
                         ? t(function (e) {
-                            (n._result = e), n._sendComplete();
-                          })
+                          (n._result = e), n._sendComplete();
+                        })
                         : ((this._result = t || this._rawResult),
                           this._sendComplete());
                       break;
@@ -20986,23 +21536,23 @@
                   this._tag.load(),
                   this.AbstractLoader_load();
               }),
-                (t._createTag = function () {}),
+                (t._createTag = function () { }),
                 (t._createRequest = function () {
                   this._request = this._preferXHR
                     ? new createjs.XHRRequest(this._item)
                     : new createjs.MediaTagRequest(
-                        this._item,
-                        this._tag || this._createTag(),
-                        this._tagSrcAttribute
-                      );
+                      this._item,
+                      this._tag || this._createTag(),
+                      this._tagSrcAttribute
+                    );
                 }),
                 (t._formatResult = function (e) {
                   return (
                     this._tag.removeEventListener &&
-                      this._tag.removeEventListener(
-                        "canplaythrough",
-                        this._loadedHandler
-                      ),
+                    this._tag.removeEventListener(
+                      "canplaythrough",
+                      this._loadedHandler
+                    ),
                     (this._tag.onstalled = null),
                     this._preferXHR && (e.getTag().src = e.getResult(!0)),
                     e.getTag()
@@ -21017,12 +21567,12 @@
             (function () {
               "use strict";
               var e = function (e) {
-                  this._item = e;
-                },
+                this._item = e;
+              },
                 t = createjs.extend(e, createjs.EventDispatcher);
-              (t.load = function () {}),
-                (t.destroy = function () {}),
-                (t.cancel = function () {}),
+              (t.load = function () { }),
+                (t.destroy = function () { }),
+                (t.cancel = function () { }),
                 (createjs.AbstractRequest = createjs.promote(
                   e,
                   "EventDispatcher"
@@ -21063,7 +21613,7 @@
                   )),
                   (this._tag[this._tagSrcAttribute] = this._item.src),
                   null == this._tag.parentNode &&
-                    (window.document.body.appendChild(this._tag),
+                  (window.document.body.appendChild(this._tag),
                     (this._addedToDOM = !0));
               }),
                 (t.destroy = function () {
@@ -21098,8 +21648,8 @@
                     (this._tag.onreadystatechange = null),
                     (this._tag.onerror = null),
                     this._addedToDOM &&
-                      null != this._tag.parentNode &&
-                      this._tag.parentNode.removeChild(this._tag),
+                    null != this._tag.parentNode &&
+                    this._tag.parentNode.removeChild(this._tag),
                     clearTimeout(this._loadTimeout);
                 }),
                 (t._hideTag = function () {
@@ -21109,7 +21659,7 @@
                 (t._showTag = function () {
                   this._tag.style.visibility = this._startTagVisibility;
                 }),
-                (t._handleStalled = function () {}),
+                (t._handleStalled = function () { }),
                 (createjs.TagRequest = createjs.promote(e, "AbstractRequest"));
             })(),
             (this.createjs = this.createjs || {}),
@@ -21133,11 +21683,11 @@
                   this._tag.addEventListener("stalled", e),
                   this._tag.addEventListener("progress", t),
                   this._tag.addEventListener &&
-                    this._tag.addEventListener(
-                      "canplaythrough",
-                      this._loadedHandler,
-                      !1
-                    ),
+                  this._tag.addEventListener(
+                    "canplaythrough",
+                    this._loadedHandler,
+                    !1
+                  ),
                   this.TagRequest_load();
               }),
                 (t._handleReadyStateChange = function () {
@@ -21146,7 +21696,7 @@
                   ("loaded" == e.readyState || "complete" == e.readyState) &&
                     this._handleTagComplete();
                 }),
-                (t._handleStalled = function () {}),
+                (t._handleStalled = function () { }),
                 (t._handleProgress = function (e) {
                   if (e && !(e.loaded > 0 && 0 == e.total)) {
                     var t = new createjs.ProgressEvent(e.loaded, e.total);
@@ -21233,10 +21783,10 @@
                   if (null == this._request) return void this._handleError();
                   null != this._request.addEventListener
                     ? (this._request.addEventListener(
-                        "loadstart",
-                        this._handleLoadStartProxy,
-                        !1
-                      ),
+                      "loadstart",
+                      this._handleLoadStartProxy,
+                      !1
+                    ),
                       this._request.addEventListener(
                         "progress",
                         this._handleProgressProxy,
@@ -21276,19 +21826,19 @@
                       (this._request.onreadystatechange =
                         this._handleReadyStateChangeProxy)),
                     1 == this._xhrLevel &&
-                      (this._loadTimeout = setTimeout(
-                        createjs.proxy(this._handleTimeout, this),
-                        this._item.loadTimeout
-                      ));
+                    (this._loadTimeout = setTimeout(
+                      createjs.proxy(this._handleTimeout, this),
+                      this._item.loadTimeout
+                    ));
                   try {
                     this._item.values &&
-                    this._item.method != createjs.AbstractLoader.GET
+                      this._item.method != createjs.AbstractLoader.GET
                       ? this._item.method == createjs.AbstractLoader.POST &&
-                        this._request.send(
-                          createjs.RequestUtils.formatQueryString(
-                            this._item.values
-                          )
+                      this._request.send(
+                        createjs.RequestUtils.formatQueryString(
+                          this._item.values
                         )
+                      )
                       : this._request.send();
                   } catch (e) {
                     this.dispatchEvent(
@@ -21299,7 +21849,7 @@
                 (t.setResponseType = function (e) {
                   "blob" === e &&
                     ((e = window.URL ? "blob" : "arraybuffer"),
-                    (this._responseType = e)),
+                      (this._responseType = e)),
                     (this._request.responseType = e);
                 }),
                 (t.getAllResponseHeaders = function () {
@@ -21342,7 +21892,7 @@
                     if (e) return void this._handleError(e);
                     if (
                       ((this._response = this._getResponse()),
-                      "arraybuffer" === this._responseType)
+                        "arraybuffer" === this._responseType)
                     )
                       try {
                         this._response = new Blob([this._response]);
@@ -21353,7 +21903,7 @@
                             window.WebKitBlobBuilder ||
                             window.MozBlobBuilder ||
                             window.MSBlobBuilder),
-                          "TypeError" === t.name && window.BlobBuilder)
+                            "TypeError" === t.name && window.BlobBuilder)
                         ) {
                           var n = new BlobBuilder();
                           n.append(this._response),
@@ -21386,11 +21936,11 @@
                   try {
                     if (null != this._request.responseText)
                       return this._request.responseText;
-                  } catch (e) {}
+                  } catch (e) { }
                   try {
                     if (null != this._request.responseXML)
                       return this._request.responseXML;
-                  } catch (e) {}
+                  } catch (e) { }
                   return null;
                 }),
                 (t._createXHR = function (e) {
@@ -21400,16 +21950,16 @@
                   if (window.XMLHttpRequest)
                     (r = new XMLHttpRequest()),
                       t &&
-                        void 0 === r.withCredentials &&
-                        window.XDomainRequest &&
-                        (r = new XDomainRequest());
+                      void 0 === r.withCredentials &&
+                      window.XDomainRequest &&
+                      (r = new XDomainRequest());
                   else {
                     for (var o = 0, i = s.ACTIVEX_VERSIONS.length; i > o; o++) {
                       var a = s.ACTIVEX_VERSIONS[o];
                       try {
                         r = new ActiveXObject(a);
                         break;
-                      } catch (l) {}
+                      } catch (l) { }
                     }
                     if (null == r) return !1;
                   }
@@ -21417,8 +21967,8 @@
                     createjs.RequestUtils.isText(e.type) &&
                     (e.mimeType = "text/plain; charset=utf-8"),
                     e.mimeType &&
-                      r.overrideMimeType &&
-                      r.overrideMimeType(e.mimeType),
+                    r.overrideMimeType &&
+                    r.overrideMimeType(e.mimeType),
                     (this._xhrLevel =
                       "string" == typeof r.responseType ? 2 : 1);
                   var c = null;
@@ -21427,25 +21977,25 @@
                       e.method == createjs.AbstractLoader.GET
                         ? createjs.RequestUtils.buildPath(e.src, e.values)
                         : e.src),
-                    r.open(e.method || createjs.AbstractLoader.GET, c, !0),
-                    t &&
+                      r.open(e.method || createjs.AbstractLoader.GET, c, !0),
+                      t &&
                       r instanceof XMLHttpRequest &&
                       1 == this._xhrLevel &&
                       (n.Origin = location.origin),
-                    e.values &&
+                      e.values &&
                       e.method == createjs.AbstractLoader.POST &&
                       (n["Content-Type"] = "application/x-www-form-urlencoded"),
-                    t ||
+                      t ||
                       n["X-Requested-With"] ||
                       (n["X-Requested-With"] = "XMLHttpRequest"),
-                    e.headers)
+                      e.headers)
                   )
                     for (var u in e.headers) n[u] = e.headers[u];
                   for (u in n) r.setRequestHeader(u, n[u]);
                   return (
                     r instanceof XMLHttpRequest &&
-                      void 0 !== e.withCredentials &&
-                      (r.withCredentials = e.withCredentials),
+                    void 0 !== e.withCredentials &&
+                    (r.withCredentials = e.withCredentials),
                     (this._request = r),
                     !0
                   );
@@ -21454,9 +22004,9 @@
                   clearTimeout(this._loadTimeout),
                     null != this._request.removeEventListener
                       ? (this._request.removeEventListener(
-                          "loadstart",
-                          this._handleLoadStartProxy
-                        ),
+                        "loadstart",
+                        this._handleLoadStartProxy
+                      ),
                         this._request.removeEventListener(
                           "progress",
                           this._handleProgressProxy
@@ -21598,13 +22148,13 @@
                   } else t = [e];
                   var n = !1;
                   if (t) {
-                    for (; t.length; ) {
+                    for (; t.length;) {
                       var r = t.pop(),
                         o = this.getResult(r);
                       for (i = this._loadQueue.length - 1; i >= 0; i--)
                         if (
                           ((a = this._loadQueue[i].getItem()),
-                          a.id == r || a.src == r)
+                            a.id == r || a.src == r)
                         ) {
                           this._loadQueue.splice(i, 1)[0].cancel();
                           break;
@@ -21612,7 +22162,7 @@
                       for (i = this._loadQueueBackup.length - 1; i >= 0; i--)
                         if (
                           ((a = this._loadQueueBackup[i].getItem()),
-                          a.id == r || a.src == r)
+                            a.id == r || a.src == r)
                         ) {
                           this._loadQueueBackup.splice(i, 1)[0].cancel();
                           break;
@@ -21667,8 +22217,8 @@
                 (t.setMaxConnections = function (e) {
                   (this._maxConnections = e),
                     !this._paused &&
-                      this._loadQueue.length > 0 &&
-                      this._loadNext();
+                    this._loadQueue.length > 0 &&
+                    this._loadNext();
                 }),
                 (t.loadFile = function (e, t, n) {
                   if (null == e) {
@@ -21741,7 +22291,7 @@
                   (this._paused = e), this._paused || this._loadNext();
                 }),
                 (t.close = function () {
-                  for (; this._currentLoads.length; )
+                  for (; this._currentLoads.length;)
                     this._currentLoads.pop().cancel();
                   (this._scriptOrder.length = 0),
                     (this._loadedScripts.length = 0),
@@ -21755,16 +22305,16 @@
                     var o = this._createLoader(r);
                     null != o &&
                       ("plugins" in o && (o.plugins = this._plugins),
-                      (r._loader = o),
-                      this._loadQueue.push(o),
-                      this._loadQueueBackup.push(o),
-                      this._numItems++,
-                      this._updateProgress(),
-                      ((this.maintainScriptOrder &&
-                        r.type == createjs.LoadQueue.JAVASCRIPT) ||
-                        r.maintainOrder === !0) &&
+                        (r._loader = o),
+                        this._loadQueue.push(o),
+                        this._loadQueueBackup.push(o),
+                        this._numItems++,
+                        this._updateProgress(),
+                        ((this.maintainScriptOrder &&
+                          r.type == createjs.LoadQueue.JAVASCRIPT) ||
+                          r.maintainOrder === !0) &&
                         (this._scriptOrder.push(r),
-                        this._loadedScripts.push(null)));
+                          this._loadedScripts.push(null)));
                   }
                 }),
                 (t._createLoadItem = function (e, t, n) {
@@ -21783,9 +22333,9 @@
                     var s = createjs.RequestUtils.parseURI(r.src);
                     s.extension && (r.ext = s.extension),
                       null == r.type &&
-                        (r.type = createjs.RequestUtils.getTypeByExtension(
-                          r.ext
-                        ));
+                      (r.type = createjs.RequestUtils.getTypeByExtension(
+                        r.ext
+                      ));
                     var l = r.src;
                     if (!s.absolute && !s.relative)
                       if (t) {
@@ -21798,7 +22348,7 @@
                   }
                   (r.path = o),
                     (void 0 === r.id || null === r.id || "" === r.id) &&
-                      (r.id = l);
+                    (r.id = l);
                   var c =
                     this._typeCallbacks[r.type] ||
                     this._extensionCallbacks[r.ext];
@@ -21813,7 +22363,7 @@
                     (this._loadItemsById[r.id] = r),
                     (this._loadItemsBySrc[r.src] = r),
                     null == r.crossOrigin &&
-                      (r.crossOrigin = this._crossOrigin),
+                    (r.crossOrigin = this._crossOrigin),
                     r
                   );
                 }),
@@ -21833,7 +22383,7 @@
                   if (!this._paused) {
                     this._loadStartWasDispatched ||
                       (this._sendLoadStart(),
-                      (this._loadStartWasDispatched = !0)),
+                        (this._loadStartWasDispatched = !0)),
                       this._numItems == this._numItemsLoaded
                         ? ((this.loaded = !0),
                           this._sendComplete(),
@@ -21899,7 +22449,7 @@
                     this._saveLoadedItems(t),
                     this._removeLoadItem(t),
                     this._finishOrderedItem(t) ||
-                      this._processFinishedLoad(n, t),
+                    this._processFinishedLoad(n, t),
                     this._cleanLoadItem(t);
                 }),
                 (t._saveLoadedItems = function (e) {
@@ -21948,8 +22498,8 @@
                 (t._processFinishedLoad = function (e, t) {
                   this._numItemsLoaded++,
                     this.maintainScriptOrder ||
-                      e.type != createjs.LoadQueue.JAVASCRIPT ||
-                      createjs.DomUtils.appendToHead(e.result),
+                    e.type != createjs.LoadQueue.JAVASCRIPT ||
+                    createjs.DomUtils.appendToHead(e.result),
                     this._updateProgress(),
                     this._sendFileComplete(e, t),
                     this._loadNext();
@@ -21959,7 +22509,7 @@
                   var t = e.getItem();
                   if (t.type != createjs.LoadQueue.JAVASCRIPT) return !0;
                   if (this._currentlyLoadingScript) return !1;
-                  for (var n = this._scriptOrder.indexOf(t), r = 0; n > r; ) {
+                  for (var n = this._scriptOrder.indexOf(t), r = 0; n > r;) {
                     var o = this._loadedScripts[r];
                     if (null == o) return !1;
                     r++;
@@ -22026,7 +22576,7 @@
                       (n.rawResult = this._loadedRawResults[e.id]),
                       e.completeHandler && e.completeHandler(n),
                       this.hasEventListener("fileload") &&
-                        this.dispatchEvent(n);
+                      this.dispatchEvent(n);
                   }
                 }),
                 (t._sendFileStart = function (e) {
@@ -22123,8 +22673,8 @@
                   createjs.RequestUtils.isImageTag(e)
                     ? (this._tag = e)
                     : createjs.RequestUtils.isImageTag(e.src)
-                    ? (this._tag = e.src)
-                    : createjs.RequestUtils.isImageTag(e.tag) &&
+                      ? (this._tag = e.src)
+                      : createjs.RequestUtils.isImageTag(e.tag) &&
                       (this._tag = e.tag),
                   null != this._tag
                     ? (this._preferXHR = !1)
@@ -22142,15 +22692,15 @@
                   var e = this._item.crossOrigin;
                   1 == e && (e = "Anonymous"),
                     null == e ||
-                      createjs.RequestUtils.isLocal(this._item.src) ||
-                      (this._tag.crossOrigin = e),
+                    createjs.RequestUtils.isLocal(this._item.src) ||
+                    (this._tag.crossOrigin = e),
                     this.AbstractLoader_load();
                 }),
                 (t._updateXHR = function (e) {
                   (e.loader.mimeType =
                     "text/plain; charset=x-user-defined-binary"),
                     e.loader.setResponseType &&
-                      e.loader.setResponseType("blob");
+                    e.loader.setResponseType("blob");
                 }),
                 (t._formatResult = function (e) {
                   var t = this;
@@ -22168,8 +22718,8 @@
                     r.complete
                       ? n(r)
                       : (r.onload = function () {
-                          n(this);
-                        });
+                        n(this);
+                      });
                   };
                 }),
                 (createjs.ImageLoader = createjs.promote(e, "AbstractLoader"));
@@ -22261,8 +22811,8 @@
                   if (null != window[this._item.callback])
                     throw new Error(
                       "JSONP callback '" +
-                        this._item.callback +
-                        "' already exists on window. You need to specify a different callback or re-name the current one."
+                      this._item.callback +
+                      "' already exists on window. You need to specify a different callback or re-name the current one."
                     );
                   (window[this._item.callback] = createjs.proxy(
                     this._handleLoad,
@@ -22333,7 +22883,7 @@
                         (e.loaded *= n.MANIFEST_PROGRESS),
                         (this.progress = e.loaded / e.total),
                         (isNaN(this.progress) || 1 / 0 == this.progress) &&
-                          (this.progress = 0),
+                        (this.progress = 0),
                         void this._sendProgress(e)
                       );
                   }
@@ -22388,8 +22938,8 @@
                   createjs.RequestUtils.isAudioTag(e)
                     ? (this._tag = e)
                     : createjs.RequestUtils.isAudioTag(e.src)
-                    ? (this._tag = e)
-                    : createjs.RequestUtils.isAudioTag(e.tag) &&
+                      ? (this._tag = e)
+                      : createjs.RequestUtils.isAudioTag(e.tag) &&
                       (this._tag = createjs.RequestUtils.isAudioTag(e)
                         ? e
                         : e.src),
@@ -22421,10 +22971,10 @@
                   createjs.AbstractLoader.VIDEO
                 ),
                   createjs.RequestUtils.isVideoTag(e) ||
-                  createjs.RequestUtils.isVideoTag(e.src)
+                    createjs.RequestUtils.isVideoTag(e.src)
                     ? (this.setTag(
-                        createjs.RequestUtils.isVideoTag(e) ? e : e.src
-                      ),
+                      createjs.RequestUtils.isVideoTag(e) ? e : e.src
+                    ),
                       (this._preferXHR = !1))
                     : this.setTag(this._createTag());
               }
@@ -22482,7 +23032,7 @@
                         (e.loaded *= n.SPRITESHEET_PROGRESS),
                         (this.progress = e.loaded / e.total),
                         (isNaN(this.progress) || 1 / 0 == this.progress) &&
-                          (this.progress = 0),
+                        (this.progress = 0),
                         void this._sendProgress(e)
                       );
                   }
@@ -22549,14 +23099,14 @@
               }),
                 (t._formatResult = function (e) {
                   var t = createjs.DataUtils.parseXML(
-                      e.getResult(!0),
-                      "text/xml"
-                    ),
+                    e.getResult(!0),
+                    "text/xml"
+                  ),
                     n = e.getTag();
                   return (
                     !this._preferXHR &&
-                      document.body.contains(n) &&
-                      document.body.removeChild(n),
+                    document.body.contains(n) &&
+                    document.body.removeChild(n),
                     null != t.documentElement
                       ? (n.appendChild(t.documentElement),
                         (n.style.visibility = "visible"),
@@ -22595,10 +23145,10 @@
           "undefined" != typeof global
             ? global
             : "undefined" != typeof self
-            ? self
-            : "undefined" != typeof window
-            ? window
-            : {}
+              ? self
+              : "undefined" != typeof window
+                ? window
+                : {}
         );
       },
       {},
@@ -22745,9 +23295,9 @@
                 } else e.target && e.clone && (e = e.clone());
                 try {
                   e.target = this;
-                } catch (n) {}
+                } catch (n) { }
                 if (e.bubbles && this.parent) {
-                  for (var r = this, o = [r]; r.parent; )
+                  for (var r = this, o = [r]; r.parent;)
                     o.push((r = r.parent));
                   var i,
                     a = o.length;
@@ -22764,7 +23314,7 @@
                 return !!((t && t[e]) || (n && n[e]));
               }),
               (t.willTrigger = function (e) {
-                for (var t = this; t; ) {
+                for (var t = this; t;) {
                   if (t.hasEventListener(e)) return !0;
                   t = t.parent;
                 }
@@ -22781,10 +23331,10 @@
                   if (!o || !(n = o.length)) return;
                   try {
                     e.currentTarget = this;
-                  } catch (i) {}
+                  } catch (i) { }
                   try {
                     e.eventPhase = t;
-                  } catch (i) {}
+                  } catch (i) { }
                   (e.removed = !1), (o = o.slice());
                   for (
                     var a = 0;
@@ -22794,7 +23344,7 @@
                     var s = o[a];
                     s.handleEvent ? s.handleEvent(e) : s(e),
                       e.removed &&
-                        (this.off(e.type, s, 1 == t), (e.removed = !1));
+                      (this.off(e.type, s, 1 == t), (e.removed = !1));
                   }
                 }
               }),
@@ -22905,7 +23455,7 @@
                 if (t instanceof Object && t.src)
                   return (
                     null == t.loadTimeout &&
-                      (t.loadTimeout = n.LOAD_TIMEOUT_DEFAULT),
+                    (t.loadTimeout = n.LOAD_TIMEOUT_DEFAULT),
                     t
                   );
                 throw new Error("Type not recognized.");
@@ -22932,7 +23482,7 @@
                     ? (n.absolute = !0)
                     : e.RELATIVE_PATT.test(t) && (n.relative = !0),
                   (o = t.match(e.EXTENSION_PATT)) &&
-                    (n.extension = o[1].toLowerCase()),
+                  (n.extension = o[1].toLowerCase()),
                   n
                 );
               }),
@@ -23109,7 +23659,7 @@
               (t.destroy = function () {
                 this._request &&
                   (this._request.removeAllEventListeners(),
-                  this._request.destroy()),
+                    this._request.destroy()),
                   (this._request = null),
                   (this._item = null),
                   (this._rawResult = null),
@@ -23124,10 +23674,10 @@
                 this._request = this._preferXHR
                   ? new createjs.XHRRequest(this._item)
                   : new createjs.TagRequest(
-                      this._item,
-                      this._tag || this._createTag(),
-                      this._tagSrcAttribute
-                    );
+                    this._item,
+                    this._tag || this._createTag(),
+                    this._tagSrcAttribute
+                  );
               }),
               (t._createTag = function () {
                 return null;
@@ -23145,7 +23695,7 @@
                       (this.progress = e.loaded / e.total),
                       (t.progress = this.progress),
                       (isNaN(this.progress) || 1 / 0 == this.progress) &&
-                        (this.progress = 0)),
+                      (this.progress = 0)),
                     this.hasEventListener("progress") && this.dispatchEvent(t);
                 }
               }),
@@ -23163,7 +23713,7 @@
                   this.hasEventListener("error") &&
                   (null == e &&
                     (e = new createjs.ErrorEvent("PRELOAD_ERROR_EMPTY")),
-                  this.dispatchEvent(e));
+                    this.dispatchEvent(e));
               }),
               (t._isCanceled = function () {
                 return null == window.createjs || this.canceled ? !0 : !1;
@@ -23177,8 +23727,8 @@
                       n = this;
                     t instanceof Function
                       ? t(function (e) {
-                          (n._result = e), n._sendComplete();
-                        })
+                        (n._result = e), n._sendComplete();
+                      })
                       : ((this._result = t || this._rawResult),
                         this._sendComplete());
                     break;
@@ -23222,23 +23772,23 @@
                 this._tag.load(),
                 this.AbstractLoader_load();
             }),
-              (t._createTag = function () {}),
+              (t._createTag = function () { }),
               (t._createRequest = function () {
                 this._request = this._preferXHR
                   ? new createjs.XHRRequest(this._item)
                   : new createjs.MediaTagRequest(
-                      this._item,
-                      this._tag || this._createTag(),
-                      this._tagSrcAttribute
-                    );
+                    this._item,
+                    this._tag || this._createTag(),
+                    this._tagSrcAttribute
+                  );
               }),
               (t._formatResult = function (e) {
                 return (
                   this._tag.removeEventListener &&
-                    this._tag.removeEventListener(
-                      "canplaythrough",
-                      this._loadedHandler
-                    ),
+                  this._tag.removeEventListener(
+                    "canplaythrough",
+                    this._loadedHandler
+                  ),
                   (this._tag.onstalled = null),
                   this._preferXHR && (e.getTag().src = e.getResult(!0)),
                   e.getTag()
@@ -23253,12 +23803,12 @@
           (function () {
             "use strict";
             var e = function (e) {
-                this._item = e;
-              },
+              this._item = e;
+            },
               t = createjs.extend(e, createjs.EventDispatcher);
-            (t.load = function () {}),
-              (t.destroy = function () {}),
-              (t.cancel = function () {}),
+            (t.load = function () { }),
+              (t.destroy = function () { }),
+              (t.cancel = function () { }),
               (createjs.AbstractRequest = createjs.promote(
                 e,
                 "EventDispatcher"
@@ -23299,7 +23849,7 @@
                 )),
                 (this._tag[this._tagSrcAttribute] = this._item.src),
                 null == this._tag.parentNode &&
-                  (window.document.body.appendChild(this._tag),
+                (window.document.body.appendChild(this._tag),
                   (this._addedToDOM = !0));
             }),
               (t.destroy = function () {
@@ -23334,8 +23884,8 @@
                   (this._tag.onreadystatechange = null),
                   (this._tag.onerror = null),
                   this._addedToDOM &&
-                    null != this._tag.parentNode &&
-                    this._tag.parentNode.removeChild(this._tag),
+                  null != this._tag.parentNode &&
+                  this._tag.parentNode.removeChild(this._tag),
                   clearTimeout(this._loadTimeout);
               }),
               (t._hideTag = function () {
@@ -23345,7 +23895,7 @@
               (t._showTag = function () {
                 this._tag.style.visibility = this._startTagVisibility;
               }),
-              (t._handleStalled = function () {}),
+              (t._handleStalled = function () { }),
               (createjs.TagRequest = createjs.promote(e, "AbstractRequest"));
           })(),
           (this.createjs = this.createjs || {}),
@@ -23369,11 +23919,11 @@
                 this._tag.addEventListener("stalled", e),
                 this._tag.addEventListener("progress", t),
                 this._tag.addEventListener &&
-                  this._tag.addEventListener(
-                    "canplaythrough",
-                    this._loadedHandler,
-                    !1
-                  ),
+                this._tag.addEventListener(
+                  "canplaythrough",
+                  this._loadedHandler,
+                  !1
+                ),
                 this.TagRequest_load();
             }),
               (t._handleReadyStateChange = function () {
@@ -23382,7 +23932,7 @@
                 ("loaded" == e.readyState || "complete" == e.readyState) &&
                   this._handleTagComplete();
               }),
-              (t._handleStalled = function () {}),
+              (t._handleStalled = function () { }),
               (t._handleProgress = function (e) {
                 if (e && !(e.loaded > 0 && 0 == e.total)) {
                   var t = new createjs.ProgressEvent(e.loaded, e.total);
@@ -23503,19 +24053,19 @@
                     !1
                   ),
                   1 == this._xhrLevel &&
-                    (this._loadTimeout = setTimeout(
-                      createjs.proxy(this._handleTimeout, this),
-                      this._item.loadTimeout
-                    ));
+                  (this._loadTimeout = setTimeout(
+                    createjs.proxy(this._handleTimeout, this),
+                    this._item.loadTimeout
+                  ));
                 try {
                   this._item.values &&
-                  this._item.method != createjs.AbstractLoader.GET
+                    this._item.method != createjs.AbstractLoader.GET
                     ? this._item.method == createjs.AbstractLoader.POST &&
-                      this._request.send(
-                        createjs.RequestUtils.formatQueryString(
-                          this._item.values
-                        )
+                    this._request.send(
+                      createjs.RequestUtils.formatQueryString(
+                        this._item.values
                       )
+                    )
                     : this._request.send();
                 } catch (e) {
                   this.dispatchEvent(
@@ -23591,11 +24141,11 @@
                 try {
                   if (null != this._request.responseText)
                     return this._request.responseText;
-                } catch (e) {}
+                } catch (e) { }
                 try {
                   if (null != this._request.responseXML)
                     return this._request.responseXML;
-                } catch (e) {}
+                } catch (e) { }
                 return null;
               }),
               (t._createXHR = function (e) {
@@ -23605,16 +24155,16 @@
                 if (window.XMLHttpRequest)
                   (r = new XMLHttpRequest()),
                     t &&
-                      void 0 === r.withCredentials &&
-                      window.XDomainRequest &&
-                      (r = new XDomainRequest());
+                    void 0 === r.withCredentials &&
+                    window.XDomainRequest &&
+                    (r = new XDomainRequest());
                 else {
                   for (var o = 0, i = s.ACTIVEX_VERSIONS.length; i > o; o++) {
                     s.ACTIVEX_VERSIONS[o];
                     try {
                       r = new ActiveXObject(axVersions);
                       break;
-                    } catch (a) {}
+                    } catch (a) { }
                   }
                   if (null == r) return !1;
                 }
@@ -23622,8 +24172,8 @@
                   createjs.RequestUtils.isText(e.type) &&
                   (e.mimeType = "text/plain; charset=utf-8"),
                   e.mimeType &&
-                    r.overrideMimeType &&
-                    r.overrideMimeType(e.mimeType),
+                  r.overrideMimeType &&
+                  r.overrideMimeType(e.mimeType),
                   (this._xhrLevel = "string" == typeof r.responseType ? 2 : 1);
                 var l = null;
                 if (
@@ -23631,25 +24181,25 @@
                     e.method == createjs.AbstractLoader.GET
                       ? createjs.RequestUtils.buildPath(e.src, e.values)
                       : e.src),
-                  r.open(e.method || createjs.AbstractLoader.GET, l, !0),
-                  t &&
+                    r.open(e.method || createjs.AbstractLoader.GET, l, !0),
+                    t &&
                     r instanceof XMLHttpRequest &&
                     1 == this._xhrLevel &&
                     (n.Origin = location.origin),
-                  e.values &&
+                    e.values &&
                     e.method == createjs.AbstractLoader.POST &&
                     (n["Content-Type"] = "application/x-www-form-urlencoded"),
-                  t ||
+                    t ||
                     n["X-Requested-With"] ||
                     (n["X-Requested-With"] = "XMLHttpRequest"),
-                  e.headers)
+                    e.headers)
                 )
                   for (var c in e.headers) n[c] = e.headers[c];
                 for (c in n) r.setRequestHeader(c, n[c]);
                 return (
                   r instanceof XMLHttpRequest &&
-                    void 0 !== e.withCredentials &&
-                    (r.withCredentials = e.withCredentials),
+                  void 0 !== e.withCredentials &&
+                  (r.withCredentials = e.withCredentials),
                   (this._request = r),
                   !0
                 );
@@ -23702,8 +24252,8 @@
                 createjs.RequestUtils.isAudioTag(e)
                   ? (this._tag = e)
                   : createjs.RequestUtils.isAudioTag(e.src)
-                  ? (this._tag = e)
-                  : createjs.RequestUtils.isAudioTag(e.tag) &&
+                    ? (this._tag = e)
+                    : createjs.RequestUtils.isAudioTag(e.tag) &&
                     (this._tag = createjs.RequestUtils.isAudioTag(e)
                       ? e
                       : e.src),
@@ -23727,15 +24277,15 @@
           (function () {
             "use strict";
             var e = function () {
-                (this.interrupt = null),
-                  (this.delay = null),
-                  (this.offset = null),
-                  (this.loop = null),
-                  (this.volume = null),
-                  (this.pan = null),
-                  (this.startTime = null),
-                  (this.duration = null);
-              },
+              (this.interrupt = null),
+                (this.delay = null),
+                (this.offset = null),
+                (this.loop = null),
+                (this.volume = null),
+                (this.pan = null),
+                (this.startTime = null),
+                (this.duration = null);
+            },
               t = (e.prototype = {}),
               n = e;
             (n.create = function (e) {
@@ -23800,8 +24350,8 @@
                   if (null == Number(e)) return !1;
                   if (
                     ((e = Math.max(0, Math.min(1, e))),
-                    (n._masterVolume = e),
-                    !this.activePlugin ||
+                      (n._masterVolume = e),
+                      !this.activePlugin ||
                       !this.activePlugin.setVolume ||
                       !this.activePlugin.setVolume(e))
                   )
@@ -23822,7 +24372,7 @@
                   if (null == e) return !1;
                   if (
                     ((this._masterMute = e),
-                    !this.activePlugin ||
+                      !this.activePlugin ||
                       !this.activePlugin.setMute ||
                       !this.activePlugin.setMute(e))
                   )
@@ -23872,7 +24422,7 @@
                     var i = n._preloadHash[t][r];
                     if (
                       ((n._preloadHash[t][r] = !0),
-                      n.hasEventListener("fileload"))
+                        n.hasEventListener("fileload"))
                     ) {
                       var e = new createjs.Event("fileload");
                       (e.src = i.src),
@@ -23890,7 +24440,7 @@
                     var i = n._preloadHash[t][r];
                     if (
                       ((n._preloadHash[t][r] = !1),
-                      n.hasEventListener("fileerror"))
+                        n.hasEventListener("fileerror"))
                     ) {
                       var e = new createjs.Event("fileerror");
                       (e.src = i.src),
@@ -23914,13 +24464,13 @@
                 return null != n.activePlugin
                   ? !0
                   : n._pluginsRegistered
-                  ? !1
-                  : n.registerPlugins([
+                    ? !1
+                    : n.registerPlugins([
                       createjs.WebAudioPlugin,
                       createjs.HTMLAudioPlugin,
                     ])
-                  ? !0
-                  : !1;
+                      ? !0
+                      : !1;
               }),
               (n.isReady = function () {
                 return null != n.activePlugin;
@@ -23945,7 +24495,7 @@
                   (e.src instanceof Object
                     ? ((r = n._parseSrc(e.src)), (r.src = e.path + r.src))
                     : (r = n._parsePath(e.src)),
-                  null == r)
+                    null == r)
                 )
                   return !1;
                 (e.src = r.src), (e.type = "sound");
@@ -23956,9 +24506,9 @@
                   (isNaN(o.channels)
                     ? isNaN(o) || (i = parseInt(o))
                     : (i = parseInt(o.channels)),
-                  o.audioSprite)
+                    o.audioSprite)
                 )
-                  for (var a, s = o.audioSprite.length; s--; )
+                  for (var a, s = o.audioSprite.length; s--;)
                     (a = o.audioSprite[s]),
                       (n._idHash[a.id] = {
                         src: e.src,
@@ -23966,8 +24516,8 @@
                         duration: parseInt(a.duration),
                       }),
                       a.defaultPlayProps &&
-                        (n._defaultPlayPropsHash[a.id] =
-                          createjs.PlayPropsConfig.create(a.defaultPlayProps));
+                      (n._defaultPlayPropsHash[a.id] =
+                        createjs.PlayPropsConfig.create(a.defaultPlayProps));
                 null != e.id && (n._idHash[e.id] = { src: e.src });
                 var l = n.activePlugin.register(e);
                 return (
@@ -23977,8 +24527,8 @@
                     : (e.data = i || t.maxPerChannel()),
                   l.type && (e.type = l.type),
                   e.defaultPlayProps &&
-                    (n._defaultPlayPropsHash[e.src] =
-                      createjs.PlayPropsConfig.create(e.defaultPlayProps)),
+                  (n._defaultPlayPropsHash[e.src] =
+                    createjs.PlayPropsConfig.create(e.defaultPlayProps)),
                   l
                 );
               }),
@@ -23992,8 +24542,8 @@
                 if (!s) return !1;
                 if (
                   (n._preloadHash[a.src] || (n._preloadHash[a.src] = []),
-                  n._preloadHash[a.src].push(a),
-                  1 == n._preloadHash[a.src].length)
+                    n._preloadHash[a.src].push(a),
+                    1 == n._preloadHash[a.src].length)
                 )
                   s.on(
                     "complete",
@@ -24025,7 +24575,7 @@
                   (e instanceof Object
                     ? (o = n._parseSrc(e))
                     : ((e = n._getSrcById(e).src), (o = n._parsePath(e))),
-                  null == o)
+                    null == o)
                 )
                   return !1;
                 (e = o.src), null != r && (e = r + e);
@@ -24063,10 +24613,10 @@
                 "string" != typeof e && (e = e.toString());
                 var t = e.match(n.FILE_PATTERN);
                 if (null == t) return !1;
-                for (var r = t[4], o = t[5], i = n.capabilities, a = 0; !i[o]; )
+                for (var r = t[4], o = t[5], i = n.capabilities, a = 0; !i[o];)
                   if (
                     ((o = n.alternateExtensions[a++]),
-                    a > n.alternateExtensions.length)
+                      a > n.alternateExtensions.length)
                   )
                     return null;
                 e = e.replace("." + t[5], "." + o);
@@ -24091,15 +24641,15 @@
                   t instanceof Object || t instanceof createjs.PlayPropsConfig
                     ? t
                     : {
-                        interrupt: t,
-                        delay: r,
-                        offset: o,
-                        loop: i,
-                        volume: a,
-                        pan: s,
-                        startTime: l,
-                        duration: c,
-                      }
+                      interrupt: t,
+                      delay: r,
+                      offset: o,
+                      loop: i,
+                      volume: a,
+                      pan: s,
+                      startTime: l,
+                      duration: c,
+                    }
                 );
                 var d = n.createInstance(e, u.startTime, u.duration),
                   p = n._playInstance(d, u);
@@ -24125,14 +24675,14 @@
                 );
               }),
               (n.stop = function () {
-                for (var e = this._instances, t = e.length; t--; ) e[t].stop();
+                for (var e = this._instances, t = e.length; t--;) e[t].stop();
               }),
               (n.setVolume = function (e) {
                 if (null == Number(e)) return !1;
                 if (
                   ((e = Math.max(0, Math.min(1, e))),
-                  (n._masterVolume = e),
-                  !this.activePlugin ||
+                    (n._masterVolume = e),
+                    !this.activePlugin ||
                     !this.activePlugin.setVolume ||
                     !this.activePlugin.setVolume(e))
                 )
@@ -24146,7 +24696,7 @@
                 if (null == e) return !1;
                 if (
                   ((this._masterMute = e),
-                  !this.activePlugin ||
+                    !this.activePlugin ||
                     !this.activePlugin.setMute ||
                     !this.activePlugin.setMute(e))
                 )
@@ -24173,12 +24723,12 @@
                 if (
                   (null == t.interrupt &&
                     (t.interrupt = r.interrupt || n.defaultInterruptBehavior),
-                  null == t.delay && (t.delay = r.delay || 0),
-                  null == t.offset && (t.offset = e.getPosition()),
-                  null == t.loop && (t.loop = e.loop),
-                  null == t.volume && (t.volume = e.volume),
-                  null == t.pan && (t.pan = e.pan),
-                  0 == t.delay)
+                    null == t.delay && (t.delay = r.delay || 0),
+                    null == t.offset && (t.offset = e.getPosition()),
+                    null == t.loop && (t.loop = e.loop),
+                    null == t.volume && (t.volume = e.volume),
+                    null == t.pan && (t.pan = e.pan),
+                    0 == t.delay)
                 ) {
                   var o = n._beginPlaying(e, t);
                   if (!o) return !1;
@@ -24298,58 +24848,58 @@
           (function () {
             "use strict";
             var e = function (e, t, n, r) {
-                this.EventDispatcher_constructor(),
-                  (this.src = e),
-                  (this.uniqueId = -1),
-                  (this.playState = null),
-                  (this.delayTimeoutId = null),
-                  (this._volume = 1),
-                  Object.defineProperty(this, "volume", {
-                    get: this.getVolume,
-                    set: this.setVolume,
-                  }),
-                  (this._pan = 0),
-                  Object.defineProperty(this, "pan", {
-                    get: this.getPan,
-                    set: this.setPan,
-                  }),
-                  (this._startTime = Math.max(0, t || 0)),
-                  Object.defineProperty(this, "startTime", {
-                    get: this.getStartTime,
-                    set: this.setStartTime,
-                  }),
-                  (this._duration = Math.max(0, n || 0)),
-                  Object.defineProperty(this, "duration", {
-                    get: this.getDuration,
-                    set: this.setDuration,
-                  }),
-                  (this._playbackResource = null),
-                  Object.defineProperty(this, "playbackResource", {
-                    get: this.getPlaybackResource,
-                    set: this.setPlaybackResource,
-                  }),
-                  r !== !1 && r !== !0 && this.setPlaybackResource(r),
-                  (this._position = 0),
-                  Object.defineProperty(this, "position", {
-                    get: this.getPosition,
-                    set: this.setPosition,
-                  }),
-                  (this._loop = 0),
-                  Object.defineProperty(this, "loop", {
-                    get: this.getLoop,
-                    set: this.setLoop,
-                  }),
-                  (this._muted = !1),
-                  Object.defineProperty(this, "muted", {
-                    get: this.getMuted,
-                    set: this.setMuted,
-                  }),
-                  (this._paused = !1),
-                  Object.defineProperty(this, "paused", {
-                    get: this.getPaused,
-                    set: this.setPaused,
-                  });
-              },
+              this.EventDispatcher_constructor(),
+                (this.src = e),
+                (this.uniqueId = -1),
+                (this.playState = null),
+                (this.delayTimeoutId = null),
+                (this._volume = 1),
+                Object.defineProperty(this, "volume", {
+                  get: this.getVolume,
+                  set: this.setVolume,
+                }),
+                (this._pan = 0),
+                Object.defineProperty(this, "pan", {
+                  get: this.getPan,
+                  set: this.setPan,
+                }),
+                (this._startTime = Math.max(0, t || 0)),
+                Object.defineProperty(this, "startTime", {
+                  get: this.getStartTime,
+                  set: this.setStartTime,
+                }),
+                (this._duration = Math.max(0, n || 0)),
+                Object.defineProperty(this, "duration", {
+                  get: this.getDuration,
+                  set: this.setDuration,
+                }),
+                (this._playbackResource = null),
+                Object.defineProperty(this, "playbackResource", {
+                  get: this.getPlaybackResource,
+                  set: this.setPlaybackResource,
+                }),
+                r !== !1 && r !== !0 && this.setPlaybackResource(r),
+                (this._position = 0),
+                Object.defineProperty(this, "position", {
+                  get: this.getPosition,
+                  set: this.setPosition,
+                }),
+                (this._loop = 0),
+                Object.defineProperty(this, "loop", {
+                  get: this.getLoop,
+                  set: this.setLoop,
+                }),
+                (this._muted = !1),
+                Object.defineProperty(this, "muted", {
+                  get: this.getMuted,
+                  set: this.setMuted,
+                }),
+                (this._paused = !1),
+                Object.defineProperty(this, "paused", {
+                  get: this.getPaused,
+                  set: this.setPaused,
+                });
+            },
               t = createjs.extend(e, createjs.EventDispatcher);
             (t.play = function (e, t, n, r, o, i) {
               var a;
@@ -24358,13 +24908,13 @@
                   e instanceof Object || e instanceof createjs.PlayPropsConfig
                     ? e
                     : {
-                        interrupt: e,
-                        delay: t,
-                        offset: n,
-                        loop: r,
-                        volume: o,
-                        pan: i,
-                      }
+                      interrupt: e,
+                      delay: t,
+                      offset: n,
+                      loop: r,
+                      volume: o,
+                      pan: i,
+                    }
                 )),
                 this.playState == createjs.Sound.PLAY_SUCCEEDED
                   ? (this.applyPlayProps(a),
@@ -24397,7 +24947,7 @@
                   null != e.volume && this.setVolume(e.volume),
                   null != e.pan && this.setPan(e.pan),
                   null != e.startTime &&
-                    (this.setStartTime(e.startTime),
+                  (this.setStartTime(e.startTime),
                     this.setDuration(e.duration)),
                   this
                 );
@@ -24449,8 +24999,8 @@
               (t.getPosition = function () {
                 return (
                   this._paused ||
-                    this.playState != createjs.Sound.PLAY_SUCCEEDED ||
-                    (this._position = this._calculateCurrentPosition()),
+                  this.playState != createjs.Sound.PLAY_SUCCEEDED ||
+                  (this._position = this._calculateCurrentPosition()),
                   this._position
                 );
               }),
@@ -24458,7 +25008,7 @@
                 return (
                   (this._position = Math.max(0, e)),
                   this.playState == createjs.Sound.PLAY_SUCCEEDED &&
-                    this._updatePosition(),
+                  this._updatePosition(),
                   this
                 );
               }),
@@ -24524,10 +25074,10 @@
                   this.setVolume(e.volume),
                   this.setPan(e.pan),
                   null != e.startTime &&
-                    (this.setStartTime(e.startTime),
+                  (this.setStartTime(e.startTime),
                     this.setDuration(e.duration)),
                   null != this._playbackResource &&
-                  this._position < this._duration
+                    this._position < this._duration
                     ? ((this._paused = !1),
                       this._handleSoundReady(),
                       (this.playState = createjs.Sound.PLAY_SUCCEEDED),
@@ -24553,21 +25103,21 @@
                       void this._sendEvent("complete"))
                 );
               }),
-              (t._handleSoundReady = function () {}),
-              (t._updateVolume = function () {}),
-              (t._updatePan = function () {}),
-              (t._updateStartTime = function () {}),
-              (t._updateDuration = function () {}),
-              (t._setDurationFromSource = function () {}),
-              (t._calculateCurrentPosition = function () {}),
-              (t._updatePosition = function () {}),
-              (t._removeLooping = function () {}),
-              (t._addLooping = function () {}),
-              (t._pause = function () {}),
-              (t._resume = function () {}),
-              (t._handleStop = function () {}),
-              (t._handleCleanUp = function () {}),
-              (t._handleLoop = function () {}),
+              (t._handleSoundReady = function () { }),
+              (t._updateVolume = function () { }),
+              (t._updatePan = function () { }),
+              (t._updateStartTime = function () { }),
+              (t._updateDuration = function () { }),
+              (t._setDurationFromSource = function () { }),
+              (t._calculateCurrentPosition = function () { }),
+              (t._updatePosition = function () { }),
+              (t._removeLooping = function () { }),
+              (t._addLooping = function () { }),
+              (t._pause = function () { }),
+              (t._resume = function () { }),
+              (t._handleStop = function () { }),
+              (t._handleCleanUp = function () { }),
+              (t._handleLoop = function () { }),
               (createjs.AbstractSoundInstance = createjs.promote(
                 e,
                 "EventDispatcher"
@@ -24578,14 +25128,14 @@
           (function () {
             "use strict";
             var e = function () {
-                (this._capabilities = null),
-                  (this._loaders = {}),
-                  (this._audioSources = {}),
-                  (this._soundInstances = {}),
-                  (this._volume = 1),
-                  this._loaderClass,
-                  this._soundInstanceClass;
-              },
+              (this._capabilities = null),
+                (this._loaders = {}),
+                (this._audioSources = {}),
+                (this._soundInstances = {}),
+                (this._volume = 1),
+                this._loaderClass,
+                this._soundInstanceClass;
+            },
               t = e.prototype;
             (e._capabilities = null),
               (e.isSupported = function () {
@@ -24619,7 +25169,7 @@
               }),
               (t.removeSound = function (e) {
                 if (this._soundInstances[e]) {
-                  for (var t = this._soundInstances[e].length; t--; ) {
+                  for (var t = this._soundInstances[e].length; t--;) {
                     var n = this._soundInstances[e][t];
                     n.destroy();
                   }
@@ -24666,8 +25216,8 @@
                   o.setPlaybackResource(this._audioSources[t]);
                 }
               }),
-              (t._handlePreloadError = function () {}),
-              (t._updateVolume = function () {}),
+              (t._handlePreloadError = function () { }),
+              (t._updateVolume = function () { }),
               (createjs.AbstractPlugin = e);
           })(),
           (this.createjs = this.createjs || {}),
@@ -24757,11 +25307,11 @@
                 this.sourceNode &&
                   this.playState == createjs.Sound.PLAY_SUCCEEDED &&
                   ((this.sourceNode = this._cleanUpAudioNode(this.sourceNode)),
-                  (this._sourceNodeNext = this._cleanUpAudioNode(
-                    this._sourceNodeNext
-                  ))),
+                    (this._sourceNodeNext = this._cleanUpAudioNode(
+                      this._sourceNodeNext
+                    ))),
                   0 != this.gainNode.numberOfOutputs &&
-                    this.gainNode.disconnect(0),
+                  this.gainNode.disconnect(0),
                   clearTimeout(this._soundCompleteTimeout),
                   (this._playbackStartTime = 0);
               }),
@@ -24783,10 +25333,10 @@
                     1e3 * (e - t)
                   )),
                   0 != this._loop &&
-                    (this._sourceNodeNext = this._createAndPlayAudioNode(
-                      this._playbackStartTime,
-                      0
-                    ));
+                  (this._sourceNodeNext = this._createAndPlayAudioNode(
+                    this._playbackStartTime,
+                    0
+                  ));
               }),
               (t._createAndPlayAudioNode = function (e, t) {
                 var r = n.context.createBufferSource();
@@ -24806,7 +25356,7 @@
                     this._sourceNodeNext
                   )),
                   0 != this.gainNode.numberOfOutputs &&
-                    this.gainNode.disconnect(0),
+                  this.gainNode.disconnect(0),
                   clearTimeout(this._soundCompleteTimeout);
               }),
               (t._resume = function () {
@@ -24931,9 +25481,9 @@
                     (n._capabilities = { panning: !0, volume: !0, tracks: -1 });
                   for (
                     var t = createjs.Sound.SUPPORTED_EXTENSIONS,
-                      r = createjs.Sound.EXTENSION_MAP,
-                      o = 0,
-                      i = t.length;
+                    r = createjs.Sound.EXTENSION_MAP,
+                    o = 0,
+                    i = t.length;
                     i > o;
                     o++
                   ) {
@@ -24993,8 +25543,8 @@
                   null == t
                     ? ((t = n._tags[e] = n._tagPool.get()), (t.src = e))
                     : n._tagUsed[e]
-                    ? ((t = n._tagPool.get()), (t.src = e))
-                    : (n._tagUsed[e] = !0),
+                      ? ((t = n._tagPool.get()), (t.src = e))
+                      : (n._tagUsed[e] = !0),
                   t
                 );
               }),
@@ -25067,8 +25617,8 @@
                 n
                   ? (this._audioSpriteStopTime = 0.001 * (t + n))
                   : (this._duration = createjs.HTMLAudioTagPool.getDuration(
-                      this.src
-                    ));
+                    this.src
+                  ));
             }
             var t = createjs.extend(e, createjs.AbstractSoundInstance);
             (t.setMasterVolume = function () {
@@ -25083,11 +25633,11 @@
               (t._removeLooping = function () {
                 null != this._playbackResource &&
                   ((this._playbackResource.loop = !1),
-                  this._playbackResource.removeEventListener(
-                    createjs.HTMLAudioPlugin._AUDIO_SEEKED,
-                    this._loopHandler,
-                    !1
-                  ));
+                    this._playbackResource.removeEventListener(
+                      createjs.HTMLAudioPlugin._AUDIO_SEEKED,
+                      this._loopHandler,
+                      !1
+                    ));
               }),
               (t._addLooping = function () {
                 null == this._playbackResource ||
@@ -25097,7 +25647,7 @@
                     this._loopHandler,
                     !1
                   ),
-                  (this._playbackResource.loop = !0));
+                    (this._playbackResource.loop = !0));
               }),
               (t._handleCleanUp = function () {
                 var e = this._playbackResource;
@@ -25131,7 +25681,7 @@
                     );
                   try {
                     e.currentTime = this._startTime;
-                  } catch (t) {}
+                  } catch (t) { }
                   createjs.HTMLAudioTagPool.set(this.src, e),
                     (this._playbackResource = null);
                 }
@@ -25167,21 +25717,21 @@
                     0.001 * (this._startTime + this._position)),
                   this._audioSpriteStopTime
                     ? this._playbackResource.addEventListener(
-                        createjs.HTMLAudioPlugin._TIME_UPDATE,
-                        this._audioSpriteEndHandler,
-                        !1
-                      )
+                      createjs.HTMLAudioPlugin._TIME_UPDATE,
+                      this._audioSpriteEndHandler,
+                      !1
+                    )
                     : (this._playbackResource.addEventListener(
-                        createjs.HTMLAudioPlugin._AUDIO_ENDED,
-                        this._endedHandler,
+                      createjs.HTMLAudioPlugin._AUDIO_ENDED,
+                      this._endedHandler,
+                      !1
+                    ),
+                      0 != this._loop &&
+                      (this._playbackResource.addEventListener(
+                        createjs.HTMLAudioPlugin._AUDIO_SEEKED,
+                        this._loopHandler,
                         !1
                       ),
-                      0 != this._loop &&
-                        (this._playbackResource.addEventListener(
-                          createjs.HTMLAudioPlugin._AUDIO_SEEKED,
-                          this._loopHandler,
-                          !1
-                        ),
                         (this._playbackResource.loop = !0))),
                   this._playbackResource.play();
               }),
@@ -25244,43 +25794,43 @@
                     this._handleSetPositionSeek,
                     !1
                   ),
-                  this._playbackResource.addEventListener(
-                    createjs.HTMLAudioPlugin._AUDIO_SEEKED,
-                    this._loopHandler,
-                    !1
-                  ));
+                    this._playbackResource.addEventListener(
+                      createjs.HTMLAudioPlugin._AUDIO_SEEKED,
+                      this._loopHandler,
+                      !1
+                    ));
               }),
               (t._handleAudioSpriteLoop = function () {
                 this._playbackResource.currentTime <=
                   this._audioSpriteStopTime ||
                   (this._playbackResource.pause(),
-                  0 == this._loop
-                    ? this._handleSoundComplete(null)
-                    : ((this._position = 0),
-                      this._loop--,
-                      (this._playbackResource.currentTime =
-                        0.001 * this._startTime),
-                      this._paused || this._playbackResource.play(),
-                      this._sendEvent("loop")));
+                    0 == this._loop
+                      ? this._handleSoundComplete(null)
+                      : ((this._position = 0),
+                        this._loop--,
+                        (this._playbackResource.currentTime =
+                          0.001 * this._startTime),
+                        this._paused || this._playbackResource.play(),
+                        this._sendEvent("loop")));
               }),
               (t._handleLoop = function () {
                 0 == this._loop &&
                   ((this._playbackResource.loop = !1),
-                  this._playbackResource.removeEventListener(
-                    createjs.HTMLAudioPlugin._AUDIO_SEEKED,
-                    this._loopHandler,
-                    !1
-                  ));
+                    this._playbackResource.removeEventListener(
+                      createjs.HTMLAudioPlugin._AUDIO_SEEKED,
+                      this._loopHandler,
+                      !1
+                    ));
               }),
               (t._updateStartTime = function () {
                 (this._audioSpriteStopTime =
                   0.001 * (this._startTime + this._duration)),
                   this.playState == createjs.Sound.PLAY_SUCCEEDED &&
-                    (this._playbackResource.removeEventListener(
-                      createjs.HTMLAudioPlugin._AUDIO_ENDED,
-                      this._endedHandler,
-                      !1
-                    ),
+                  (this._playbackResource.removeEventListener(
+                    createjs.HTMLAudioPlugin._AUDIO_ENDED,
+                    this._endedHandler,
+                    !1
+                  ),
                     this._playbackResource.addEventListener(
                       createjs.HTMLAudioPlugin._TIME_UPDATE,
                       this._audioSpriteEndHandler,
@@ -25291,11 +25841,11 @@
                 (this._audioSpriteStopTime =
                   0.001 * (this._startTime + this._duration)),
                   this.playState == createjs.Sound.PLAY_SUCCEEDED &&
-                    (this._playbackResource.removeEventListener(
-                      createjs.HTMLAudioPlugin._AUDIO_ENDED,
-                      this._endedHandler,
-                      !1
-                    ),
+                  (this._playbackResource.removeEventListener(
+                    createjs.HTMLAudioPlugin._AUDIO_ENDED,
+                    this._endedHandler,
+                    !1
+                  ),
                     this._playbackResource.addEventListener(
                       createjs.HTMLAudioPlugin._TIME_UPDATE,
                       this._audioSpriteEndHandler,
@@ -25336,9 +25886,9 @@
                   n._capabilities = { panning: !1, volume: !0, tracks: -1 };
                   for (
                     var t = createjs.Sound.SUPPORTED_EXTENSIONS,
-                      r = createjs.Sound.EXTENSION_MAP,
-                      o = 0,
-                      i = t.length;
+                    r = createjs.Sound.EXTENSION_MAP,
+                    o = 0,
+                    i = t.length;
                     i > o;
                     o++
                   ) {
@@ -25382,14 +25932,14 @@
         !(function (e, n) {
           "object" == typeof t && "object" == typeof t.exports
             ? (t.exports = e.document
-                ? n(e, !0)
-                : function (e) {
-                    if (!e.document)
-                      throw new Error(
-                        "jQuery requires a window with a document"
-                      );
-                    return n(e);
-                  })
+              ? n(e, !0)
+              : function (e) {
+                if (!e.document)
+                  throw new Error(
+                    "jQuery requires a window with a document"
+                  );
+                return n(e);
+              })
             : n(e);
         })("undefined" != typeof window ? window : this, function (e, t) {
           function n(e) {
@@ -25398,8 +25948,8 @@
             return "function" === n || Z.isWindow(e)
               ? !1
               : 1 === e.nodeType && t
-              ? !0
-              : "array" === n ||
+                ? !0
+                : "array" === n ||
                 0 === t ||
                 ("number" == typeof t && t > 0 && t - 1 in e);
           }
@@ -25421,7 +25971,7 @@
             });
           }
           function o(e, t) {
-            for (; (e = e[t]) && 1 !== e.nodeType; );
+            for (; (e = e[t]) && 1 !== e.nodeType;);
             return e;
           }
           function i(e) {
@@ -25451,23 +26001,23 @@
             if (void 0 === n && 1 === e.nodeType)
               if (
                 ((r = "data-" + t.replace(Et, "-$1").toLowerCase()),
-                (n = e.getAttribute(r)),
-                "string" == typeof n)
+                  (n = e.getAttribute(r)),
+                  "string" == typeof n)
               ) {
                 try {
                   n =
                     "true" === n
                       ? !0
                       : "false" === n
-                      ? !1
-                      : "null" === n
-                      ? null
-                      : +n + "" === n
-                      ? +n
-                      : _t.test(n)
-                      ? Z.parseJSON(n)
-                      : n;
-                } catch (o) {}
+                        ? !1
+                        : "null" === n
+                          ? null
+                          : +n + "" === n
+                            ? +n
+                            : _t.test(n)
+                              ? Z.parseJSON(n)
+                              : n;
+                } catch (o) { }
                 yt.set(e, t, n);
               } else n = void 0;
             return n;
@@ -25481,13 +26031,13 @@
           function d() {
             try {
               return Q.activeElement;
-            } catch (e) {}
+            } catch (e) { }
           }
           function p(e, t) {
             return Z.nodeName(e, "table") &&
               Z.nodeName(11 !== t.nodeType ? t : t.firstChild, "tr")
               ? e.getElementsByTagName("tbody")[0] ||
-                  e.appendChild(e.ownerDocument.createElement("tbody"))
+              e.appendChild(e.ownerDocument.createElement("tbody"))
               : e;
           }
           function h(e) {
@@ -25523,8 +26073,8 @@
             var n = e.getElementsByTagName
               ? e.getElementsByTagName(t || "*")
               : e.querySelectorAll
-              ? e.querySelectorAll(t || "*")
-              : [];
+                ? e.querySelectorAll(t || "*")
+                : [];
             return void 0 === t || (t && Z.nodeName(e, t))
               ? Z.merge([e], n)
               : n;
@@ -25534,14 +26084,14 @@
             "input" === n && Ct.test(e.type)
               ? (t.checked = e.checked)
               : ("input" === n || "textarea" === n) &&
-                (t.defaultValue = e.defaultValue);
+              (t.defaultValue = e.defaultValue);
           }
           function _(t, n) {
             var r,
               o = Z(n.createElement(t)).appendTo(n.body),
               i =
                 e.getDefaultComputedStyle &&
-                (r = e.getDefaultComputedStyle(o[0]))
+                  (r = e.getDefaultComputedStyle(o[0]))
                   ? r.display
                   : Z.css(o[0], "display");
             return o.detach(), i;
@@ -25551,11 +26101,11 @@
               n = Vt[e];
             return (
               n ||
-                ((n = _(e, t)),
+              ((n = _(e, t)),
                 ("none" !== n && n) ||
-                  ((Bt = (
-                    Bt || Z("<iframe frameborder='0' width='0' height='0'/>")
-                  ).appendTo(t.documentElement)),
+                ((Bt = (
+                  Bt || Z("<iframe frameborder='0' width='0' height='0'/>")
+                ).appendTo(t.documentElement)),
                   (t = Bt[0].contentDocument),
                   t.write(),
                   t.close(),
@@ -25575,12 +26125,12 @@
               (n = n || qt(e)),
               n && (a = n.getPropertyValue(t) || n[t]),
               n &&
-                ("" !== a ||
-                  Z.contains(e.ownerDocument, e) ||
-                  (a = Z.style(e, t)),
+              ("" !== a ||
+                Z.contains(e.ownerDocument, e) ||
+                (a = Z.style(e, t)),
                 Ht.test(a) &&
-                  Ft.test(t) &&
-                  ((r = s.width),
+                Ft.test(t) &&
+                ((r = s.width),
                   (o = s.minWidth),
                   (i = s.maxWidth),
                   (s.minWidth = s.maxWidth = s.width = a),
@@ -25617,20 +26167,20 @@
           function w(e, t, n, r, o) {
             for (
               var i =
-                  n === (r ? "border" : "content") ? 4 : "width" === t ? 1 : 0,
-                a = 0;
+                n === (r ? "border" : "content") ? 4 : "width" === t ? 1 : 0,
+              a = 0;
               4 > i;
               i += 2
             )
               "margin" === n && (a += Z.css(e, n + Nt[i], !0, o)),
                 r
                   ? ("content" === n &&
-                      (a -= Z.css(e, "padding" + Nt[i], !0, o)),
+                    (a -= Z.css(e, "padding" + Nt[i], !0, o)),
                     "margin" !== n &&
-                      (a -= Z.css(e, "border" + Nt[i] + "Width", !0, o)))
+                    (a -= Z.css(e, "border" + Nt[i] + "Width", !0, o)))
                   : ((a += Z.css(e, "padding" + Nt[i], !0, o)),
                     "padding" !== n &&
-                      (a += Z.css(e, "border" + Nt[i] + "Width", !0, o)));
+                    (a += Z.css(e, "border" + Nt[i] + "Width", !0, o)));
             return a;
           }
           function x(e, t, n) {
@@ -25641,8 +26191,8 @@
             if (0 >= o || null == o) {
               if (
                 ((o = b(e, t, i)),
-                (0 > o || null == o) && (o = e.style[t]),
-                Ht.test(o))
+                  (0 > o || null == o) && (o = e.style[t]),
+                  Ht.test(o))
               )
                 return o;
               (r = a && (K.boxSizingReliable() || o === e.style[t])),
@@ -25654,23 +26204,23 @@
             for (var n, r, o, i = [], a = 0, s = e.length; s > a; a++)
               (r = e[a]),
                 r.style &&
-                  ((i[a] = gt.get(r, "olddisplay")),
+                ((i[a] = gt.get(r, "olddisplay")),
                   (n = r.style.display),
                   t
                     ? (i[a] || "none" !== n || (r.style.display = ""),
                       "" === r.style.display &&
-                        Tt(r) &&
-                        (i[a] = gt.access(r, "olddisplay", E(r.nodeName))))
+                      Tt(r) &&
+                      (i[a] = gt.access(r, "olddisplay", E(r.nodeName))))
                     : ((o = Tt(r)),
                       ("none" === n && o) ||
-                        gt.set(r, "olddisplay", o ? n : Z.css(r, "display"))));
+                      gt.set(r, "olddisplay", o ? n : Z.css(r, "display"))));
             for (a = 0; s > a; a++)
               (r = e[a]),
                 r.style &&
-                  ((t &&
-                    "none" !== r.style.display &&
-                    "" !== r.style.display) ||
-                    (r.style.display = t ? i[a] || "" : "none"));
+                ((t &&
+                  "none" !== r.style.display &&
+                  "" !== r.style.display) ||
+                  (r.style.display = t ? i[a] || "" : "none"));
             return e;
           }
           function D(e, t, n, r, o) {
@@ -25716,29 +26266,29 @@
               m = gt.get(e, "fxshow");
             n.queue ||
               ((s = Z._queueHooks(e, "fx")),
-              null == s.unqueued &&
+                null == s.unqueued &&
                 ((s.unqueued = 0),
-                (l = s.empty.fire),
-                (s.empty.fire = function () {
-                  s.unqueued || l();
-                })),
-              s.unqueued++,
-              d.always(function () {
+                  (l = s.empty.fire),
+                  (s.empty.fire = function () {
+                    s.unqueued || l();
+                  })),
+                s.unqueued++,
                 d.always(function () {
-                  s.unqueued--, Z.queue(e, "fx").length || s.empty.fire();
-                });
-              })),
+                  d.always(function () {
+                    s.unqueued--, Z.queue(e, "fx").length || s.empty.fire();
+                  });
+                })),
               1 === e.nodeType &&
-                ("height" in t || "width" in t) &&
-                ((n.overflow = [h.overflow, h.overflowX, h.overflowY]),
+              ("height" in t || "width" in t) &&
+              ((n.overflow = [h.overflow, h.overflowX, h.overflowY]),
                 (c = Z.css(e, "display")),
                 (u =
                   "none" === c ? gt.get(e, "olddisplay") || E(e.nodeName) : c),
                 "inline" === u &&
-                  "none" === Z.css(e, "float") &&
-                  (h.display = "inline-block")),
+                "none" === Z.css(e, "float") &&
+                (h.display = "inline-block")),
               n.overflow &&
-                ((h.overflow = "hidden"),
+              ((h.overflow = "hidden"),
                 d.always(function () {
                   (h.overflow = n.overflow[0]),
                     (h.overflowX = n.overflow[1]),
@@ -25748,8 +26298,8 @@
               if (((o = t[r]), Jt.exec(o))) {
                 if (
                   (delete t[r],
-                  (i = i || "toggle" === o),
-                  o === (f ? "hide" : "show"))
+                    (i = i || "toggle" === o),
+                    o === (f ? "hide" : "show"))
                 ) {
                   if ("show" !== o || !m || void 0 === m[r]) continue;
                   f = !0;
@@ -25767,8 +26317,8 @@
                 f
                   ? Z(e).show()
                   : d.done(function () {
-                      Z(e).hide();
-                    }),
+                    Z(e).hide();
+                  }),
                 d.done(function () {
                   var t;
                   gt.remove(e, "fxshow");
@@ -25777,9 +26327,9 @@
               for (r in p)
                 (a = O(f ? m[r] : 0, r, d)),
                   r in m ||
-                    ((m[r] = a.start),
+                  ((m[r] = a.start),
                     f &&
-                      ((a.end = a.start),
+                    ((a.end = a.start),
                       (a.start = "width" === r || "height" === r ? 1 : 0)));
             }
           }
@@ -25788,12 +26338,12 @@
             for (n in e)
               if (
                 ((r = Z.camelCase(n)),
-                (o = t[r]),
-                (i = e[n]),
-                Z.isArray(i) && ((o = i[1]), (i = e[n] = i[0])),
-                n !== r && ((e[r] = i), delete e[n]),
-                (a = Z.cssHooks[r]),
-                a && "expand" in a)
+                  (o = t[r]),
+                  (i = e[n]),
+                  Z.isArray(i) && ((o = i[1]), (i = e[n] = i[0])),
+                  n !== r && ((e[r] = i), delete e[n]),
+                  (a = Z.cssHooks[r]),
+                  a && "expand" in a)
               ) {
                 (i = a.expand(i)), delete e[r];
                 for (n in i) n in e || ((e[n] = i[n]), (t[n] = o));
@@ -25811,11 +26361,11 @@
                 if (o) return !1;
                 for (
                   var t = Kt || R(),
-                    n = Math.max(0, c.startTime + c.duration - t),
-                    r = n / c.duration || 0,
-                    i = 1 - r,
-                    a = 0,
-                    l = c.tweens.length;
+                  n = Math.max(0, c.startTime + c.duration - t),
+                  r = n / c.duration || 0,
+                  i = 1 - r,
+                  a = 0,
+                  l = c.tweens.length;
                   l > a;
                   a++
                 )
@@ -25877,7 +26427,7 @@
                 o = 0,
                 i = t.toLowerCase().match(ht) || [];
               if (Z.isFunction(n))
-                for (; (r = i[o++]); )
+                for (; (r = i[o++]);)
                   "+" === r[0]
                     ? ((r = r.slice(1) || "*"), (e[r] = e[r] || []).unshift(n))
                     : (e[r] = e[r] || []).push(n);
@@ -25919,7 +26469,7 @@
             )
               l.shift(),
                 void 0 === r &&
-                  (r = e.mimeType || t.getResponseHeader("Content-Type"));
+                (r = e.mimeType || t.getResponseHeader("Content-Type"));
             if (r)
               for (o in s)
                 if (s[o] && s[o].test(r)) {
@@ -25949,12 +26499,12 @@
               u = e.dataTypes.slice();
             if (u[1])
               for (a in e.converters) c[a.toLowerCase()] = e.converters[a];
-            for (i = u.shift(); i; )
+            for (i = u.shift(); i;)
               if (
                 (e.responseFields[i] && (n[e.responseFields[i]] = t),
-                !l && r && e.dataFilter && (t = e.dataFilter(t, e.dataType)),
-                (l = i),
-                (i = u.shift()))
+                  !l && r && e.dataFilter && (t = e.dataFilter(t, e.dataType)),
+                  (l = i),
+                  (i = u.shift()))
               )
                 if ("*" === i) i = l;
                 else if ("*" !== l && l !== i) {
@@ -25962,7 +26512,7 @@
                     for (o in c)
                       if (
                         ((s = o.split(" ")),
-                        s[1] === i && (a = c[l + " " + s[0]] || c["* " + s[0]]))
+                          s[1] === i && (a = c[l + " " + s[0]] || c["* " + s[0]]))
                       ) {
                         a === !0
                           ? (a = c[o])
@@ -26018,56 +26568,56 @@
               return t.toUpperCase();
             };
           (Z.fn = Z.prototype =
-            {
-              jquery: J,
-              constructor: Z,
-              selector: "",
-              length: 0,
-              toArray: function () {
-                return q.call(this);
-              },
-              get: function (e) {
-                return null != e
-                  ? 0 > e
-                    ? this[e + this.length]
-                    : this[e]
-                  : q.call(this);
-              },
-              pushStack: function (e) {
-                var t = Z.merge(this.constructor(), e);
-                return (t.prevObject = this), (t.context = this.context), t;
-              },
-              each: function (e, t) {
-                return Z.each(this, e, t);
-              },
-              map: function (e) {
-                return this.pushStack(
-                  Z.map(this, function (t, n) {
-                    return e.call(t, n, t);
-                  })
-                );
-              },
-              slice: function () {
-                return this.pushStack(q.apply(this, arguments));
-              },
-              first: function () {
-                return this.eq(0);
-              },
-              last: function () {
-                return this.eq(-1);
-              },
-              eq: function (e) {
-                var t = this.length,
-                  n = +e + (0 > e ? t : 0);
-                return this.pushStack(n >= 0 && t > n ? [this[n]] : []);
-              },
-              end: function () {
-                return this.prevObject || this.constructor(null);
-              },
-              push: G,
-              sort: H.sort,
-              splice: H.splice,
-            }),
+          {
+            jquery: J,
+            constructor: Z,
+            selector: "",
+            length: 0,
+            toArray: function () {
+              return q.call(this);
+            },
+            get: function (e) {
+              return null != e
+                ? 0 > e
+                  ? this[e + this.length]
+                  : this[e]
+                : q.call(this);
+            },
+            pushStack: function (e) {
+              var t = Z.merge(this.constructor(), e);
+              return (t.prevObject = this), (t.context = this.context), t;
+            },
+            each: function (e, t) {
+              return Z.each(this, e, t);
+            },
+            map: function (e) {
+              return this.pushStack(
+                Z.map(this, function (t, n) {
+                  return e.call(t, n, t);
+                })
+              );
+            },
+            slice: function () {
+              return this.pushStack(q.apply(this, arguments));
+            },
+            first: function () {
+              return this.eq(0);
+            },
+            last: function () {
+              return this.eq(-1);
+            },
+            eq: function (e) {
+              var t = this.length,
+                n = +e + (0 > e ? t : 0);
+              return this.pushStack(n >= 0 && t > n ? [this[n]] : []);
+            },
+            end: function () {
+              return this.prevObject || this.constructor(null);
+            },
+            push: G,
+            sort: H.sort,
+            splice: H.splice,
+          }),
             (Z.extend = Z.fn.extend =
               function () {
                 var e,
@@ -26082,9 +26632,9 @@
                   c = !1;
                 for (
                   "boolean" == typeof a &&
-                    ((c = a), (a = arguments[s] || {}), s++),
-                    "object" == typeof a || Z.isFunction(a) || (a = {}),
-                    s === l && ((a = this), s--);
+                  ((c = a), (a = arguments[s] || {}), s++),
+                  "object" == typeof a || Z.isFunction(a) || (a = {}),
+                  s === l && ((a = this), s--);
                   l > s;
                   s++
                 )
@@ -26093,12 +26643,12 @@
                       (n = a[t]),
                         (r = e[t]),
                         a !== r &&
-                          (c && r && (Z.isPlainObject(r) || (o = Z.isArray(r)))
-                            ? (o
-                                ? ((o = !1), (i = n && Z.isArray(n) ? n : []))
-                                : (i = n && Z.isPlainObject(n) ? n : {}),
-                              (a[t] = Z.extend(c, i, r)))
-                            : void 0 !== r && (a[t] = r));
+                        (c && r && (Z.isPlainObject(r) || (o = Z.isArray(r)))
+                          ? (o
+                            ? ((o = !1), (i = n && Z.isArray(n) ? n : []))
+                            : (i = n && Z.isPlainObject(n) ? n : {}),
+                            (a[t] = Z.extend(c, i, r)))
+                          : void 0 !== r && (a[t] = r));
                 return a;
               }),
             Z.extend({
@@ -26107,7 +26657,7 @@
               error: function (e) {
                 throw new Error(e);
               },
-              noop: function () {},
+              noop: function () { },
               isFunction: function (e) {
                 return "function" === Z.type(e);
               },
@@ -26123,8 +26673,8 @@
                   ? !1
                   : e.constructor &&
                     !Y.call(e.constructor.prototype, "isPrototypeOf")
-                  ? !1
-                  : !0;
+                    ? !1
+                    : !0;
               },
               isEmptyObject: function (e) {
                 var t;
@@ -26135,19 +26685,19 @@
                 return null == e
                   ? e + ""
                   : "object" == typeof e || "function" == typeof e
-                  ? z[X.call(e)] || "object"
-                  : typeof e;
+                    ? z[X.call(e)] || "object"
+                    : typeof e;
               },
               globalEval: function (e) {
                 var t,
                   n = eval;
                 (e = Z.trim(e)),
                   e &&
-                    (1 === e.indexOf("use strict")
-                      ? ((t = Q.createElement("script")),
-                        (t.text = e),
-                        Q.head.appendChild(t).parentNode.removeChild(t))
-                      : n(e));
+                  (1 === e.indexOf("use strict")
+                    ? ((t = Q.createElement("script")),
+                      (t.text = e),
+                      Q.head.appendChild(t).parentNode.removeChild(t))
+                    : n(e));
               },
               camelCase: function (e) {
                 return e.replace(tt, "ms-").replace(nt, rt);
@@ -26181,9 +26731,9 @@
                 var r = t || [];
                 return (
                   null != e &&
-                    (n(Object(e))
-                      ? Z.merge(r, "string" == typeof e ? [e] : e)
-                      : G.call(r, e)),
+                  (n(Object(e))
+                    ? Z.merge(r, "string" == typeof e ? [e] : e)
+                    : G.call(r, e)),
                   r
                 );
               },
@@ -26243,10 +26793,10 @@
               var o, i, a, s, l, c, d, h, f, m;
               if (
                 ((t ? t.ownerDocument || t : V) !== P && O(t),
-                (t = t || P),
-                (n = n || []),
-                (s = t.nodeType),
-                "string" != typeof e || !e || (1 !== s && 9 !== s && 11 !== s))
+                  (t = t || P),
+                  (n = n || []),
+                  (s = t.nodeType),
+                  "string" != typeof e || !e || (1 !== s && 9 !== s && 11 !== s))
               )
                 return n;
               if (!r && A) {
@@ -26271,17 +26821,17 @@
                 if (b.qsa && (!L || !L.test(e))) {
                   if (
                     ((h = d = B),
-                    (f = t),
-                    (m = 1 !== s && e),
-                    1 === s && "object" !== t.nodeName.toLowerCase())
+                      (f = t),
+                      (m = 1 !== s && e),
+                      1 === s && "object" !== t.nodeName.toLowerCase())
                   ) {
                     for (
                       c = w(e),
-                        (d = t.getAttribute("id"))
-                          ? (h = d.replace(Et, "\\$&"))
-                          : t.setAttribute("id", h),
-                        h = "[id='" + h + "'] ",
-                        l = c.length;
+                      (d = t.getAttribute("id"))
+                        ? (h = d.replace(Et, "\\$&"))
+                        : t.setAttribute("id", h),
+                      h = "[id='" + h + "'] ",
+                      l = c.length;
                       l--;
 
                     )
@@ -26324,7 +26874,7 @@
               }
             }
             function i(e, t) {
-              for (var n = e.split("|"), r = e.length; r--; )
+              for (var n = e.split("|"), r = e.length; r--;)
                 N.attrHandle[n[r]] = t;
             }
             function a(e, t) {
@@ -26335,7 +26885,7 @@
                   1 === t.nodeType &&
                   (~t.sourceIndex || z) - (~e.sourceIndex || z);
               if (r) return r;
-              if (n) for (; (n = n.nextSibling); ) if (n === t) return -1;
+              if (n) for (; (n = n.nextSibling);) if (n === t) return -1;
               return e ? 1 : -1;
             }
             function s(e) {
@@ -26355,7 +26905,7 @@
                 return (
                   (t = +t),
                   r(function (n, r) {
-                    for (var o, i = e([], n.length, t), a = i.length; a--; )
+                    for (var o, i = e([], n.length, t), a = i.length; a--;)
                       n[(o = i[a])] && (n[o] = !(r[o] = n[o]));
                   })
                 );
@@ -26364,7 +26914,7 @@
             function u(e) {
               return e && "undefined" != typeof e.getElementsByTagName && e;
             }
-            function d() {}
+            function d() { }
             function p(e) {
               for (var t = 0, n = e.length, r = ""; n > t; t++) r += e[t].value;
               return r;
@@ -26375,34 +26925,34 @@
                 i = H++;
               return t.first
                 ? function (t, n, i) {
-                    for (; (t = t[r]); )
-                      if (1 === t.nodeType || o) return e(t, n, i);
-                  }
+                  for (; (t = t[r]);)
+                    if (1 === t.nodeType || o) return e(t, n, i);
+                }
                 : function (t, n, a) {
-                    var s,
-                      l,
-                      c = [F, i];
-                    if (a) {
-                      for (; (t = t[r]); )
-                        if ((1 === t.nodeType || o) && e(t, n, a)) return !0;
-                    } else
-                      for (; (t = t[r]); )
-                        if (1 === t.nodeType || o) {
-                          if (
-                            ((l = t[B] || (t[B] = {})),
+                  var s,
+                    l,
+                    c = [F, i];
+                  if (a) {
+                    for (; (t = t[r]);)
+                      if ((1 === t.nodeType || o) && e(t, n, a)) return !0;
+                  } else
+                    for (; (t = t[r]);)
+                      if (1 === t.nodeType || o) {
+                        if (
+                          ((l = t[B] || (t[B] = {})),
                             (s = l[r]) && s[0] === F && s[1] === i)
-                          )
-                            return (c[2] = s[2]);
-                          if (((l[r] = c), (c[2] = e(t, n, a)))) return !0;
-                        }
-                  };
+                        )
+                          return (c[2] = s[2]);
+                        if (((l[r] = c), (c[2] = e(t, n, a)))) return !0;
+                      }
+                };
             }
             function f(e) {
               return e.length > 1
                 ? function (t, n, r) {
-                    for (var o = e.length; o--; ) if (!e[o](t, n, r)) return !1;
-                    return !0;
-                  }
+                  for (var o = e.length; o--;) if (!e[o](t, n, r)) return !1;
+                  return !0;
+                }
                 : e[0];
             }
             function m(e, n, r) {
@@ -26433,16 +26983,16 @@
                     y = !e || (!r && t) ? g : v(g, p, e, s, l),
                     _ = n ? (i || (r ? e : f || o) ? [] : a) : y;
                   if ((n && n(y, _, s, l), o))
-                    for (c = v(_, h), o(c, [], s, l), u = c.length; u--; )
+                    for (c = v(_, h), o(c, [], s, l), u = c.length; u--;)
                       (d = c[u]) && (_[h[u]] = !(y[h[u]] = d));
                   if (r) {
                     if (i || e) {
                       if (i) {
-                        for (c = [], u = _.length; u--; )
+                        for (c = [], u = _.length; u--;)
                           (d = _[u]) && c.push((y[u] = d));
                         i(null, (_ = []), c, l);
                       }
-                      for (u = _.length; u--; )
+                      for (u = _.length; u--;)
                         (d = _[u]) &&
                           (c = i ? et(r, d) : p[u]) > -1 &&
                           (r[c] = !(a[c] = d));
@@ -26454,34 +27004,34 @@
             function y(e) {
               for (
                 var t,
-                  n,
-                  r,
-                  o = e.length,
-                  i = N.relative[e[0].type],
-                  a = i || N.relative[" "],
-                  s = i ? 1 : 0,
-                  l = h(
-                    function (e) {
-                      return e === t;
-                    },
-                    a,
-                    !0
-                  ),
-                  c = h(
-                    function (e) {
-                      return et(t, e) > -1;
-                    },
-                    a,
-                    !0
-                  ),
-                  u = [
-                    function (e, n, r) {
-                      var o =
-                        (!i && (r || n !== D)) ||
-                        ((t = n).nodeType ? l(e, n, r) : c(e, n, r));
-                      return (t = null), o;
-                    },
-                  ];
+                n,
+                r,
+                o = e.length,
+                i = N.relative[e[0].type],
+                a = i || N.relative[" "],
+                s = i ? 1 : 0,
+                l = h(
+                  function (e) {
+                    return e === t;
+                  },
+                  a,
+                  !0
+                ),
+                c = h(
+                  function (e) {
+                    return et(t, e) > -1;
+                  },
+                  a,
+                  !0
+                ),
+                u = [
+                  function (e, n, r) {
+                    var o =
+                      (!i && (r || n !== D)) ||
+                      ((t = n).nodeType ? l(e, n, r) : c(e, n, r));
+                    return (t = null), o;
+                  },
+                ];
                 o > s;
                 s++
               )
@@ -26494,11 +27044,11 @@
                     return g(
                       s > 1 && f(u),
                       s > 1 &&
-                        p(
-                          e
-                            .slice(0, s - 1)
-                            .concat({ value: " " === e[s - 2].type ? "*" : "" })
-                        ).replace(lt, "$1"),
+                      p(
+                        e
+                          .slice(0, s - 1)
+                          .concat({ value: " " === e[s - 2].type ? "*" : "" })
+                      ).replace(lt, "$1"),
                       n,
                       r > s && y(e.slice(s, r)),
                       o > r && y((e = e.slice(r))),
@@ -26530,7 +27080,7 @@
                     f++
                   ) {
                     if (i && u) {
-                      for (d = 0; (p = e[d++]); )
+                      for (d = 0; (p = e[d++]);)
                         if (p(u, a, s)) {
                           l.push(u);
                           break;
@@ -26540,18 +27090,18 @@
                     o && ((u = !p && u) && h--, r && m.push(u));
                   }
                   if (((h += f), o && f !== h)) {
-                    for (d = 0; (p = n[d++]); ) p(m, g, a, s);
+                    for (d = 0; (p = n[d++]);) p(m, g, a, s);
                     if (r) {
                       if (h > 0)
-                        for (; f--; ) m[f] || g[f] || (g[f] = K.call(l));
+                        for (; f--;) m[f] || g[f] || (g[f] = K.call(l));
                       g = v(g);
                     }
                     J.apply(l, g),
                       c &&
-                        !r &&
-                        g.length > 0 &&
-                        h + n.length > 1 &&
-                        t.uniqueSort(l);
+                      !r &&
+                      g.length > 0 &&
+                      h + n.length > 1 &&
+                      t.uniqueSort(l);
                   }
                   return c && ((F = E), (D = y)), m;
                 };
@@ -26641,25 +27191,25 @@
                 PSEUDO: new RegExp("^" + at),
                 CHILD: new RegExp(
                   "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" +
-                    nt +
-                    "*(even|odd|(([+-]|)(\\d*)n|)" +
-                    nt +
-                    "*(?:([+-]|)" +
-                    nt +
-                    "*(\\d+)|))" +
-                    nt +
-                    "*\\)|)",
+                  nt +
+                  "*(even|odd|(([+-]|)(\\d*)n|)" +
+                  nt +
+                  "*(?:([+-]|)" +
+                  nt +
+                  "*(\\d+)|))" +
+                  nt +
+                  "*\\)|)",
                   "i"
                 ),
                 bool: new RegExp("^(?:" + tt + ")$", "i"),
                 needsContext: new RegExp(
                   "^" +
-                    nt +
-                    "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
-                    nt +
-                    "*((?:-\\d)?\\d*)" +
-                    nt +
-                    "*\\)|)(?=[^-]|$)",
+                  nt +
+                  "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
+                  nt +
+                  "*((?:-\\d)?\\d*)" +
+                  nt +
+                  "*\\)|)(?=[^-]|$)",
                   "i"
                 ),
               },
@@ -26678,8 +27228,8 @@
                 return r !== r || n
                   ? t
                   : 0 > r
-                  ? String.fromCharCode(r + 65536)
-                  : String.fromCharCode((r >> 10) | 55296, (1023 & r) | 56320);
+                    ? String.fromCharCode(r + 65536)
+                    : String.fromCharCode((r >> 10) | 55296, (1023 & r) | 56320);
               },
               Tt = function () {
                 O();
@@ -26691,12 +27241,12 @@
               J = {
                 apply: Y.length
                   ? function (e, t) {
-                      Q.apply(e, Z.call(t));
-                    }
+                    Q.apply(e, Z.call(t));
+                  }
                   : function (e, t) {
-                      for (var n = e.length, r = 0; (e[n++] = t[r++]); );
-                      e.length = n - 1;
-                    },
+                    for (var n = e.length, r = 0; (e[n++] = t[r++]););
+                    e.length = n - 1;
+                  },
               };
             }
             (b = t.support = {}),
@@ -26715,10 +27265,10 @@
                       (M = r.documentElement),
                       (n = r.defaultView),
                       n &&
-                        n !== n.top &&
-                        (n.addEventListener
-                          ? n.addEventListener("unload", Tt, !1)
-                          : n.attachEvent && n.attachEvent("onunload", Tt)),
+                      n !== n.top &&
+                      (n.addEventListener
+                        ? n.addEventListener("unload", Tt, !1)
+                        : n.attachEvent && n.attachEvent("onunload", Tt)),
                       (A = !C(r)),
                       (b.attributes = o(function (e) {
                         return (
@@ -26742,11 +27292,11 @@
                       })),
                       b.getById
                         ? ((N.find.ID = function (e, t) {
-                            if ("undefined" != typeof t.getElementById && A) {
-                              var n = t.getElementById(e);
-                              return n && n.parentNode ? [n] : [];
-                            }
-                          }),
+                          if ("undefined" != typeof t.getElementById && A) {
+                            var n = t.getElementById(e);
+                            return n && n.parentNode ? [n] : [];
+                          }
+                        }),
                           (N.filter.ID = function (e) {
                             var t = e.replace(bt, Nt);
                             return function (e) {
@@ -26765,24 +27315,24 @@
                           })),
                       (N.find.TAG = b.getElementsByTagName
                         ? function (e, t) {
-                            return "undefined" != typeof t.getElementsByTagName
-                              ? t.getElementsByTagName(e)
-                              : b.qsa
+                          return "undefined" != typeof t.getElementsByTagName
+                            ? t.getElementsByTagName(e)
+                            : b.qsa
                               ? t.querySelectorAll(e)
                               : void 0;
-                          }
+                        }
                         : function (e, t) {
-                            var n,
-                              r = [],
-                              o = 0,
-                              i = t.getElementsByTagName(e);
-                            if ("*" === e) {
-                              for (; (n = i[o++]); )
-                                1 === n.nodeType && r.push(n);
-                              return r;
-                            }
-                            return i;
-                          }),
+                          var n,
+                            r = [],
+                            o = 0,
+                            i = t.getElementsByTagName(e);
+                          if ("*" === e) {
+                            for (; (n = i[o++]);)
+                              1 === n.nodeType && r.push(n);
+                            return r;
+                          }
+                          return i;
+                        }),
                       (N.find.CLASS =
                         b.getElementsByClassName &&
                         function (e, t) {
@@ -26791,32 +27341,32 @@
                       (I = []),
                       (L = []),
                       (b.qsa = gt.test(r.querySelectorAll)) &&
-                        (o(function (e) {
-                          (M.appendChild(e).innerHTML =
-                            "<a id='" +
-                            B +
-                            "'></a><select id='" +
-                            B +
-                            "-\f]' msallowcapture=''><option selected=''></option></select>"),
-                            e.querySelectorAll("[msallowcapture^='']").length &&
-                              L.push("[*^$]=" + nt + "*(?:''|\"\")"),
-                            e.querySelectorAll("[selected]").length ||
-                              L.push("\\[" + nt + "*(?:value|" + tt + ")"),
-                            e.querySelectorAll("[id~=" + B + "-]").length ||
-                              L.push("~="),
-                            e.querySelectorAll(":checked").length ||
-                              L.push(":checked"),
-                            e.querySelectorAll("a#" + B + "+*").length ||
-                              L.push(".#.+[+~]");
-                        }),
+                      (o(function (e) {
+                        (M.appendChild(e).innerHTML =
+                          "<a id='" +
+                          B +
+                          "'></a><select id='" +
+                          B +
+                          "-\f]' msallowcapture=''><option selected=''></option></select>"),
+                          e.querySelectorAll("[msallowcapture^='']").length &&
+                          L.push("[*^$]=" + nt + "*(?:''|\"\")"),
+                          e.querySelectorAll("[selected]").length ||
+                          L.push("\\[" + nt + "*(?:value|" + tt + ")"),
+                          e.querySelectorAll("[id~=" + B + "-]").length ||
+                          L.push("~="),
+                          e.querySelectorAll(":checked").length ||
+                          L.push(":checked"),
+                          e.querySelectorAll("a#" + B + "+*").length ||
+                          L.push(".#.+[+~]");
+                      }),
                         o(function (e) {
                           var t = r.createElement("input");
                           t.setAttribute("type", "hidden"),
                             e.appendChild(t).setAttribute("name", "D"),
                             e.querySelectorAll("[name=d]").length &&
-                              L.push("name" + nt + "*[*^$|!~]?="),
+                            L.push("name" + nt + "*[*^$|!~]?="),
                             e.querySelectorAll(":enabled").length ||
-                              L.push(":enabled", ":disabled"),
+                            L.push(":enabled", ":disabled"),
                             e.querySelectorAll("*,:x"),
                             L.push(",.*:");
                         })),
@@ -26828,98 +27378,98 @@
                           M.oMatchesSelector ||
                           M.msMatchesSelector)
                       )) &&
-                        o(function (e) {
-                          (b.disconnectedMatch = j.call(e, "div")),
-                            j.call(e, "[s!='']:x"),
-                            I.push("!=", at);
-                        }),
+                      o(function (e) {
+                        (b.disconnectedMatch = j.call(e, "div")),
+                          j.call(e, "[s!='']:x"),
+                          I.push("!=", at);
+                      }),
                       (L = L.length && new RegExp(L.join("|"))),
                       (I = I.length && new RegExp(I.join("|"))),
                       (t = gt.test(M.compareDocumentPosition)),
                       (U =
                         t || gt.test(M.contains)
                           ? function (e, t) {
-                              var n = 9 === e.nodeType ? e.documentElement : e,
-                                r = t && t.parentNode;
-                              return (
-                                e === r ||
-                                !(
-                                  !r ||
-                                  1 !== r.nodeType ||
-                                  !(n.contains
-                                    ? n.contains(r)
-                                    : e.compareDocumentPosition &&
-                                      16 & e.compareDocumentPosition(r))
-                                )
-                              );
-                            }
+                            var n = 9 === e.nodeType ? e.documentElement : e,
+                              r = t && t.parentNode;
+                            return (
+                              e === r ||
+                              !(
+                                !r ||
+                                1 !== r.nodeType ||
+                                !(n.contains
+                                  ? n.contains(r)
+                                  : e.compareDocumentPosition &&
+                                  16 & e.compareDocumentPosition(r))
+                              )
+                            );
+                          }
                           : function (e, t) {
-                              if (t)
-                                for (; (t = t.parentNode); )
-                                  if (t === e) return !0;
-                              return !1;
-                            }),
+                            if (t)
+                              for (; (t = t.parentNode);)
+                                if (t === e) return !0;
+                            return !1;
+                          }),
                       (W = t
                         ? function (e, t) {
-                            if (e === t) return (k = !0), 0;
-                            var n =
-                              !e.compareDocumentPosition -
-                              !t.compareDocumentPosition;
-                            return n
-                              ? n
-                              : ((n =
-                                  (e.ownerDocument || e) ===
-                                  (t.ownerDocument || t)
-                                    ? e.compareDocumentPosition(t)
-                                    : 1),
-                                1 & n ||
+                          if (e === t) return (k = !0), 0;
+                          var n =
+                            !e.compareDocumentPosition -
+                            !t.compareDocumentPosition;
+                          return n
+                            ? n
+                            : ((n =
+                              (e.ownerDocument || e) ===
+                                (t.ownerDocument || t)
+                                ? e.compareDocumentPosition(t)
+                                : 1),
+                              1 & n ||
                                 (!b.sortDetached &&
                                   t.compareDocumentPosition(e) === n)
-                                  ? e === r ||
-                                    (e.ownerDocument === V && U(V, e))
-                                    ? -1
-                                    : t === r ||
-                                      (t.ownerDocument === V && U(V, t))
+                                ? e === r ||
+                                  (e.ownerDocument === V && U(V, e))
+                                  ? -1
+                                  : t === r ||
+                                    (t.ownerDocument === V && U(V, t))
                                     ? 1
                                     : R
-                                    ? et(R, e) - et(R, t)
-                                    : 0
-                                  : 4 & n
+                                      ? et(R, e) - et(R, t)
+                                      : 0
+                                : 4 & n
                                   ? -1
                                   : 1);
-                          }
+                        }
                         : function (e, t) {
-                            if (e === t) return (k = !0), 0;
-                            var n,
-                              o = 0,
-                              i = e.parentNode,
-                              s = t.parentNode,
-                              l = [e],
-                              c = [t];
-                            if (!i || !s)
-                              return e === r
-                                ? -1
-                                : t === r
+                          if (e === t) return (k = !0), 0;
+                          var n,
+                            o = 0,
+                            i = e.parentNode,
+                            s = t.parentNode,
+                            l = [e],
+                            c = [t];
+                          if (!i || !s)
+                            return e === r
+                              ? -1
+                              : t === r
                                 ? 1
                                 : i
-                                ? -1
-                                : s
-                                ? 1
-                                : R
-                                ? et(R, e) - et(R, t)
-                                : 0;
-                            if (i === s) return a(e, t);
-                            for (n = e; (n = n.parentNode); ) l.unshift(n);
-                            for (n = t; (n = n.parentNode); ) c.unshift(n);
-                            for (; l[o] === c[o]; ) o++;
-                            return o
-                              ? a(l[o], c[o])
-                              : l[o] === V
+                                  ? -1
+                                  : s
+                                    ? 1
+                                    : R
+                                      ? et(R, e) - et(R, t)
+                                      : 0;
+                          if (i === s) return a(e, t);
+                          for (n = e; (n = n.parentNode);) l.unshift(n);
+                          for (n = t; (n = n.parentNode);) c.unshift(n);
+                          for (; l[o] === c[o];) o++;
+                          return o
+                            ? a(l[o], c[o])
+                            : l[o] === V
                               ? -1
                               : c[o] === V
-                              ? 1
-                              : 0;
-                          }),
+                                ? 1
+                                : 0;
+                        }),
                       r)
                     : P;
                 }),
@@ -26929,13 +27479,13 @@
               (t.matchesSelector = function (e, n) {
                 if (
                   ((e.ownerDocument || e) !== P && O(e),
-                  (n = n.replace(dt, "='$1']")),
-                  !(
-                    !b.matchesSelector ||
-                    !A ||
-                    (I && I.test(n)) ||
-                    (L && L.test(n))
-                  ))
+                    (n = n.replace(dt, "='$1']")),
+                    !(
+                      !b.matchesSelector ||
+                      !A ||
+                      (I && I.test(n)) ||
+                      (L && L.test(n))
+                    ))
                 )
                   try {
                     var r = j.call(e, n);
@@ -26945,7 +27495,7 @@
                       (e.document && 11 !== e.document.nodeType)
                     )
                       return r;
-                  } catch (o) {}
+                  } catch (o) { }
                 return t(n, P, null, [e]).length > 0;
               }),
               (t.contains = function (e, t) {
@@ -26961,10 +27511,10 @@
                 return void 0 !== r
                   ? r
                   : b.attributes || !A
-                  ? e.getAttribute(t)
-                  : (r = e.getAttributeNode(t)) && r.specified
-                  ? r.value
-                  : null;
+                    ? e.getAttribute(t)
+                    : (r = e.getAttributeNode(t)) && r.specified
+                      ? r.value
+                      : null;
               }),
               (t.error = function (e) {
                 throw new Error("Syntax error, unrecognized expression: " + e);
@@ -26976,12 +27526,12 @@
                   o = 0;
                 if (
                   ((k = !b.detectDuplicates),
-                  (R = !b.sortStable && e.slice(0)),
-                  e.sort(W),
-                  k)
+                    (R = !b.sortStable && e.slice(0)),
+                    e.sort(W),
+                    k)
                 ) {
-                  for (; (t = e[o++]); ) t === e[o] && (r = n.push(o));
-                  for (; r--; ) e.splice(n[r], 1);
+                  for (; (t = e[o++]);) t === e[o] && (r = n.push(o));
+                  for (; r--;) e.splice(n[r], 1);
                 }
                 return (R = null), e;
               }),
@@ -26997,363 +27547,363 @@
                         return e.textContent;
                       for (e = e.firstChild; e; e = e.nextSibling) n += T(e);
                     } else if (3 === o || 4 === o) return e.nodeValue;
-                  } else for (; (t = e[r++]); ) n += T(t);
+                  } else for (; (t = e[r++]);) n += T(t);
                   return n;
                 }),
               (N = t.selectors =
-                {
-                  cacheLength: 50,
-                  createPseudo: r,
-                  match: ft,
-                  attrHandle: {},
-                  find: {},
-                  relative: {
-                    ">": { dir: "parentNode", first: !0 },
-                    " ": { dir: "parentNode" },
-                    "+": { dir: "previousSibling", first: !0 },
-                    "~": { dir: "previousSibling" },
+              {
+                cacheLength: 50,
+                createPseudo: r,
+                match: ft,
+                attrHandle: {},
+                find: {},
+                relative: {
+                  ">": { dir: "parentNode", first: !0 },
+                  " ": { dir: "parentNode" },
+                  "+": { dir: "previousSibling", first: !0 },
+                  "~": { dir: "previousSibling" },
+                },
+                preFilter: {
+                  ATTR: function (e) {
+                    return (
+                      (e[1] = e[1].replace(bt, Nt)),
+                      (e[3] = (e[3] || e[4] || e[5] || "").replace(bt, Nt)),
+                      "~=" === e[2] && (e[3] = " " + e[3] + " "),
+                      e.slice(0, 4)
+                    );
                   },
-                  preFilter: {
-                    ATTR: function (e) {
-                      return (
-                        (e[1] = e[1].replace(bt, Nt)),
-                        (e[3] = (e[3] || e[4] || e[5] || "").replace(bt, Nt)),
-                        "~=" === e[2] && (e[3] = " " + e[3] + " "),
-                        e.slice(0, 4)
-                      );
-                    },
-                    CHILD: function (e) {
-                      return (
-                        (e[1] = e[1].toLowerCase()),
-                        "nth" === e[1].slice(0, 3)
-                          ? (e[3] || t.error(e[0]),
-                            (e[4] = +(e[4]
-                              ? e[5] + (e[6] || 1)
-                              : 2 * ("even" === e[3] || "odd" === e[3]))),
-                            (e[5] = +(e[7] + e[8] || "odd" === e[3])))
-                          : e[3] && t.error(e[0]),
-                        e
-                      );
-                    },
-                    PSEUDO: function (e) {
-                      var t,
-                        n = !e[6] && e[2];
-                      return ft.CHILD.test(e[0])
-                        ? null
-                        : (e[3]
-                            ? (e[2] = e[4] || e[5] || "")
-                            : n &&
-                              pt.test(n) &&
-                              (t = w(n, !0)) &&
-                              (t = n.indexOf(")", n.length - t) - n.length) &&
-                              ((e[0] = e[0].slice(0, t)),
-                              (e[2] = n.slice(0, t))),
-                          e.slice(0, 3));
-                    },
+                  CHILD: function (e) {
+                    return (
+                      (e[1] = e[1].toLowerCase()),
+                      "nth" === e[1].slice(0, 3)
+                        ? (e[3] || t.error(e[0]),
+                          (e[4] = +(e[4]
+                            ? e[5] + (e[6] || 1)
+                            : 2 * ("even" === e[3] || "odd" === e[3]))),
+                          (e[5] = +(e[7] + e[8] || "odd" === e[3])))
+                        : e[3] && t.error(e[0]),
+                      e
+                    );
                   },
-                  filter: {
-                    TAG: function (e) {
-                      var t = e.replace(bt, Nt).toLowerCase();
-                      return "*" === e
-                        ? function () {
-                            return !0;
-                          }
-                        : function (e) {
-                            return e.nodeName && e.nodeName.toLowerCase() === t;
-                          };
-                    },
-                    CLASS: function (e) {
-                      var t = q[e + " "];
-                      return (
-                        t ||
-                        ((t = new RegExp(
-                          "(^|" + nt + ")" + e + "(" + nt + "|$)"
-                        )) &&
-                          q(e, function (e) {
-                            return t.test(
-                              ("string" == typeof e.className && e.className) ||
-                                ("undefined" != typeof e.getAttribute &&
-                                  e.getAttribute("class")) ||
-                                ""
-                            );
-                          }))
-                      );
-                    },
-                    ATTR: function (e, n, r) {
-                      return function (o) {
-                        var i = t.attr(o, e);
-                        return null == i
-                          ? "!=" === n
-                          : n
+                  PSEUDO: function (e) {
+                    var t,
+                      n = !e[6] && e[2];
+                    return ft.CHILD.test(e[0])
+                      ? null
+                      : (e[3]
+                        ? (e[2] = e[4] || e[5] || "")
+                        : n &&
+                        pt.test(n) &&
+                        (t = w(n, !0)) &&
+                        (t = n.indexOf(")", n.length - t) - n.length) &&
+                        ((e[0] = e[0].slice(0, t)),
+                          (e[2] = n.slice(0, t))),
+                        e.slice(0, 3));
+                  },
+                },
+                filter: {
+                  TAG: function (e) {
+                    var t = e.replace(bt, Nt).toLowerCase();
+                    return "*" === e
+                      ? function () {
+                        return !0;
+                      }
+                      : function (e) {
+                        return e.nodeName && e.nodeName.toLowerCase() === t;
+                      };
+                  },
+                  CLASS: function (e) {
+                    var t = q[e + " "];
+                    return (
+                      t ||
+                      ((t = new RegExp(
+                        "(^|" + nt + ")" + e + "(" + nt + "|$)"
+                      )) &&
+                        q(e, function (e) {
+                          return t.test(
+                            ("string" == typeof e.className && e.className) ||
+                            ("undefined" != typeof e.getAttribute &&
+                              e.getAttribute("class")) ||
+                            ""
+                          );
+                        }))
+                    );
+                  },
+                  ATTR: function (e, n, r) {
+                    return function (o) {
+                      var i = t.attr(o, e);
+                      return null == i
+                        ? "!=" === n
+                        : n
                           ? ((i += ""),
                             "=" === n
                               ? i === r
                               : "!=" === n
-                              ? i !== r
-                              : "^=" === n
-                              ? r && 0 === i.indexOf(r)
-                              : "*=" === n
-                              ? r && i.indexOf(r) > -1
-                              : "$=" === n
-                              ? r && i.slice(-r.length) === r
-                              : "~=" === n
-                              ? (" " + i.replace(st, " ") + " ").indexOf(r) > -1
-                              : "|=" === n
-                              ? i === r || i.slice(0, r.length + 1) === r + "-"
-                              : !1)
+                                ? i !== r
+                                : "^=" === n
+                                  ? r && 0 === i.indexOf(r)
+                                  : "*=" === n
+                                    ? r && i.indexOf(r) > -1
+                                    : "$=" === n
+                                      ? r && i.slice(-r.length) === r
+                                      : "~=" === n
+                                        ? (" " + i.replace(st, " ") + " ").indexOf(r) > -1
+                                        : "|=" === n
+                                          ? i === r || i.slice(0, r.length + 1) === r + "-"
+                                          : !1)
                           : !0;
-                      };
-                    },
-                    CHILD: function (e, t, n, r, o) {
-                      var i = "nth" !== e.slice(0, 3),
-                        a = "last" !== e.slice(-4),
-                        s = "of-type" === t;
-                      return 1 === r && 0 === o
-                        ? function (e) {
-                            return !!e.parentNode;
-                          }
-                        : function (t, n, l) {
-                            var c,
-                              u,
-                              d,
-                              p,
-                              h,
-                              f,
-                              m = i !== a ? "nextSibling" : "previousSibling",
-                              v = t.parentNode,
-                              g = s && t.nodeName.toLowerCase(),
-                              y = !l && !s;
-                            if (v) {
-                              if (i) {
-                                for (; m; ) {
-                                  for (d = t; (d = d[m]); )
-                                    if (
-                                      s
-                                        ? d.nodeName.toLowerCase() === g
-                                        : 1 === d.nodeType
-                                    )
-                                      return !1;
-                                  f = m = "only" === e && !f && "nextSibling";
-                                }
-                                return !0;
-                              }
-                              if (
-                                ((f = [a ? v.firstChild : v.lastChild]), a && y)
-                              ) {
-                                for (
-                                  u = v[B] || (v[B] = {}),
-                                    c = u[e] || [],
-                                    h = c[0] === F && c[1],
-                                    p = c[0] === F && c[2],
-                                    d = h && v.childNodes[h];
-                                  (d =
-                                    (++h && d && d[m]) ||
-                                    (p = h = 0) ||
-                                    f.pop());
-
+                    };
+                  },
+                  CHILD: function (e, t, n, r, o) {
+                    var i = "nth" !== e.slice(0, 3),
+                      a = "last" !== e.slice(-4),
+                      s = "of-type" === t;
+                    return 1 === r && 0 === o
+                      ? function (e) {
+                        return !!e.parentNode;
+                      }
+                      : function (t, n, l) {
+                        var c,
+                          u,
+                          d,
+                          p,
+                          h,
+                          f,
+                          m = i !== a ? "nextSibling" : "previousSibling",
+                          v = t.parentNode,
+                          g = s && t.nodeName.toLowerCase(),
+                          y = !l && !s;
+                        if (v) {
+                          if (i) {
+                            for (; m;) {
+                              for (d = t; (d = d[m]);)
+                                if (
+                                  s
+                                    ? d.nodeName.toLowerCase() === g
+                                    : 1 === d.nodeType
                                 )
-                                  if (1 === d.nodeType && ++p && d === t) {
-                                    u[e] = [F, h, p];
-                                    break;
-                                  }
-                              } else if (
-                                y &&
-                                (c = (t[B] || (t[B] = {}))[e]) &&
-                                c[0] === F
-                              )
-                                p = c[1];
-                              else
-                                for (
-                                  ;
-                                  (d =
-                                    (++h && d && d[m]) ||
-                                    (p = h = 0) ||
-                                    f.pop()) &&
-                                  ((s
-                                    ? d.nodeName.toLowerCase() !== g
-                                    : 1 !== d.nodeType) ||
-                                    !++p ||
-                                    (y && ((d[B] || (d[B] = {}))[e] = [F, p]),
-                                    d !== t));
-
-                                );
-                              return (
-                                (p -= o), p === r || (p % r === 0 && p / r >= 0)
-                              );
+                                  return !1;
+                              f = m = "only" === e && !f && "nextSibling";
                             }
-                          };
-                    },
-                    PSEUDO: function (e, n) {
-                      var o,
-                        i =
-                          N.pseudos[e] ||
-                          N.setFilters[e.toLowerCase()] ||
-                          t.error("unsupported pseudo: " + e);
-                      return i[B]
-                        ? i(n)
-                        : i.length > 1
+                            return !0;
+                          }
+                          if (
+                            ((f = [a ? v.firstChild : v.lastChild]), a && y)
+                          ) {
+                            for (
+                              u = v[B] || (v[B] = {}),
+                              c = u[e] || [],
+                              h = c[0] === F && c[1],
+                              p = c[0] === F && c[2],
+                              d = h && v.childNodes[h];
+                              (d =
+                                (++h && d && d[m]) ||
+                                (p = h = 0) ||
+                                f.pop());
+
+                            )
+                              if (1 === d.nodeType && ++p && d === t) {
+                                u[e] = [F, h, p];
+                                break;
+                              }
+                          } else if (
+                            y &&
+                            (c = (t[B] || (t[B] = {}))[e]) &&
+                            c[0] === F
+                          )
+                            p = c[1];
+                          else
+                            for (
+                              ;
+                              (d =
+                                (++h && d && d[m]) ||
+                                (p = h = 0) ||
+                                f.pop()) &&
+                              ((s
+                                ? d.nodeName.toLowerCase() !== g
+                                : 1 !== d.nodeType) ||
+                                !++p ||
+                                (y && ((d[B] || (d[B] = {}))[e] = [F, p]),
+                                  d !== t));
+
+                            );
+                          return (
+                            (p -= o), p === r || (p % r === 0 && p / r >= 0)
+                          );
+                        }
+                      };
+                  },
+                  PSEUDO: function (e, n) {
+                    var o,
+                      i =
+                        N.pseudos[e] ||
+                        N.setFilters[e.toLowerCase()] ||
+                        t.error("unsupported pseudo: " + e);
+                    return i[B]
+                      ? i(n)
+                      : i.length > 1
                         ? ((o = [e, e, "", n]),
                           N.setFilters.hasOwnProperty(e.toLowerCase())
                             ? r(function (e, t) {
-                                for (var r, o = i(e, n), a = o.length; a--; )
-                                  (r = et(e, o[a])), (e[r] = !(t[r] = o[a]));
-                              })
+                              for (var r, o = i(e, n), a = o.length; a--;)
+                                (r = et(e, o[a])), (e[r] = !(t[r] = o[a]));
+                            })
                             : function (e) {
-                                return i(e, 0, o);
-                              })
+                              return i(e, 0, o);
+                            })
                         : i;
-                    },
                   },
-                  pseudos: {
-                    not: r(function (e) {
-                      var t = [],
-                        n = [],
-                        o = x(e.replace(lt, "$1"));
-                      return o[B]
-                        ? r(function (e, t, n, r) {
-                            for (
-                              var i, a = o(e, null, r, []), s = e.length;
-                              s--;
+                },
+                pseudos: {
+                  not: r(function (e) {
+                    var t = [],
+                      n = [],
+                      o = x(e.replace(lt, "$1"));
+                    return o[B]
+                      ? r(function (e, t, n, r) {
+                        for (
+                          var i, a = o(e, null, r, []), s = e.length;
+                          s--;
 
-                            )
-                              (i = a[s]) && (e[s] = !(t[s] = i));
-                          })
-                        : function (e, r, i) {
-                            return (
-                              (t[0] = e),
-                              o(t, null, i, n),
-                              (t[0] = null),
-                              !n.pop()
-                            );
-                          };
-                    }),
-                    has: r(function (e) {
-                      return function (n) {
-                        return t(e, n).length > 0;
+                        )
+                          (i = a[s]) && (e[s] = !(t[s] = i));
+                      })
+                      : function (e, r, i) {
+                        return (
+                          (t[0] = e),
+                          o(t, null, i, n),
+                          (t[0] = null),
+                          !n.pop()
+                        );
                       };
-                    }),
-                    contains: r(function (e) {
-                      return (
-                        (e = e.replace(bt, Nt)),
-                        function (t) {
-                          return (
-                            (t.textContent || t.innerText || T(t)).indexOf(e) >
-                            -1
-                          );
-                        }
-                      );
-                    }),
-                    lang: r(function (e) {
-                      return (
-                        ht.test(e || "") || t.error("unsupported lang: " + e),
-                        (e = e.replace(bt, Nt).toLowerCase()),
-                        function (t) {
-                          var n;
-                          do
-                            if (
-                              (n = A
-                                ? t.lang
-                                : t.getAttribute("xml:lang") ||
-                                  t.getAttribute("lang"))
-                            )
-                              return (
-                                (n = n.toLowerCase()),
-                                n === e || 0 === n.indexOf(e + "-")
-                              );
-                          while ((t = t.parentNode) && 1 === t.nodeType);
-                          return !1;
-                        }
-                      );
-                    }),
-                    target: function (t) {
-                      var n = e.location && e.location.hash;
-                      return n && n.slice(1) === t.id;
-                    },
-                    root: function (e) {
-                      return e === M;
-                    },
-                    focus: function (e) {
-                      return (
-                        e === P.activeElement &&
-                        (!P.hasFocus || P.hasFocus()) &&
-                        !!(e.type || e.href || ~e.tabIndex)
-                      );
-                    },
-                    enabled: function (e) {
-                      return e.disabled === !1;
-                    },
-                    disabled: function (e) {
-                      return e.disabled === !0;
-                    },
-                    checked: function (e) {
-                      var t = e.nodeName.toLowerCase();
-                      return (
-                        ("input" === t && !!e.checked) ||
-                        ("option" === t && !!e.selected)
-                      );
-                    },
-                    selected: function (e) {
-                      return (
-                        e.parentNode && e.parentNode.selectedIndex,
-                        e.selected === !0
-                      );
-                    },
-                    empty: function (e) {
-                      for (e = e.firstChild; e; e = e.nextSibling)
-                        if (e.nodeType < 6) return !1;
-                      return !0;
-                    },
-                    parent: function (e) {
-                      return !N.pseudos.empty(e);
-                    },
-                    header: function (e) {
-                      return vt.test(e.nodeName);
-                    },
-                    input: function (e) {
-                      return mt.test(e.nodeName);
-                    },
-                    button: function (e) {
-                      var t = e.nodeName.toLowerCase();
-                      return (
-                        ("input" === t && "button" === e.type) || "button" === t
-                      );
-                    },
-                    text: function (e) {
-                      var t;
-                      return (
-                        "input" === e.nodeName.toLowerCase() &&
-                        "text" === e.type &&
-                        (null == (t = e.getAttribute("type")) ||
-                          "text" === t.toLowerCase())
-                      );
-                    },
-                    first: c(function () {
-                      return [0];
-                    }),
-                    last: c(function (e, t) {
-                      return [t - 1];
-                    }),
-                    eq: c(function (e, t, n) {
-                      return [0 > n ? n + t : n];
-                    }),
-                    even: c(function (e, t) {
-                      for (var n = 0; t > n; n += 2) e.push(n);
-                      return e;
-                    }),
-                    odd: c(function (e, t) {
-                      for (var n = 1; t > n; n += 2) e.push(n);
-                      return e;
-                    }),
-                    lt: c(function (e, t, n) {
-                      for (var r = 0 > n ? n + t : n; --r >= 0; ) e.push(r);
-                      return e;
-                    }),
-                    gt: c(function (e, t, n) {
-                      for (var r = 0 > n ? n + t : n; ++r < t; ) e.push(r);
-                      return e;
-                    }),
+                  }),
+                  has: r(function (e) {
+                    return function (n) {
+                      return t(e, n).length > 0;
+                    };
+                  }),
+                  contains: r(function (e) {
+                    return (
+                      (e = e.replace(bt, Nt)),
+                      function (t) {
+                        return (
+                          (t.textContent || t.innerText || T(t)).indexOf(e) >
+                          -1
+                        );
+                      }
+                    );
+                  }),
+                  lang: r(function (e) {
+                    return (
+                      ht.test(e || "") || t.error("unsupported lang: " + e),
+                      (e = e.replace(bt, Nt).toLowerCase()),
+                      function (t) {
+                        var n;
+                        do
+                          if (
+                            (n = A
+                              ? t.lang
+                              : t.getAttribute("xml:lang") ||
+                              t.getAttribute("lang"))
+                          )
+                            return (
+                              (n = n.toLowerCase()),
+                              n === e || 0 === n.indexOf(e + "-")
+                            );
+                        while ((t = t.parentNode) && 1 === t.nodeType);
+                        return !1;
+                      }
+                    );
+                  }),
+                  target: function (t) {
+                    var n = e.location && e.location.hash;
+                    return n && n.slice(1) === t.id;
                   },
-                }),
+                  root: function (e) {
+                    return e === M;
+                  },
+                  focus: function (e) {
+                    return (
+                      e === P.activeElement &&
+                      (!P.hasFocus || P.hasFocus()) &&
+                      !!(e.type || e.href || ~e.tabIndex)
+                    );
+                  },
+                  enabled: function (e) {
+                    return e.disabled === !1;
+                  },
+                  disabled: function (e) {
+                    return e.disabled === !0;
+                  },
+                  checked: function (e) {
+                    var t = e.nodeName.toLowerCase();
+                    return (
+                      ("input" === t && !!e.checked) ||
+                      ("option" === t && !!e.selected)
+                    );
+                  },
+                  selected: function (e) {
+                    return (
+                      e.parentNode && e.parentNode.selectedIndex,
+                      e.selected === !0
+                    );
+                  },
+                  empty: function (e) {
+                    for (e = e.firstChild; e; e = e.nextSibling)
+                      if (e.nodeType < 6) return !1;
+                    return !0;
+                  },
+                  parent: function (e) {
+                    return !N.pseudos.empty(e);
+                  },
+                  header: function (e) {
+                    return vt.test(e.nodeName);
+                  },
+                  input: function (e) {
+                    return mt.test(e.nodeName);
+                  },
+                  button: function (e) {
+                    var t = e.nodeName.toLowerCase();
+                    return (
+                      ("input" === t && "button" === e.type) || "button" === t
+                    );
+                  },
+                  text: function (e) {
+                    var t;
+                    return (
+                      "input" === e.nodeName.toLowerCase() &&
+                      "text" === e.type &&
+                      (null == (t = e.getAttribute("type")) ||
+                        "text" === t.toLowerCase())
+                    );
+                  },
+                  first: c(function () {
+                    return [0];
+                  }),
+                  last: c(function (e, t) {
+                    return [t - 1];
+                  }),
+                  eq: c(function (e, t, n) {
+                    return [0 > n ? n + t : n];
+                  }),
+                  even: c(function (e, t) {
+                    for (var n = 0; t > n; n += 2) e.push(n);
+                    return e;
+                  }),
+                  odd: c(function (e, t) {
+                    for (var n = 1; t > n; n += 2) e.push(n);
+                    return e;
+                  }),
+                  lt: c(function (e, t, n) {
+                    for (var r = 0 > n ? n + t : n; --r >= 0;) e.push(r);
+                    return e;
+                  }),
+                  gt: c(function (e, t, n) {
+                    for (var r = 0 > n ? n + t : n; ++r < t;) e.push(r);
+                    return e;
+                  }),
+                },
+              }),
               (N.pseudos.nth = N.pseudos.eq);
             for (E in {
               radio: !0,
@@ -27378,20 +27928,20 @@
                     c,
                     u = $[e + " "];
                   if (u) return n ? 0 : u.slice(0);
-                  for (s = e, l = [], c = N.preFilter; s; ) {
+                  for (s = e, l = [], c = N.preFilter; s;) {
                     (!r || (o = ct.exec(s))) &&
                       (o && (s = s.slice(o[0].length) || s), l.push((i = []))),
                       (r = !1),
                       (o = ut.exec(s)) &&
-                        ((r = o.shift()),
+                      ((r = o.shift()),
                         i.push({ value: r, type: o[0].replace(lt, " ") }),
                         (s = s.slice(r.length)));
                     for (a in N.filter)
                       !(o = ft[a].exec(s)) ||
                         (c[a] && !(o = c[a](o))) ||
                         ((r = o.shift()),
-                        i.push({ value: r, type: a, matches: o }),
-                        (s = s.slice(r.length)));
+                          i.push({ value: r, type: a, matches: o }),
+                          (s = s.slice(r.length)));
                     if (!r) break;
                   }
                   return n ? s.length : s ? t.error(e) : $(e, l).slice(0);
@@ -27403,7 +27953,7 @@
                     o = [],
                     i = G[e + " "];
                   if (!i) {
-                    for (t || (t = w(e)), n = t.length; n--; )
+                    for (t || (t = w(e)), n = t.length; n--;)
                       (i = y(t[n])), i[B] ? r.push(i) : o.push(i);
                     (i = G(e, _(o, r))), (i.selector = e);
                   }
@@ -27421,7 +27971,7 @@
                   if (((n = n || []), 1 === d.length)) {
                     if (
                       ((i = d[0] = d[0].slice(0)),
-                      i.length > 2 &&
+                        i.length > 2 &&
                         "ID" === (a = i[0]).type &&
                         b.getById &&
                         9 === t.nodeType &&
@@ -27431,7 +27981,7 @@
                       if (
                         ((t = (N.find.ID(a.matches[0].replace(bt, Nt), t) ||
                           [])[0]),
-                        !t)
+                          !t)
                       )
                         return n;
                       c && (t = t.parentNode),
@@ -27477,11 +28027,11 @@
                   "#" === e.firstChild.getAttribute("href")
                 );
               }) ||
-                i("type|href|height|width", function (e, t, n) {
-                  return n
-                    ? void 0
-                    : e.getAttribute(t, "type" === t.toLowerCase() ? 1 : 2);
-                }),
+              i("type|href|height|width", function (e, t, n) {
+                return n
+                  ? void 0
+                  : e.getAttribute(t, "type" === t.toLowerCase() ? 1 : 2);
+              }),
               (b.attributes &&
                 o(function (e) {
                   return (
@@ -27490,24 +28040,24 @@
                     "" === e.firstChild.getAttribute("value")
                   );
                 })) ||
-                i("value", function (e, t, n) {
-                  return n || "input" !== e.nodeName.toLowerCase()
-                    ? void 0
-                    : e.defaultValue;
-                }),
+              i("value", function (e, t, n) {
+                return n || "input" !== e.nodeName.toLowerCase()
+                  ? void 0
+                  : e.defaultValue;
+              }),
               o(function (e) {
                 return null == e.getAttribute("disabled");
               }) ||
-                i(tt, function (e, t, n) {
-                  var r;
-                  return n
-                    ? void 0
-                    : e[t] === !0
+              i(tt, function (e, t, n) {
+                var r;
+                return n
+                  ? void 0
+                  : e[t] === !0
                     ? t.toLowerCase()
                     : (r = e.getAttributeNode(t)) && r.specified
-                    ? r.value
-                    : null;
-                }),
+                      ? r.value
+                      : null;
+              }),
               t
             );
           })(e);
@@ -27530,11 +28080,11 @@
                   ? [r]
                   : []
                 : Z.find.matches(
-                    e,
-                    Z.grep(t, function (e) {
-                      return 1 === e.nodeType;
-                    })
-                  )
+                  e,
+                  Z.grep(t, function (e) {
+                    return 1 === e.nodeType;
+                  })
+                )
             );
           }),
             Z.fn.extend({
@@ -27582,7 +28132,7 @@
                     "<" === e[0] && ">" === e[e.length - 1] && e.length >= 3
                       ? [null, e, null]
                       : ct.exec(e)),
-                  !n || (!n[1] && t))
+                    !n || (!n[1] && t))
                 )
                   return !t || t.jquery
                     ? (t || lt).find(e)
@@ -27590,15 +28140,15 @@
                 if (n[1]) {
                   if (
                     ((t = t instanceof Z ? t[0] : t),
-                    Z.merge(
-                      this,
-                      Z.parseHTML(
-                        n[1],
-                        t && t.nodeType ? t.ownerDocument || t : Q,
-                        !0
-                      )
-                    ),
-                    at.test(n[1]) && Z.isPlainObject(t))
+                      Z.merge(
+                        this,
+                        Z.parseHTML(
+                          n[1],
+                          t && t.nodeType ? t.ownerDocument || t : Q,
+                          !0
+                        )
+                      ),
+                      at.test(n[1]) && Z.isPlainObject(t))
                   )
                     for (n in t)
                       Z.isFunction(this[n])
@@ -27617,12 +28167,12 @@
               return e.nodeType
                 ? ((this.context = this[0] = e), (this.length = 1), this)
                 : Z.isFunction(e)
-                ? "undefined" != typeof lt.ready
-                  ? lt.ready(e)
-                  : e(Z)
-                : (void 0 !== e.selector &&
+                  ? "undefined" != typeof lt.ready
+                    ? lt.ready(e)
+                    : e(Z)
+                  : (void 0 !== e.selector &&
                     ((this.selector = e.selector), (this.context = e.context)),
-                  Z.makeArray(e, this));
+                    Z.makeArray(e, this));
             });
           (ut.prototype = Z.fn), (lt = Z(Q));
           var dt = /^(?:parents|prev(?:Until|All))/,
@@ -27658,13 +28208,13 @@
               closest: function (e, t) {
                 for (
                   var n,
-                    r = 0,
-                    o = this.length,
-                    i = [],
-                    a =
-                      it.test(e) || "string" != typeof e
-                        ? Z(e, t || this.context)
-                        : 0;
+                  r = 0,
+                  o = this.length,
+                  i = [],
+                  a =
+                    it.test(e) || "string" != typeof e
+                      ? Z(e, t || this.context)
+                      : 0;
                   o > r;
                   r++
                 )
@@ -27686,8 +28236,8 @@
                     ? W.call(Z(e), this[0])
                     : W.call(this, e.jquery ? e[0] : e)
                   : this[0] && this[0].parentNode
-                  ? this.first().prevAll().length
-                  : -1;
+                    ? this.first().prevAll().length
+                    : -1;
               },
               add: function (e, t) {
                 return this.pushStack(Z.unique(Z.merge(this.get(), Z(e, t))));
@@ -27745,7 +28295,7 @@
                     "Until" !== e.slice(-5) && (r = n),
                     r && "string" == typeof r && (o = Z.filter(r, o)),
                     this.length > 1 &&
-                      (pt[e] || Z.unique(o), dt.test(e) && o.reverse()),
+                    (pt[e] || Z.unique(o), dt.test(e) && o.reverse()),
                     this.pushStack(o)
                   );
                 };
@@ -27766,11 +28316,11 @@
               u = function (i) {
                 for (
                   t = e.memory && i,
-                    n = !0,
-                    s = o || 0,
-                    o = 0,
-                    a = l.length,
-                    r = !0;
+                  n = !0,
+                  s = o || 0,
+                  o = 0,
+                  a = l.length,
+                  r = !0;
                   l && a > s;
                   s++
                 )
@@ -27780,7 +28330,7 @@
                   }
                 (r = !1),
                   l &&
-                    (c ? c.length && u(c.shift()) : t ? (l = []) : d.disable());
+                  (c ? c.length && u(c.shift()) : t ? (l = []) : d.disable());
               },
               d = {
                 add: function () {
@@ -27801,10 +28351,10 @@
                 remove: function () {
                   return (
                     l &&
-                      Z.each(arguments, function (e, t) {
-                        for (var n; (n = Z.inArray(t, l, n)) > -1; )
-                          l.splice(n, 1), r && (a >= n && a--, s >= n && s--);
-                      }),
+                    Z.each(arguments, function (e, t) {
+                      for (var n; (n = Z.inArray(t, l, n)) > -1;)
+                        l.splice(n, 1), r && (a >= n && a--, s >= n && s--);
+                    }),
                     this
                   );
                 },
@@ -27829,8 +28379,8 @@
                 fireWith: function (e, t) {
                   return (
                     !l ||
-                      (n && !c) ||
-                      ((t = t || []),
+                    (n && !c) ||
+                    ((t = t || []),
                       (t = [e, t.slice ? t.slice() : t]),
                       r ? c.push(t) : u(t)),
                     this
@@ -27848,10 +28398,10 @@
             Z.extend({
               Deferred: function (e) {
                 var t = [
-                    ["resolve", "done", Z.Callbacks("once memory"), "resolved"],
-                    ["reject", "fail", Z.Callbacks("once memory"), "rejected"],
-                    ["notify", "progress", Z.Callbacks("memory")],
-                  ],
+                  ["resolve", "done", Z.Callbacks("once memory"), "resolved"],
+                  ["reject", "fail", Z.Callbacks("once memory"), "rejected"],
+                  ["notify", "progress", Z.Callbacks("memory")],
+                ],
                   n = "pending",
                   r = {
                     state: function () {
@@ -27869,14 +28419,14 @@
                             var e = a && a.apply(this, arguments);
                             e && Z.isFunction(e.promise)
                               ? e
-                                  .promise()
-                                  .done(n.resolve)
-                                  .fail(n.reject)
-                                  .progress(n.notify)
+                                .promise()
+                                .done(n.resolve)
+                                .fail(n.reject)
+                                .progress(n.notify)
                               : n[i[0] + "With"](
-                                  this === r ? n.promise() : this,
-                                  a ? [e] : arguments
-                                );
+                                this === r ? n.promise() : this,
+                                a ? [e] : arguments
+                              );
                           });
                         }),
                           (e = null);
@@ -27894,13 +28444,13 @@
                       s = i[3];
                     (r[i[1]] = a.add),
                       s &&
-                        a.add(
-                          function () {
-                            n = s;
-                          },
-                          t[1 ^ e][2].disable,
-                          t[2][2].lock
-                        ),
+                      a.add(
+                        function () {
+                          n = s;
+                        },
+                        t[1 ^ e][2].disable,
+                        t[2][2].lock
+                      ),
                       (o[i[0]] = function () {
                         return (
                           o[i[0] + "With"](this === o ? r : this, arguments),
@@ -27940,10 +28490,10 @@
                   )
                     i[o] && Z.isFunction(i[o].promise)
                       ? i[o]
-                          .promise()
-                          .done(c(o, r, i))
-                          .fail(l.reject)
-                          .progress(c(o, n, t))
+                        .promise()
+                        .done(c(o, r, i))
+                        .fail(l.reject)
+                        .progress(c(o, n, t))
                       : --s;
                 return s || l.resolveWith(r, i), l.promise();
               },
@@ -27961,16 +28511,16 @@
               ready: function (e) {
                 (e === !0 ? --Z.readyWait : Z.isReady) ||
                   ((Z.isReady = !0),
-                  (e !== !0 && --Z.readyWait > 0) ||
+                    (e !== !0 && --Z.readyWait > 0) ||
                     (mt.resolveWith(Q, [Z]),
-                    Z.fn.triggerHandler &&
+                      Z.fn.triggerHandler &&
                       (Z(Q).triggerHandler("ready"), Z(Q).off("ready"))));
               },
             }),
             (Z.ready.promise = function (t) {
               return (
                 mt ||
-                  ((mt = Z.Deferred()),
+                ((mt = Z.Deferred()),
                   "complete" === Q.readyState
                     ? setTimeout(Z.ready)
                     : (Q.addEventListener("DOMContentLoaded", a, !1),
@@ -27989,15 +28539,15 @@
             } else if (
               void 0 !== r &&
               ((o = !0),
-              Z.isFunction(r) || (a = !0),
-              c &&
+                Z.isFunction(r) || (a = !0),
+                c &&
                 (a
                   ? (t.call(e, r), (t = null))
                   : ((c = t),
                     (t = function (e, t, n) {
                       return c.call(Z(e), n);
                     }))),
-              t)
+                t)
             )
               for (; l > s; s++)
                 t(e[s], n, a ? r : r.call(e[s], s, t(e[s], n)));
@@ -28060,7 +28610,7 @@
                         ? (r = [t, o])
                         : ((r = o), (r = r in a ? [r] : r.match(ht) || []))),
                     (n = r.length);
-                  for (; n--; ) delete a[r[n]];
+                  for (; n--;) delete a[r[n]];
                 }
               },
               hasData: function (e) {
@@ -28102,12 +28652,12 @@
                   if (
                     this.length &&
                     ((o = yt.get(i)),
-                    1 === i.nodeType && !gt.get(i, "hasDataAttrs"))
+                      1 === i.nodeType && !gt.get(i, "hasDataAttrs"))
                   ) {
-                    for (n = a.length; n--; )
+                    for (n = a.length; n--;)
                       a[n] &&
                         ((r = a[n].name),
-                        0 === r.indexOf("data-") &&
+                          0 === r.indexOf("data-") &&
                           ((r = Z.camelCase(r.slice(5))), l(i, r, o[r])));
                     gt.set(i, "hasDataAttrs", !0);
                   }
@@ -28115,32 +28665,32 @@
                 }
                 return "object" == typeof e
                   ? this.each(function () {
-                      yt.set(this, e);
-                    })
+                    yt.set(this, e);
+                  })
                   : vt(
-                      this,
-                      function (t) {
-                        var n,
-                          r = Z.camelCase(e);
-                        if (i && void 0 === t) {
-                          if (((n = yt.get(i, e)), void 0 !== n)) return n;
-                          if (((n = yt.get(i, r)), void 0 !== n)) return n;
-                          if (((n = l(i, r, void 0)), void 0 !== n)) return n;
-                        } else
-                          this.each(function () {
-                            var n = yt.get(this, r);
-                            yt.set(this, r, t),
-                              -1 !== e.indexOf("-") &&
-                                void 0 !== n &&
-                                yt.set(this, e, t);
-                          });
-                      },
-                      null,
-                      t,
-                      arguments.length > 1,
-                      null,
-                      !0
-                    );
+                    this,
+                    function (t) {
+                      var n,
+                        r = Z.camelCase(e);
+                      if (i && void 0 === t) {
+                        if (((n = yt.get(i, e)), void 0 !== n)) return n;
+                        if (((n = yt.get(i, r)), void 0 !== n)) return n;
+                        if (((n = l(i, r, void 0)), void 0 !== n)) return n;
+                      } else
+                        this.each(function () {
+                          var n = yt.get(this, r);
+                          yt.set(this, r, t),
+                            -1 !== e.indexOf("-") &&
+                            void 0 !== n &&
+                            yt.set(this, e, t);
+                        });
+                    },
+                    null,
+                    t,
+                    arguments.length > 1,
+                    null,
+                    !0
+                  );
               },
               removeData: function (e) {
                 return this.each(function () {
@@ -28155,9 +28705,9 @@
                   ? ((t = (t || "fx") + "queue"),
                     (r = gt.get(e, t)),
                     n &&
-                      (!r || Z.isArray(n)
-                        ? (r = gt.access(e, t, Z.makeArray(n)))
-                        : r.push(n)),
+                    (!r || Z.isArray(n)
+                      ? (r = gt.access(e, t, Z.makeArray(n)))
+                      : r.push(n)),
                     r || [])
                   : void 0;
               },
@@ -28172,7 +28722,7 @@
                   };
                 "inprogress" === o && ((o = n.shift()), r--),
                   o &&
-                    ("fx" === t && n.unshift("inprogress"),
+                  ("fx" === t && n.unshift("inprogress"),
                     delete i.stop,
                     o.call(e, a, i)),
                   !r && i && i.empty.fire();
@@ -28197,13 +28747,13 @@
                   arguments.length < n
                     ? Z.queue(this[0], e)
                     : void 0 === t
-                    ? this
-                    : this.each(function () {
+                      ? this
+                      : this.each(function () {
                         var n = Z.queue(this, e, t);
                         Z._queueHooks(this, e),
                           "fx" === e &&
-                            "inprogress" !== n[0] &&
-                            Z.dequeue(this, e);
+                          "inprogress" !== n[0] &&
+                          Z.dequeue(this, e);
                       })
                 );
               },
@@ -28226,7 +28776,7 @@
                   };
                 for (
                   "string" != typeof e && ((t = e), (e = void 0)),
-                    e = e || "fx";
+                  e = e || "fx";
                   a--;
 
                 )
@@ -28241,7 +28791,7 @@
               return (
                 (e = t || e),
                 "none" === Z.css(e, "display") ||
-                  !Z.contains(e.ownerDocument, e)
+                !Z.contains(e.ownerDocument, e)
               );
             },
             Ct = /^(?:checkbox|radio)$/i;
@@ -28281,17 +28831,17 @@
               if (v)
                 for (
                   n.handler && ((i = n), (n = i.handler), (o = i.selector)),
-                    n.guid || (n.guid = Z.guid++),
-                    (l = v.events) || (l = v.events = {}),
-                    (a = v.handle) ||
-                      (a = v.handle =
-                        function (t) {
-                          return typeof Z !== wt && Z.event.triggered !== t.type
-                            ? Z.event.dispatch.apply(e, arguments)
-                            : void 0;
-                        }),
-                    t = (t || "").match(ht) || [""],
-                    c = t.length;
+                  n.guid || (n.guid = Z.guid++),
+                  (l = v.events) || (l = v.events = {}),
+                  (a = v.handle) ||
+                  (a = v.handle =
+                    function (t) {
+                      return typeof Z !== wt && Z.event.triggered !== t.type
+                        ? Z.event.dispatch.apply(e, arguments)
+                        : void 0;
+                    }),
+                  t = (t || "").match(ht) || [""],
+                  c = t.length;
                   c--;
 
                 )
@@ -28299,7 +28849,7 @@
                     (h = m = s[1]),
                     (f = (s[2] || "").split(".").sort()),
                     h &&
-                      ((d = Z.event.special[h] || {}),
+                    ((d = Z.event.special[h] || {}),
                       (h = (o ? d.delegateType : d.bindType) || h),
                       (d = Z.event.special[h] || {}),
                       (u = Z.extend(
@@ -28316,12 +28866,12 @@
                         i
                       )),
                       (p = l[h]) ||
-                        ((p = l[h] = []),
+                      ((p = l[h] = []),
                         (p.delegateCount = 0),
                         (d.setup && d.setup.call(e, r, f, a) !== !1) ||
-                          (e.addEventListener && e.addEventListener(h, a, !1))),
+                        (e.addEventListener && e.addEventListener(h, a, !1))),
                       d.add &&
-                        (d.add.call(e, u),
+                      (d.add.call(e, u),
                         u.handler.guid || (u.handler.guid = n.guid)),
                       o ? p.splice(p.delegateCount++, 0, u) : p.push(u),
                       (Z.event.global[h] = !0));
@@ -28340,41 +28890,41 @@
                 m,
                 v = gt.hasData(e) && gt.get(e);
               if (v && (l = v.events)) {
-                for (t = (t || "").match(ht) || [""], c = t.length; c--; )
+                for (t = (t || "").match(ht) || [""], c = t.length; c--;)
                   if (
                     ((s = Rt.exec(t[c]) || []),
-                    (h = m = s[1]),
-                    (f = (s[2] || "").split(".").sort()),
-                    h)
+                      (h = m = s[1]),
+                      (f = (s[2] || "").split(".").sort()),
+                      h)
                   ) {
                     for (
                       d = Z.event.special[h] || {},
-                        h = (r ? d.delegateType : d.bindType) || h,
-                        p = l[h] || [],
-                        s =
-                          s[2] &&
-                          new RegExp(
-                            "(^|\\.)" + f.join("\\.(?:.*\\.|)") + "(\\.|$)"
-                          ),
-                        a = i = p.length;
+                      h = (r ? d.delegateType : d.bindType) || h,
+                      p = l[h] || [],
+                      s =
+                      s[2] &&
+                      new RegExp(
+                        "(^|\\.)" + f.join("\\.(?:.*\\.|)") + "(\\.|$)"
+                      ),
+                      a = i = p.length;
                       i--;
 
                     )
                       (u = p[i]),
                         (!o && m !== u.origType) ||
-                          (n && n.guid !== u.guid) ||
-                          (s && !s.test(u.namespace)) ||
-                          (r &&
-                            r !== u.selector &&
-                            ("**" !== r || !u.selector)) ||
-                          (p.splice(i, 1),
+                        (n && n.guid !== u.guid) ||
+                        (s && !s.test(u.namespace)) ||
+                        (r &&
+                          r !== u.selector &&
+                          ("**" !== r || !u.selector)) ||
+                        (p.splice(i, 1),
                           u.selector && p.delegateCount--,
                           d.remove && d.remove.call(e, u));
                     a &&
                       !p.length &&
                       ((d.teardown && d.teardown.call(e, f, v.handle) !== !1) ||
                         Z.removeEvent(e, h, v.handle),
-                      delete l[h]);
+                        delete l[h]);
                   } else for (h in l) Z.event.remove(e, h + t[c], n, r, !0);
                 Z.isEmptyObject(l) && (delete v.handle, gt.remove(e, "events"));
               }
@@ -28392,32 +28942,32 @@
                 f = Y.call(t, "namespace") ? t.namespace.split(".") : [];
               if (
                 ((a = s = r = r || Q),
-                3 !== r.nodeType &&
+                  3 !== r.nodeType &&
                   8 !== r.nodeType &&
                   !Dt.test(h + Z.event.triggered) &&
                   (h.indexOf(".") >= 0 &&
                     ((f = h.split(".")), (h = f.shift()), f.sort()),
-                  (c = h.indexOf(":") < 0 && "on" + h),
-                  (t = t[Z.expando]
-                    ? t
-                    : new Z.Event(h, "object" == typeof t && t)),
-                  (t.isTrigger = o ? 2 : 3),
-                  (t.namespace = f.join(".")),
-                  (t.namespace_re = t.namespace
-                    ? new RegExp(
+                    (c = h.indexOf(":") < 0 && "on" + h),
+                    (t = t[Z.expando]
+                      ? t
+                      : new Z.Event(h, "object" == typeof t && t)),
+                    (t.isTrigger = o ? 2 : 3),
+                    (t.namespace = f.join(".")),
+                    (t.namespace_re = t.namespace
+                      ? new RegExp(
                         "(^|\\.)" + f.join("\\.(?:.*\\.|)") + "(\\.|$)"
                       )
-                    : null),
-                  (t.result = void 0),
-                  t.target || (t.target = r),
-                  (n = null == n ? [t] : Z.makeArray(n, [t])),
-                  (d = Z.event.special[h] || {}),
-                  o || !d.trigger || d.trigger.apply(r, n) !== !1))
+                      : null),
+                    (t.result = void 0),
+                    t.target || (t.target = r),
+                    (n = null == n ? [t] : Z.makeArray(n, [t])),
+                    (d = Z.event.special[h] || {}),
+                    o || !d.trigger || d.trigger.apply(r, n) !== !1))
               ) {
                 if (!o && !d.noBubble && !Z.isWindow(r)) {
                   for (
                     l = d.delegateType || h,
-                      Dt.test(l + h) || (a = a.parentNode);
+                    Dt.test(l + h) || (a = a.parentNode);
                     a;
                     a = a.parentNode
                   )
@@ -28425,7 +28975,7 @@
                   s === (r.ownerDocument || Q) &&
                     p.push(s.defaultView || s.parentWindow || e);
                 }
-                for (i = 0; (a = p[i++]) && !t.isPropagationStopped(); )
+                for (i = 0; (a = p[i++]) && !t.isPropagationStopped();)
                   (t.type = i > 1 ? l : d.bindType || h),
                     (u =
                       (gt.get(a, "events") || {})[t.type] &&
@@ -28433,20 +28983,20 @@
                     u && u.apply(a, n),
                     (u = c && a[c]),
                     u &&
-                      u.apply &&
-                      Z.acceptData(a) &&
-                      ((t.result = u.apply(a, n)),
+                    u.apply &&
+                    Z.acceptData(a) &&
+                    ((t.result = u.apply(a, n)),
                       t.result === !1 && t.preventDefault());
                 return (
                   (t.type = h),
                   o ||
-                    t.isDefaultPrevented() ||
-                    (d._default && d._default.apply(p.pop(), n) !== !1) ||
-                    !Z.acceptData(r) ||
-                    (c &&
-                      Z.isFunction(r[h]) &&
-                      !Z.isWindow(r) &&
-                      ((s = r[c]),
+                  t.isDefaultPrevented() ||
+                  (d._default && d._default.apply(p.pop(), n) !== !1) ||
+                  !Z.acceptData(r) ||
+                  (c &&
+                    Z.isFunction(r[h]) &&
+                    !Z.isWindow(r) &&
+                    ((s = r[c]),
                       s && (r[c] = null),
                       (Z.event.triggered = h),
                       r[h](),
@@ -28469,8 +29019,8 @@
                 c = Z.event.special[e.type] || {};
               if (
                 ((s[0] = e),
-                (e.delegateTarget = this),
-                !c.preDispatch || c.preDispatch.call(this, e) !== !1)
+                  (e.delegateTarget = this),
+                  !c.preDispatch || c.preDispatch.call(this, e) !== !1)
               ) {
                 for (
                   a = Z.event.handlers.call(this, e, l), t = 0;
@@ -28484,11 +29034,11 @@
                   )
                     (!e.namespace_re || e.namespace_re.test(i.namespace)) &&
                       ((e.handleObj = i),
-                      (e.data = i.data),
-                      (r = (
-                        (Z.event.special[i.origType] || {}).handle || i.handler
-                      ).apply(o.elem, s)),
-                      void 0 !== r &&
+                        (e.data = i.data),
+                        (r = (
+                          (Z.event.special[i.origType] || {}).handle || i.handler
+                        ).apply(o.elem, s)),
+                        void 0 !== r &&
                         (e.result = r) === !1 &&
                         (e.preventDefault(), e.stopPropagation()));
                 return c.postDispatch && c.postDispatch.call(this, e), e.result;
@@ -28509,9 +29059,9 @@
                       (i = t[n]),
                         (o = i.selector + " "),
                         void 0 === r[o] &&
-                          (r[o] = i.needsContext
-                            ? Z(o, this).index(l) >= 0
-                            : Z.find(o, this, null, [l]).length),
+                        (r[o] = i.needsContext
+                          ? Z(o, this).index(l) >= 0
+                          : Z.find(o, this, null, [l]).length),
                         r[o] && r.push(i);
                     r.length && a.push({ elem: l, handlers: r });
                   }
@@ -28529,7 +29079,7 @@
               filter: function (e, t) {
                 return (
                   null == e.which &&
-                    (e.which = null != t.charCode ? t.charCode : t.keyCode),
+                  (e.which = null != t.charCode ? t.charCode : t.keyCode),
                   e
                 );
               },
@@ -28546,8 +29096,8 @@
                   i = t.button;
                 return (
                   null == e.pageX &&
-                    null != t.clientX &&
-                    ((n = e.target.ownerDocument || Q),
+                  null != t.clientX &&
+                  ((n = e.target.ownerDocument || Q),
                     (r = n.documentElement),
                     (o = n.body),
                     (e.pageX =
@@ -28559,8 +29109,8 @@
                       ((r && r.scrollTop) || (o && o.scrollTop) || 0) -
                       ((r && r.clientTop) || (o && o.clientTop) || 0))),
                   e.which ||
-                    void 0 === i ||
-                    (e.which = 1 & i ? 1 : 2 & i ? 3 : 4 & i ? 2 : 0),
+                  void 0 === i ||
+                  (e.which = 1 & i ? 1 : 2 & i ? 3 : 4 & i ? 2 : 0),
                   e
                 );
               },
@@ -28575,15 +29125,15 @@
                 a = this.fixHooks[o];
               for (
                 a ||
-                  (this.fixHooks[o] = a =
-                    St.test(o)
-                      ? this.mouseHooks
-                      : xt.test(o)
+                (this.fixHooks[o] = a =
+                  St.test(o)
+                    ? this.mouseHooks
+                    : xt.test(o)
                       ? this.keyHooks
                       : {}),
-                  r = a.props ? this.props.concat(a.props) : this.props,
-                  e = new Z.Event(i),
-                  t = r.length;
+                r = a.props ? this.props.concat(a.props) : this.props,
+                e = new Z.Event(i),
+                t = r.length;
                 t--;
 
               )
@@ -28646,14 +29196,14 @@
             (Z.Event = function (e, t) {
               return this instanceof Z.Event
                 ? (e && e.type
-                    ? ((this.originalEvent = e),
-                      (this.type = e.type),
-                      (this.isDefaultPrevented =
-                        e.defaultPrevented ||
+                  ? ((this.originalEvent = e),
+                    (this.type = e.type),
+                    (this.isDefaultPrevented =
+                      e.defaultPrevented ||
                         (void 0 === e.defaultPrevented && e.returnValue === !1)
-                          ? c
-                          : u))
-                    : (this.type = e),
+                        ? c
+                        : u))
+                  : (this.type = e),
                   t && Z.extend(this, t),
                   (this.timeStamp = (e && e.timeStamp) || Z.now()),
                   void (this[Z.expando] = !0))
@@ -28677,8 +29227,8 @@
                 var e = this.originalEvent;
                 (this.isImmediatePropagationStopped = c),
                   e &&
-                    e.stopImmediatePropagation &&
-                    e.stopImmediatePropagation(),
+                  e.stopImmediatePropagation &&
+                  e.stopImmediatePropagation(),
                   this.stopPropagation();
               },
             }),
@@ -28700,7 +29250,7 @@
                       i = e.handleObj;
                     return (
                       (!o || (o !== r && !Z.contains(r, o))) &&
-                        ((e.type = i.origType),
+                      ((e.type = i.origType),
                         (n = i.handler.apply(this, arguments)),
                         (e.type = t)),
                       n
@@ -28710,26 +29260,26 @@
               }
             ),
             K.focusinBubbles ||
-              Z.each({ focus: "focusin", blur: "focusout" }, function (e, t) {
-                var n = function (e) {
-                  Z.event.simulate(t, e.target, Z.event.fix(e), !0);
-                };
-                Z.event.special[t] = {
-                  setup: function () {
-                    var r = this.ownerDocument || this,
-                      o = gt.access(r, t);
-                    o || r.addEventListener(e, n, !0),
-                      gt.access(r, t, (o || 0) + 1);
-                  },
-                  teardown: function () {
-                    var r = this.ownerDocument || this,
-                      o = gt.access(r, t) - 1;
-                    o
-                      ? gt.access(r, t, o)
-                      : (r.removeEventListener(e, n, !0), gt.remove(r, t));
-                  },
-                };
-              }),
+            Z.each({ focus: "focusin", blur: "focusout" }, function (e, t) {
+              var n = function (e) {
+                Z.event.simulate(t, e.target, Z.event.fix(e), !0);
+              };
+              Z.event.special[t] = {
+                setup: function () {
+                  var r = this.ownerDocument || this,
+                    o = gt.access(r, t);
+                  o || r.addEventListener(e, n, !0),
+                    gt.access(r, t, (o || 0) + 1);
+                },
+                teardown: function () {
+                  var r = this.ownerDocument || this,
+                    o = gt.access(r, t) - 1;
+                  o
+                    ? gt.access(r, t, o)
+                    : (r.removeEventListener(e, n, !0), gt.remove(r, t));
+                },
+              };
+            }),
             Z.fn.extend({
               on: function (e, t, n, r, o) {
                 var i, a;
@@ -28742,16 +29292,16 @@
                   (null == n && null == r
                     ? ((r = t), (n = t = void 0))
                     : null == r &&
-                      ("string" == typeof t
-                        ? ((r = n), (n = void 0))
-                        : ((r = n), (n = t), (t = void 0))),
-                  r === !1)
+                    ("string" == typeof t
+                      ? ((r = n), (n = void 0))
+                      : ((r = n), (n = t), (t = void 0))),
+                    r === !1)
                 )
                   r = u;
                 else if (!r) return this;
                 return (
                   1 === o &&
-                    ((i = r),
+                  ((i = r),
                     (r = function (e) {
                       return Z().off(e), i.apply(this, arguments);
                     }),
@@ -28782,7 +29332,7 @@
                 }
                 return (
                   (t === !1 || "function" == typeof t) &&
-                    ((n = t), (t = void 0)),
+                  ((n = t), (t = void 0)),
                   n === !1 && (n = u),
                   this.each(function () {
                     Z.event.remove(this, e, n, t);
@@ -28800,7 +29350,7 @@
               },
             });
           var kt =
-              /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
+            /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
             Ot = /<([\w:]+)/,
             Pt = /<|&#?\w+;/,
             Mt = /<(?:script|style|link)/i,
@@ -28854,15 +29404,15 @@
               buildFragment: function (e, t, n, r) {
                 for (
                   var o,
-                    i,
-                    a,
-                    s,
-                    l,
-                    c,
-                    u = t.createDocumentFragment(),
-                    d = [],
-                    p = 0,
-                    h = e.length;
+                  i,
+                  a,
+                  s,
+                  l,
+                  c,
+                  u = t.createDocumentFragment(),
+                  d = [],
+                  p = 0,
+                  h = e.length;
                   h > p;
                   p++
                 )
@@ -28872,11 +29422,11 @@
                     else if (Pt.test(o)) {
                       for (
                         i = i || u.appendChild(t.createElement("div")),
-                          a = (Ot.exec(o) || ["", ""])[1].toLowerCase(),
-                          s = Ut[a] || Ut._default,
-                          i.innerHTML =
-                            s[1] + o.replace(kt, "<$1></$2>") + s[2],
-                          c = s[0];
+                        a = (Ot.exec(o) || ["", ""])[1].toLowerCase(),
+                        s = Ut[a] || Ut._default,
+                        i.innerHTML =
+                        s[1] + o.replace(kt, "<$1></$2>") + s[2],
+                        c = s[0];
                         c--;
 
                       )
@@ -28885,15 +29435,15 @@
                         (i = u.firstChild),
                         (i.textContent = "");
                     } else d.push(t.createTextNode(o));
-                for (u.textContent = "", p = 0; (o = d[p++]); )
+                for (u.textContent = "", p = 0; (o = d[p++]);)
                   if (
                     (!r || -1 === Z.inArray(o, r)) &&
                     ((l = Z.contains(o.ownerDocument, o)),
-                    (i = g(u.appendChild(o), "script")),
-                    l && m(i),
-                    n)
+                      (i = g(u.appendChild(o), "script")),
+                      l && m(i),
+                      n)
                   )
-                    for (c = 0; (o = i[c++]); )
+                    for (c = 0; (o = i[c++]);)
                       Lt.test(o.type || "") && n.push(o);
                 return u;
               },
@@ -28926,11 +29476,11 @@
                     return void 0 === e
                       ? Z.text(this)
                       : this.empty().each(function () {
-                          (1 === this.nodeType ||
-                            11 === this.nodeType ||
-                            9 === this.nodeType) &&
-                            (this.textContent = e);
-                        });
+                        (1 === this.nodeType ||
+                          11 === this.nodeType ||
+                          9 === this.nodeType) &&
+                          (this.textContent = e);
+                      });
                   },
                   null,
                   e,
@@ -28980,7 +29530,7 @@
                 )
                   t || 1 !== n.nodeType || Z.cleanData(g(n)),
                     n.parentNode &&
-                      (t && Z.contains(n.ownerDocument, n) && m(g(n, "script")),
+                    (t && Z.contains(n.ownerDocument, n) && m(g(n, "script")),
                       n.parentNode.removeChild(n));
                 return this;
               },
@@ -29017,9 +29567,9 @@
                         for (; r > n; n++)
                           (t = this[n] || {}),
                             1 === t.nodeType &&
-                              (Z.cleanData(g(t, !1)), (t.innerHTML = e));
+                            (Z.cleanData(g(t, !1)), (t.innerHTML = e));
                         t = 0;
-                      } catch (o) {}
+                      } catch (o) { }
                     }
                     t && this.empty().append(e);
                   },
@@ -29067,14 +29617,14 @@
                 if (
                   c &&
                   ((n = Z.buildFragment(e, this[0].ownerDocument, !1, this)),
-                  (r = n.firstChild),
-                  1 === n.childNodes.length && (n = r),
-                  r)
+                    (r = n.firstChild),
+                    1 === n.childNodes.length && (n = r),
+                    r)
                 ) {
                   for (o = Z.map(g(n, "script"), h), i = o.length; c > l; l++)
                     (a = n),
                       l !== d &&
-                        ((a = Z.clone(a, !0, !0)),
+                      ((a = Z.clone(a, !0, !0)),
                         i && Z.merge(o, g(a, "script"))),
                       t.call(this[l], a, l);
                   if (i)
@@ -29085,11 +29635,11 @@
                     )
                       (a = o[l]),
                         Lt.test(a.type || "") &&
-                          !gt.access(a, "globalEval") &&
-                          Z.contains(s, a) &&
-                          (a.src
-                            ? Z._evalUrl && Z._evalUrl(a.src)
-                            : Z.globalEval(a.textContent.replace(jt, "")));
+                        !gt.access(a, "globalEval") &&
+                        Z.contains(s, a) &&
+                        (a.src
+                          ? Z._evalUrl && Z._evalUrl(a.src)
+                          : Z.globalEval(a.textContent.replace(jt, "")));
                 }
                 return this;
               },
@@ -29141,12 +29691,12 @@
               a = Q.createElement("div");
             a.style &&
               ((a.style.backgroundClip = "content-box"),
-              (a.cloneNode(!0).style.backgroundClip = ""),
-              (K.clearCloneStyle = "content-box" === a.style.backgroundClip),
-              (i.style.cssText =
-                "border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;position:absolute"),
-              i.appendChild(a),
-              e.getComputedStyle &&
+                (a.cloneNode(!0).style.backgroundClip = ""),
+                (K.clearCloneStyle = "content-box" === a.style.backgroundClip),
+                (i.style.cssText =
+                  "border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;position:absolute"),
+                i.appendChild(a),
+                e.getComputedStyle &&
                 Z.extend(K, {
                   pixelPosition: function () {
                     return t(), n;
@@ -29234,18 +29784,18 @@
                       : l[t]
                     : ((i = typeof n),
                       "string" === i &&
-                        (o = Wt.exec(n)) &&
-                        ((n = (o[1] + 1) * o[2] + parseFloat(Z.css(e, t))),
+                      (o = Wt.exec(n)) &&
+                      ((n = (o[1] + 1) * o[2] + parseFloat(Z.css(e, t))),
                         (i = "number")),
                       void (
                         null != n &&
                         n === n &&
                         ("number" !== i || Z.cssNumber[s] || (n += "px"),
-                        K.clearCloneStyle ||
+                          K.clearCloneStyle ||
                           "" !== n ||
                           0 !== t.indexOf("background") ||
                           (l[t] = "inherit"),
-                        (a && "set" in a && void 0 === (n = a.set(e, n, r))) ||
+                          (a && "set" in a && void 0 === (n = a.set(e, n, r))) ||
                           (l[t] = n))
                       ))
                 );
@@ -29275,8 +29825,8 @@
                   return n
                     ? $t.test(Z.css(e, "display")) && 0 === e.offsetWidth
                       ? Z.swap(e, zt, function () {
-                          return x(e, t, r);
-                        })
+                        return x(e, t, r);
+                      })
                       : x(e, t, r)
                     : void 0;
                 },
@@ -29287,12 +29837,12 @@
                     n,
                     r
                       ? w(
-                          e,
-                          t,
-                          r,
-                          "border-box" === Z.css(e, "boxSizing", !1, o),
-                          o
-                        )
+                        e,
+                        t,
+                        r,
+                        "border-box" === Z.css(e, "boxSizing", !1, o),
+                        o
+                      )
                       : 0
                   );
                 },
@@ -29310,8 +29860,8 @@
                   expand: function (n) {
                     for (
                       var r = 0,
-                        o = {},
-                        i = "string" == typeof n ? n.split(" ") : [n];
+                      o = {},
+                      i = "string" == typeof n ? n.split(" ") : [n];
                       4 > r;
                       r++
                     )
@@ -29355,8 +29905,8 @@
                     ? this.show()
                     : this.hide()
                   : this.each(function () {
-                      Tt(this) ? Z(this).show() : Z(this).hide();
-                    });
+                    Tt(this) ? Z(this).show() : Z(this).hide();
+                  });
               },
             }),
             (Z.Tween = D),
@@ -29384,16 +29934,16 @@
                   (this.pos = t =
                     this.options.duration
                       ? Z.easing[this.easing](
-                          e,
-                          this.options.duration * e,
-                          0,
-                          1,
-                          this.options.duration
-                        )
+                        e,
+                        this.options.duration * e,
+                        0,
+                        1,
+                        this.options.duration
+                      )
                       : e),
                   (this.now = (this.end - this.start) * t + this.start),
                   this.options.step &&
-                    this.options.step.call(this.elem, this.now, this),
+                  this.options.step.call(this.elem, this.now, this),
                   n && n.set ? n.set(this) : D.propHooks._default.set(this),
                   this
                 );
@@ -29416,19 +29966,19 @@
                     : e.elem.style &&
                       (null != e.elem.style[Z.cssProps[e.prop]] ||
                         Z.cssHooks[e.prop])
-                    ? Z.style(e.elem, e.prop, e.now + e.unit)
-                    : (e.elem[e.prop] = e.now);
+                      ? Z.style(e.elem, e.prop, e.now + e.unit)
+                      : (e.elem[e.prop] = e.now);
                 },
               },
             }),
             (D.propHooks.scrollTop = D.propHooks.scrollLeft =
-              {
-                set: function (e) {
-                  e.elem.nodeType &&
-                    e.elem.parentNode &&
-                    (e.elem[e.prop] = e.now);
-                },
-              }),
+            {
+              set: function (e) {
+                e.elem.nodeType &&
+                  e.elem.parentNode &&
+                  (e.elem[e.prop] = e.now);
+              },
+            }),
             (Z.easing = {
               linear: function (e) {
                 return e;
@@ -29464,7 +30014,7 @@
                   }
                   return (
                     o &&
-                      ((a = n.start = +a || +r || 0),
+                    ((a = n.start = +a || +r || 0),
                       (n.unit = i),
                       (n.end = o[1] ? a + (o[1] + 1) * o[2] : +o[2])),
                     n
@@ -29487,18 +30037,18 @@
                 e && "object" == typeof e
                   ? Z.extend({}, e)
                   : {
-                      complete: n || (!n && t) || (Z.isFunction(e) && e),
-                      duration: e,
-                      easing: (n && t) || (t && !Z.isFunction(t) && t),
-                    };
+                    complete: n || (!n && t) || (Z.isFunction(e) && e),
+                    duration: e,
+                    easing: (n && t) || (t && !Z.isFunction(t) && t),
+                  };
               return (
                 (r.duration = Z.fx.off
                   ? 0
                   : "number" == typeof r.duration
-                  ? r.duration
-                  : r.duration in Z.fx.speeds
-                  ? Z.fx.speeds[r.duration]
-                  : Z.fx.speeds._default),
+                    ? r.duration
+                    : r.duration in Z.fx.speeds
+                      ? Z.fx.speeds[r.duration]
+                      : Z.fx.speeds._default),
                 (null == r.queue || r.queue === !0) && (r.queue = "fx"),
                 (r.old = r.complete),
                 (r.complete = function () {
@@ -29544,7 +30094,7 @@
                     if (o) a[o] && a[o].stop && r(a[o]);
                     else
                       for (o in a) a[o] && a[o].stop && en.test(o) && r(a[o]);
-                    for (o = i.length; o--; )
+                    for (o = i.length; o--;)
                       i[o].elem !== this ||
                         (null != e && i[o].queue !== e) ||
                         (i[o].anim.stop(n), (t = !1), i.splice(o, 1));
@@ -29564,9 +30114,9 @@
                       a = r ? r.length : 0;
                     for (
                       n.finish = !0,
-                        Z.queue(this, e, []),
-                        o && o.stop && o.stop.call(this, !0),
-                        t = i.length;
+                      Z.queue(this, e, []),
+                      o && o.stop && o.stop.call(this, !0),
+                      t = i.length;
                       t--;
 
                     )
@@ -29671,7 +30221,7 @@
                   ? typeof e.getAttribute === wt
                     ? Z.prop(e, t, n)
                     : ((1 === i && Z.isXMLDoc(e)) ||
-                        ((t = t.toLowerCase()),
+                      ((t = t.toLowerCase()),
                         (r =
                           Z.attrHooks[t] ||
                           (Z.expr.match.bool.test(t) ? on : rn))),
@@ -29680,10 +30230,10 @@
                           ? o
                           : ((o = Z.find.attr(e, t)), null == o ? void 0 : o)
                         : null !== n
-                        ? r && "set" in r && void 0 !== (o = r.set(e, n, t))
-                          ? o
-                          : (e.setAttribute(t, n + ""), n)
-                        : void Z.removeAttr(e, t))
+                          ? r && "set" in r && void 0 !== (o = r.set(e, n, t))
+                            ? o
+                            : (e.setAttribute(t, n + ""), n)
+                          : void Z.removeAttr(e, t))
                   : void 0;
               },
               removeAttr: function (e, t) {
@@ -29692,7 +30242,7 @@
                   o = 0,
                   i = t && t.match(ht);
                 if (i && 1 === e.nodeType)
-                  for (; (n = i[o++]); )
+                  for (; (n = i[o++]);)
                     (r = Z.propFix[n] || n),
                       Z.expr.match.bool.test(n) && (e[r] = !1),
                       e.removeAttribute(n);
@@ -29723,7 +30273,7 @@
                 var o, i;
                 return (
                   r ||
-                    ((i = an[t]),
+                  ((i = an[t]),
                     (an[t] = o),
                     (o = null != n(e, t, r) ? t.toLowerCase() : null),
                     (an[t] = i)),
@@ -29757,8 +30307,8 @@
                         ? r
                         : (e[t] = n)
                       : o && "get" in o && null !== (r = o.get(e, t))
-                      ? r
-                      : e[t])
+                        ? r
+                        : e[t])
                   : void 0;
               },
               propHooks: {
@@ -29774,12 +30324,12 @@
               },
             }),
             K.optSelected ||
-              (Z.propHooks.selected = {
-                get: function (e) {
-                  var t = e.parentNode;
-                  return t && t.parentNode && t.parentNode.selectedIndex, null;
-                },
-              }),
+            (Z.propHooks.selected = {
+              get: function (e) {
+                var t = e.parentNode;
+                return t && t.parentNode && t.parentNode.selectedIndex, null;
+              },
+            }),
             Z.each(
               [
                 "tabIndex",
@@ -29817,13 +30367,13 @@
                 for (t = (e || "").match(ht) || []; c > l; l++)
                   if (
                     ((n = this[l]),
-                    (r =
-                      1 === n.nodeType &&
-                      (n.className
-                        ? (" " + n.className + " ").replace(ln, " ")
-                        : " ")))
+                      (r =
+                        1 === n.nodeType &&
+                        (n.className
+                          ? (" " + n.className + " ").replace(ln, " ")
+                          : " ")))
                   ) {
-                    for (i = 0; (o = t[i++]); )
+                    for (i = 0; (o = t[i++]);)
                       r.indexOf(" " + o + " ") < 0 && (r += o + " ");
                     (a = Z.trim(r)), n.className !== a && (n.className = a);
                   }
@@ -29847,14 +30397,14 @@
                 for (t = (e || "").match(ht) || []; c > l; l++)
                   if (
                     ((n = this[l]),
-                    (r =
-                      1 === n.nodeType &&
-                      (n.className
-                        ? (" " + n.className + " ").replace(ln, " ")
-                        : "")))
+                      (r =
+                        1 === n.nodeType &&
+                        (n.className
+                          ? (" " + n.className + " ").replace(ln, " ")
+                          : "")))
                   ) {
-                    for (i = 0; (o = t[i++]); )
-                      for (; r.indexOf(" " + o + " ") >= 0; )
+                    for (i = 0; (o = t[i++]);)
+                      for (; r.indexOf(" " + o + " ") >= 0;)
                         r = r.replace(" " + o + " ", " ");
                     (a = e ? Z.trim(r) : ""),
                       n.className !== a && (n.className = a);
@@ -29868,38 +30418,38 @@
                   ? this.addClass(e)
                   : this.removeClass(e)
                 : this.each(
-                    Z.isFunction(e)
-                      ? function (n) {
-                          Z(this).toggleClass(
-                            e.call(this, n, this.className, t),
-                            t
-                          );
-                        }
-                      : function () {
-                          if ("string" === n)
-                            for (
-                              var t, r = 0, o = Z(this), i = e.match(ht) || [];
-                              (t = i[r++]);
+                  Z.isFunction(e)
+                    ? function (n) {
+                      Z(this).toggleClass(
+                        e.call(this, n, this.className, t),
+                        t
+                      );
+                    }
+                    : function () {
+                      if ("string" === n)
+                        for (
+                          var t, r = 0, o = Z(this), i = e.match(ht) || [];
+                          (t = i[r++]);
 
-                            )
-                              o.hasClass(t) ? o.removeClass(t) : o.addClass(t);
-                          else
-                            (n === wt || "boolean" === n) &&
-                              (this.className &&
-                                gt.set(this, "__className__", this.className),
-                              (this.className =
-                                this.className || e === !1
-                                  ? ""
-                                  : gt.get(this, "__className__") || ""));
-                        }
-                  );
+                        )
+                          o.hasClass(t) ? o.removeClass(t) : o.addClass(t);
+                      else
+                        (n === wt || "boolean" === n) &&
+                          (this.className &&
+                            gt.set(this, "__className__", this.className),
+                            (this.className =
+                              this.className || e === !1
+                                ? ""
+                                : gt.get(this, "__className__") || ""));
+                    }
+                );
             },
             hasClass: function (e) {
               for (var t = " " + e + " ", n = 0, r = this.length; r > n; n++)
                 if (
                   1 === this[n].nodeType &&
                   (" " + this[n].className + " ").replace(ln, " ").indexOf(t) >=
-                    0
+                  0
                 )
                   return !0;
               return !1;
@@ -29918,32 +30468,32 @@
                     var o;
                     1 === this.nodeType &&
                       ((o = r ? e.call(this, n, Z(this).val()) : e),
-                      null == o
-                        ? (o = "")
-                        : "number" == typeof o
-                        ? (o += "")
-                        : Z.isArray(o) &&
-                          (o = Z.map(o, function (e) {
-                            return null == e ? "" : e + "";
-                          })),
-                      (t =
-                        Z.valHooks[this.type] ||
-                        Z.valHooks[this.nodeName.toLowerCase()]),
-                      (t && "set" in t && void 0 !== t.set(this, o, "value")) ||
+                        null == o
+                          ? (o = "")
+                          : "number" == typeof o
+                            ? (o += "")
+                            : Z.isArray(o) &&
+                            (o = Z.map(o, function (e) {
+                              return null == e ? "" : e + "";
+                            })),
+                        (t =
+                          Z.valHooks[this.type] ||
+                          Z.valHooks[this.nodeName.toLowerCase()]),
+                        (t && "set" in t && void 0 !== t.set(this, o, "value")) ||
                         (this.value = o));
                   }))
                 : o
-                ? ((t =
+                  ? ((t =
                     Z.valHooks[o.type] || Z.valHooks[o.nodeName.toLowerCase()]),
-                  t && "get" in t && void 0 !== (n = t.get(o, "value"))
-                    ? n
-                    : ((n = o.value),
-                      "string" == typeof n
-                        ? n.replace(cn, "")
-                        : null == n
-                        ? ""
-                        : n))
-                : void 0;
+                    t && "get" in t && void 0 !== (n = t.get(o, "value"))
+                      ? n
+                      : ((n = o.value),
+                        "string" == typeof n
+                          ? n.replace(cn, "")
+                          : null == n
+                            ? ""
+                            : n))
+                  : void 0;
             },
           }),
             Z.extend({
@@ -29958,26 +30508,26 @@
                   get: function (e) {
                     for (
                       var t,
-                        n,
-                        r = e.options,
-                        o = e.selectedIndex,
-                        i = "select-one" === e.type || 0 > o,
-                        a = i ? null : [],
-                        s = i ? o + 1 : r.length,
-                        l = 0 > o ? s : i ? o : 0;
+                      n,
+                      r = e.options,
+                      o = e.selectedIndex,
+                      i = "select-one" === e.type || 0 > o,
+                      a = i ? null : [],
+                      s = i ? o + 1 : r.length,
+                      l = 0 > o ? s : i ? o : 0;
                       s > l;
                       l++
                     )
                       if (
                         ((n = r[l]),
-                        !(
-                          (!n.selected && l !== o) ||
-                          (K.optDisabled
-                            ? n.disabled
-                            : null !== n.getAttribute("disabled")) ||
-                          (n.parentNode.disabled &&
-                            Z.nodeName(n.parentNode, "optgroup"))
-                        ))
+                          !(
+                            (!n.selected && l !== o) ||
+                            (K.optDisabled
+                              ? n.disabled
+                              : null !== n.getAttribute("disabled")) ||
+                            (n.parentNode.disabled &&
+                              Z.nodeName(n.parentNode, "optgroup"))
+                          ))
                       ) {
                         if (((t = Z(n).val()), i)) return t;
                         a.push(t);
@@ -30006,9 +30556,9 @@
                 },
               }),
                 K.checkOn ||
-                  (Z.valHooks[this].get = function (e) {
-                    return null === e.getAttribute("value") ? "on" : e.value;
-                  });
+                (Z.valHooks[this].get = function (e) {
+                  return null === e.getAttribute("value") ? "on" : e.value;
+                });
             }),
             Z.each(
               "blur focus focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave change select submit keydown keypress keyup error contextmenu".split(
@@ -30056,7 +30606,7 @@
               }
               return (
                 (!t || t.getElementsByTagName("parsererror").length) &&
-                  Z.error("Invalid XML: " + e),
+                Z.error("Invalid XML: " + e),
                 t
               );
             });
@@ -30120,43 +30670,43 @@
                   N = t;
                 2 !== _ &&
                   ((_ = 2),
-                  s && clearTimeout(s),
-                  (r = void 0),
-                  (i = a || ""),
-                  (b.readyState = e > 0 ? 4 : 0),
-                  (l = (e >= 200 && 300 > e) || 304 === e),
-                  n && (y = U(d, b, n)),
-                  (y = B(d, y, b, l)),
-                  l
-                    ? (d.ifModified &&
+                    s && clearTimeout(s),
+                    (r = void 0),
+                    (i = a || ""),
+                    (b.readyState = e > 0 ? 4 : 0),
+                    (l = (e >= 200 && 300 > e) || 304 === e),
+                    n && (y = U(d, b, n)),
+                    (y = B(d, y, b, l)),
+                    l
+                      ? (d.ifModified &&
                         ((E = b.getResponseHeader("Last-Modified")),
-                        E && (Z.lastModified[o] = E),
-                        (E = b.getResponseHeader("etag")),
-                        E && (Z.etag[o] = E)),
-                      204 === e || "HEAD" === d.type
-                        ? (N = "nocontent")
-                        : 304 === e
-                        ? (N = "notmodified")
-                        : ((N = y.state),
-                          (u = y.data),
-                          (g = y.error),
-                          (l = !g)))
-                    : ((g = N), (e || !N) && ((N = "error"), 0 > e && (e = 0))),
-                  (b.status = e),
-                  (b.statusText = (t || N) + ""),
-                  l ? f.resolveWith(p, [u, N, b]) : f.rejectWith(p, [b, N, g]),
-                  b.statusCode(v),
-                  (v = void 0),
-                  c &&
+                          E && (Z.lastModified[o] = E),
+                          (E = b.getResponseHeader("etag")),
+                          E && (Z.etag[o] = E)),
+                        204 === e || "HEAD" === d.type
+                          ? (N = "nocontent")
+                          : 304 === e
+                            ? (N = "notmodified")
+                            : ((N = y.state),
+                              (u = y.data),
+                              (g = y.error),
+                              (l = !g)))
+                      : ((g = N), (e || !N) && ((N = "error"), 0 > e && (e = 0))),
+                    (b.status = e),
+                    (b.statusText = (t || N) + ""),
+                    l ? f.resolveWith(p, [u, N, b]) : f.rejectWith(p, [b, N, g]),
+                    b.statusCode(v),
+                    (v = void 0),
+                    c &&
                     h.trigger(l ? "ajaxSuccess" : "ajaxError", [
                       b,
                       d,
                       l ? u : g,
                     ]),
-                  m.fireWith(p, [b, N]),
-                  c &&
+                    m.fireWith(p, [b, N]),
+                    c &&
                     (h.trigger("ajaxComplete", [b, d]),
-                    --Z.active || Z.event.trigger("ajaxStop")));
+                      --Z.active || Z.event.trigger("ajaxStop")));
               }
               "object" == typeof e && ((t = e), (e = void 0)), (t = t || {});
               var r,
@@ -30183,7 +30733,7 @@
                     var t;
                     if (2 === _) {
                       if (!a)
-                        for (a = {}; (t = fn.exec(i)); )
+                        for (a = {}; (t = fn.exec(i));)
                           a[t[1].toLowerCase()] = t[2];
                       t = a[e.toLowerCase()];
                     }
@@ -30213,30 +30763,30 @@
                 };
               if (
                 ((f.promise(b).complete = m.add),
-                (b.success = b.done),
-                (b.error = b.fail),
-                (d.url = ((e || d.url || Nn) + "")
-                  .replace(pn, "")
-                  .replace(gn, Tn[1] + "//")),
-                (d.type = t.method || t.type || d.method || d.type),
-                (d.dataTypes = Z.trim(d.dataType || "*")
-                  .toLowerCase()
-                  .match(ht) || [""]),
-                null == d.crossDomain &&
+                  (b.success = b.done),
+                  (b.error = b.fail),
+                  (d.url = ((e || d.url || Nn) + "")
+                    .replace(pn, "")
+                    .replace(gn, Tn[1] + "//")),
+                  (d.type = t.method || t.type || d.method || d.type),
+                  (d.dataTypes = Z.trim(d.dataType || "*")
+                    .toLowerCase()
+                    .match(ht) || [""]),
+                  null == d.crossDomain &&
                   ((l = yn.exec(d.url.toLowerCase())),
-                  (d.crossDomain = !(
-                    !l ||
-                    (l[1] === Tn[1] &&
-                      l[2] === Tn[2] &&
-                      (l[3] || ("http:" === l[1] ? "80" : "443")) ===
+                    (d.crossDomain = !(
+                      !l ||
+                      (l[1] === Tn[1] &&
+                        l[2] === Tn[2] &&
+                        (l[3] || ("http:" === l[1] ? "80" : "443")) ===
                         (Tn[3] || ("http:" === Tn[1] ? "80" : "443")))
-                  ))),
-                d.data &&
+                    ))),
+                  d.data &&
                   d.processData &&
                   "string" != typeof d.data &&
                   (d.data = Z.param(d.data, d.traditional)),
-                I(_n, d, t, b),
-                2 === _)
+                  I(_n, d, t, b),
+                  2 === _)
               )
                 return b;
               (c = Z.event && d.global),
@@ -30245,25 +30795,25 @@
                 (d.hasContent = !vn.test(d.type)),
                 (o = d.url),
                 d.hasContent ||
-                  (d.data &&
-                    ((o = d.url += (dn.test(o) ? "&" : "?") + d.data),
+                (d.data &&
+                  ((o = d.url += (dn.test(o) ? "&" : "?") + d.data),
                     delete d.data),
                   d.cache === !1 &&
-                    (d.url = hn.test(o)
-                      ? o.replace(hn, "$1_=" + un++)
-                      : o + (dn.test(o) ? "&" : "?") + "_=" + un++)),
+                  (d.url = hn.test(o)
+                    ? o.replace(hn, "$1_=" + un++)
+                    : o + (dn.test(o) ? "&" : "?") + "_=" + un++)),
                 d.ifModified &&
-                  (Z.lastModified[o] &&
-                    b.setRequestHeader("If-Modified-Since", Z.lastModified[o]),
+                (Z.lastModified[o] &&
+                  b.setRequestHeader("If-Modified-Since", Z.lastModified[o]),
                   Z.etag[o] && b.setRequestHeader("If-None-Match", Z.etag[o])),
                 ((d.data && d.hasContent && d.contentType !== !1) ||
                   t.contentType) &&
-                  b.setRequestHeader("Content-Type", d.contentType),
+                b.setRequestHeader("Content-Type", d.contentType),
                 b.setRequestHeader(
                   "Accept",
                   d.dataTypes[0] && d.accepts[d.dataTypes[0]]
                     ? d.accepts[d.dataTypes[0]] +
-                        ("*" !== d.dataTypes[0] ? ", " + bn + "; q=0.01" : "")
+                    ("*" !== d.dataTypes[0] ? ", " + bn + "; q=0.01" : "")
                     : d.accepts["*"]
                 );
               for (u in d.headers) b.setRequestHeader(u, d.headers[u]);
@@ -30278,10 +30828,10 @@
                 (b.readyState = 1),
                   c && h.trigger("ajaxSend", [b, d]),
                   d.async &&
-                    d.timeout > 0 &&
-                    (s = setTimeout(function () {
-                      b.abort("timeout");
-                    }, d.timeout));
+                  d.timeout > 0 &&
+                  (s = setTimeout(function () {
+                    b.abort("timeout");
+                  }, d.timeout));
                 try {
                   (_ = 1), r.send(g, n);
                 } catch (N) {
@@ -30321,14 +30871,14 @@
                 var t;
                 return Z.isFunction(e)
                   ? this.each(function (t) {
-                      Z(this).wrapAll(e.call(this, t));
-                    })
+                    Z(this).wrapAll(e.call(this, t));
+                  })
                   : (this[0] &&
-                      ((t = Z(e, this[0].ownerDocument).eq(0).clone(!0)),
+                    ((t = Z(e, this[0].ownerDocument).eq(0).clone(!0)),
                       this[0].parentNode && t.insertBefore(this[0]),
                       t
                         .map(function () {
-                          for (var e = this; e.firstElementChild; )
+                          for (var e = this; e.firstElementChild;)
                             e = e.firstElementChild;
                           return e;
                         })
@@ -30339,13 +30889,13 @@
                 return this.each(
                   Z.isFunction(e)
                     ? function (t) {
-                        Z(this).wrapInner(e.call(this, t));
-                      }
+                      Z(this).wrapInner(e.call(this, t));
+                    }
                     : function () {
-                        var t = Z(this),
-                          n = t.contents();
-                        n.length ? n.wrapAll(e) : t.append(e);
-                      }
+                      var t = Z(this),
+                        n = t.contents();
+                      n.length ? n.wrapAll(e) : t.append(e);
+                    }
                 );
               },
               wrap: function (e) {
@@ -30385,7 +30935,7 @@
             if (
               (void 0 === t &&
                 (t = Z.ajaxSettings && Z.ajaxSettings.traditional),
-              Z.isArray(e) || (e.jquery && !Z.isPlainObject(e)))
+                Z.isArray(e) || (e.jquery && !Z.isPlainObject(e)))
             )
               Z.each(e, function () {
                 o(this.name, this.value);
@@ -30417,10 +30967,10 @@
                     return null == n
                       ? null
                       : Z.isArray(n)
-                      ? Z.map(n, function (e) {
+                        ? Z.map(n, function (e) {
                           return { name: t.name, value: e.replace(xn, "\r\n") };
                         })
-                      : { name: t.name, value: n.replace(xn, "\r\n") };
+                        : { name: t.name, value: n.replace(xn, "\r\n") };
                   })
                   .get();
               },
@@ -30428,7 +30978,7 @@
             (Z.ajaxSettings.xhr = function () {
               try {
                 return new XMLHttpRequest();
-              } catch (e) {}
+              } catch (e) { }
             });
           var Rn = 0,
             kn = {},
@@ -30444,32 +30994,32 @@
               var t;
               return K.cors || (Pn && !e.crossDomain)
                 ? {
-                    send: function (n, r) {
-                      var o,
-                        i = e.xhr(),
-                        a = ++Rn;
-                      if (
-                        (i.open(e.type, e.url, e.async, e.username, e.password),
+                  send: function (n, r) {
+                    var o,
+                      i = e.xhr(),
+                      a = ++Rn;
+                    if (
+                      (i.open(e.type, e.url, e.async, e.username, e.password),
                         e.xhrFields)
-                      )
-                        for (o in e.xhrFields) i[o] = e.xhrFields[o];
-                      e.mimeType &&
-                        i.overrideMimeType &&
-                        i.overrideMimeType(e.mimeType),
-                        e.crossDomain ||
-                          n["X-Requested-With"] ||
-                          (n["X-Requested-With"] = "XMLHttpRequest");
-                      for (o in n) i.setRequestHeader(o, n[o]);
-                      (t = function (e) {
-                        return function () {
-                          t &&
-                            (delete kn[a],
+                    )
+                      for (o in e.xhrFields) i[o] = e.xhrFields[o];
+                    e.mimeType &&
+                      i.overrideMimeType &&
+                      i.overrideMimeType(e.mimeType),
+                      e.crossDomain ||
+                      n["X-Requested-With"] ||
+                      (n["X-Requested-With"] = "XMLHttpRequest");
+                    for (o in n) i.setRequestHeader(o, n[o]);
+                    (t = function (e) {
+                      return function () {
+                        t &&
+                          (delete kn[a],
                             (t = i.onload = i.onerror = null),
                             "abort" === e
                               ? i.abort()
                               : "error" === e
-                              ? r(i.status, i.statusText)
-                              : r(
+                                ? r(i.status, i.statusText)
+                                : r(
                                   On[i.status] || i.status,
                                   i.statusText,
                                   "string" == typeof i.responseText
@@ -30477,21 +31027,21 @@
                                     : void 0,
                                   i.getAllResponseHeaders()
                                 ));
-                        };
-                      }),
-                        (i.onload = t()),
-                        (i.onerror = t("error")),
-                        (t = kn[a] = t("abort"));
-                      try {
-                        i.send((e.hasContent && e.data) || null);
-                      } catch (s) {
-                        if (t) throw s;
-                      }
-                    },
-                    abort: function () {
-                      t && t();
-                    },
-                  }
+                      };
+                    }),
+                      (i.onload = t()),
+                      (i.onerror = t("error")),
+                      (t = kn[a] = t("abort"));
+                    try {
+                      i.send((e.hasContent && e.data) || null);
+                    } catch (s) {
+                      if (t) throw s;
+                    }
+                  },
+                  abort: function () {
+                    t && t();
+                  },
+                }
                 : void 0;
             }),
             Z.ajaxSetup({
@@ -30551,21 +31101,21 @@
                   (An.test(t.url)
                     ? "url"
                     : "string" == typeof t.data &&
-                      !(t.contentType || "").indexOf(
-                        "application/x-www-form-urlencoded"
-                      ) &&
-                      An.test(t.data) &&
-                      "data");
+                    !(t.contentType || "").indexOf(
+                      "application/x-www-form-urlencoded"
+                    ) &&
+                    An.test(t.data) &&
+                    "data");
               return s || "jsonp" === t.dataTypes[0]
                 ? ((o = t.jsonpCallback =
-                    Z.isFunction(t.jsonpCallback)
-                      ? t.jsonpCallback()
-                      : t.jsonpCallback),
+                  Z.isFunction(t.jsonpCallback)
+                    ? t.jsonpCallback()
+                    : t.jsonpCallback),
                   s
                     ? (t[s] = t[s].replace(An, "$1" + o))
                     : t.jsonp !== !1 &&
-                      (t.url +=
-                        (dn.test(t.url) ? "&" : "?") + t.jsonp + "=" + o),
+                    (t.url +=
+                      (dn.test(t.url) ? "&" : "?") + t.jsonp + "=" + o),
                   (t.converters["script json"] = function () {
                     return a || Z.error(o + " was not called"), a[0];
                   }),
@@ -30608,17 +31158,17 @@
                 ? ((n = t), (t = void 0))
                 : t && "object" == typeof t && (o = "POST"),
               a.length > 0 &&
-                Z.ajax({ url: e, type: o, dataType: "html", data: t })
-                  .done(function (e) {
-                    (i = arguments),
-                      a.html(r ? Z("<div>").append(Z.parseHTML(e)).find(r) : e);
-                  })
-                  .complete(
-                    n &&
-                      function (e, t) {
-                        a.each(n, i || [e.responseText, t, e]);
-                      }
-                  ),
+              Z.ajax({ url: e, type: o, dataType: "html", data: t })
+                .done(function (e) {
+                  (i = arguments),
+                    a.html(r ? Z("<div>").append(Z.parseHTML(e)).find(r) : e);
+                })
+                .complete(
+                  n &&
+                  function (e, t) {
+                    a.each(n, i || [e.responseText, t, e]);
+                  }
+                ),
               this
             );
           }),
@@ -30677,8 +31227,8 @@
                   return void 0 === e
                     ? this
                     : this.each(function (t) {
-                        Z.offset.setOffset(this, e, t);
-                      });
+                      Z.offset.setOffset(this, e, t);
+                    });
                 var t,
                   n,
                   r = this[0],
@@ -30688,12 +31238,12 @@
                   ? ((t = i.documentElement),
                     Z.contains(t, r)
                       ? (typeof r.getBoundingClientRect !== wt &&
-                          (o = r.getBoundingClientRect()),
+                        (o = r.getBoundingClientRect()),
                         (n = F(i)),
-                        {
-                          top: o.top + n.pageYOffset - t.clientTop,
-                          left: o.left + n.pageXOffset - t.clientLeft,
-                        })
+                      {
+                        top: o.top + n.pageYOffset - t.clientTop,
+                        left: o.left + n.pageXOffset - t.clientLeft,
+                      })
                       : o)
                   : void 0;
               },
@@ -30746,11 +31296,11 @@
                           ? a[n]
                           : t[o]
                         : void (a
-                            ? a.scrollTo(
-                                r ? e.pageXOffset : i,
-                                r ? i : e.pageYOffset
-                              )
-                            : (t[o] = i));
+                          ? a.scrollTo(
+                            r ? e.pageXOffset : i,
+                            r ? i : e.pageYOffset
+                          )
+                          : (t[o] = i));
                     },
                     t,
                     o,
@@ -30781,17 +31331,17 @@
                         return Z.isWindow(t)
                           ? t.document.documentElement["client" + e]
                           : 9 === t.nodeType
-                          ? ((o = t.documentElement),
-                            Math.max(
-                              t.body["scroll" + e],
-                              o["scroll" + e],
-                              t.body["offset" + e],
-                              o["offset" + e],
-                              o["client" + e]
-                            ))
-                          : void 0 === r
-                          ? Z.css(t, n, a)
-                          : Z.style(t, n, r, a);
+                            ? ((o = t.documentElement),
+                              Math.max(
+                                t.body["scroll" + e],
+                                o["scroll" + e],
+                                t.body["offset" + e],
+                                o["offset" + e],
+                                o["client" + e]
+                              ))
+                            : void 0 === r
+                              ? Z.css(t, n, a)
+                              : Z.style(t, n, r, a);
                       },
                       t,
                       i ? r : void 0,
@@ -30807,10 +31357,10 @@
             }),
             (Z.fn.andSelf = Z.fn.addBack),
             "function" == typeof define &&
-              define.amd &&
-              define("jquery", [], function () {
-                return Z;
-              });
+            define.amd &&
+            define("jquery", [], function () {
+              return Z;
+            });
           var jn = e.jQuery,
             Un = e.$;
           return (
@@ -30835,8 +31385,8 @@
           "function" == typeof define && define.amd
             ? define(["jquery"], r)
             : "undefined" != typeof n
-            ? (t.exports = r(e("./jquery")))
-            : r(jQuery);
+              ? (t.exports = r(e("./jquery")))
+              : r(jQuery);
         })(function (e) {
           "use strict";
           var t = window.Slick || {};
@@ -30954,7 +31504,7 @@
                   ? ((i.hidden = "mozHidden"),
                     (i.visibilityChange = "mozvisibilitychange"))
                   : "undefined" != typeof document.webkitHidden &&
-                    ((i.hidden = "webkitHidden"),
+                  ((i.hidden = "webkitHidden"),
                     (i.visibilityChange = "webkitvisibilitychange")),
                 (i.autoPlay = e.proxy(i.autoPlay, i)),
                 (i.autoPlayClear = e.proxy(i.autoPlayClear, i)),
@@ -30985,11 +31535,11 @@
                     ? 0 === n && 0 === o.$slides.length
                       ? e(t).appendTo(o.$slideTrack)
                       : r
-                      ? e(t).insertBefore(o.$slides.eq(n))
-                      : e(t).insertAfter(o.$slides.eq(n))
+                        ? e(t).insertBefore(o.$slides.eq(n))
+                        : e(t).insertAfter(o.$slides.eq(n))
                     : r === !0
-                    ? e(t).prependTo(o.$slideTrack)
-                    : e(t).appendTo(o.$slideTrack),
+                      ? e(t).prependTo(o.$slideTrack)
+                      : e(t).appendTo(o.$slideTrack),
                   (o.$slides = o.$slideTrack.children(this.options.slide)),
                   o.$slideTrack.children(this.options.slide).detach(),
                   o.$slideTrack.append(o.$slides),
@@ -31018,46 +31568,46 @@
                 o.transformsEnabled === !1
                   ? o.options.vertical === !1
                     ? o.$slideTrack.animate(
-                        { left: t },
-                        o.options.speed,
-                        o.options.easing,
-                        n
-                      )
+                      { left: t },
+                      o.options.speed,
+                      o.options.easing,
+                      n
+                    )
                     : o.$slideTrack.animate(
-                        { top: t },
-                        o.options.speed,
-                        o.options.easing,
-                        n
-                      )
+                      { top: t },
+                      o.options.speed,
+                      o.options.easing,
+                      n
+                    )
                   : o.cssTransitions === !1
-                  ? (o.options.rtl === !0 && (o.currentLeft = -o.currentLeft),
-                    e({ animStart: o.currentLeft }).animate(
-                      { animStart: t },
-                      {
-                        duration: o.options.speed,
-                        easing: o.options.easing,
-                        step: function (e) {
-                          (e = Math.ceil(e)),
-                            o.options.vertical === !1
-                              ? ((r[o.animType] =
+                    ? (o.options.rtl === !0 && (o.currentLeft = -o.currentLeft),
+                      e({ animStart: o.currentLeft }).animate(
+                        { animStart: t },
+                        {
+                          duration: o.options.speed,
+                          easing: o.options.easing,
+                          step: function (e) {
+                            (e = Math.ceil(e)),
+                              o.options.vertical === !1
+                                ? ((r[o.animType] =
                                   "translate(" + e + "px, 0px)"),
-                                o.$slideTrack.css(r))
-                              : ((r[o.animType] = "translate(0px," + e + "px)"),
-                                o.$slideTrack.css(r));
-                        },
-                        complete: function () {
-                          n && n.call();
-                        },
-                      }
-                    ))
-                  : (o.applyTransition(),
-                    (t = Math.ceil(t)),
-                    (r[o.animType] =
-                      o.options.vertical === !1
-                        ? "translate3d(" + t + "px, 0px, 0px)"
-                        : "translate3d(0px," + t + "px, 0px)"),
-                    o.$slideTrack.css(r),
-                    n &&
+                                  o.$slideTrack.css(r))
+                                : ((r[o.animType] = "translate(0px," + e + "px)"),
+                                  o.$slideTrack.css(r));
+                          },
+                          complete: function () {
+                            n && n.call();
+                          },
+                        }
+                      ))
+                    : (o.applyTransition(),
+                      (t = Math.ceil(t)),
+                      (r[o.animType] =
+                        o.options.vertical === !1
+                          ? "translate3d(" + t + "px, 0px, 0px)"
+                          : "translate3d(0px," + t + "px, 0px)"),
+                      o.$slideTrack.css(r),
+                      n &&
                       setTimeout(function () {
                         o.disableTransition(), n.call();
                       }, o.options.speed));
@@ -31067,11 +31617,11 @@
                 r = n.options.asNavFor;
               r && null !== r && (r = e(r).not(n.$slider)),
                 null !== r &&
-                  "object" == typeof r &&
-                  r.each(function () {
-                    var n = e(this).slick("getSlick");
-                    n.unslicked || n.slideHandler(t, !0);
-                  });
+                "object" == typeof r &&
+                r.each(function () {
+                  var n = e(this).slick("getSlick");
+                  n.unslicked || n.slideHandler(t, !0);
+                });
             }),
             (t.prototype.applyTransition = function (e) {
               var t = this,
@@ -31079,10 +31629,10 @@
               (n[t.transitionType] =
                 t.options.fade === !1
                   ? t.transformType +
-                    " " +
-                    t.options.speed +
-                    "ms " +
-                    t.options.cssEase
+                  " " +
+                  t.options.speed +
+                  "ms " +
+                  t.options.cssEase
                   : "opacity " + t.options.speed + "ms " + t.options.cssEase),
                 t.options.fade === !1
                   ? t.$slideTrack.css(n)
@@ -31092,11 +31642,11 @@
               var e = this;
               e.autoPlayTimer && clearInterval(e.autoPlayTimer),
                 e.slideCount > e.options.slidesToShow &&
-                  e.paused !== !0 &&
-                  (e.autoPlayTimer = setInterval(
-                    e.autoPlayIterator,
-                    e.options.autoplaySpeed
-                  ));
+                e.paused !== !0 &&
+                (e.autoPlayTimer = setInterval(
+                  e.autoPlayIterator,
+                  e.options.autoplaySpeed
+                ));
             }),
             (t.prototype.autoPlayClear = function () {
               var e = this;
@@ -31107,7 +31657,7 @@
               e.options.infinite === !1
                 ? 1 === e.direction
                   ? (e.currentSlide + 1 === e.slideCount - 1 &&
-                      (e.direction = 0),
+                    (e.direction = 0),
                     e.slideHandler(e.currentSlide + e.options.slidesToScroll))
                   : (e.currentSlide - 1 === 0 && (e.direction = 1),
                     e.slideHandler(e.currentSlide - e.options.slidesToScroll))
@@ -31119,23 +31669,23 @@
                 ((t.$prevArrow = e(t.options.prevArrow).addClass(
                   "slick-arrow"
                 )),
-                (t.$nextArrow = e(t.options.nextArrow).addClass("slick-arrow")),
-                t.slideCount > t.options.slidesToShow
-                  ? (t.$prevArrow
+                  (t.$nextArrow = e(t.options.nextArrow).addClass("slick-arrow")),
+                  t.slideCount > t.options.slidesToShow
+                    ? (t.$prevArrow
                       .removeClass("slick-hidden")
                       .removeAttr("aria-hidden tabindex"),
-                    t.$nextArrow
-                      .removeClass("slick-hidden")
-                      .removeAttr("aria-hidden tabindex"),
-                    t.htmlExpr.test(t.options.prevArrow) &&
+                      t.$nextArrow
+                        .removeClass("slick-hidden")
+                        .removeAttr("aria-hidden tabindex"),
+                      t.htmlExpr.test(t.options.prevArrow) &&
                       t.$prevArrow.prependTo(t.options.appendArrows),
-                    t.htmlExpr.test(t.options.nextArrow) &&
+                      t.htmlExpr.test(t.options.nextArrow) &&
                       t.$nextArrow.appendTo(t.options.appendArrows),
-                    t.options.infinite !== !0 &&
+                      t.options.infinite !== !0 &&
                       t.$prevArrow
                         .addClass("slick-disabled")
                         .attr("aria-disabled", "true"))
-                  : t.$prevArrow
+                    : t.$prevArrow
                       .add(t.$nextArrow)
                       .addClass("slick-hidden")
                       .attr({ "aria-disabled": "true", tabindex: "-1" }));
@@ -31187,7 +31737,7 @@
                 t.$slideTrack.css("opacity", 0),
                 (t.options.centerMode === !0 ||
                   t.options.swipeToSlide === !0) &&
-                  (t.options.slidesToScroll = 1),
+                (t.options.slidesToScroll = 1),
                 e("img[data-lazy]", t.$slider)
                   .not("[src]")
                   .addClass("slick-loading"),
@@ -31211,13 +31761,13 @@
                 s = this;
               if (
                 ((r = document.createDocumentFragment()),
-                (i = s.$slider.children()),
-                s.options.rows > 1)
+                  (i = s.$slider.children()),
+                  s.options.rows > 1)
               ) {
                 for (
                   a = s.options.slidesPerRow * s.options.rows,
-                    o = Math.ceil(i.length / a),
-                    e = 0;
+                  o = Math.ceil(i.length / a),
+                  e = 0;
                   o > e;
                   e++
                 ) {
@@ -31255,9 +31805,9 @@
                 ("window" === a.respondTo
                   ? (i = c)
                   : "slider" === a.respondTo
-                  ? (i = l)
-                  : "min" === a.respondTo && (i = Math.min(c, l)),
-                a.options.responsive &&
+                    ? (i = l)
+                    : "min" === a.respondTo && (i = Math.min(c, l)),
+                  a.options.responsive &&
                   a.options.responsive.length &&
                   null !== a.options.responsive)
               ) {
@@ -31270,14 +31820,14 @@
                 null !== o
                   ? null !== a.activeBreakpoint
                     ? (o !== a.activeBreakpoint || n) &&
-                      ((a.activeBreakpoint = o),
+                    ((a.activeBreakpoint = o),
                       "unslick" === a.breakpointSettings[o]
                         ? a.unslick(o)
                         : ((a.options = e.extend(
-                            {},
-                            a.originalSettings,
-                            a.breakpointSettings[o]
-                          )),
+                          {},
+                          a.originalSettings,
+                          a.breakpointSettings[o]
+                        )),
                           t === !0 && (a.currentSlide = a.options.initialSlide),
                           a.refresh(t)),
                       (s = o))
@@ -31285,15 +31835,15 @@
                       "unslick" === a.breakpointSettings[o]
                         ? a.unslick(o)
                         : ((a.options = e.extend(
-                            {},
-                            a.originalSettings,
-                            a.breakpointSettings[o]
-                          )),
+                          {},
+                          a.originalSettings,
+                          a.breakpointSettings[o]
+                        )),
                           t === !0 && (a.currentSlide = a.options.initialSlide),
                           a.refresh(t)),
                       (s = o))
                   : null !== a.activeBreakpoint &&
-                    ((a.activeBreakpoint = null),
+                  ((a.activeBreakpoint = null),
                     (a.options = a.originalSettings),
                     t === !0 && (a.currentSlide = a.options.initialSlide),
                     a.refresh(t),
@@ -31308,7 +31858,7 @@
                 a = this,
                 s = e(t.target);
               switch (
-                (s.is("a") && t.preventDefault(),
+              (s.is("a") && t.preventDefault(),
                 s.is("li") || (s = s.closest("li")),
                 (i = a.slideCount % a.options.slidesToScroll !== 0),
                 (r = i
@@ -31322,12 +31872,12 @@
                       ? a.options.slidesToScroll
                       : a.options.slidesToShow - r),
                     a.slideCount > a.options.slidesToShow &&
-                      a.slideHandler(a.currentSlide - o, !1, n);
+                    a.slideHandler(a.currentSlide - o, !1, n);
                   break;
                 case "next":
                   (o = 0 === r ? a.options.slidesToScroll : r),
                     a.slideCount > a.options.slidesToShow &&
-                      a.slideHandler(a.currentSlide + o, !1, n);
+                    a.slideHandler(a.currentSlide + o, !1, n);
                   break;
                 case "index":
                   var l =
@@ -31362,17 +31912,17 @@
               t.options.dots &&
                 null !== t.$dots &&
                 (e("li", t.$dots).off("click.slick", t.changeSlide),
-                t.options.pauseOnDotsHover === !0 &&
+                  t.options.pauseOnDotsHover === !0 &&
                   t.options.autoplay === !0 &&
                   e("li", t.$dots)
                     .off("mouseenter.slick", e.proxy(t.setPaused, t, !0))
                     .off("mouseleave.slick", e.proxy(t.setPaused, t, !1))),
                 t.options.arrows === !0 &&
-                  t.slideCount > t.options.slidesToShow &&
-                  (t.$prevArrow &&
-                    t.$prevArrow.off("click.slick", t.changeSlide),
+                t.slideCount > t.options.slidesToShow &&
+                (t.$prevArrow &&
+                  t.$prevArrow.off("click.slick", t.changeSlide),
                   t.$nextArrow &&
-                    t.$nextArrow.off("click.slick", t.changeSlide)),
+                  t.$nextArrow.off("click.slick", t.changeSlide)),
                 t.$list.off("touchstart.slick mousedown.slick", t.swipeHandler),
                 t.$list.off("touchmove.slick mousemove.slick", t.swipeHandler),
                 t.$list.off("touchend.slick mouseup.slick", t.swipeHandler),
@@ -31385,11 +31935,11 @@
                 t.$list.off("mouseenter.slick", e.proxy(t.setPaused, t, !0)),
                 t.$list.off("mouseleave.slick", e.proxy(t.setPaused, t, !1)),
                 t.options.accessibility === !0 &&
-                  t.$list.off("keydown.slick", t.keyHandler),
+                t.$list.off("keydown.slick", t.keyHandler),
                 t.options.focusOnSelect === !0 &&
-                  e(t.$slideTrack)
-                    .children()
-                    .off("click.slick", t.selectHandler),
+                e(t.$slideTrack)
+                  .children()
+                  .off("click.slick", t.selectHandler),
                 e(window).off(
                   "orientationchange.slick.slick-" + t.instanceUid,
                   t.orientationChange
@@ -31413,15 +31963,15 @@
                 t = this;
               t.options.rows > 1 &&
                 ((e = t.$slides.children().children()),
-                e.removeAttr("style"),
-                t.$slider.html(e));
+                  e.removeAttr("style"),
+                  t.$slider.html(e));
             }),
             (t.prototype.clickHandler = function (e) {
               var t = this;
               t.shouldClick === !1 &&
                 (e.stopImmediatePropagation(),
-                e.stopPropagation(),
-                e.preventDefault());
+                  e.stopPropagation(),
+                  e.preventDefault());
             }),
             (t.prototype.destroy = function (t) {
               var n = this;
@@ -31431,33 +31981,33 @@
                 t && e(".slick-cloned", n.$slider).detach(),
                 n.$dots && n.$dots.remove(),
                 n.options.arrows === !0 &&
-                  (n.$prevArrow &&
-                    n.$prevArrow.length &&
-                    (n.$prevArrow
-                      .removeClass("slick-disabled slick-arrow slick-hidden")
-                      .removeAttr("aria-hidden aria-disabled tabindex")
-                      .css("display", ""),
+                (n.$prevArrow &&
+                  n.$prevArrow.length &&
+                  (n.$prevArrow
+                    .removeClass("slick-disabled slick-arrow slick-hidden")
+                    .removeAttr("aria-hidden aria-disabled tabindex")
+                    .css("display", ""),
                     n.htmlExpr.test(n.options.prevArrow) &&
-                      n.$prevArrow.remove()),
+                    n.$prevArrow.remove()),
                   n.$nextArrow &&
-                    n.$nextArrow.length &&
-                    (n.$nextArrow
-                      .removeClass("slick-disabled slick-arrow slick-hidden")
-                      .removeAttr("aria-hidden aria-disabled tabindex")
-                      .css("display", ""),
+                  n.$nextArrow.length &&
+                  (n.$nextArrow
+                    .removeClass("slick-disabled slick-arrow slick-hidden")
+                    .removeAttr("aria-hidden aria-disabled tabindex")
+                    .css("display", ""),
                     n.htmlExpr.test(n.options.nextArrow) &&
-                      n.$nextArrow.remove())),
+                    n.$nextArrow.remove())),
                 n.$slides &&
-                  t &&
-                  (n.$slides
-                    .removeClass(
-                      "slick-slide slick-active slick-center slick-visible slick-current"
-                    )
-                    .removeAttr("aria-hidden")
-                    .removeAttr("data-slick-index")
-                    .each(function () {
-                      e(this).attr("style", e(this).data("originalStyling"));
-                    }),
+                t &&
+                (n.$slides
+                  .removeClass(
+                    "slick-slide slick-active slick-center slick-visible slick-current"
+                  )
+                  .removeAttr("aria-hidden")
+                  .removeAttr("data-slick-index")
+                  .each(function () {
+                    e(this).attr("style", e(this).data("originalStyling"));
+                  }),
                   n.$slideTrack.children(this.options.slide).detach(),
                   n.$slideTrack.detach(),
                   n.$list.detach(),
@@ -31491,20 +32041,20 @@
                 : (n.applyTransition(e),
                   n.$slides.eq(e).css({ opacity: 1, zIndex: n.options.zIndex }),
                   t &&
-                    setTimeout(function () {
-                      n.disableTransition(e), t.call();
-                    }, n.options.speed));
+                  setTimeout(function () {
+                    n.disableTransition(e), t.call();
+                  }, n.options.speed));
             }),
             (t.prototype.fadeSlideOut = function (e) {
               var t = this;
               t.cssTransitions === !1
                 ? t.$slides
-                    .eq(e)
-                    .animate(
-                      { opacity: 0, zIndex: t.options.zIndex - 2 },
-                      t.options.speed,
-                      t.options.easing
-                    )
+                  .eq(e)
+                  .animate(
+                    { opacity: 0, zIndex: t.options.zIndex - 2 },
+                    t.options.speed,
+                    t.options.easing
+                  )
                 : (t.applyTransition(e),
                   t.$slides
                     .eq(e)
@@ -31515,9 +32065,9 @@
                 var t = this;
                 null !== e &&
                   (t.unload(),
-                  t.$slideTrack.children(this.options.slide).detach(),
-                  t.$slidesCache.filter(e).appendTo(t.$slideTrack),
-                  t.reinit());
+                    t.$slideTrack.children(this.options.slide).detach(),
+                    t.$slidesCache.filter(e).appendTo(t.$slideTrack),
+                    t.reinit());
               }),
             (t.prototype.getCurrent = t.prototype.slickCurrentSlide =
               function () {
@@ -31533,7 +32083,7 @@
                 r = Math.ceil(e.slideCount / e.options.slidesToScroll);
               else if (e.options.centerMode === !0) r = e.slideCount;
               else
-                for (; t < e.slideCount; )
+                for (; t < e.slideCount;)
                   ++r,
                     (t = n + e.options.slidesToShow),
                     (n +=
@@ -31553,42 +32103,42 @@
                 (n = o.$slides.first().outerHeight(!0)),
                 o.options.infinite === !0
                   ? (o.slideCount > o.options.slidesToShow &&
-                      ((o.slideOffset =
-                        o.slideWidth * o.options.slidesToShow * -1),
+                    ((o.slideOffset =
+                      o.slideWidth * o.options.slidesToShow * -1),
                       (i = n * o.options.slidesToShow * -1)),
                     o.slideCount % o.options.slidesToScroll !== 0 &&
-                      e + o.options.slidesToScroll > o.slideCount &&
-                      o.slideCount > o.options.slidesToShow &&
-                      (e > o.slideCount
-                        ? ((o.slideOffset =
-                            (o.options.slidesToShow - (e - o.slideCount)) *
-                            o.slideWidth *
-                            -1),
-                          (i =
-                            (o.options.slidesToShow - (e - o.slideCount)) *
-                            n *
-                            -1))
-                        : ((o.slideOffset =
-                            (o.slideCount % o.options.slidesToScroll) *
-                            o.slideWidth *
-                            -1),
-                          (i =
-                            (o.slideCount % o.options.slidesToScroll) *
-                            n *
-                            -1))))
+                    e + o.options.slidesToScroll > o.slideCount &&
+                    o.slideCount > o.options.slidesToShow &&
+                    (e > o.slideCount
+                      ? ((o.slideOffset =
+                        (o.options.slidesToShow - (e - o.slideCount)) *
+                        o.slideWidth *
+                        -1),
+                        (i =
+                          (o.options.slidesToShow - (e - o.slideCount)) *
+                          n *
+                          -1))
+                      : ((o.slideOffset =
+                        (o.slideCount % o.options.slidesToScroll) *
+                        o.slideWidth *
+                        -1),
+                        (i =
+                          (o.slideCount % o.options.slidesToScroll) *
+                          n *
+                          -1))))
                   : e + o.options.slidesToShow > o.slideCount &&
-                    ((o.slideOffset =
-                      (e + o.options.slidesToShow - o.slideCount) *
-                      o.slideWidth),
+                  ((o.slideOffset =
+                    (e + o.options.slidesToShow - o.slideCount) *
+                    o.slideWidth),
                     (i = (e + o.options.slidesToShow - o.slideCount) * n)),
                 o.slideCount <= o.options.slidesToShow &&
-                  ((o.slideOffset = 0), (i = 0)),
+                ((o.slideOffset = 0), (i = 0)),
                 o.options.centerMode === !0 && o.options.infinite === !0
                   ? (o.slideOffset +=
-                      o.slideWidth * Math.floor(o.options.slidesToShow / 2) -
-                      o.slideWidth)
+                    o.slideWidth * Math.floor(o.options.slidesToShow / 2) -
+                    o.slideWidth)
                   : o.options.centerMode === !0 &&
-                    ((o.slideOffset = 0),
+                  ((o.slideOffset = 0),
                     (o.slideOffset +=
                       o.slideWidth * Math.floor(o.options.slidesToShow / 2))),
                 (t =
@@ -31596,23 +32146,23 @@
                     ? e * o.slideWidth * -1 + o.slideOffset
                     : e * n * -1 + i),
                 o.options.variableWidth === !0 &&
+                ((r = o.$slideTrack
+                  .children(".slick-slide")
+                  .eq(
+                    o.slideCount <= o.options.slidesToShow ||
+                      o.options.infinite === !1
+                      ? e
+                      : e + o.options.slidesToShow
+                  )),
+                  (t = r[0] ? -1 * r[0].offsetLeft : 0),
+                  o.options.centerMode === !0 &&
                   ((r = o.$slideTrack
                     .children(".slick-slide")
                     .eq(
-                      o.slideCount <= o.options.slidesToShow ||
-                        o.options.infinite === !1
+                      o.options.infinite === !1
                         ? e
-                        : e + o.options.slidesToShow
+                        : e + o.options.slidesToShow + 1
                     )),
-                  (t = r[0] ? -1 * r[0].offsetLeft : 0),
-                  o.options.centerMode === !0 &&
-                    ((r = o.$slideTrack
-                      .children(".slick-slide")
-                      .eq(
-                        o.options.infinite === !1
-                          ? e
-                          : e + o.options.slidesToShow + 1
-                      )),
                     (t = r[0] ? -1 * r[0].offsetLeft : 0),
                     (t += (o.$list.width() - r.outerWidth()) / 2))),
                 t
@@ -31661,11 +32211,11 @@
                     : 0),
                 o.options.swipeToSlide === !0
                   ? (o.$slideTrack.find(".slick-slide").each(function (t, i) {
-                      return i.offsetLeft - r + e(i).outerWidth() / 2 >
-                        -1 * o.swipeLeft
-                        ? ((n = i), !1)
-                        : void 0;
-                    }),
+                    return i.offsetLeft - r + e(i).outerWidth() / 2 >
+                      -1 * o.swipeLeft
+                      ? ((n = i), !1)
+                      : void 0;
+                  }),
                     (t =
                       Math.abs(
                         e(n).attr("data-slick-index") - o.currentSlide
@@ -31685,14 +32235,14 @@
               var n = this;
               e(n.$slider).hasClass("slick-initialized") ||
                 (e(n.$slider).addClass("slick-initialized"),
-                n.buildRows(),
-                n.buildOut(),
-                n.setProps(),
-                n.startLoad(),
-                n.loadSlider(),
-                n.initializeEvents(),
-                n.updateArrows(),
-                n.updateDots()),
+                  n.buildRows(),
+                  n.buildOut(),
+                  n.setProps(),
+                  n.startLoad(),
+                  n.loadSlider(),
+                  n.initializeEvents(),
+                  n.updateArrows(),
+                  n.updateDots()),
                 t && n.$slider.trigger("init", [n]),
                 n.options.accessibility === !0 && n.initADA();
             }),
@@ -31705,11 +32255,11 @@
                   { message: "previous" },
                   e.changeSlide
                 ),
-                e.$nextArrow.on(
-                  "click.slick",
-                  { message: "next" },
-                  e.changeSlide
-                ));
+                  e.$nextArrow.on(
+                    "click.slick",
+                    { message: "next" },
+                    e.changeSlide
+                  ));
             }),
             (t.prototype.initDotEvents = function () {
               var t = this;
@@ -31721,11 +32271,11 @@
                   t.changeSlide
                 ),
                 t.options.dots === !0 &&
-                  t.options.pauseOnDotsHover === !0 &&
-                  t.options.autoplay === !0 &&
-                  e("li", t.$dots)
-                    .on("mouseenter.slick", e.proxy(t.setPaused, t, !0))
-                    .on("mouseleave.slick", e.proxy(t.setPaused, t, !1));
+                t.options.pauseOnDotsHover === !0 &&
+                t.options.autoplay === !0 &&
+                e("li", t.$dots)
+                  .on("mouseenter.slick", e.proxy(t.setPaused, t, !0))
+                  .on("mouseleave.slick", e.proxy(t.setPaused, t, !1));
             }),
             (t.prototype.initializeEvents = function () {
               var t = this;
@@ -31756,11 +32306,11 @@
                 t.$list.on("mouseenter.slick", e.proxy(t.setPaused, t, !0)),
                 t.$list.on("mouseleave.slick", e.proxy(t.setPaused, t, !1)),
                 t.options.accessibility === !0 &&
-                  t.$list.on("keydown.slick", t.keyHandler),
+                t.$list.on("keydown.slick", t.keyHandler),
                 t.options.focusOnSelect === !0 &&
-                  e(t.$slideTrack)
-                    .children()
-                    .on("click.slick", t.selectHandler),
+                e(t.$slideTrack)
+                  .children()
+                  .on("click.slick", t.selectHandler),
                 e(window).on(
                   "orientationchange.slick.slick-" + t.instanceUid,
                   e.proxy(t.orientationChange, t)
@@ -31788,8 +32338,8 @@
                 e.slideCount > e.options.slidesToShow &&
                 (e.$prevArrow.show(), e.$nextArrow.show()),
                 e.options.dots === !0 &&
-                  e.slideCount > e.options.slidesToShow &&
-                  e.$dots.show(),
+                e.slideCount > e.options.slidesToShow &&
+                e.$dots.show(),
                 e.options.autoplay === !0 && e.autoPlay();
             }),
             (t.prototype.keyHandler = function (e) {
@@ -31798,8 +32348,8 @@
                 (37 === e.keyCode && t.options.accessibility === !0
                   ? t.changeSlide({ data: { message: "previous" } })
                   : 39 === e.keyCode &&
-                    t.options.accessibility === !0 &&
-                    t.changeSlide({ data: { message: "next" } }));
+                  t.options.accessibility === !0 &&
+                  t.changeSlide({ data: { message: "next" } }));
             }),
             (t.prototype.lazyLoad = function () {
               function t(t) {
@@ -31833,30 +32383,30 @@
                   ? ((o = a.currentSlide + (a.options.slidesToShow / 2 + 1)),
                     (i = o + a.options.slidesToShow + 2))
                   : ((o = Math.max(
-                      0,
-                      a.currentSlide - (a.options.slidesToShow / 2 + 1)
-                    )),
+                    0,
+                    a.currentSlide - (a.options.slidesToShow / 2 + 1)
+                  )),
                     (i = 2 + (a.options.slidesToShow / 2 + 1) + a.currentSlide))
                 : ((o = a.options.infinite
-                    ? a.options.slidesToShow + a.currentSlide
-                    : a.currentSlide),
+                  ? a.options.slidesToShow + a.currentSlide
+                  : a.currentSlide),
                   (i = o + a.options.slidesToShow),
                   a.options.fade === !0 &&
-                    (o > 0 && o--, i <= a.slideCount && i++)),
+                  (o > 0 && o--, i <= a.slideCount && i++)),
                 (n = a.$slider.find(".slick-slide").slice(o, i)),
                 t(n),
                 a.slideCount <= a.options.slidesToShow
                   ? ((r = a.$slider.find(".slick-slide")), t(r))
                   : a.currentSlide >= a.slideCount - a.options.slidesToShow
-                  ? ((r = a.$slider
+                    ? ((r = a.$slider
                       .find(".slick-cloned")
                       .slice(0, a.options.slidesToShow)),
-                    t(r))
-                  : 0 === a.currentSlide &&
+                      t(r))
+                    : 0 === a.currentSlide &&
                     ((r = a.$slider
                       .find(".slick-cloned")
                       .slice(-1 * a.options.slidesToShow)),
-                    t(r));
+                      t(r));
             }),
             (t.prototype.loadSlider = function () {
               var e = this;
@@ -31908,7 +32458,7 @@
                 r = this;
               (t = e("img[data-lazy]", r.$slider).length),
                 t > 0 &&
-                  ((n = e("img[data-lazy]", r.$slider).first()),
+                ((n = e("img[data-lazy]", r.$slider).first()),
                   n
                     .attr("src", n.attr("data-lazy"))
                     .removeClass("slick-loading")
@@ -31928,7 +32478,7 @@
                 e.extend(n, n.initials, { currentSlide: r }),
                 n.init(),
                 t ||
-                  n.changeSlide({ data: { message: "index", index: r } }, !1);
+                n.changeSlide({ data: { message: "index", index: r } }, !1);
             }),
             (t.prototype.registerBreakpoints = function () {
               var t,
@@ -31941,10 +32491,10 @@
                 for (t in i)
                   if (
                     ((r = o.breakpoints.length - 1),
-                    (n = i[t].breakpoint),
-                    i.hasOwnProperty(t))
+                      (n = i[t].breakpoint),
+                      i.hasOwnProperty(t))
                   ) {
-                    for (; r >= 0; )
+                    for (; r >= 0;)
                       o.breakpoints[r] &&
                         o.breakpoints[r] === n &&
                         o.breakpoints.splice(r, 1),
@@ -31964,8 +32514,8 @@
                 .addClass("slick-slide")),
                 (t.slideCount = t.$slides.length),
                 t.currentSlide >= t.slideCount &&
-                  0 !== t.currentSlide &&
-                  (t.currentSlide = t.currentSlide - t.options.slidesToScroll),
+                0 !== t.currentSlide &&
+                (t.currentSlide = t.currentSlide - t.options.slidesToScroll),
                 t.slideCount <= t.options.slidesToShow && (t.currentSlide = 0),
                 t.registerBreakpoints(),
                 t.setProps(),
@@ -31978,9 +32528,9 @@
                 t.initDotEvents(),
                 t.checkResponsive(!1, !0),
                 t.options.focusOnSelect === !0 &&
-                  e(t.$slideTrack)
-                    .children()
-                    .on("click.slick", t.selectHandler),
+                e(t.$slideTrack)
+                  .children()
+                  .on("click.slick", t.selectHandler),
                 t.setSlideClasses(0),
                 t.setPosition(),
                 t.$slider.trigger("reInit", [t]),
@@ -31990,11 +32540,11 @@
               var t = this;
               e(window).width() !== t.windowWidth &&
                 (clearTimeout(t.windowDelay),
-                (t.windowDelay = window.setTimeout(function () {
-                  (t.windowWidth = e(window).width()),
-                    t.checkResponsive(),
-                    t.unslicked || t.setPosition();
-                }, 50)));
+                  (t.windowDelay = window.setTimeout(function () {
+                    (t.windowWidth = e(window).width()),
+                      t.checkResponsive(),
+                      t.unslicked || t.setPosition();
+                  }, 50)));
             }),
             (t.prototype.removeSlide = t.prototype.slickRemove =
               function (e, t, n) {
@@ -32009,9 +32559,9 @@
                       n === !0
                         ? r.$slideTrack.children().remove()
                         : r.$slideTrack
-                            .children(this.options.slide)
-                            .eq(e)
-                            .remove(),
+                          .children(this.options.slide)
+                          .eq(e)
+                          .remove(),
                       (r.$slides = r.$slideTrack.children(this.options.slide)),
                       r.$slideTrack.children(this.options.slide).detach(),
                       r.$slideTrack.append(r.$slides),
@@ -32035,40 +32585,40 @@
                       ? ((o[r.animType] = "translate(" + t + ", " + n + ")"),
                         r.$slideTrack.css(o))
                       : ((o[r.animType] =
-                          "translate3d(" + t + ", " + n + ", 0px)"),
+                        "translate3d(" + t + ", " + n + ", 0px)"),
                         r.$slideTrack.css(o)));
             }),
             (t.prototype.setDimensions = function () {
               var e = this;
               e.options.vertical === !1
                 ? e.options.centerMode === !0 &&
-                  e.$list.css({ padding: "0px " + e.options.centerPadding })
+                e.$list.css({ padding: "0px " + e.options.centerPadding })
                 : (e.$list.height(
-                    e.$slides.first().outerHeight(!0) * e.options.slidesToShow
-                  ),
+                  e.$slides.first().outerHeight(!0) * e.options.slidesToShow
+                ),
                   e.options.centerMode === !0 &&
-                    e.$list.css({ padding: e.options.centerPadding + " 0px" })),
+                  e.$list.css({ padding: e.options.centerPadding + " 0px" })),
                 (e.listWidth = e.$list.width()),
                 (e.listHeight = e.$list.height()),
                 e.options.vertical === !1 && e.options.variableWidth === !1
                   ? ((e.slideWidth = Math.ceil(
-                      e.listWidth / e.options.slidesToShow
-                    )),
+                    e.listWidth / e.options.slidesToShow
+                  )),
                     e.$slideTrack.width(
                       Math.ceil(
                         e.slideWidth *
-                          e.$slideTrack.children(".slick-slide").length
+                        e.$slideTrack.children(".slick-slide").length
                       )
                     ))
                   : e.options.variableWidth === !0
-                  ? e.$slideTrack.width(5e3 * e.slideCount)
-                  : ((e.slideWidth = Math.ceil(e.listWidth)),
-                    e.$slideTrack.height(
-                      Math.ceil(
-                        e.$slides.first().outerHeight(!0) *
+                    ? e.$slideTrack.width(5e3 * e.slideCount)
+                    : ((e.slideWidth = Math.ceil(e.listWidth)),
+                      e.$slideTrack.height(
+                        Math.ceil(
+                          e.$slides.first().outerHeight(!0) *
                           e.$slideTrack.children(".slick-slide").length
-                      )
-                    ));
+                        )
+                      ));
               var t =
                 e.$slides.first().outerWidth(!0) - e.$slides.first().width();
               e.options.variableWidth === !1 &&
@@ -32082,19 +32632,19 @@
                   e(o).css(
                     n.options.rtl === !0
                       ? {
-                          position: "relative",
-                          right: t,
-                          top: 0,
-                          zIndex: n.options.zIndex - 2,
-                          opacity: 0,
-                        }
+                        position: "relative",
+                        right: t,
+                        top: 0,
+                        zIndex: n.options.zIndex - 2,
+                        opacity: 0,
+                      }
                       : {
-                          position: "relative",
-                          left: t,
-                          top: 0,
-                          zIndex: n.options.zIndex - 2,
-                          opacity: 0,
-                        }
+                        position: "relative",
+                        left: t,
+                        top: 0,
+                        zIndex: n.options.zIndex - 2,
+                        opacity: 0,
+                      }
                   );
               }),
                 n.$slides
@@ -32122,7 +32672,7 @@
                     if ("array" !== e.type(a.options.responsive))
                       a.options.responsive = [n[i]];
                     else {
-                      for (o = a.options.responsive.length - 1; o >= 0; )
+                      for (o = a.options.responsive.length - 1; o >= 0;)
                         a.options.responsive[o].breakpoint ===
                           n[i].breakpoint && a.options.responsive.splice(o, 1),
                           o--;
@@ -32150,41 +32700,41 @@
                 (void 0 !== t.WebkitTransition ||
                   void 0 !== t.MozTransition ||
                   void 0 !== t.msTransition) &&
-                  e.options.useCSS === !0 &&
-                  (e.cssTransitions = !0),
+                e.options.useCSS === !0 &&
+                (e.cssTransitions = !0),
                 e.options.fade &&
-                  ("number" == typeof e.options.zIndex
-                    ? e.options.zIndex < 3 && (e.options.zIndex = 3)
-                    : (e.options.zIndex = e.defaults.zIndex)),
+                ("number" == typeof e.options.zIndex
+                  ? e.options.zIndex < 3 && (e.options.zIndex = 3)
+                  : (e.options.zIndex = e.defaults.zIndex)),
                 void 0 !== t.OTransform &&
-                  ((e.animType = "OTransform"),
+                ((e.animType = "OTransform"),
                   (e.transformType = "-o-transform"),
                   (e.transitionType = "OTransition"),
                   void 0 === t.perspectiveProperty &&
-                    void 0 === t.webkitPerspective &&
-                    (e.animType = !1)),
+                  void 0 === t.webkitPerspective &&
+                  (e.animType = !1)),
                 void 0 !== t.MozTransform &&
-                  ((e.animType = "MozTransform"),
+                ((e.animType = "MozTransform"),
                   (e.transformType = "-moz-transform"),
                   (e.transitionType = "MozTransition"),
                   void 0 === t.perspectiveProperty &&
-                    void 0 === t.MozPerspective &&
-                    (e.animType = !1)),
+                  void 0 === t.MozPerspective &&
+                  (e.animType = !1)),
                 void 0 !== t.webkitTransform &&
-                  ((e.animType = "webkitTransform"),
+                ((e.animType = "webkitTransform"),
                   (e.transformType = "-webkit-transform"),
                   (e.transitionType = "webkitTransition"),
                   void 0 === t.perspectiveProperty &&
-                    void 0 === t.webkitPerspective &&
-                    (e.animType = !1)),
+                  void 0 === t.webkitPerspective &&
+                  (e.animType = !1)),
                 void 0 !== t.msTransform &&
-                  ((e.animType = "msTransform"),
+                ((e.animType = "msTransform"),
                   (e.transformType = "-ms-transform"),
                   (e.transitionType = "msTransition"),
                   void 0 === t.msTransform && (e.animType = !1)),
                 void 0 !== t.transform &&
-                  e.animType !== !1 &&
-                  ((e.animType = "transform"),
+                e.animType !== !1 &&
+                ((e.animType = "transform"),
                   (e.transformType = "transform"),
                   (e.transitionType = "transition")),
                 (e.transformsEnabled =
@@ -32204,47 +32754,47 @@
                 i.options.centerMode === !0
                   ? ((t = Math.floor(i.options.slidesToShow / 2)),
                     i.options.infinite === !0 &&
-                      (e >= t && e <= i.slideCount - 1 - t
-                        ? i.$slides
-                            .slice(e - t, e + t + 1)
-                            .addClass("slick-active")
-                            .attr("aria-hidden", "false")
-                        : ((r = i.options.slidesToShow + e),
-                          n
-                            .slice(r - t + 1, r + t + 2)
-                            .addClass("slick-active")
-                            .attr("aria-hidden", "false")),
+                    (e >= t && e <= i.slideCount - 1 - t
+                      ? i.$slides
+                        .slice(e - t, e + t + 1)
+                        .addClass("slick-active")
+                        .attr("aria-hidden", "false")
+                      : ((r = i.options.slidesToShow + e),
+                        n
+                          .slice(r - t + 1, r + t + 2)
+                          .addClass("slick-active")
+                          .attr("aria-hidden", "false")),
                       0 === e
                         ? n
-                            .eq(n.length - 1 - i.options.slidesToShow)
-                            .addClass("slick-center")
+                          .eq(n.length - 1 - i.options.slidesToShow)
+                          .addClass("slick-center")
                         : e === i.slideCount - 1 &&
-                          n
-                            .eq(i.options.slidesToShow)
-                            .addClass("slick-center")),
+                        n
+                          .eq(i.options.slidesToShow)
+                          .addClass("slick-center")),
                     i.$slides.eq(e).addClass("slick-center"))
                   : e >= 0 && e <= i.slideCount - i.options.slidesToShow
-                  ? i.$slides
+                    ? i.$slides
                       .slice(e, e + i.options.slidesToShow)
                       .addClass("slick-active")
                       .attr("aria-hidden", "false")
-                  : n.length <= i.options.slidesToShow
-                  ? n.addClass("slick-active").attr("aria-hidden", "false")
-                  : ((o = i.slideCount % i.options.slidesToShow),
-                    (r =
-                      i.options.infinite === !0
-                        ? i.options.slidesToShow + e
-                        : e),
-                    i.options.slidesToShow == i.options.slidesToScroll &&
-                    i.slideCount - e < i.options.slidesToShow
-                      ? n
-                          .slice(r - (i.options.slidesToShow - o), r + o)
-                          .addClass("slick-active")
-                          .attr("aria-hidden", "false")
-                      : n
-                          .slice(r, r + i.options.slidesToShow)
-                          .addClass("slick-active")
-                          .attr("aria-hidden", "false")),
+                    : n.length <= i.options.slidesToShow
+                      ? n.addClass("slick-active").attr("aria-hidden", "false")
+                      : ((o = i.slideCount % i.options.slidesToShow),
+                        (r =
+                          i.options.infinite === !0
+                            ? i.options.slidesToShow + e
+                            : e),
+                        i.options.slidesToShow == i.options.slidesToScroll &&
+                          i.slideCount - e < i.options.slidesToShow
+                          ? n
+                            .slice(r - (i.options.slidesToShow - o), r + o)
+                            .addClass("slick-active")
+                            .attr("aria-hidden", "false")
+                          : n
+                            .slice(r, r + i.options.slidesToShow)
+                            .addClass("slick-active")
+                            .attr("aria-hidden", "false")),
                 "ondemand" === i.options.lazyLoad && i.lazyLoad();
             }),
             (t.prototype.setupInfinite = function () {
@@ -32254,16 +32804,16 @@
                 o = this;
               if (
                 (o.options.fade === !0 && (o.options.centerMode = !1),
-                o.options.infinite === !0 &&
+                  o.options.infinite === !0 &&
                   o.options.fade === !1 &&
                   ((n = null), o.slideCount > o.options.slidesToShow))
               ) {
                 for (
                   r =
-                    o.options.centerMode === !0
-                      ? o.options.slidesToShow + 1
-                      : o.options.slidesToShow,
-                    t = o.slideCount;
+                  o.options.centerMode === !0
+                    ? o.options.slidesToShow + 1
+                    : o.options.slidesToShow,
+                  t = o.slideCount;
                   t > o.slideCount - r;
                   t -= 1
                 )
@@ -32319,8 +32869,8 @@
               return (
                 (t = t || !1),
                 (l.animating === !0 && l.options.waitForAnimate === !0) ||
-                (l.options.fade === !0 && l.currentSlide === e) ||
-                l.slideCount <= l.options.slidesToShow
+                  (l.options.fade === !0 && l.currentSlide === e) ||
+                  l.slideCount <= l.options.slidesToShow
                   ? void 0
                   : (t === !1 && l.asNavFor(e),
                     (r = e),
@@ -32328,65 +32878,65 @@
                     (a = l.getLeft(l.currentSlide)),
                     (l.currentLeft = null === l.swipeLeft ? a : l.swipeLeft),
                     l.options.infinite === !1 &&
-                    l.options.centerMode === !1 &&
-                    (0 > e || e > l.getDotCount() * l.options.slidesToScroll)
+                      l.options.centerMode === !1 &&
+                      (0 > e || e > l.getDotCount() * l.options.slidesToScroll)
                       ? void (
-                          l.options.fade === !1 &&
-                          ((r = l.currentSlide),
+                        l.options.fade === !1 &&
+                        ((r = l.currentSlide),
                           n !== !0
                             ? l.animateSlide(a, function () {
-                                l.postSlide(r);
-                              })
+                              l.postSlide(r);
+                            })
                             : l.postSlide(r))
-                        )
+                      )
                       : l.options.infinite === !1 &&
                         l.options.centerMode === !0 &&
                         (0 > e || e > l.slideCount - l.options.slidesToScroll)
-                      ? void (
+                        ? void (
                           l.options.fade === !1 &&
                           ((r = l.currentSlide),
-                          n !== !0
-                            ? l.animateSlide(a, function () {
+                            n !== !0
+                              ? l.animateSlide(a, function () {
                                 l.postSlide(r);
                               })
-                            : l.postSlide(r))
+                              : l.postSlide(r))
                         )
-                      : (l.options.autoplay === !0 &&
+                        : (l.options.autoplay === !0 &&
                           clearInterval(l.autoPlayTimer),
-                        (o =
-                          0 > r
-                            ? l.slideCount % l.options.slidesToScroll !== 0
-                              ? l.slideCount -
+                          (o =
+                            0 > r
+                              ? l.slideCount % l.options.slidesToScroll !== 0
+                                ? l.slideCount -
                                 (l.slideCount % l.options.slidesToScroll)
-                              : l.slideCount + r
-                            : r >= l.slideCount
-                            ? l.slideCount % l.options.slidesToScroll !== 0
-                              ? 0
-                              : r - l.slideCount
-                            : r),
-                        (l.animating = !0),
-                        l.$slider.trigger("beforeChange", [
-                          l,
-                          l.currentSlide,
-                          o,
-                        ]),
-                        (i = l.currentSlide),
-                        (l.currentSlide = o),
-                        l.setSlideClasses(l.currentSlide),
-                        l.updateDots(),
-                        l.updateArrows(),
-                        l.options.fade === !0
-                          ? (n !== !0
+                                : l.slideCount + r
+                              : r >= l.slideCount
+                                ? l.slideCount % l.options.slidesToScroll !== 0
+                                  ? 0
+                                  : r - l.slideCount
+                                : r),
+                          (l.animating = !0),
+                          l.$slider.trigger("beforeChange", [
+                            l,
+                            l.currentSlide,
+                            o,
+                          ]),
+                          (i = l.currentSlide),
+                          (l.currentSlide = o),
+                          l.setSlideClasses(l.currentSlide),
+                          l.updateDots(),
+                          l.updateArrows(),
+                          l.options.fade === !0
+                            ? (n !== !0
                               ? (l.fadeSlideOut(i),
                                 l.fadeSlide(o, function () {
                                   l.postSlide(o);
                                 }))
                               : l.postSlide(o),
-                            void l.animateHeight())
-                          : void (n !== !0
+                              void l.animateHeight())
+                            : void (n !== !0
                               ? l.animateSlide(s, function () {
-                                  l.postSlide(o);
-                                })
+                                l.postSlide(o);
+                              })
                               : l.postSlide(o))))
               );
             }),
@@ -32396,8 +32946,8 @@
                 e.slideCount > e.options.slidesToShow &&
                 (e.$prevArrow.hide(), e.$nextArrow.hide()),
                 e.options.dots === !0 &&
-                  e.slideCount > e.options.slidesToShow &&
-                  e.$dots.hide(),
+                e.slideCount > e.options.slidesToShow &&
+                e.$dots.hide(),
                 e.$slider.addClass("slick-loading");
             }),
             (t.prototype.swipeDirection = function () {
@@ -32417,18 +32967,18 @@
                     ? "left"
                     : "right"
                   : 360 >= r && r >= 315
-                  ? o.options.rtl === !1
-                    ? "left"
-                    : "right"
-                  : r >= 135 && 225 >= r
-                  ? o.options.rtl === !1
-                    ? "right"
-                    : "left"
-                  : o.options.verticalSwiping === !0
-                  ? r >= 35 && 135 >= r
-                    ? "left"
-                    : "right"
-                  : "vertical"
+                    ? o.options.rtl === !1
+                      ? "left"
+                      : "right"
+                    : r >= 135 && 225 >= r
+                      ? o.options.rtl === !1
+                        ? "right"
+                        : "left"
+                      : o.options.verticalSwiping === !0
+                        ? r >= 35 && 135 >= r
+                          ? "left"
+                          : "right"
+                        : "vertical"
               );
             }),
             (t.prototype.swipeEnd = function () {
@@ -32436,14 +32986,14 @@
                 t = this;
               if (
                 ((t.dragging = !1),
-                (t.shouldClick = t.touchObject.swipeLength > 10 ? !1 : !0),
-                void 0 === t.touchObject.curX)
+                  (t.shouldClick = t.touchObject.swipeLength > 10 ? !1 : !0),
+                  void 0 === t.touchObject.curX)
               )
                 return !1;
               if (
                 (t.touchObject.edgeHit === !0 &&
                   t.$slider.trigger("edge", [t, t.swipeDirection()]),
-                t.touchObject.swipeLength >= t.touchObject.minSwipe)
+                  t.touchObject.swipeLength >= t.touchObject.minSwipe)
               )
                 switch (t.swipeDirection()) {
                   case "left":
@@ -32478,15 +33028,15 @@
                 )
               )
                 switch (
-                  ((t.touchObject.fingerCount =
-                    e.originalEvent && void 0 !== e.originalEvent.touches
-                      ? e.originalEvent.touches.length
-                      : 1),
+                ((t.touchObject.fingerCount =
+                  e.originalEvent && void 0 !== e.originalEvent.touches
+                    ? e.originalEvent.touches.length
+                    : 1),
                   (t.touchObject.minSwipe =
                     t.listWidth / t.options.touchThreshold),
                   t.options.verticalSwiping === !0 &&
-                    (t.touchObject.minSwipe =
-                      t.listHeight / t.options.touchThreshold),
+                  (t.touchObject.minSwipe =
+                    t.listHeight / t.options.touchThreshold),
                   e.data.action)
                 ) {
                   case "start":
@@ -32522,42 +33072,42 @@
                       )
                     )),
                     a.options.verticalSwiping === !0 &&
-                      (a.touchObject.swipeLength = Math.round(
-                        Math.sqrt(
-                          Math.pow(a.touchObject.curY - a.touchObject.startY, 2)
-                        )
-                      )),
+                    (a.touchObject.swipeLength = Math.round(
+                      Math.sqrt(
+                        Math.pow(a.touchObject.curY - a.touchObject.startY, 2)
+                      )
+                    )),
                     (n = a.swipeDirection()),
                     "vertical" !== n
                       ? (void 0 !== e.originalEvent &&
-                          a.touchObject.swipeLength > 4 &&
-                          e.preventDefault(),
+                        a.touchObject.swipeLength > 4 &&
+                        e.preventDefault(),
                         (o =
                           (a.options.rtl === !1 ? 1 : -1) *
                           (a.touchObject.curX > a.touchObject.startX ? 1 : -1)),
                         a.options.verticalSwiping === !0 &&
-                          (o =
-                            a.touchObject.curY > a.touchObject.startY ? 1 : -1),
+                        (o =
+                          a.touchObject.curY > a.touchObject.startY ? 1 : -1),
                         (r = a.touchObject.swipeLength),
                         (a.touchObject.edgeHit = !1),
                         a.options.infinite === !1 &&
-                          ((0 === a.currentSlide && "right" === n) ||
-                            (a.currentSlide >= a.getDotCount() &&
-                              "left" === n)) &&
-                          ((r =
-                            a.touchObject.swipeLength * a.options.edgeFriction),
+                        ((0 === a.currentSlide && "right" === n) ||
+                          (a.currentSlide >= a.getDotCount() &&
+                            "left" === n)) &&
+                        ((r =
+                          a.touchObject.swipeLength * a.options.edgeFriction),
                           (a.touchObject.edgeHit = !0)),
                         (a.swipeLeft =
                           a.options.vertical === !1
                             ? t + r * o
                             : t + r * (a.$list.height() / a.listWidth) * o),
                         a.options.verticalSwiping === !0 &&
-                          (a.swipeLeft = t + r * o),
+                        (a.swipeLeft = t + r * o),
                         a.options.fade === !0 || a.options.touchMove === !1
                           ? !1
                           : a.animating === !0
-                          ? ((a.swipeLeft = null), !1)
-                          : void a.setCSS(a.swipeLeft))
+                            ? ((a.swipeLeft = null), !1)
+                            : void a.setCSS(a.swipeLeft))
                       : void 0)
               );
             }),
@@ -32568,8 +33118,8 @@
                 n.slideCount <= n.options.slidesToShow
                 ? ((n.touchObject = {}), !1)
                 : (void 0 !== e.originalEvent &&
-                    void 0 !== e.originalEvent.touches &&
-                    (t = e.originalEvent.touches[0]),
+                  void 0 !== e.originalEvent.touches &&
+                  (t = e.originalEvent.touches[0]),
                   (n.touchObject.startX = n.touchObject.curX =
                     void 0 !== t ? t.pageX : e.clientX),
                   (n.touchObject.startY = n.touchObject.curY =
@@ -32581,20 +33131,20 @@
                 var e = this;
                 null !== e.$slidesCache &&
                   (e.unload(),
-                  e.$slideTrack.children(this.options.slide).detach(),
-                  e.$slidesCache.appendTo(e.$slideTrack),
-                  e.reinit());
+                    e.$slideTrack.children(this.options.slide).detach(),
+                    e.$slidesCache.appendTo(e.$slideTrack),
+                    e.reinit());
               }),
             (t.prototype.unload = function () {
               var t = this;
               e(".slick-cloned", t.$slider).remove(),
                 t.$dots && t.$dots.remove(),
                 t.$prevArrow &&
-                  t.htmlExpr.test(t.options.prevArrow) &&
-                  t.$prevArrow.remove(),
+                t.htmlExpr.test(t.options.prevArrow) &&
+                t.$prevArrow.remove(),
                 t.$nextArrow &&
-                  t.htmlExpr.test(t.options.nextArrow) &&
-                  t.$nextArrow.remove(),
+                t.htmlExpr.test(t.options.nextArrow) &&
+                t.$nextArrow.remove(),
                 t.$slides
                   .removeClass(
                     "slick-slide slick-active slick-visible slick-current"
@@ -32611,37 +33161,37 @@
                 t = this;
               (e = Math.floor(t.options.slidesToShow / 2)),
                 t.options.arrows === !0 &&
-                  t.slideCount > t.options.slidesToShow &&
-                  !t.options.infinite &&
-                  (t.$prevArrow
-                    .removeClass("slick-disabled")
-                    .attr("aria-disabled", "false"),
+                t.slideCount > t.options.slidesToShow &&
+                !t.options.infinite &&
+                (t.$prevArrow
+                  .removeClass("slick-disabled")
+                  .attr("aria-disabled", "false"),
                   t.$nextArrow
                     .removeClass("slick-disabled")
                     .attr("aria-disabled", "false"),
                   0 === t.currentSlide
                     ? (t.$prevArrow
-                        .addClass("slick-disabled")
-                        .attr("aria-disabled", "true"),
+                      .addClass("slick-disabled")
+                      .attr("aria-disabled", "true"),
                       t.$nextArrow
                         .removeClass("slick-disabled")
                         .attr("aria-disabled", "false"))
                     : t.currentSlide >= t.slideCount - t.options.slidesToShow &&
                       t.options.centerMode === !1
-                    ? (t.$nextArrow
+                      ? (t.$nextArrow
                         .addClass("slick-disabled")
                         .attr("aria-disabled", "true"),
-                      t.$prevArrow
-                        .removeClass("slick-disabled")
-                        .attr("aria-disabled", "false"))
-                    : t.currentSlide >= t.slideCount - 1 &&
+                        t.$prevArrow
+                          .removeClass("slick-disabled")
+                          .attr("aria-disabled", "false"))
+                      : t.currentSlide >= t.slideCount - 1 &&
                       t.options.centerMode === !0 &&
                       (t.$nextArrow
                         .addClass("slick-disabled")
                         .attr("aria-disabled", "true"),
-                      t.$prevArrow
-                        .removeClass("slick-disabled")
-                        .attr("aria-disabled", "false")));
+                        t.$prevArrow
+                          .removeClass("slick-disabled")
+                          .attr("aria-disabled", "false")));
             }),
             (t.prototype.updateDots = function () {
               var e = this;
@@ -32650,11 +33200,11 @@
                   .find("li")
                   .removeClass("slick-active")
                   .attr("aria-hidden", "true"),
-                e.$dots
-                  .find("li")
-                  .eq(Math.floor(e.currentSlide / e.options.slidesToScroll))
-                  .addClass("slick-active")
-                  .attr("aria-hidden", "false"));
+                  e.$dots
+                    .find("li")
+                    .eq(Math.floor(e.currentSlide / e.options.slidesToScroll))
+                    .addClass("slick-active")
+                    .attr("aria-hidden", "false"));
             }),
             (t.prototype.visibility = function () {
               var e = this;
@@ -32679,25 +33229,25 @@
                     });
                   }),
                 null !== t.$dots &&
-                  t.$dots
-                    .attr("role", "tablist")
-                    .find("li")
-                    .each(function (n) {
-                      e(this).attr({
-                        role: "presentation",
-                        "aria-selected": "false",
-                        "aria-controls": "navigation" + t.instanceUid + n,
-                        id: "slick-slide" + t.instanceUid + n,
-                      });
-                    })
-                    .first()
-                    .attr("aria-selected", "true")
-                    .end()
-                    .find("button")
-                    .attr("role", "button")
-                    .end()
-                    .closest("div")
-                    .attr("role", "toolbar"),
+                t.$dots
+                  .attr("role", "tablist")
+                  .find("li")
+                  .each(function (n) {
+                    e(this).attr({
+                      role: "presentation",
+                      "aria-selected": "false",
+                      "aria-controls": "navigation" + t.instanceUid + n,
+                      id: "slick-slide" + t.instanceUid + n,
+                    });
+                  })
+                  .first()
+                  .attr("aria-selected", "true")
+                  .end()
+                  .find("button")
+                  .attr("role", "button")
+                  .end()
+                  .closest("div")
+                  .attr("role", "toolbar"),
                 t.activateADA();
             }),
             (t.prototype.activateADA = function () {
@@ -32735,7 +33285,7 @@
                   ("object" == typeof r || "undefined" == typeof r
                     ? (n[a].slick = new t(n[a], r))
                     : (e = n[a].slick[r].apply(n[a].slick, o)),
-                  "undefined" != typeof e)
+                    "undefined" != typeof e)
                 )
                   return e;
               return n;
@@ -32770,7 +33320,7 @@
         var n = e("react"),
           r = n.createClass({
             displayName: "Autocomplete",
-            render: function() {
+            render: function () {
               let toRender = this.state?.matchList || [],
                 importDialog = document.querySelector(
                   "textarea.importDialog-code"
@@ -32784,11 +33334,11 @@
                   this.state?.previewSrc || "/assets/images/objects/test.png",
                 onError: (e) => {
                   if (e.target.src.includes("250x150-v12.png")) {
-                      e.target.src = e.target.src.replace("250x150-v12.png", "250x150-v5.png");
+                    e.target.src = e.target.src.replace("250x150-v12.png", "250x150-v5.png");
                   } else {
-                      e.target.src = "/assets/images/objects/test.png";
+                    e.target.src = "/assets/images/objects/test.png";
                   }
-              },
+                },
               });
 
               let trackList = n.createElement(
@@ -32799,7 +33349,7 @@
                   return n.createElement(
                     "p",
                     {
-                      onClick: async() => {
+                      onClick: async () => {
                         if (i.displayName === "random") {
                           const randomTrack = this.state.matchList[Math.floor(Math.random() * this.state.matchList.length)];
                           i = randomTrack;
@@ -32808,14 +33358,14 @@
                         if (i.displayName === "daily") {
                           const specifiedDate = new Date();
                           const formattedDate = specifiedDate.toISOString().slice(0, 10);
-                      
+
                           try {
                             const response = await fetch('assets/tracks/trackdata.json');
                             if (!response.ok) {
                               throw new Error('Failed to load trackdata.json');
                             }
                             const data = await response.json();
-                      
+
                             const trackEntry = data.tracks.find(entry => entry.date === formattedDate);
                             if (trackEntry && trackEntry.trackname) {
                               i.displayName = i.fullName = trackEntry.trackname;
@@ -32830,37 +33380,38 @@
                         }
 
                         if (this.props.baseURL === "assets/tracks/") {
-                            importDialog.value = i.fullName.replace(/</g, "");
-                            this.props.onInput();
-                            this.handleChange({
-                                target: {
-                                    value: i.fullName.endsWith("/")
-                                        ? i.fullName
-                                        : i.fullName.substring(0, i.fullName.lastIndexOf("/") + 1),
-                                },
-                            });
+                          importDialog.value = i.fullName.replace(/</g, "");
+                          this.props.onInput();
+                          this.handleChange({
+                            target: {
+                              value: i.fullName.endsWith("/")
+                                ? i.fullName
+                                : i.fullName.substring(0, i.fullName.lastIndexOf("/") + 1),
+                            },
+                          });
 
-                            let previewSrc = `/assets/images/tracks/${i.fullName.replace(/</g, "")}.png`;
-                            this.setState({ previewSrc });
+                          let previewSrc = `/assets/images/tracks/${i.fullName.replace(/</g, "")}.png`;
+                          this.setState({ previewSrc });
                         } else {
-                            importDialog.value = i.fullName.replace(/</g, "");
-                            this.props.onInput();
-                            this.handleChange({
-                                target: {
-                                    value: i.fullName.endsWith("/")
-                                        ? i.fullName
-                                        : i.fullName.substring(0, i.fullName.lastIndexOf("/") + 1),
-                                },
-                            });
-                    
-                            let previewSrc = `/assets/images/objects/${i.fullName.replace(/</g, "")}.png`;
-                            this.setState({ previewSrc });
+                          importDialog.value = i.fullName.replace(/</g, "");
+                          this.props.onInput();
+                          this.handleChange({
+                            target: {
+                              value: i.fullName.endsWith("/")
+                                ? i.fullName
+                                : i.fullName.substring(0, i.fullName.lastIndexOf("/") + 1),
+                            },
+                          });
+
+                          let previewSrc = `/assets/images/objects/${i.fullName.replace(/</g, "")}.png`;
+                          this.setState({ previewSrc });
                         }
-                    },
-                    style: { color: isCompleted ? '#1884cf' : 'inherit' }
+                      },
+                      style: { color: isCompleted ? '#1884cf' : 'inherit' }
                     },
                     i.displayName,
-                  )}
+                  )
+                }
                 )
               );
               return n.createElement(
@@ -32871,17 +33422,17 @@
               );
             },
             // should decide all of the things to render, and then set the state to the first n
-            handleChange: function(e) {
+            handleChange: function (e) {
               this.searchData(e.target.value);
             },
-            componentDidMount: function() {
-              this.fetchData();
+            componentDidMount: function () {
+              //this.fetchData();
               document.querySelector('textarea.importDialog-code')?.addEventListener?.('input', this.handleChange);
             },
-            componentWillUnmount: function() {
+            componentWillUnmount: function () {
               document.querySelector('textarea.importDialog-code')?.removeEventListener?.('input', this.handleChange);
             },
-            fetchData: function() {
+            fetchData: function () {
               fetch(this.props.baseURL + "tracklist.json")
                 .then((i) => i.json())
                 .then((i) => {
@@ -32896,14 +33447,14 @@
                   console.error("Error fetching tracklist:", error)
                 );
             },
-            searchData: function(string) {
+            searchData: function (string) {
               if (string.length > 200) {
-                this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});
+                this.setState({ ...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png" });
                 return;
               }
               let tracks = this.state.tracks;
               if (!tracks || !tracks?.length) {
-                this.setState({...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png"});
+                this.setState({ ...this.state, matchList: [], previewSrc: "/assets/images/objects/test.png" });
                 return;
               }
               let dirs = string.split('/'),
@@ -32938,7 +33489,7 @@
                     pos,
                   };
                   matches.push(match);
-            
+
                   if (name === string) {
                     exactMatch = match;
                   }
@@ -32949,14 +33500,14 @@
               }
               // can just add .slice(0, n) here to limit the number of results
               // currently sorting by match position to get something resembling relevance, but you can very easily change the sort / something similar to make it better
-              this.setState({ 
-                ...this.state, 
+              this.setState({
+                ...this.state,
                 matchList: matches.sort((a, b) => a.pos - b.pos),
-                previewSrc: exactMatch 
+                previewSrc: exactMatch
                   ? (this.props.baseURL === "assets/tracks/"
                     ? `/assets/images/tracks/${exactMatch.fullName.replace(/</g, "")}.png`
                     : `/assets/images/objects/${exactMatch.fullName.replace(/</g, "")}.png`)
-                  : "/assets/images/objects/test.png" 
+                  : "/assets/images/objects/test.png"
               });
             }
           });
@@ -33432,7 +33983,7 @@
                           n.createElement("td", { className: "settingTitle brush-td" }, n.createElement("span", { className: "name" }, "Selection Type")),
                           n.createElement("td", { className: "settingInput" }, n.createElement("span", {},
                             n.createElement("button", {
-                                onClick: this.toggleCopy
+                              onClick: this.toggleCopy
                             }, type)))
                         ),
                         /*n.createElement("tr", null,
@@ -33482,1191 +34033,2601 @@
     243: [
       function (e, t) {
         var n = e("react"),
-          r = n.createClass({
-            displayName: "Sidebar",
-            getInitialState: function () {
-              return { sidebar: true };
-            },
-            componentDidMount: function () {
-              this.toggleIframe();
-              this.addImportListener();
-            },
-            toggleSidebar: function () {
-              if (typeof GameSettings !== 'undefined') {
-                GameSettings.sidebar = !(GameSettings.sidebar ?? true);
-              } else {
+          HistoryManager = e("./historyManager"),
+          optionHandlers = e("./optionHandlers");
 
-              }
+        var r = n.createClass({
+          displayName: "Sidebar",
 
-              var newSidebarState = GameSettings.sidebar ?? false;
+          getInitialState: function () {
+            return {
+              sidebar: true
+            };
+          },
 
-              this.setState({ sidebar: newSidebarState });
-              this.toggleIframe();
-              this.addImportListener();
-            },
-            async updateNowPlaying(trackData) {
-              const iframe = document.getElementById("forumIframe");
-              if (iframe && iframe.style.display !== 'none' && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({
-                  type: 'freerider-track-data',
-                  data: trackData
-                }, 'https://forum.freerider.app');
-              }
-            },
+          componentDidMount: function () {
+            HistoryManager.init();
 
-            getFRHDImage(trackId) {
-              const versions = ["v5", "v6", "v12"];
-              let index = 0;
+            if (typeof loadSettings === 'function') {
+              loadSettings();
+            } else if (typeof window.loadSettings === 'function') {
+              window.loadSettings();
+            } else {
+              console.warn('loadSettings not available yet');
+            }
 
-              return new Promise((resolve) => {
-                function tryNext() {
-                  if (index >= versions.length) {
-                    resolve("");
-                    return;
-                  }
+            this.createIframe();
+            this.addMessageListener();
+            this._lastSentSettings = null;
+          },
 
-                  const url = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackId}/768x250-${versions[index]}.png`;
-                  const testImg = new Image();
-                  testImg.src = url;
+          componentDidUpdate: function (prevProps) {
+            var prevData = prevProps.data || {};
+            var currData = this.props.data || {};
 
-                  testImg.onload = () => resolve(url);
-                  testImg.onerror = () => {
-                    index++;
-                    tryNext();
-                  };
-                }
-                tryNext();
+            if (hasStateChanged(prevData, currData, Config)) {
+              this.sendSettingsToIframe();
+            }
+          },
+
+          createIframe: function () {
+            var iframe = document.getElementById("toolsIframe");
+
+            if (!iframe) {
+              iframe = document.createElement("iframe");
+              iframe.id = "toolsIframe";
+              iframe.src = "/tools";
+              iframe.style.display = "block";
+              document.body.appendChild(iframe);
+
+              var self = this;
+              iframe.addEventListener('load', function () {
+                self.sendSettingsToIframe();
               });
+            }
+          },
+
+          addMessageListener: function () {
+            var self = this;
+
+            window.addEventListener('message', function (event) {
+              if (event.data.action === 'toolOptionChange') {
+                optionHandlers.handle(event.data.option, event.data.value);
+                saveSettings(true);
+                if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.currentScene) {
+                  GameManager.game.currentScene.stateChanged();
+                }
+              }
+
+              if (event.data.action === 'requestSettings') {
+                self.sendSettingsToIframe(true);
+              }
+
+              if (event.data.action === 'filterChanged') {
+                if (HistoryManager._handlingPopstate) return;
+
+                var filter = event.data.filter;
+
+                if (filter.mode) {
+                  var url = '/' + filter.mode;
+                  history.pushState(
+                    { mode: filter.mode, filterType: filter.type || 'db', type: 'modeFilter' },
+                    document.title,
+                    url
+                  );
+                } else if (filter.player) {
+                  history.pushState(
+                    { player: filter.player, filterType: filter.type || 'db', type: 'user' },
+                    document.title,
+                    '/u/' + encodeURIComponent(filter.player)
+                  );
+
+                  var toolsIframe = document.getElementById("toolsIframe");
+                  if (toolsIframe && toolsIframe.contentWindow) {
+                    toolsIframe.contentWindow.postMessage({
+                      action: 'showPlayerProfile',
+                      player: filter.player
+                    }, '*');
+                  }
+                } else if (filter.playlist) {
+                  history.pushState(
+                    { playlist: filter.playlist, filterType: filter.type || 'db', type: 'playlist' },
+                    document.title,
+                    '/p/' + encodeURIComponent(filter.playlist)
+                  );
+                } else if (filter.remixesOf) {
+                  history.pushState(
+                    { remixesOf: filter.remixesOf, filterType: filter.type || 'db', type: 'remixes' },
+                    document.title,
+                    '/t/' + encodeURIComponent(filter.remixesOf.canonical) + '/remixes'
+                  );
+                } else if (filter.type) {
+                  var url = filter.type === 'db' ? '/tracks' : '/' + filter.type;
+                  history.pushState(
+                    { filterType: filter.type, type: 'typeFilter' },
+                    document.title,
+                    url
+                  );
+                }
+              }
+
+              if (event.data.action === 'playerProfile') {
+                var playerName = event.data.player;
+
+                var iframe = document.getElementById("toolsIframe");
+                if (iframe && iframe.contentWindow) {
+                  iframe.contentWindow.postMessage({
+                    action: 'showPlayerProfile',
+                    player: playerName
+                  }, '*');
+                };
+              }
+
+              if (event.data.action === 'filterCleared') {
+                if (HistoryManager._handlingPopstate) return;
+
+                history.pushState(
+                  { filterType: 'db', mode: 'tracks', type: 'typeFilter' },
+                  'Track Database',
+                  '/tracks'
+                );
+              }
+            });
+          },
+
+          handleOptionChange: function (option, value) {
+            optionHandlers.handle(option, value);
+
+            saveSettings(true);
+
+            if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.currentScene) {
+              GameManager.game.currentScene.stateChanged();
+            }
+          },
+
+          fixColor: function (c) {
+            if (!c) return '#000000';
+            if (/^rgba?/.test(c)) {
+              var d = c.match(/\((\d+), ?(\d+), ?(\d+)/);
+              if (d) {
+                return '#' + ('0' + parseInt(d[1]).toString(16)).slice(-2) +
+                  ('0' + parseInt(d[2]).toString(16)).slice(-2) +
+                  ('0' + parseInt(d[3]).toString(16)).slice(-2);
+              }
+            }
+            return c;
+          },
+
+          buildSettings: function () {
+            var data = this.props.data || {};
+            var toolOptions = data.toolOptions || {};
+            var self = this;
+
+            var settings = Object.assign({}, data);
+
+            settings.currentTool = data.tool || 'none';
+            settings.eraserRadius = toolOptions.radius || 40;
+            settings.curveSegmentLength = toolOptions.segmentLength;
+            settings.circleSegmentLength = toolOptions.segmentLength;
+
+            settings.gridType = data.isometricGrid ? 'isometric' : 'standard';
+            settings.gridVisibility = data.visibleGrid && data.snapGrid ? 'visible'
+              : (!data.visibleGrid && data.snapGrid ? 'hidden' : 'no-snap');
+            settings.gridActive = !!data.grid;
+            settings.snapActive = !!data.snap;
+
+            settings.snapType = data.snapClick ? 'click' : (data.snapNear ? 'line' : 'point');
+
+            settings.brush = data.brushSettings ? JSON.parse(data.brushSettings) : { breakLength: 1, trailSpeed: 0.5 };
+
+            settings.layers = (data.layersData || []).map(function (l) {
+              return {
+                name: l.name,
+                visible: l.visible,
+                locked: l.locked || false,
+                physicsColor: self.fixColor(l.physicsColor),
+                sceneryColor: self.fixColor(l.sceneryColor)
+              };
+            });
+            settings.currentLayerIndex = data.layerIndex || 0;
+
+            if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.currentScene) {
+              var scene = GameManager.game.currentScene;
+              settings.objects = scene.objects || {};
+              settings.objectPreviewData = {
+                physics: scene.modObjectPhysics || [],
+                scenery: scene.modObjectScenery || [],
+                powerups: scene.modObjectPowerups || []
+              };
+
+              var patternTool = scene.toolHandler.tools.pattern;
+
+              if (patternTool) {
+                settings.patternBrushSize = patternTool.size;
+                settings.patternBrush = patternTool.currentBrush;
+                settings.currentPattern = patternTool.currentPattern;
+                settings.patterns = patternTool.patterns.map(function (p) {
+                  return {
+                    name: p.name,
+                    width: p.width,
+                    height: p.height
+                  };
+                });
+
+                if (patternTool.patterns.length > 0) {
+                  var currentPattern = patternTool.patterns[patternTool.currentPattern];
+                  if (currentPattern) {
+                    settings.patternPreviewData = {
+                      width: currentPattern.width,
+                      height: currentPattern.height,
+                      brushSize: patternTool.size,
+                      physics: currentPattern.objects
+                        .filter(function (obj) { return obj.type === 'physics'; })
+                        .map(function (obj) {
+                          return { x1: obj.p1.x, y1: obj.p1.y, x2: obj.p2.x, y2: obj.p2.y };
+                        }),
+                      scenery: currentPattern.objects
+                        .filter(function (obj) { return obj.type === 'scenery'; })
+                        .map(function (obj) {
+                          return { x1: obj.p1.x, y1: obj.p1.y, x2: obj.p2.x, y2: obj.p2.y };
+                        })
+                    };
+                  }
+                }
+              }
+
+              settings.patternGlobalGrid = GameSettings.pattern ? GameSettings.pattern.globalGrid : true;
+              settings.patternExperimentalSpeedups = GameSettings.pattern ? GameSettings.pattern.experimentalSpeedups : false;
+              settings.patternExperimentalStabilization = GameSettings.pattern ? GameSettings.pattern.experimentalStabilization : false;
+            }
+
+            if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.mod) {
+              var mod = GameManager.game.mod;
+              settings.modVars = {};
+              for (var key in mod.vars) {
+                settings.modVars[key] = mod.vars[key];
+              }
+
+              // Also send the mod menu structure so the iframe can build UI if needed (only on first full send)
+              settings.modMeta = {
+                keys: Object.keys(mod.vars)
+              };
+            }
+
+            return settings;
+          },
+
+          diffSettings: function (prev, curr) {
+            if (!prev) return null;
+            var changed = [];
+            var allKeys = {};
+            var k;
+            for (k in prev) if (prev.hasOwnProperty(k)) allKeys[k] = true;
+            for (k in curr) if (curr.hasOwnProperty(k)) allKeys[k] = true;
+            for (k in allKeys) {
+              var a = prev[k];
+              var b = curr[k];
+              if (a === b) continue;
+              if (typeof a === 'object' || typeof b === 'object') {
+                if (JSON.stringify(a) !== JSON.stringify(b)) changed.push(k);
+              } else {
+                changed.push(k);
+              }
+            }
+            return changed.length > 0 ? changed : null;
+          },
+
+          sanitizeForPostMessage: function (obj) {
+            if (obj === null || obj === undefined) return obj;
+            if (typeof obj === 'function') return undefined;
+            if (typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(this.sanitizeForPostMessage);
+
+            var clean = {};
+            for (var key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                var val = obj[key];
+                if (typeof val !== 'function') {
+                  clean[key] = this.sanitizeForPostMessage(val);
+                }
+              }
+            }
+            return clean;
+          },
+
+          sendSettingsToIframe: function (force) {
+            var iframe = document.getElementById("toolsIframe");
+            if (!iframe || !iframe.contentWindow) return;
+
+            var settings = this.buildSettings();
+
+            // On force (iframe request) or first send, send everything
+            var changed = null;
+            if (!force && this._lastSentSettings) {
+              changed = this.diffSettings(this._lastSentSettings, settings);
+              if (!changed) return; // nothing changed, skip the postMessage
+            }
+
+            this._lastSentSettings = settings;
+
+            iframe.contentWindow.postMessage({
+              action: 'updateSettings',
+              settings: this.sanitizeForPostMessage(settings),
+              changed: changed // null = full update, array = selective update
+            }, '*');
+          },
+
+          toggleSidebar: function () {
+            if (typeof GameSettings !== "undefined") {
+              GameSettings.sidebar = !(GameSettings.sidebar !== false);
+            }
+
+            var newState = typeof GameSettings !== "undefined"
+              ? GameSettings.sidebar !== false
+              : false;
+
+            this.setState({ sidebar: newState });
+
+            var iframe = document.getElementById("toolsIframe");
+            if (iframe) {
+              iframe.style.display = newState ? "block" : "none";
+            }
+          },
+
+          render: function () {
+            var sidebarVisible = this.state.sidebar;
+            var toggleClass = "topMenu-button topMenu-button-right";
+            var iconClass = "editorgui_icons" + (sidebarVisible
+              ? " editorgui_icons-icon_sidebar_close"
+              : " editorgui_icons-icon_sidebar_open");
+
+            return sidebarVisible
+              ? n.createElement("div", { className: toggleClass, onClick: this.toggleSidebar, title: "Hide Sidebar" },
+                n.createElement("span", { className: "text" }, "Sidebar"),
+                n.createElement("span", { className: iconClass })
+              )
+              : n.createElement("div", { className: toggleClass, onClick: this.toggleSidebar, title: "Show Sidebar" },
+                n.createElement("span", { className: iconClass }),
+                n.createElement("span", { className: "text" }, "Sidebar")
+              );
+          }
+        });
+
+        t.exports = r;
+      },
+      { react: 230, "./historyManager": 254, "./trackLoader": 252, "./optionHandlers": 249 }
+    ],
+    244: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "Object",
+            toggleObject: function () {
+              "undefined" != typeof GameManager && GameManager.command("object");
             },
-            toggleIframe: function () {
-              let iframe = document.getElementById("forumIframe");
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
 
-              var sidebar;
-
-                if (typeof GameSettings !== 'undefined') {
-                  sidebar = GameSettings.sidebar ?? true;
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'object'
+                    }, '*');
+                  }
                 } else {
-                  sidebar = true;
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'object';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "object");
+                  }
+                }
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("object");
+                }
+              }
+            },
+            render: function () {
+              var e = "sideButton sideButton_physicsLine",
+                r = "Object";
+              return (
+                this.props.active && (e += " active"),
+                n.createElement(
+                  "div",
+                  { className: e, onClick: this.handleClick, title: r },
+                  n.createElement("span", {
+                    className: "cube",
+                  })
+                )
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
+    245: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "ObjectImportButton",
+            dialogName: "objectImport",
+            openDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", this.dialogName);
+            },
+            render: function () {
+              var e = "topMenu-button topMenu-button_import",
+                t = "editorgui_icons editorgui_icons-icon_import";
+              return n.createElement(
+                "div",
+                { className: e, onClick: this.openDialog, title: "Import Object" },
+                n.createElement("span", { className: t }),
+                n.createElement("span", { className: "text" }, "Objects")
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
+    246: [
+      function (e, t) {
+        var n = e("react"),
+          Loading = e("./Loading"),
+          r = n.createClass({
+            displayName: "ObjectDBDialog",
+
+            closeDialog: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("dialog", !1);
+            },
+
+            getInitialState: function () {
+              return { isLoading: false, loadPercent: 0 };
+            },
+
+            componentDidMount: function () {
+              window.addEventListener('message', this.handleIframeMessage);
+            },
+
+            componentWillUnmount: function () {
+              window.removeEventListener('message', this.handleIframeMessage);
+            },
+
+            handleIframeMessage: function (event) {
+              var self = this;
+
+              // Auto-import when object is clicked
+              if (event.data.action === 'importObject') {
+                var obj = event.data.object;
+                var isPatternMode = self.props.patternMode;
+
+                if (!obj || !obj.codeUrl) return;
+
+                self.setState({ isLoading: true, loadPercent: 0 });
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', obj.codeUrl, true);
+
+                xhr.onprogress = function (e) {
+                  if (e.lengthComputable) {
+                    var percent = Math.round((e.loaded / e.total) * 100);
+                    self.setState({ loadPercent: percent });
+                  }
+                };
+
+                xhr.onload = function () {
+                  if (xhr.status === 200) {
+                    var code = xhr.responseText;
+                    self.setState({ loadPercent: 100 });
+
+                    if ("undefined" != typeof GameManager) {
+                      if (isPatternMode) {
+                        GameManager.command("addPattern", code, obj.name);
+                      } else {
+                        GameManager.command("addObject", code, true);
+                      }
+                    }
+                    self.closeDialog();
+                  } else {
+                    console.error('Failed to load object');
+                    self.setState({ isLoading: false, loadPercent: 0 });
+                  }
+                };
+
+                xhr.onerror = function () {
+                  console.error('Failed to load object');
+                  self.setState({ isLoading: false, loadPercent: 0 });
+                };
+
+                xhr.send();
+              }
+            },
+
+            render: function () {
+              var isLoading = this.state.isLoading;
+              var loadPercent = this.state.loadPercent;
+              var isPatternMode = this.props.patternMode;
+              var itemType = isPatternMode ? "Pattern" : "Object";
+              var iframeSrc = isPatternMode ? "/objects?group=pattern" : "/objects";
+
+              return n.createElement(
+                "div",
+                { className: "editorDialog-db editorDialog-content_importDialog" },
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-titleBar" },
+                  n.createElement("span", { className: "editorDialog-close", onClick: this.closeDialog }, "×"),
+                  n.createElement("h1", { className: "editorDialog-content-title" }, "IMPORT " + itemType.toUpperCase())
+                ),
+                n.createElement("iframe", {
+                  src: iframeSrc,
+                  style: { width: "100%", height: "calc(100% - 39px)", border: "none", display: "block" }
+                }),
+                isLoading ? n.createElement(
+                  "div",
+                  {
+                    className: "loading-overlay",
+                    style: {
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: "rgba(255,255,255,0.4)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }
+                  },
+                  n.createElement(Loading, { percent: loadPercent, itemName: itemType })
+                ) : null
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230, "./Loading": 30 },
+    ],
+    247: [
+      function (e, t) {
+        var n = e("react"),
+          HistoryManager = e("./historyManager"),
+          Loading = e("./Loading"),
+          TrackLoader = e("./trackLoader");
+          GhostLoader = e("./ghostLoader"),
+          r = n.createClass({
+            displayName: "TrackDBDialog",
+
+            getInitialState: function () {
+              return { isLoading: false, loadPercent: 0 };
+            },
+
+            componentDidMount: function () {
+              window.addEventListener('message', this.handleIframeMessage);
+
+              if (HistoryManager._handlingPopstate) {
+                return;
+              }
+              var filter = (typeof GameSettings !== 'undefined') ? GameSettings.dialogFilter : null;
+              var filterType = (filter && filter.type) ? filter.type : 'db';
+              var filterMode = (filter && filter.mode) ? filter.mode : null;
+
+              // Determine expected URL based on filter
+              var expectedUrl;
+              if (filterMode === 'players') {
+                expectedUrl = '/players';
+              } else if (filterMode === 'ghosts') {
+                expectedUrl = '/ghosts';
+              } else if (filterType === 'db') {
+                expectedUrl = '/tracks';
+              } else {
+                expectedUrl = '/' + filterType;
+              }
+
+              if (filter && (filter.player || filter.playlist || filter.remixesOf || filter.query)) {
+                return;
+              }
+              if (window.location.pathname === expectedUrl) {
+                return;
+              }
+
+              var stateObj = { filterType: filterType, type: 'typeFilter' };
+              if (filterMode) {
+                stateObj.mode = filterMode;
+              }
+
+              history.pushState(stateObj, 'Track Database', expectedUrl);
+              document.title = "Track Database";
+            },
+
+            componentWillUnmount: function () {
+              window.removeEventListener('message', this.handleIframeMessage);
+
+              if (typeof GameSettings !== 'undefined' && GameSettings.id) {
+                var urlType = GameSettings.urlType || GameSettings.type || 't';
+                var id = GameSettings.canonical || GameSettings.id;
+                var urlPath = '/' + urlType + '/' + id;
+
+                var currentPath = window.location.pathname;
+
+                // If we're already on a track page, the URL was set by popstate
+                // or by track loading — don't overwrite it with stale GameSettings
+                var isAlreadyOnTrack = /^\/(cr|bhr|frhd|tm|t|app)\/[a-zA-Z0-9_-]+/.test(currentPath);
+
+                if (!isAlreadyOnTrack && currentPath !== urlPath) {
+                  history.pushState(
+                    {
+                      trackId: id,
+                      trackType: urlType,
+                      primaryType: GameSettings.type
+                    },
+                    GameSettings.trackName || document.title,
+                    urlPath
+                  );
+                }
+              }
+            },
+
+            handleIframeMessage: function (event) {
+              var self = this;
+
+              if (event.data.action === 'loadTrack') {
+                var trackType = event.data.type;
+                var trackId = event.data.id;
+                var ghost = event.data.ghost;
+
+                if (!trackType || !trackId) return;
+
+                self.setState({ isLoading: true, loadPercent: 30 });
+
+                if (event.data.playlist) {
+                  TrackLoader._currentPlaylist = event.data.playlist;
+                } else if (event.data.filterContext) {
+                  TrackLoader._currentFilterContext = event.data.filterContext;
                 }
 
-
-              if (iframe) {
-                iframe.style.display =
-                  iframe.style.display === "none" && sidebar
-                    ? "block"
-                    : "none";
-              } else {
-                iframe = document.createElement("iframe");
-                iframe.id = "forumIframe";
-                iframe.src = GameSettings.forumUrl ? GameSettings.forumUrl : (GameSettings.type
-                  ? (GameSettings.type === 'user')
-                    // Case 1: /u/ness
-                    ? `/u/${GameSettings.id}?discuss=true`
-                    // Case 2: /u/ness/track1
-                    : (GameSettings.type === 'page'
-                      ? `/u/${GameSettings.userId}?discuss=true`
-                      // Case 3: other types (frhd, bhr, cr)
-                      : `/${GameSettings.type}/${GameSettings.id}?discuss=true`)
-                  : `discuss.html`);
-                iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation";
-                iframe.style.display = "block";
-                iframe.allow="clipboard-write; fullscreen"
-                document.body.appendChild(iframe);
-
-                iframe.addEventListener('load', () => {
-                  const trackData = {
-                    id: GameSettings.id,
-                    name: GameSettings.trackName || '',
-                    authors: GameSettings.authors || '',
-                    thumbnail: GameSettings.thumbnail,
-                    type: GameSettings.type,
-                    description: GameSettings.description || '',
-                    permalink: GameSettings.permalink,
-                    published: GameSettings.published || '',
-                    size: GameSettings.size || '',
-                    nextId: GameSettings.nextId,
-                    prevId: GameSettings.prevId,
-                    ghoster: GameSettings.ghoster,
-                    ghostTime: GameSettings.ghostTime,
-                    ghostTicks: GameSettings.ghostTicks
-                  };
-
-                  iframe.contentWindow.postMessage({
-                    type: 'freerider-track-data',
-                    data: trackData
-                  }, '*');
+                TrackLoader.load(
+                  { type: trackType, id: trackId },
+                  ghost,
+                  false
+                ).then(function () {
+                  self.setState({ loadPercent: 100 }, function () {
+                    self.closeDialog();
+                  });
+                }).catch(function (error) {
+                  console.error('Failed to load track:', error);
+                  self.setState({ isLoading: false, loadPercent: 0 });
                 });
               }
             },
-            hasUnsavedChanges() {
-              return (GameManager.game.currentScene.toolHandler.actionTimeline.length > 0);
-            },
-            loadTrackFromState(trackType, trackId, ghostInfo = null) {
-              console.log(`[PopState] Loading track: ${trackType}/${trackId}`);
 
-              if (trackType === 'cr') {
-                fetch(`/cr/${trackId}?json=true`)
-                  .then((response) => {
-                    if (!response.ok) throw new Error("CR track not found");
-                    return response.json();
-                  })
-                  .then((metadata) => {
-                    return fetch(metadata.trackUrl)
-                      .then(res => res.text())
-                      .then((code) => {
-                        GameManager.command("clear race");
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
-                        GameSettings.authors = metadata.authors || '';
-                        document.title = metadata.name || `CR Track #${trackId}`;
-
-                        const ghost = ghostInfo || {
-                          ghostUrl: metadata.ghostUrl,
-                          keyUrl: metadata.keyUrl,
-                          vehicle: metadata.ghostVehicle,
-                          time: metadata.ghostTime,
-                          ticks: metadata.ghostTicks,
-                          username: metadata.ghoster
-                        };
-
-                        if (ghost && (ghost.url || ghost.ghostUrl)) {
-                          this.loadGhostFromUrl(ghost);
-                        }
-
-                        this.updateNowPlaying({
-                          id: metadata.id,
-                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                          authors: metadata.authors,
-                          thumbnail: metadata.thumbnail,
-                          type: trackType,
-                          description: metadata.description || '',
-                          permalink: metadata.permalink,
-                          published: metadata.published || '',
-                          size: metadata.size || '',
-                          nextId: metadata.nextId,
-                          prevId: metadata.prevId,
-                          ghoster: metadata.ghoster,
-                          ghostTime: metadata.ghostTime,
-                          ghostTicks: metadata.ghostTicks
-                        });
-                      });
-                  })
-                  .catch((error) => {
-                    console.error(`Failed to re-load CR track ${trackId}:`, error);
-                  });
-                return;
-              }
-
-              if (trackType === 'bhr') {
-                fetch(`/bhr/${trackId}?json=true`)
-                  .then((response) => {
-                    if (!response.ok) throw new Error("BHR track not found");
-                    return response.json();
-                  })
-                  .then((metadata) => {
-                    return fetch(metadata.trackUrl)
-                      .then(res => res.text())
-                      .then((code) => {
-                        GameManager.command("clear race");
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
-                        GameSettings.authors = metadata.authors || '';
-                        document.title = metadata.name || `BHR Track #${trackId}`;
-
-                        const ghost = ghostInfo || {
-                          ghostUrl: metadata.ghostUrl,
-                          keyUrl: metadata.keyUrl,
-                          vehicle: metadata.ghostVehicle,
-                          time: metadata.ghostTime,
-                          ticks: metadata.ghostTicks,
-                          username: metadata.ghoster
-                        };
-
-                        if (ghost && (ghost.url || ghost.ghostUrl)) {
-                          this.loadGhostFromUrl(ghost);
-                        }
-
-                        this.updateNowPlaying({
-                          id: metadata.id,
-                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                          authors: metadata.authors,
-                          thumbnail: metadata.thumbnail,
-                          type: trackType,
-                          description: metadata.description || '',
-                          permalink: metadata.permalink,
-                          published: metadata.published || '',
-                          size: metadata.size || '',
-                          nextId: metadata.nextId,
-                          prevId: metadata.prevId,
-                          ghoster: metadata.ghoster,
-                          ghostTime: metadata.ghostTime,
-                          ghostTicks: metadata.ghostTicks
-                        });
-                      });
-                  })
-                  .catch((error) => {
-                    console.error(`Failed to re-load BHR track ${trackId}:`, error);
-                  });
-                return;
-              }
-
-              if (trackType === 'frhd') {
-                fetch(`/frhd/${trackId}?json=true`)
-                  .then((response) => {
-                    if (!response.ok) throw new Error("FRHD track not found");
-                    return response.json();
-                  })
-                  .then((metadata) => {
-                    return fetch(metadata.trackUrl)
-                      .then(res => res.text())
-                      .then((code) => {
-                        GameManager.command("clear race");
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
-                        GameSettings.authors = metadata.authors || '';
-                        document.title = metadata.name || `FRHD Track #${trackId}`;
-
-                        const ghost = ghostInfo || {
-                          ghostUrl: metadata.ghostUrl,
-                          keyUrl: metadata.keyUrl,
-                          vehicle: metadata.ghostVehicle,
-                          time: metadata.ghostTime,
-                          ticks: metadata.ghostTicks,
-                          username: metadata.ghoster
-                        };
-
-                        if (ghost && (ghost.url || ghost.ghostUrl)) {
-                          this.loadGhostFromUrl(ghost);
-                        }
-
-                        this.updateNowPlaying({
-                          id: metadata.id,
-                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                          authors: metadata.authors,
-                          thumbnail: metadata.thumbnail,
-                          type: trackType,
-                          description: metadata.description || '',
-                          permalink: metadata.permalink,
-                          published: metadata.published || '',
-                          size: metadata.size || '',
-                          nextId: metadata.nextId,
-                          prevId: metadata.prevId,
-                          ghoster: metadata.ghoster,
-                          ghostTime: metadata.ghostTime,
-                          ghostTicks: metadata.ghostTicks
-                        });
-                      });
-                  })
-                  .catch((error) => {
-                    console.error(`Failed to re-load FRHD track ${trackId}:`, error);
-                  });
-                return;
-              }
-              if (trackType === 'plus' || trackType === 't' || trackType === 'app') {
-                const urlType = 't';
-                fetch(`/${urlType}/${trackId}?json=true`)
-                  .then((response) => {
-                    if (!response.ok) throw new Error("Plus track not found");
-                    return response.json();
-                  })
-                  .then((metadata) => {
-                    return fetch(metadata.trackUrl)
-                      .then(res => res.text())
-                      .then((code) => {
-                        GameManager.command("clear race");
-                        GameManager.command("import", code, true);
-                        GameSettings.trackName = metadata.name || `Plus Track #${trackId}`;
-                        GameSettings.authors = metadata.authors || '';
-                        document.title = metadata.name || `Plus Track #${trackId}`;
-
-                        this.updateNowPlaying({
-                          id: metadata.id,
-                          name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                          authors: metadata.authors,
-                          thumbnail: metadata.thumbnail,
-                          type: trackType,
-                          description: metadata.description || '',
-                          permalink: metadata.permalink,
-                          published: metadata.published || '',
-                          size: metadata.size || '',
-                          nextId: metadata.nextId,
-                          prevId: metadata.prevId,
-                          ghoster: metadata.ghoster,
-                          ghostTime: metadata.ghostTime,
-                          ghostTicks: metadata.ghostTicks
-                        });
-                      });
-                  })
-                  .catch((error) => {
-                    console.error(`Failed to re-load Plus track ${trackId}:`, error);
-                  });
-                return;
+            closeDialog: function () {
+              if (typeof GameManager !== "undefined") {
+                GameManager.command("dialog", false);
               }
             },
-            async loadGhostFromUrl(ghostInfo) {
-              try {
-                const ghostUrl = ghostInfo.url || ghostInfo.ghostUrl;
-                const keyUrl = ghostInfo.keyUrl;
 
-                if (!ghostUrl) {
-                  console.log('[Ghost] No ghost URL provided');
+            buildIframeSrc: function () {
+              return '/db';
+            },
+
+            render: function () {
+              var iframeSrc = this.buildIframeSrc();
+              var isLoading = this.state.isLoading;
+              var loadPercent = this.state.loadPercent;
+
+              return n.createElement(
+                "div",
+                { className: "editorDialog-db editorDialog-content_importDialog" },
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-titleBar" },
+                  n.createElement("span", { className: "editorDialog-close", onClick: this.closeDialog }, "×"),
+                  n.createElement("h1", { className: "editorDialog-content-title" }, "IMPORT TRACK")
+                ),
+                n.createElement("iframe", {
+                  src: iframeSrc,
+                  style: { width: "100%", height: "calc(100% - 39px)", border: "none", display: "block" }
+                }),
+                isLoading ? n.createElement(
+                  "div",
+                  {
+                    className: "loading-overlay",
+                    style: {
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: "rgba(255,255,255,0.8)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center"
+                    }
+                  },
+                  n.createElement(Loading, { percent: loadPercent, itemName: "Track" })
+                ) : null
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230, "./historyManager": 254, "./Loading": 30, "./ghostLoader": 251, "./trackLoader": 252 },
+    ],
+    248: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "ToolsDialog",
+
+            componentDidMount: function () {
+              var tool = (typeof GameSettings !== 'undefined' && GameSettings.dialogTool)
+                ? GameSettings.dialogTool
+                : 'straightline';
+
+              var iframe = document.getElementById('toolsIframe');
+
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  action: 'showToolTab',
+                  tool: tool
+                }, '*');
+
+                iframe.contentWindow.postMessage({
+                  action: 'enterDialogMode',
+                  tool: tool
+                }, '*');
+              }
+
+              document.body.classList.add('tools-dialog-open');
+            },
+
+            componentWillUnmount: function () {
+              var iframe = document.getElementById('toolsIframe');
+
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                  action: 'exitDialogMode'
+                }, '*');
+              }
+
+              document.body.classList.remove('tools-dialog-open');
+            },
+
+            closeDialog: function () {
+              if (typeof GameManager !== "undefined") {
+                GameManager.command("dialog", false);
+              }
+            },
+
+            render: function () {
+              var title = 'Toolbox';
+
+              return n.createElement(
+                "div",
+                { className: "editorDialog-tools-container" },
+                n.createElement(
+                  "div",
+                  { className: "editorDialog-titleBar" },
+                  n.createElement("span", { className: "editorDialog-close", onClick: this.closeDialog }, "×"),
+                  n.createElement("h1", { className: "editorDialog-content-title" }, title)
+                )
+              );
+            },
+          });
+        t.exports = r;
+      },
+      { react: 230 },
+    ],
+    249: [
+      function (e, t) {
+        var TrackLoader = e("./trackLoader");
+
+        // ---- Registry ----
+
+        var handlers = {};
+
+        function register(prefix, handlerMap) {
+          for (var key in handlerMap) {
+            if (handlerMap.hasOwnProperty(key)) {
+              handlers[prefix + '-' + key] = handlerMap[key];
+            }
+          }
+        }
+
+        function registerSingle(id, handler) {
+          handlers[id] = handler;
+        }
+
+        function getScene() {
+          if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.currentScene) {
+            return GameManager.game.currentScene;
+          }
+          return null;
+        }
+
+        function getTrack() {
+          var scene = getScene();
+          return scene ? scene.track : null;
+        }
+
+        function redraw() {
+          if (typeof GameManager !== "undefined") GameManager.command("redraw");
+        }
+
+        // ---- Brush ----
+
+        register('brush', {
+          breakLength: function (v) {
+            if (GameSettings.brush) GameSettings.brush.breakLength = v;
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("change tool option", "breakLength", v);
+            }
+          },
+          trailSpeed: function (v) {
+            if (GameSettings.brush) GameSettings.brush.trailSpeed = v;
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("change tool option", "trailSpeed", v);
+            }
+          },
+          rotate: function (v) { GameSettings.brushRotate = v; },
+          scale: function (v) { GameSettings.brushScale = v; },
+          rotateJitter: function (v) { GameSettings.brushRotateJitter = v; },
+          scaleJitter: function (v) { GameSettings.brushScaleJitter = v; }
+        });
+
+        // ---- Select ----
+
+        register('select', {
+          'rotate-factor': function (v) { GameSettings.rotateFactor = v > 0 ? v : 1; },
+          'scale-factor': function (v) { GameSettings.scaleFactor = v; },
+          'offset-factor': function (v) { GameSettings.offsetFactor = v > 0 ? v : 1; },
+          scaleLock: function (v) { GameSettings.scaleLock = v; },
+          copy: function (v) { GameSettings.copy = v; }
+        });
+
+        // ---- Circle ----
+
+        register('circle', {
+          segmentLength: function (v) {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("change tool option", "segmentLength", v);
+            }
+          },
+          ellipse: function (v) { GameSettings.ellipse = v; }
+        });
+
+        // ---- Eraser ----
+
+        register('eraser', {
+          radius: function (v) {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("change tool option", "radius", v);
+            }
+          },
+          lineTrim: function (v) { GameSettings.lineTrim = v; }
+        });
+
+        // ---- Curve ----
+
+        register('curve', {
+          segmentLength: function (v) {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("change tool option", "segmentLength", v);
+            }
+          }
+        });
+
+        // ---- Vehicle Powerup ----
+
+        registerSingle('vehiclepowerup-time', function (v) {
+          if (typeof GameManager !== "undefined") {
+            GameManager.command("change tool option", "time", v);
+          }
+        });
+
+        // ---- Snap ----
+
+        register('snap', {
+          distance: function (v) { GameSettings.snapDistance = v; },
+          type: function (v) {
+            if (v === 'line') {
+              GameSettings.snapNear = true;
+              GameSettings.snapClick = false;
+            } else if (v === 'point') {
+              GameSettings.snapNear = false;
+              GameSettings.snapClick = false;
+            } else if (v === 'click') {
+              GameSettings.snapNear = true;
+              GameSettings.snapClick = true;
+            }
+            redraw();
+          },
+          cursor: function (v) {
+            GameSettings.snapCursor = (v === 'cross');
+            redraw();
+          },
+          locked: function (v) {
+            GameSettings.toolHandler.snapLocked = v;
+            redraw();
+          },
+          toggle: function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("snap");
+            }
+          }
+        });
+
+        // ---- Grid ----
+
+        register('grid', {
+          size: function (v) {
+            GameSettings.toolHandler.gridSize = v;
+            redraw();
+          },
+          type: function (v) {
+            GameSettings.toolHandler.isometricGrid = (v === 'isometric');
+            redraw();
+          },
+          visibility: function (v) {
+            if (v === 'visible') {
+              GameSettings.toolHandler.visibleGrid = true;
+              GameSettings.toolHandler.snapGrid = true;
+            } else if (v === 'hidden') {
+              GameSettings.toolHandler.visibleGrid = false;
+              GameSettings.toolHandler.snapGrid = true;
+            } else if (v === 'no-snap') {
+              GameSettings.toolHandler.visibleGrid = true;
+              GameSettings.toolHandler.snapGrid = false;
+            }
+            redraw();
+          },
+          toggle: function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("grid");
+            }
+          }
+        });
+
+        // ---- Camera ----
+
+        register('camera', {
+          movement: function (v) {
+            if (v === 'normal') {
+              GameSettings.cameraMovementVertical = true;
+              GameSettings.cameraMovementHorizontal = true;
+            } else if (v === 'horizontal') {
+              GameSettings.cameraMovementVertical = false;
+              GameSettings.cameraMovementHorizontal = true;
+            } else if (v === 'vertical') {
+              GameSettings.cameraMovementVertical = true;
+              GameSettings.cameraMovementHorizontal = false;
+            } else {
+              GameSettings.cameraMovementVertical = false;
+              GameSettings.cameraMovementHorizontal = false;
+            }
+            redraw();
+          },
+          speed: function (v) {
+            GameSettings.cameraSpeed = v;
+            redraw();
+          },
+          locked: function (v) {
+            GameSettings.toolHandler.cameraLocked = v;
+            redraw();
+          },
+          sensitivity: function (v) {
+            GameSettings.cameraSensitivity = v;
+            GameSettings.cameraZoomMin = v * 0.5;
+            redraw();
+          }
+        });
+
+        // ---- Layers ----
+
+        register('layer', {
+          select: function (v) {
+            var scene = getScene();
+            if (scene) scene.track.setLayerIndex(v);
+          },
+          'physics-color': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.currentLayer;
+            if (layer) {
+              layer.physicsLineColor = v;
+              layer.update();
+            }
+          },
+          'scenery-color': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.currentLayer;
+            if (layer) {
+              layer.sceneryLineColor = v;
+              layer.update();
+            }
+          },
+          add: function () {
+            var scene = getScene();
+            if (scene) {
+              scene.track.createLayer();
+              scene.stateChanged();
+            }
+          },
+          delete: function () {
+            var scene = getScene();
+            if (!scene) return;
+            var track = scene.track;
+            var layer = track.currentLayer;
+            if (track.layerIndex > 0 && confirm('Are you sure you want to delete ' + layer.name + '?')) {
+              layer.clear();
+              delete track.layers[track.layerIndex];
+              track.setLayerIndex(track.layerIndex - 1);
+            }
+          },
+          toggle: function () {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.currentLayer;
+            if (layer) layer.toggle();
+          },
+          'reset-colors': function () {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.currentLayer;
+            if (layer) layer.resetColors();
+          },
+          'lock': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.layers[v];
+            if (layer) {
+              layer.locked = !layer.locked;
+              scene.stateChanged();
+            }
+          },
+          'toggle-index': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.layers[v];
+            if (layer) {
+              layer.toggle();
+              scene.stateChanged();
+            }
+          },
+          'delete-index': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var track = scene.track;
+            var layer = track.layers[v];
+            if (v > 0 && layer && confirm('Are you sure you want to delete ' + layer.name + '?')) {
+              layer.clear();
+              track.layers.splice(v, 1);
+              if (track.layerIndex >= v) {
+                track.setLayerIndex(Math.max(0, track.layerIndex - 1));
+              }
+              scene.stateChanged();
+            }
+          },
+          'color-physics-index': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.layers[v.index];
+            if (layer) {
+              layer.physicsLineColor = v.color;
+              layer.update();
+              scene.stateChanged();
+            }
+          },
+          'color-scenery-index': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.layers[v.index];
+            if (layer) {
+              layer.sceneryLineColor = v.color;
+              layer.update();
+              scene.stateChanged();
+            }
+          },
+          'rename-index': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var layer = scene.track.layers[v.index];
+            if (layer) {
+              layer.name = v.name;
+              scene.stateChanged();
+            }
+          },
+          'merge-into': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var track = scene.track;
+            var currentLayer = track.currentLayer;
+            var targetLayer = track.layers[v];
+
+            if (!currentLayer || !targetLayer) return;
+            if (track.layerIndex === 0) {
+              alert("You cannot merge the default layer into another layer. Try merging another layer into the default layer instead.");
+              return;
+            }
+            if (currentLayer === targetLayer) {
+              alert("You cannot merge a layer into itself. Try merging the current layer into another layer.");
+              return;
+            }
+
+            if (confirm('Merge "' + currentLayer.name + '" into "' + targetLayer.name + '"?')) {
+              for (var sector of currentLayer.sectors) {
+                sector.layers.delete(currentLayer);
+                sector.layers.add(targetLayer);
+                if (sector.drawn) sector.clear();
+              }
+              for (var line of currentLayer.physicsLines) {
+                line.layer = targetLayer;
+              }
+              for (var line of currentLayer.sceneryLines) {
+                line.layer = targetLayer;
+              }
+              for (var obj of currentLayer.objects) {
+                obj.layer = targetLayer;
+              }
+
+              targetLayer.sectors = targetLayer.sectors.union(currentLayer.sectors);
+              targetLayer.physicsLines = targetLayer.physicsLines.union(currentLayer.physicsLines);
+              targetLayer.sceneryLines = targetLayer.sceneryLines.union(currentLayer.sceneryLines);
+              targetLayer.objects = targetLayer.objects.union(currentLayer.objects);
+
+              currentLayer.sectors = new Set();
+              currentLayer.physicsLines = new Set();
+              currentLayer.sceneryLines = new Set();
+              currentLayer.objects = new Set();
+
+              var oldIndex = track.layerIndex;
+              delete track.layers[oldIndex];
+              track.layers.splice(oldIndex, 1);
+
+              var newTargetIndex = v > oldIndex ? v - 1 : v;
+              track.setLayerIndex(newTargetIndex);
+              track.canvasPool.update();
+
+              scene.stateChanged();
+            }
+          }
+        });
+
+        // ---- Objects ----
+
+        register('object', {
+          select: function (v) {
+            if (!v) return;
+            var scene = getScene();
+            if (!scene) return;
+            var object = scene.objects[v];
+            if (!object) return;
+            scene.objectName = v;
+            for (var i in object) {
+              scene[i] = object[i];
+            }
+
+            fetch('/api/objects/' + encodeURIComponent(v))
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .then(function (obj) {
+                if (obj && obj.folder) {
+                  scene.objects[v].folder = obj.folder;
+                }
+                scene.stateChanged();
+              })
+              .catch(function () {
+                scene.stateChanged();
+              });
+
+            GameSettings.objectRotate = 0;
+            GameSettings.objectScale = 1;
+            GameSettings.objectStretchX = 1;
+            GameSettings.objectStretchY = 1;
+            GameSettings.objectOffsetX = 0;
+            GameSettings.objectOffsetY = 0;
+            GameSettings.objectFlipX = false;
+            GameSettings.objectFlipY = false;
+            GameSettings.objectInvert = false;
+            scene.transformObjects();
+            if (!scene.toolHandler.options.object) {
+              GameManager.command("object");
+            }
+          },
+          'rotate-sensitivity': function (v) { GameSettings.rotateSensitivity = v; },
+          'scale-sensitivity': function (v) { GameSettings.scaleSensitivity = v; },
+          'offset-sensitivity': function (v) { GameSettings.offsetSensitivity = v; },
+          import: function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("dialog", "importObject");
+            }
+          },
+          export: function () {
+            GameSettings.object = true;
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("dialog", "export");
+            }
+          },
+          rename: function () {
+            var scene = getScene();
+            if (!scene || !scene.objectName || Object.keys(scene.objects).length === 0) return;
+            var oldName = scene.objectName;
+            var name = prompt("What would you like to name the object?", oldName);
+            if (!name || name === oldName) return;
+            if (scene.objects[name]) {
+              var num = +(name.match(/-?\d+$/)?.[0] || '0');
+              var numless = name.replace('' + num, '');
+              num = Math.abs(num) + 1;
+              while (scene.objects[numless + '-' + num]) num++;
+              name = numless + '-' + num;
+            }
+            scene.objects[name] = scene.objects[oldName];
+            delete scene.objects[oldName];
+            scene.objectName = name;
+            scene.saveObjects();
+          },
+          remove: function () {
+            var scene = getScene();
+            if (!scene) return;
+            var name = scene.objectName;
+            delete scene.objects[name];
+            scene.objectPhysics = [];
+            scene.objectScenery = [];
+            scene.objectPowerups = [];
+            scene.objectName = "";
+            if (scene.toolHandler.options.object) {
+              GameManager.command("object");
+            }
+            scene.toolHandler.options.lineType = "physics";
+            scene.saveObjects();
+          },
+          'clear-all': function () {
+            var scene = getScene();
+            if (!scene) return;
+            if (confirm('Are you sure you want to remove all objects?')) {
+              scene.objects = {};
+              scene.objectPhysics = [];
+              scene.objectScenery = [];
+              scene.objectPowerups = [];
+              scene.objectName = "";
+              if (scene.toolHandler.options.object) {
+                GameManager.command("object");
+              }
+              scene.toolHandler.options.lineType = "physics";
+              scene.saveObjects();
+              scene.stateChanged();
+            }
+          },
+          'rename-to': function (v) {
+            var scene = getScene();
+            if (!scene || !scene.objects[v.oldName]) return;
+
+            var newName = v.newName;
+            if (scene.objects[newName]) {
+              var num = +(newName.match(/-?\d+$/)?.[0] || '0');
+              var numless = newName.replace('' + num, '');
+              num = Math.abs(num) + 1;
+              while (scene.objects[numless + '-' + num]) num++;
+              newName = numless + '-' + num;
+            }
+            scene.objects[newName] = scene.objects[v.oldName];
+            delete scene.objects[v.oldName];
+            if (scene.objectName === v.oldName) {
+              scene.objectName = newName;
+            }
+            scene.saveObjects();
+            scene.stateChanged();
+          },
+          'export-name': function (v) {
+            var scene = getScene();
+            if (!scene || !scene.objects[v]) return;
+
+            scene.objectName = v;
+            var object = scene.objects[v];
+            for (var i in object) {
+              scene[i] = object[i];
+            }
+            GameSettings.object = true;
+            GameManager.command("dialog", "export");
+          },
+          'remove-name': function (v) {
+            var scene = getScene();
+            if (!scene || !scene.objects[v]) return;
+
+            if (confirm('Are you sure you want to remove "' + v + '"?')) {
+              delete scene.objects[v];
+              if (scene.objectName === v) {
+                scene.objectPhysics = [];
+                scene.objectScenery = [];
+                scene.objectPowerups = [];
+                scene.objectName = "";
+                if (scene.toolHandler.options.object) {
+                  GameManager.command("object");
+                }
+                scene.toolHandler.options.lineType = "physics";
+              }
+              scene.saveObjects();
+              scene.stateChanged();
+            }
+          },
+          transform: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+
+            var rotateSensitivity = GameSettings.rotateSensitivity || 15;
+            var scaleSensitivity = GameSettings.scaleSensitivity || 0.1;
+            var offsetSensitivity = GameSettings.offsetSensitivity || 10;
+
+            switch (v.type) {
+              case 'rotate':
+                GameSettings.objectRotate = (GameSettings.objectRotate || 0) + (rotateSensitivity * v.direction);
+                break;
+              case 'scale':
+                GameSettings.objectScale = Math.max(0.01, (GameSettings.objectScale || 1) + (scaleSensitivity * v.direction));
+                break;
+              case 'stretchX':
+                GameSettings.objectStretchX = Math.max(0.01, (GameSettings.objectStretchX || 1) + (scaleSensitivity * v.direction));
+                break;
+              case 'stretchY':
+                GameSettings.objectStretchY = Math.max(0.01, (GameSettings.objectStretchY || 1) + (scaleSensitivity * v.direction));
+                break;
+              case 'offsetX':
+                GameSettings.objectOffsetX = (GameSettings.objectOffsetX || 0) + (offsetSensitivity * v.direction);
+                break;
+              case 'offsetY':
+                GameSettings.objectOffsetY = (GameSettings.objectOffsetY || 0) + (offsetSensitivity * v.direction);
+                break;
+              case 'flipX':
+                GameSettings.objectFlipX = !GameSettings.objectFlipX;
+                break;
+              case 'flipY':
+                GameSettings.objectFlipY = !GameSettings.objectFlipY;
+                break;
+              case 'invert':
+                GameSettings.objectInvert = !GameSettings.objectInvert;
+                break;
+              case 'invertFlat':
+                GameSettings.objectInvertFlat = !GameSettings.objectInvertFlat;
+                break;
+              case 'reset':
+                GameSettings.objectRotate = 0;
+                GameSettings.objectScale = 1;
+                GameSettings.objectStretchX = 1;
+                GameSettings.objectStretchY = 1;
+                GameSettings.objectOffsetX = 0;
+                GameSettings.objectOffsetY = 0;
+                GameSettings.objectFlipX = false;
+                GameSettings.objectFlipY = false;
+                GameSettings.objectInvert = false;
+                GameSettings.objectInvertFlat = false;
+                break;
+            }
+
+            scene.transformObjects();
+            scene.stateChanged();
+          }
+        });
+
+        // ---- Patterns ----
+
+        register('pattern', {
+          brushSize: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool) tool.setBrushSize(v);
+          },
+          brush: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool) tool.setBrush(v);
+          },
+          select: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool) {
+              tool.currentPattern = v;
+              tool.setBrushSize(tool.size);
+            }
+          },
+          globalGrid: function (v) {
+            if (!GameSettings.pattern) GameSettings.pattern = {};
+            GameSettings.pattern.globalGrid = v;
+          },
+          experimentalSpeedups: function (v) {
+            if (!GameSettings.pattern) GameSettings.pattern = {};
+            GameSettings.pattern.experimentalSpeedups = v;
+          },
+          experimentalStabilization: function (v) {
+            if (!GameSettings.pattern) GameSettings.pattern = {};
+            GameSettings.pattern.experimentalStabilization = v;
+          },
+          'from-object': function () {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool && scene.objectName && scene.objects[scene.objectName]) {
+              tool.addPattern(scene.objectName, scene.objects[scene.objectName]);
+            }
+          },
+          'from-db': function () {
+            var scene = getScene();
+            if (scene) scene.command("dialog", "patternImport");
+          },
+          remove: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool) tool.removePattern(v);
+          },
+          rename: function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var tool = scene.toolHandler.tools.pattern;
+            if (tool && v.index !== undefined && v.name) {
+              tool.renamePattern(v.index, v.name);
+            }
+          }
+        });
+
+        // ---- Track Loading ----
+
+        registerSingle('open-db', function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("dialog", "dbImport");
+            }
+          });
+
+        registerSingle('open-import', function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("dialog", "import");
+            }
+          });
+
+        registerSingle('load-track', function (data) {
+          if (data.playlist) {
+            TrackLoader._currentPlaylist = data.playlist;
+            TrackLoader._currentFilterContext = null;
+          } else if (data.filterContext) {
+            TrackLoader._currentFilterContext = data.filterContext;
+            TrackLoader._currentPlaylist = null;
+          }
+          TrackLoader.load(data);
+        });
+
+        // ---- Navigation / Dialogs ----
+
+        registerSingle('open-playlist', function (v) {
+          if (typeof GameSettings !== 'undefined') {
+            GameSettings.dialogFilter = { playlist: v };
+          }
+
+          history.pushState(
+            { playlist: v, type: 'playlist' },
+            document.title,
+            '/p/' + encodeURIComponent(v)
+          );
+
+          var existingIframe = document.querySelector('.editorDialog-db iframe');
+          if (existingIframe && existingIframe.contentWindow) {
+            existingIframe.contentWindow.postMessage({
+              action: 'setFilter',
+              playlist: v,
+              type: 'db'
+            }, '*');
+          } else {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", "dbImport");
+            }
+          }
+        });
+
+        registerSingle('open-author', function (v) {
+          var playerName = typeof v === 'string' ? v : v.player;
+          var filterType = typeof v === 'object' && v.type ? v.type : 'db';
+
+          if (typeof GameSettings !== 'undefined') {
+            if (typeof v === 'string') {
+              GameSettings.dialogFilter = { player: v };
+            } else {
+              GameSettings.dialogFilter = {
+                player: v.player,
+                type: v.type || 'db',
+                sortBy: v.sortBy || 'shuffle',
+                sortOrder: v.sortOrder || 'desc'
+              };
+            }
+          }
+
+          history.pushState(
+            { player: playerName, type: 'user' },
+            document.title,
+            '/u/' + encodeURIComponent(playerName)
+          );
+
+          var existingIframe = document.querySelector('.editorDialog-db iframe');
+          if (existingIframe && existingIframe.contentWindow) {
+            existingIframe.contentWindow.postMessage({
+              action: 'setFilter',
+              player: playerName,
+              type: filterType
+            }, '*');
+          } else {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", "dbImport");
+            }
+          }
+        });
+
+        registerSingle('open-filter', function (v) {
+          var sortBy = v.sort || v.sortBy || 'shuffle';
+          var sortOrder = v.sortOrder || 'desc';
+
+          if (typeof GameSettings !== 'undefined') {
+            GameSettings.dialogFilter = {
+              type: v.type || 'db',
+              query: v.query || null,
+              player: v.player || null,
+              playlist: v.playlist || null,
+              sortBy: sortBy,
+              sortOrder: sortOrder
+            };
+          }
+
+          var searchUrl = TrackLoader.buildSearchUrl({
+            type: v.type || 'db',
+            query: v.query || null,
+            player: v.player || null,
+            sortBy: sortBy,
+            sortOrder: sortOrder
+          });
+          history.pushState(
+            {
+              query: GameSettings.dialogFilter.query,
+              sortBy: sortBy,
+              sortOrder: sortOrder,
+              dbType: GameSettings.dialogFilter.type || 'db'
+            },
+            document.title,
+            searchUrl
+          );
+
+          var existingIframe = document.querySelector('.editorDialog-db iframe');
+          if (existingIframe && existingIframe.contentWindow) {
+            existingIframe.contentWindow.postMessage({
+              action: 'setFilter',
+              type: v.type || 'db',
+              query: v.query || null,
+              player: v.player || null,
+              playlist: v.playlist || null,
+              sortBy: sortBy,
+              sortOrder: sortOrder
+            }, '*');
+          } else {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", "dbImport");
+            }
+          }
+        });
+
+        registerSingle('open-remix-search', function (v) {
+          var canonical = typeof v === 'string' ? v : v.canonical;
+          var name = typeof v === 'object' && v.name ? v.name : canonical;
+
+          if (typeof GameSettings !== 'undefined') {
+            GameSettings.dialogFilter = {
+              remixesOf: { canonical: canonical, name: name }
+            };
+          }
+
+          history.pushState(
+            { remixesOf: { canonical: canonical, name: name }, filterType: 'db', type: 'remixes' },
+            document.title,
+            '/t/' + encodeURIComponent(canonical) + '/remixes'
+          );
+
+          var existingIframe = document.querySelector('.editorDialog-db iframe');
+          if (existingIframe && existingIframe.contentWindow) {
+            existingIframe.contentWindow.postMessage({
+              action: 'setFilter',
+              remixesOf: { canonical: canonical, name: name },
+              type: 'db'
+            }, '*');
+          } else {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", "dbImport");
+            }
+          }
+        });
+
+        // ---- Vehicle Settings ----
+
+        registerSingle('change-tool', function (v) {
+          if (typeof GameManager !== 'undefined') {
+            GameManager.command("change tool", v);
+          }
+        });
+
+        registerSingle('export-ghost', function () {
+          if (typeof GameManager !== "undefined" &&
+            GameManager.game &&
+            GameManager.game.currentScene &&
+            GameManager.game.currentScene.playerManager &&
+            GameManager.game.currentScene.playerManager.firstPlayer) {
+            var gamepad = GameManager.game.currentScene.playerManager.firstPlayer.getGamepad();
+            if (gamepad && typeof gamepad.export === 'function') {
+              gamepad.export();
+            }
+          }
+        });
+
+        // ---- Mod Settings ----
+
+        // Register each boolean mod
+        var modBoolKeys = [
+          'blackHat', 'invincibility', 'noClip', 'invisibleRider',
+          'mini', 'propeller', 'crouch', 'slowmo', 'rewind',
+          'oldTimer', 'frontBrake', 'bikeData', 'gameData',
+          'inputDisplay', 'hitboxes', 'accurateEraser', 'snap15',
+          'pointDataAlways', 'mobile', 'play', 'keepDeadRiders',
+          'fadedVehiclePowerups', 'pixelSnapEverything', 'lineShadow',
+          'customColors', 'invertColors', 'darkenColors', 'grayscale',
+          'crHead', 'crBmx', 'crMtb', 'crHeli', 'crRagdoll',
+          'crPowerups', 'mario', 'seeGhost'
+        ];
+
+        var hatKeys = ['hatColor', 'crHead', 'blackHat'];
+
+        modBoolKeys.forEach(function (key) {
+          registerSingle('mod-' + key, function (v) {
+            var scene = getScene();
+            if (scene && scene.game && scene.game.mod) {
+              scene.game.mod.setVar(key, v);
+            }
+            if (hatKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
+              scene.liveRider.sendAppearance();
+            }
+          });
+        });
+
+        // Color mods
+        var modColorKeys = [
+          'vehicleColor', 'riderColor', 'lineColor',
+          'sceneryColor', 'backgroundColor', 'hatColor'
+        ];
+
+        modColorKeys.forEach(function (key) {
+          registerSingle('mod-' + key, function (v) {
+            var scene = getScene();
+            if (scene && scene.game && scene.game.mod) {
+              scene.game.mod.setVar(key, v); // v should be [r, g, b]
+            }
+            if (hatKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
+              scene.liveRider.sendAppearance();
+            }
+          });
+        });
+
+        // ---- Export ----
+
+        t.exports = {
+          handle: function (option, value) {
+            var handler = handlers[option];
+            if (handler) {
+              handler(value);
+              return true;
+            }
+            console.warn('[optionHandlers] No handler for:', option);
+            return false;
+          },
+          has: function (option) {
+            return !!handlers[option];
+          },
+          list: function () {
+            return Object.keys(handlers);
+          }
+        };
+        window.optionHandlers = t.exports;
+      },
+      { "./trackLoader": 252 }
+    ],
+    250: [
+      function (e, t) {
+        var TrackRouter = {
+          parse: function (urlString) {
+            try {
+              var url = new URL(urlString);
+              var pathname = url.pathname;
+
+              if (pathname === '/players') {
+                return { type: 'db', mode: 'players', isFilter: true };
+              }
+              if (pathname === '/ghosts') {
+                return { type: 'db', mode: 'ghosts', isFilter: true };
+              }
+
+              // Remixes filter: /t/canonical/remixes
+              var remixesMatch = pathname.match(/^\/t\/([a-zA-Z0-9_-]+)\/remixes$/);
+              if (remixesMatch) {
+                return { type: 'remixes', remixesOf: { canonical: remixesMatch[1] }, isFilter: true };
+              }
+
+              // Track route: /cr/123, /bhr/456, /frhd/789, /tm/123, /t/canonical
+              var trackMatch = pathname.match(/^\/(cr|bhr|frhd|tm|t)\/([a-zA-Z0-9_-]+)/);
+              if (trackMatch) {
+                return {
+                  type: trackMatch[1],
+                  id: trackMatch[2]
+                };
+              }
+
+              // User filter: /u/username
+              var userMatch = pathname.match(/^\/u\/([^\/]+)$/);
+              if (userMatch) {
+                return { type: 'user', player: decodeURIComponent(userMatch[1]), isFilter: true };
+              }
+
+              // Playlist filter: /p/playlist
+              var playlistMatch = pathname.match(/^\/p\/([^\/]+)$/);
+              if (playlistMatch) {
+                return { type: 'playlist', playlist: decodeURIComponent(playlistMatch[1]), isFilter: true };
+              }
+
+              // Type filter: /frhd, /bhr, /cr, /tm (no ID)
+              var typeMatch = pathname.match(/^\/(frhd|bhr|cr|tm)$/);
+              if (typeMatch) {
+                return { type: typeMatch[1], isFilter: true };
+              }
+
+              if (pathname === '/tracks' || pathname === '/db') {
+                var result = { type: 'tracks', isFilter: true };
+                var sp = url.searchParams;
+                if (sp.get('q')) result.query = sp.get('q');
+                if (sp.get('player')) result.player = sp.get('player');
+                if (sp.get('type') && sp.get('type') !== 'db') result.filterType = sp.get('type');
+                if (sp.get('sort')) result.sortBy = sp.get('sort');
+                if (sp.get('order')) result.sortOrder = sp.get('order');
+                return result;
+              }
+
+              return null;
+            } catch (error) {
+              console.error("Error parsing URL:", error);
+              return null;
+            }
+          },
+
+          getTrackUrl: function (type, id) {
+            return '/' + type + '/' + id;
+          }
+        };
+
+
+        t.exports = TrackRouter;
+      },
+      {}
+    ],
+    251: [
+      function (e, t) {
+        var GhostLoader = {
+          load: function (ghostInfo) {
+            var self = this;
+            return new Promise(function (resolve, reject) {
+              var ghostUrl = ghostInfo.url || ghostInfo.ghostUrl;
+              var keyUrl = ghostInfo.keyUrl;
+
+              if (!ghostUrl) {
+                console.log("[Ghost] No ghost URL provided");
+                resolve(null);
+                return;
+              }
+
+              console.log("[Ghost] Loading from URL:", ghostUrl);
+              var isCPGH = ghostUrl.endsWith(".cpgh") || ghostUrl.includes("ghost_data");
+
+              if (isCPGH) {
+                self.loadCPGH(ghostUrl, keyUrl, ghostInfo).then(resolve).catch(reject);
+              } else if (keyUrl) {
+                self.loadJSON(keyUrl, ghostInfo).then(resolve).catch(reject);
+              } else {
+                console.warn("[Ghost] Unknown ghost format");
+                resolve(null);
+              }
+            });
+          },
+
+          loadCPGH: function (ghostUrl, keyUrl, ghostInfo) {
+            return fetch(ghostUrl)
+              .then(function (response) {
+                if (!response.ok) throw new Error("Failed to fetch ghost");
+                return response.arrayBuffer();
+              })
+              .then(function (arrayBuffer) {
+                var keyDataPromise = keyUrl
+                  ? fetch(keyUrl).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+                  : Promise.resolve(null);
+
+                return keyDataPromise.then(function (keyData) {
+                  var ghostData = {
+                    cpghData: arrayBuffer,
+                    keyData: keyData,
+                    vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || "BMX",
+                    username: ghostInfo.username || ghostInfo.ghoster || "Ghost"
+                  };
+
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("add race", ghostData, true);
+                  }
+                  console.log("[Ghost] CPGH ghost loaded");
+                  return ghostData;
+                });
+              });
+          },
+
+          loadJSON: function (keyUrl, ghostInfo) {
+            return fetch(keyUrl)
+              .then(function (response) {
+                if (!response.ok) throw new Error("Failed to fetch ghost keys");
+                return response.json();
+              })
+              .then(function (keyData) {
+                var ghostData = {
+                  code: keyData,
+                  vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || "BMX",
+                  run_ticks: ghostInfo.ticks || ghostInfo.ghostTicks || null
+                };
+
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("add race", ghostData, true);
+                }
+                console.log("[Ghost] JSON ghost loaded");
+                return ghostData;
+              });
+          },
+
+          loadFromMetadata: function (metadata, userName) {
+            if (!metadata.ghost) return null;
+
+            var ghostData = metadata.ghost.code || metadata.ghost;
+            var fullRaceData = {
+              user: {
+                id: userName || metadata.ghoster,
+                username: userName || metadata.ghoster,
+                displayName: metadata.ghoster,
+                cosmetics: {}
+              },
+              ghost: {
+                code: ghostData,
+                vehicle: metadata.ghost.vehicle || "BMX",
+                desktop: metadata.ghost.desktop || true,
+                run_ticks: metadata.ghostTicks || metadata.ghost.run_ticks || null
+              }
+            };
+
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("add race", fullRaceData);
+            }
+
+            return {
+              ghostData: ghostData,
+              ghoster: metadata.ghoster || "",
+              ghostTime: metadata.ghostTime || "",
+              ghostTicks: metadata.ghostTicks || metadata.ghost.run_ticks || null,
+              fullRaceData: fullRaceData
+            };
+          },
+
+          updateSettings: function (ghostInfo) {
+            if (typeof GameSettings === "undefined") return;
+            GameSettings.ghostData = true;
+            GameSettings.ghoster = ghostInfo.username || ghostInfo.ghoster || "";
+            GameSettings.ghostTime = ghostInfo.time || ghostInfo.ghostTime || "";
+            GameSettings.ghostTicks = ghostInfo.ticks || ghostInfo.ghostTicks || null;
+          },
+
+          extractGhostInfo: function (messageGhost, metadata) {
+            if (messageGhost && (messageGhost.url || messageGhost.ghostUrl)) {
+              return {
+                url: messageGhost.url,
+                ghostUrl: messageGhost.ghostUrl,
+                keyUrl: messageGhost.keyUrl,
+                vehicle: messageGhost.vehicle || messageGhost.ghostVehicle,
+                time: messageGhost.time || messageGhost.ghostTime,
+                ticks: messageGhost.ticks || messageGhost.ghostTicks,
+                username: messageGhost.username || messageGhost.ghoster,
+                source: "message"
+              };
+            }
+
+            if (metadata && (metadata.ghostUrl || metadata.ghost)) {
+              return {
+                ghostUrl: metadata.ghostUrl,
+                keyUrl: metadata.keyUrl,
+                vehicle: metadata.ghostVehicle || (metadata.ghost && metadata.ghost.vehicle),
+                time: metadata.ghostTime,
+                ticks: metadata.ghostTicks,
+                username: metadata.ghoster,
+                ghost: metadata.ghost,
+                source: "metadata"
+              };
+            }
+
+            return null;
+          }
+        };
+
+        t.exports = GhostLoader;
+      },
+      {}
+    ],
+    252: [
+      function (e, t) {
+        var TrackRouter = e("./trackRouter");
+        var GhostLoader = e("./ghostLoader");
+        var ForumBridge = e("./forumBridge");
+
+        var TrackLoader = {
+          buildSearchUrl: function (options) {
+            var base = '/tracks';
+            var params = [];
+
+            if (options.query) params.push('q=' + encodeURIComponent(options.query));
+            if (options.type && options.type !== 'db') params.push('type=' + encodeURIComponent(options.type));
+            if (options.sortBy && options.sortBy !== 'shuffle') params.push('sort=' + encodeURIComponent(options.sortBy));
+            if (options.sortOrder && options.sortOrder !== 'desc') params.push('order=' + encodeURIComponent(options.sortOrder));
+            if (options.player) params.push('player=' + encodeURIComponent(options.player));
+
+            return params.length > 0 ? base + '?' + params.join('&') : base;
+          },
+
+          _skipHistory: false,
+
+          hasUnsavedWork: function () {
+            if (typeof GameManager === "undefined" || !GameManager.game || !GameManager.game.currentScene) {
+              return false;
+            }
+            var scene = GameManager.game.currentScene;
+            var timeline = scene.toolHandler ? scene.toolHandler.actionTimeline : [];
+            return timeline.length > 0;
+          },
+
+          confirmIfUnsaved: function () {
+            if (!this.hasUnsavedWork()) {
+              return true;
+            }
+
+            return confirm("You have unsaved work. Are you sure you want to load a different track?");
+          },
+
+          load: function (urlOrParsed, ghostInfo, skipHistory) {
+            var self = this;
+            var parsed = typeof urlOrParsed === "string"
+              ? TrackRouter.parse(urlOrParsed)
+              : urlOrParsed;
+
+            if (!parsed) {
+              return Promise.reject(new Error("Invalid URL"));
+            }
+
+            this._skipHistory = skipHistory || false;
+
+            if (parsed.isFilter) {
+              this.openFilterDialog(parsed);
+              return Promise.resolve(parsed);
+            }
+
+            if (!this.confirmIfUnsaved()) {
+              return Promise.resolve(null);
+            }
+
+            this.closeDialog();
+
+            var endpoint = '/' + parsed.type + '/' + parsed.id + '?json=true';
+
+            return fetch(endpoint)
+              .then(function (r) {
+                if (!r.ok) throw new Error("Track not found");
+                return r.json();
+              })
+              .then(function (metadata) {
+                var actualType = metadata.primaryType || metadata.type || parsed.type;
+                return self.importTrack(metadata, actualType, parsed.type, ghostInfo);
+              });
+          },
+
+          importTrack: function (metadata, type, urlType, ghostInfo) {
+            var self = this;
+
+            return fetch(metadata.trackUrl)
+              .then(function (r) {
+                if (!r.ok) throw new Error("Track code not found");
+                return r.text();
+              })
+              .then(function (code) {
+                var isSameTrack = typeof GameSettings !== "undefined" &&
+                  (GameSettings.id === String(metadata.id) || GameSettings.id === Number(metadata.id)) &&
+                  GameSettings.type === type;
+
+                var oldScene = GameManager.game.currentScene;
+                if (oldScene && oldScene.liveRider) {
+                  oldScene.liveRider.disconnect();
+                }
+
+                GameSettings._pendingTrackLoad = true;
+
+                if (!isSameTrack) {
+                  GameManager.command("clear race");
+                  GameManager.command("import", code, true);
+                }
+
+                self.updateGameSettings(metadata, type, urlType);
+                GameSettings._pendingTrackLoad = false;
+
+                if (!self._skipHistory) {
+                  self.updateHistory(metadata, urlType);
+                }
+                self._skipHistory = false;
+
+                if (ghostInfo) {
+                  GhostLoader.load(ghostInfo).then(function () {
+                    GhostLoader.updateSettings(ghostInfo);
+                  });
+                }
+
+                var trackData = {
+                  id: metadata.id,
+                  canonical: metadata.canonical || null,
+                  name: metadata.name,
+                  authors: metadata.authors,
+                  authorsArray: metadata.authorsArray,
+                  username: metadata.username,
+                  thumbnail: metadata.thumbnail,
+                  type: type,
+                  urlType: urlType,
+                  permalink: metadata.permalink,
+                  description: metadata.description,
+                  published: metadata.published,
+                  size: metadata.size,
+                  upvotes: metadata.upvotes,
+                  downvotes: metadata.downvotes,
+                  votes: metadata.votes,
+                  plays: metadata.plays,
+                  favorites: metadata.favorites,
+                  badges: metadata.badges,
+                  remixOf: metadata.remixOf,
+                  remixCount: metadata.remixCount
+                };
+
+                ForumBridge.updateNowPlaying(trackData);
+
+                fetch('/api/tracks/log', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include', // sends the nbb_token cookie
+                  body: JSON.stringify({
+                    trackType: urlType,
+                    trackId: metadata.canonical || metadata.id,
+                    trackName: metadata.name || ''
+                  })
+                }).catch(function () { });
+
+                self.updateToolsPanel(urlType, metadata.canonical || metadata.id, self._currentContext);
+                GameManager.game.currentScene.stateChanged();
+
+                // Reconnect live rider to new track
+                var scene = GameManager.game.currentScene;
+                if (scene.liveRider) {
+                  var newTrackId = urlType + '/' + (metadata.canonical || metadata.id);
+                  var username = GameSettings.user?.d_name || GameSettings.user?.username || 'Player';
+                  var modUi = scene.mod?.ui?.obj;
+                  var hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
+                  var crHead = modUi?.['crHead']?.checkbox?.checked;
+                  var blackHat = modUi?.['blackHat']?.checkbox?.checked;
+                  var hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+                  scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
+                }
+
+                return metadata;
+              });
+          },
+
+          updateToolsPanel: function (type, id) {
+            var toolsIframe = document.getElementById('toolsIframe');
+            if (toolsIframe && toolsIframe.contentWindow) {
+              var message = {
+                action: 'trackChanged',
+                type: type,
+                id: id
+              };
+
+              if (this._currentPlaylist) {
+                message.playlist = this._currentPlaylist;
+              } else if (this._currentFilterContext) {
+                message.filterContext = this._currentFilterContext;
+              } else {
+                message.clearPlaylist = true;
+              }
+
+              toolsIframe.contentWindow.postMessage(message, '*');
+            }
+          },
+
+          updateGameSettings: function (metadata, type, urlType) {
+            if (typeof GameSettings === "undefined") return;
+
+            GameSettings.trackName = metadata.name || type.toUpperCase() + " Track #" + metadata.id;
+            GameSettings.id = metadata.id;
+            GameSettings.canonical = metadata.canonical || null;
+            GameSettings.type = type;           // Actual platform: cr, bhr, frhd, etc.
+            GameSettings.urlType = urlType;     // URL format: t, cr, bhr, frhd, etc.
+            GameSettings.authors = metadata.authors || "";
+            GameSettings.thumbnail = metadata.thumbnail || "";
+            GameSettings.description = metadata.description || "";
+            GameSettings.permalink = metadata.permalink || "";
+
+            // Set blackHat mode for BHR tracks
+            GameSettings.blackHat = (type === 'bhr');
+
+            // Clear filter state when loading a track
+            GameSettings.dialogFilter = null;
+            GameSettings.initialDialog = null;
+
+            document.title = GameSettings.trackName;
+          },
+
+          updateHistory: function (metadata, urlType) {
+            var id = metadata.canonical || metadata.id;
+            var urlPath = '/' + urlType + '/' + id;
+            var trackName = metadata.name || urlType.toUpperCase() + " Track #" + id;
+
+            var stateObj = {
+              trackId: id,
+              trackType: urlType,
+              primaryType: metadata.primaryType || metadata.type
+            };
+
+            if (this._currentPlaylist) {
+              stateObj.playlist = this._currentPlaylist;
+            } else if (this._currentFilterContext) {
+              stateObj.filterContext = this._currentFilterContext;
+            }
+
+            history.pushState(stateObj, trackName, urlPath);
+          },
+
+          openFilterDialog: function (filter) {
+            if (typeof GameSettings !== 'undefined') {
+              GameSettings.dialogFilter = filter;
+            }
+
+            var existingIframe = document.querySelector('.editorDialog-db iframe');
+            if (existingIframe && existingIframe.contentWindow) {
+              existingIframe.contentWindow.postMessage({
+                action: 'setFilter',
+                player: filter.player || null,
+                playlist: filter.playlist || null,
+                type: filter.type || 'db',
+                mode: filter.mode || null,
+                remixesOf: filter.remixesOf || null,
+                query: filter.query || null,
+                sortBy: filter.sortBy || null,
+                sortOrder: filter.sortOrder || null
+              }, '*');
+            } else {
+              if (typeof GameManager !== 'undefined') {
+                GameManager.command("dialog", "dbImport");
+              }
+            }
+          },
+
+          closeDialog: function () {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", false);
+            }
+          }
+        };
+
+        t.exports = TrackLoader;
+      },
+      { "./trackRouter": 250, "./ghostLoader": 251, "./forumBridge": 253 }
+    ],
+    253: [
+      function (e, t) {
+        var ForumBridge = {
+          iframeId: "forumIframe",
+          forumOrigin: "https://forum.freerider.app",
+
+          getIframe: function () {
+            return document.getElementById(this.iframeId);
+          },
+
+          isVisible: function () {
+            var iframe = this.getIframe();
+            return iframe && iframe.style.display !== "none";
+          },
+
+          create: function (options) {
+            var self = this;
+            options = options || {};
+
+            var iframe = document.createElement("iframe");
+            iframe.id = this.iframeId;
+            iframe.sandbox = "allow-scripts allow-same-origin allow-modals allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation";
+            iframe.allow = "clipboard-write; fullscreen";
+            iframe.style.display = "block";
+            iframe.src = this.buildIframeUrl(options);
+
+            document.body.appendChild(iframe);
+
+            iframe.addEventListener("load", function () {
+              self.sendInitialData();
+            });
+
+            return iframe;
+          },
+
+          buildIframeUrl: function (options) {
+            if (typeof GameSettings === "undefined") return "discuss.html";
+            if (GameSettings.forumUrl) return GameSettings.forumUrl;
+            if (GameSettings.type) {
+              if (GameSettings.type === "user") return "/u/" + GameSettings.id + "?discuss=true";
+              if (GameSettings.type === "page") return "/u/" + GameSettings.userId + "?discuss=true";
+              return "/" + GameSettings.type + "/" + GameSettings.id + "?discuss=true";
+            }
+            return "discuss.html";
+          },
+
+          toggle: function () {
+            var iframe = this.getIframe();
+            var sidebar = typeof GameSettings !== "undefined" ? GameSettings.sidebar !== false : true;
+
+            if (iframe) {
+              iframe.style.display = (iframe.style.display === "none" && sidebar) ? "block" : "none";
+            } else {
+              this.create();
+            }
+          },
+
+          show: function () {
+            var iframe = this.getIframe();
+            if (iframe) {
+              iframe.style.display = "block";
+            } else {
+              this.create();
+            }
+          },
+
+          hide: function () {
+            var iframe = this.getIframe();
+            if (iframe) iframe.style.display = "none";
+          },
+
+          sendInitialData: function () {
+            if (typeof GameSettings === "undefined") return;
+
+            this.postMessage({
+              type: "freerider-track-data",
+              data: {
+                id: GameSettings.id,
+                name: GameSettings.trackName || "",
+                authors: GameSettings.authors || "",
+                thumbnail: GameSettings.thumbnail,
+                type: GameSettings.type,
+                description: GameSettings.description || "",
+                permalink: GameSettings.permalink,
+                published: GameSettings.published || "",
+                size: GameSettings.size || "",
+                nextId: GameSettings.nextId,
+                prevId: GameSettings.prevId,
+                ghoster: GameSettings.ghoster,
+                ghostTime: GameSettings.ghostTime,
+                ghostTicks: GameSettings.ghostTicks
+              }
+            });
+          },
+
+          updateNowPlaying: function (trackData) {
+            this.postMessage({ type: "freerider-track-data", data: trackData || null });
+          },
+
+          postMessage: function (message, origin) {
+            var iframe = this.getIframe();
+            if (!iframe || iframe.style.display === "none" || !iframe.contentWindow) return;
+
+            try {
+              iframe.contentWindow.postMessage(message, origin || this.forumOrigin);
+            } catch (e) {
+              try { iframe.contentWindow.postMessage(message, "*"); } catch (e2) { }
+            }
+          }
+        };
+
+        t.exports = ForumBridge;
+      },
+      {}
+    ],
+    254: [
+      function (e, t) {
+        var TrackRouter = e("./trackRouter");
+        var TrackLoader = e("./trackLoader");
+        var ForumBridge = e("./forumBridge");
+
+        var HistoryManager = {
+          initialized: false,
+          _handlingPopstate: false,
+
+          init: function () {
+            if (this.initialized) return;
+            this.initialized = true;
+
+            var self = this;
+
+            window.addEventListener("popstate", function (event) {
+              console.log("[PopState]", event.state, window.location.pathname);
+
+              self._handlingPopstate = true;
+
+              if (event.state) {
+                // Track page
+                if (event.state.trackId && event.state.trackType) {
+                  if (event.state.playlist) {
+                    TrackLoader._currentPlaylist = event.state.playlist;
+                    TrackLoader._currentFilterContext = null;
+                  } else if (event.state.filterContext) {
+                    TrackLoader._currentFilterContext = event.state.filterContext;
+                    TrackLoader._currentPlaylist = null;
+                  } else {
+                    TrackLoader._currentPlaylist = null;
+                    TrackLoader._currentFilterContext = null;
+                  }
+
+                  TrackLoader.load(
+                    { type: event.state.trackType, id: event.state.trackId },
+                    null,
+                    true
+                  );
+                  self.closeDialog();
+                  self._handlingPopstate = false;
                   return;
                 }
 
-                console.log('[Ghost] Loading from URL:', ghostUrl);
+                // Player filter page
+                if (event.state.player) {
+                  self.openFilterDialog({
+                    player: event.state.player,
+                    type: event.state.filterType || 'db'
+                  });
 
-                const isCPGH = ghostUrl.endsWith('.cpgh') || ghostUrl.includes('ghost_data');
-
-                if (isCPGH) {
-                  const response = await fetch(ghostUrl);
-                  if (!response.ok) throw new Error('Failed to fetch ghost');
-                  const arrayBuffer = await response.arrayBuffer();
-
-                  let keyData = null;
-                  if (keyUrl) {
-                    try {
-                      const keyResponse = await fetch(keyUrl);
-                      if (keyResponse.ok) {
-                        keyData = await keyResponse.json();
-                        console.log('[Ghost] Loaded key data:', keyData);
-                      }
-                    } catch (e) {
-                      console.warn('[Ghost] Failed to load key data:', e);
-                    }
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showPlayerProfile',
+                      player: event.state.player
+                    }, '*');
                   }
-
-                  const ghostData = {
-                    cpghData: arrayBuffer,
-                    keyData: keyData,
-                    vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || 'BMX',
-                    username: ghostInfo.username || ghostInfo.ghoster || 'Ghost'
-                  };
-
-                  GameManager.command("add race", ghostData, true);
-                  console.log("[Ghost] CPGH ghost loaded from URL");
-
-                } else if (keyUrl) {
-                  const keyResponse = await fetch(keyUrl);
-                  if (!keyResponse.ok) throw new Error('Failed to fetch ghost keys');
-                  const keyData = await keyResponse.json();
-
-                  const ghostData = {
-                    code: keyData,
-                    vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || 'BMX',
-                    run_ticks: ghostInfo.ticks || ghostInfo.ghostTicks || null
-                  };
-
-                  GameManager.command("add race", ghostData, true);
-                  console.log("[Ghost] JSON ghost loaded from key URL");
+                  self._handlingPopstate = false;
+                  return;
                 }
 
-                GameSettings.ghostData = true;
-                GameSettings.ghoster = ghostInfo.username || ghostInfo.ghoster || '';
-                GameSettings.ghostTime = ghostInfo.time || ghostInfo.ghostTime || '';
-                GameSettings.ghostTicks = ghostInfo.ticks || ghostInfo.ghostTicks || null;
+                // Playlist filter page
+                if (event.state.playlist) {
+                  self.openFilterDialog({
+                    playlist: event.state.playlist,
+                    type: event.state.filterType || 'db'
+                  });
+                  self._handlingPopstate = false;
+                  return;
+                }
 
-              } catch (error) {
-                console.error("[Ghost] Failed to load ghost:", error);
+                // Remixes filter page
+                if (event.state.remixesOf) {
+                  self.openFilterDialog({
+                    remixesOf: event.state.remixesOf,
+                    type: event.state.filterType || 'db'
+                  });
+                  self._handlingPopstate = false;
+                  return;
+                }
+
+                // Search/query filter page
+                if (event.state.query) {
+                    self.openFilterDialog({
+                        type: event.state.dbType || 'db',
+                        query: event.state.query,
+                        sortBy: event.state.sortBy || 'shuffle',
+                        sortOrder: event.state.sortOrder || 'desc'
+                    });
+                    self._handlingPopstate = false;
+                    return;
+                }
+
+                // Mode filter page (players, ghosts)
+                if (event.state.mode) {
+                  self.openFilterDialog({
+                    type: event.state.filterType || 'db',
+                    mode: event.state.mode
+                  });
+                  self._handlingPopstate = false;
+                  return;
+                }
+
+                // Type filter page (db, frhd, bhr, cr, app)
+                if (event.state.filterType) {
+                  self.openFilterDialog({ type: event.state.filterType });
+                  self._handlingPopstate = false;
+                  return;
+                }
+
+                // Legacy type filter page
+                if (event.state.type && event.state.type !== 'user' && event.state.type !== 'playlist' && event.state.type !== 'remixes' && event.state.type !== 'typeFilter' && event.state.type !== 'modeFilter') {
+                  self.openFilterDialog({ type: event.state.type });
+                  self._handlingPopstate = false;
+                  return;
+                }
               }
-            },
-            addImportListener() {
-              if (this._importListenerAdded) return;
-              this._importListenerAdded = true;
-              window.addEventListener('popstate', (event) => {
-                console.log('[PopState] Event triggered:', event.state);
 
-                if (event.state && event.state.trackId && event.state.trackType) {
-                  const { trackId, trackType } = event.state;
-                  console.log(`[PopState] Loading ${trackType} track ${trackId}`);
-                  this.loadTrackFromState(trackType, trackId);
+              // No state - parse URL
+              var parsed = TrackRouter.parse(window.location.href);
+              if (parsed) {
+                if (parsed.isFilter) {
+                  if (parsed.mode) {
+                    // Mode filter (players, ghosts)
+                    self.openFilterDialog({ type: parsed.type || 'db', mode: parsed.mode });
+                  } else if (parsed.type === 'user') {
+                    self.openFilterDialog({ player: parsed.player, type: 'db' });
+
+                    var iframe = document.getElementById("toolsIframe");
+                    if (iframe && iframe.contentWindow) {
+                      iframe.contentWindow.postMessage({
+                        action: 'showPlayerProfile',
+                        player: parsed.player
+                      }, '*');
+                    }
+                  } else if (parsed.type === 'playlist') {
+                    self.openFilterDialog({ playlist: parsed.playlist, type: 'db' });
+                  } else if (parsed.type === 'remixes') {
+                    self.openFilterDialog({ remixesOf: parsed.remixesOf, type: 'db' });
+                  } else if (parsed.type === 'tracks') {
+                  var filter = { type: parsed.filterType || 'db' };
+                  if (parsed.query) filter.query = parsed.query;
+                  if (parsed.player) filter.player = parsed.player;
+                  if (parsed.sortBy) filter.sortBy = parsed.sortBy;
+                  if (parsed.sortOrder) filter.sortOrder = parsed.sortOrder;
+                  if (parsed.mode) filter.mode = parsed.mode;
+                  self.openFilterDialog(filter);
                 } else {
-                  const path = window.location.pathname;
-                  const match = path.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/);
-
-                  if (match) {
-                    const trackType = match[1];
-                    const idPart = match[2];
-                    const trackId = idPart.match(/^\d+$/) ? parseInt(idPart, 10) : idPart;
-                    console.log(`[PopState] No state data, loading from URL: ${trackType}/${trackId}`);
-                    this.loadTrackFromState(trackType, trackId);
-                  } else {
-                    console.log('[PopState] Navigating to default state');
-                    GameManager.command("clear");
-                    GameSettings.trackName = "";
-                    document.title = "Free Rider";
-                    this.updateNowPlaying(null);
+                    self.openFilterDialog({ type: parsed.type });
                   }
+                } else {
+                  TrackLoader.load(parsed, null, true);
                 }
-              });
-              window.addEventListener("message", (event) => {
+              } else {
+                self.clearToDefault();
+              }
 
-    if (event.data.action === "linkClicked") {
-        console.log("clicked link:", event.data.url, event.data.name);
+              self._handlingPopstate = false;
+            });
 
-        let proceedWithImport = true;
+            // Handle iframe link clicks
+            window.addEventListener("message", function (event) {
+              if (event.data.action === "linkClicked") {
+                var parsed = TrackRouter.parse(event.data.url);
+                if (parsed) {
+                  if (event.data.playlist) {
+                    TrackLoader._currentPlaylist = event.data.playlist;
+                    TrackLoader._currentFilterContext = null;
+                  } else {
+                    TrackLoader._currentPlaylist = null;
+                    TrackLoader._currentFilterContext = event.data.filterContext || null;
+                  }
+                  TrackLoader.load(parsed, event.data.ghost, false);
+                }
+              }
+            });
 
-        const url = event.data.url;
+            console.log("[HistoryManager] Initialized");
+          },
 
-      if (this.hasUnsavedChanges()) {
-        const confirmationMessage = 'You have unsaved changes to the current track. Are you sure you want to overwrite it?';
-        const userConfirmed = confirm(confirmationMessage);
-
-        if (!userConfirmed) {
-          console.log("User cancelled track load due to unsaved changes");
-          return;
-        }
-      }
-
-
-        try {
-            const url = new URL(event.data.url);
-            const { hostname, pathname, hash } = url;
-
-            const validHostnames = [
-                "freerider.app",
-                "freeriderhd.com",
-                "www.freeriderhd.com",
-                "frhd.co",
-                "k333892.invisionservice.com",
-                "gofile.io",
-                "localhost"
-            ];
-
-            if (!validHostnames.includes(hostname)) {
-                console.warn("invalid URL hostname:", hostname);
+          openFilterDialog: function (filter) {
+            if (typeof GameSettings !== 'undefined') {
+              GameSettings.dialogFilter = filter;
             }
 
-            let trackName = "";
-            let trackType = null;
-            let trackId = null;
-            let userId = null;
-
-            if (hostname === "freerider.app" && hash) {
-                trackName = hash.substring(1);
-            } 
-
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/([a-zA-Z0-9_-]+)/);
-              trackType = match[1];
-              const idPart = match[2];
-
-              if (idPart.match(/^\d+$/)) {
-                trackId = parseInt(idPart, 10);
-                trackName = `${trackType}-${trackId}`;
-              } else {
-                trackId = idPart;
-                trackName = `${trackType}-${idPart}`;
+            var existingIframe = document.querySelector('.editorDialog-db iframe');
+            if (existingIframe && existingIframe.contentWindow) {
+              existingIframe.contentWindow.postMessage({
+                action: 'applyDialogFilter'
+              }, '*');
+            } else {
+              if (typeof GameManager !== 'undefined') {
+                GameManager.command("dialog", "dbImport");
               }
             }
+          },
 
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)\/(.+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/(\d+)\/(.+)/);
-              trackType = match[1];
-              trackId = parseInt(match[2], 10);
-              const userName = match[3];
-              trackName = `${trackType}-${trackId}`;
+          closeDialog: function () {
+            if (typeof GameManager !== 'undefined') {
+              GameManager.command("dialog", false);
             }
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/(cr|bhr|frhd|u|plus|t)\/(\d+)/)) {
-              const match = pathname.match(/^\/(cr|bhr|frhd|u|plus|t|app)\/(\d+)/);
-              trackType = match[1];
-              trackId = parseInt(match[2], 10);
-              trackName = `${trackType}-${trackId}`;
-            }
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/u\/([^\/]+)\/(.+)/)) {
-              const match = pathname.match(/^\/u\/([^\/]+)\/(.+)/);
-              userId = match[1];
-              const trackSlug = match[2];
-              trackType = 'page';
-              trackName = trackSlug;
-            }
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.match(/^\/u\/([^\/]+)/)) {
-              const match = pathname.match(/^\/u\/([^\/]+)/);
-              userId = match[1];
-              trackType = 'user';
-              trackName = userId;
-            }
-            else if (pathname.startsWith("/t/")) {
-                const parts = pathname.split("/t/")[1].split("-");
-                trackName = parts[0];
-            } 
-            else if ((hostname === "freerider.app" || hostname === "localhost") && pathname.startsWith("/u/")) {
-                trackName = pathname.substring(3);
-                trackType = 'user';
-            } 
-            else if (hostname === "k333892.invisionservice.com") {
-                const parts = pathname.split("/free-rider/")[1].split("/");
-                trackName = parts[0];
-            }
+          },
 
-          if (hostname.endsWith(".gofile.io")) {
-            console.log("Processing Gofile.io URL directly");
+          clearToDefault: function () {
+            if (typeof GameManager !== "undefined") {
+              GameManager.command("clear");
+            }
+            if (typeof GameSettings !== "undefined") {
+              GameSettings.trackName = "";
+              GameSettings.dialogFilter = null;
+              GameSettings.initialDialog = null;
+            }
+            document.title = "Free Rider";
+            ForumBridge.updateNowPlaying(null);
+          }
+        };
 
-            fetch(event.data.url)
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Gofile fetch failed.");
+        t.exports = HistoryManager;
+      },
+      { "./trackRouter": 250, "./trackLoader": 252, "./forumBridge": 253 }
+    ],
+    255: [
+      function (e, t) {
+        var n = e("react"),
+          r = n.createClass({
+            displayName: "PatternTool",
+            changeTool: function () {
+              "undefined" != typeof GameManager &&
+                GameManager.command("change tool", "pattern");
+            },
+            handleClick: function () {
+              var isActive = this.props.active;
+              var sidebarOpen = (typeof GameSettings !== 'undefined') ? (GameSettings.sidebar !== false) : true;
+
+              if (isActive) {
+                if (sidebarOpen) {
+                  var iframe = document.getElementById("toolsIframe");
+                  if (iframe && iframe.contentWindow) {
+                    iframe.contentWindow.postMessage({
+                      action: 'showToolTab',
+                      tool: 'pattern'
+                    }, '*');
+                  }
+                } else {
+                  if (typeof GameSettings !== 'undefined') {
+                    GameSettings.dialogTool = 'pattern';
+                  }
+                  if (typeof GameManager !== "undefined") {
+                    GameManager.command("dialog", "toolsDialog", "tool");
+                  }
                 }
-                return response.text();
-              })
-              .then((data) => {
-                console.log("Track data fetched from Gofile:", data);
-                GameManager.command("import", data, true);
-                GameSettings.trackName = event.data.name || "untitled";
-                this.updateNowPlaying({ "track-name": event.data.name || "untitled" });
-              })
-              .catch((error) => {
-                console.error("Failed to load Gofile track.", error);
-              });
-
-            return;
-          }
-
-          if (!trackName || trackName.includes("../") || trackName.length > 40) {
-            return;
-          }
-
-          trackName = decodeURIComponent(trackName);
-          GameSettings.trackName = trackName;
-
-          // CR logic
-          if (trackType === 'cr') {
-            fetch(`/cr/${trackId}?json=true`)
-              .then((response) => {
-                if (!response.ok) throw new Error("CR track not found");
-                return response.json();
-              })
-              .then((metadata) => {
-                console.log("CR metadata fetched:", metadata);
-                return fetch(metadata.trackUrl)
-                  .then(res => {
-                    if (!res.ok) throw new Error("Track code not found");
-                    return res.text();
-                  })
-                  .then((code) => {
-                    console.log("CR Track code fetched:", code);
-                    GameManager.command("clear race");
-                    GameManager.command("import", code, true);
-                    GameSettings.trackName = metadata.name || `CR Track #${trackId}`;
-                    GameSettings.id = metadata.id;
-                    GameSettings.type = metadata.type;
-                    GameSettings.authors = metadata.authors || ``;
-
-                    const scene = GameManager.game.currentScene;
-                    if (scene.liveRider) {
-                      const newTrackId = `${trackType}/${trackId}`;
-                      const username = GameSettings.user.d_name || 'Player';
-
-                      const modUi = scene.mod.ui?.obj;
-                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
-                      const crHead = modUi?.['crHead']?.checkbox?.checked;
-                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
-                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
-
-                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
-                    }
-
-                    const fullPermalink = metadata.permalink;
-
-                    const urlPath = new URL(fullPermalink).pathname;
-
-                    const trackName = metadata.name || `CR Track #${trackId}`;
-
-                    const ghostInfo = event.data.ghost || {
-                        ghostUrl: metadata.ghostUrl,
-                        keyUrl: metadata.keyUrl,
-                        vehicle: metadata.ghostVehicle,
-                        time: metadata.ghostTime,
-                        ticks: metadata.ghostTicks,
-                        username: metadata.ghoster
-                    };
-
-                    if (ghostInfo && (ghostInfo.url || ghostInfo.ghostUrl)) {
-                        this.loadGhostFromUrl(ghostInfo);
-                    }
-
-                    history.pushState(
-                      { trackId: metadata.id, trackType: metadata.type },
-                      trackName,
-                      urlPath
-                    );
-
-                    document.title = trackName;
-
-                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                    }
-
-                    this.updateNowPlaying({
-                      id: metadata.id,
-                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                      authors: metadata.authors,
-                      thumbnail: metadata.thumbnail,
-                      type: trackType, // 'cr'
-                      description: metadata.description || '',
-                      permalink: metadata.permalink,
-                      published: metadata.published || '',
-                      size: metadata.size || '',
-                      nextId: metadata.nextId,
-                      prevId: metadata.prevId,
-                      ghoster: metadata.ghoster,
-                      ghostTime: metadata.ghostTime,
-                      ghostTicks: metadata.ghostTicks
-                    });
-                  });
-              })
-              .catch((error) => {
-                console.error("Failed to load CR track:", error);
-              });
-            return;
-          }
-
-          // BHR logic
-          if (trackType === 'bhr') {
-            fetch(`/bhr/${trackId}?json=true`)
-              .then((response) => {
-                if (!response.ok) throw new Error("BHR track not found");
-                return response.json();
-              })
-              .then((metadata) => {
-                console.log("BHR metadata fetched:", metadata);
-                return fetch(metadata.trackUrl)
-                  .then(res => {
-                    if (!res.ok) throw new Error("Track code not found");
-                    return res.text();
-                  })
-                  .then((code) => {
-                    console.log("BHR Track code fetched:", code);
-                    GameManager.command("clear race");
-                    GameManager.command("import", code, true);
-                    GameSettings.trackName = metadata.name || `BHR Track #${trackId}`;
-                    GameSettings.id = metadata.id;
-                    GameSettings.type = metadata.type;
-                    GameSettings.authors = metadata.authors || ``;
-
-                    const scene = GameManager.game.currentScene;
-                    if (scene.liveRider) {
-                      const newTrackId = `${trackType}/${trackId}`;
-                      const username = GameSettings.user.d_name || 'Player';
-
-                      const modUi = scene.mod.ui?.obj;
-                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
-                      const crHead = modUi?.['crHead']?.checkbox?.checked;
-                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
-                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
-
-                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
-                    }
-
-                    const fullPermalink = metadata.permalink;
-
-                    const urlPath = new URL(fullPermalink).pathname;
-
-                    const trackName = metadata.name || `BHR Track #${trackId}`;
-
-                    const ghostInfo = event.data.ghost || {
-                        ghostUrl: metadata.ghostUrl,
-                        keyUrl: metadata.keyUrl,
-                        vehicle: metadata.ghostVehicle,
-                        time: metadata.ghostTime,
-                        ticks: metadata.ghostTicks,
-                        username: metadata.ghoster
-                    };
-
-                    if (ghostInfo && (ghostInfo.url || ghostInfo.ghostUrl)) {
-                        this.loadGhostFromUrl(ghostInfo);
-                    }
-
-                    history.pushState(
-                      { trackId: metadata.id, trackType: metadata.type },
-                      trackName,
-                      urlPath
-                    );
-
-                    document.title = trackName;
-
-                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                    }
-
-                    this.updateNowPlaying({
-                      id: metadata.id,
-                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                      authors: metadata.authors,
-                      thumbnail: metadata.thumbnail,
-                      type: trackType, // 'bhr'
-                      description: metadata.description || '',
-                      permalink: metadata.permalink,
-                      published: metadata.published || '',
-                      size: metadata.size || '',
-                      nextId: metadata.nextId,
-                      prevId: metadata.prevId,
-                      ghoster: metadata.ghoster,
-                      ghostTime: metadata.ghostTime,
-                      ghostTicks: metadata.ghostTicks
-                    });
-                  });
-              })
-              .catch((error) => {
-                console.error("Failed to load BHR track:", error);
-              });
-            return;
-          }
-
-          // FRHD logic
-          if (trackType === 'frhd') {
-            const pathMatch = pathname.match(/^\/(frhd)\/(\d+)\/(.+)/);
-            const userName = pathMatch ? pathMatch[3] : null;
-
-            const fetchUrl = userName
-              ? `/frhd/${trackId}/${userName}?json=true`
-              : `/frhd/${trackId}?json=true`;
-
-            const isSameTrack = (
-              GameSettings.id === String(trackId) &&
-              GameSettings.type === trackType
-            );
-
-            const messageGhost = event.data.ghost;
-
-            fetch(fetchUrl)
-              .then((response) => {
-                if (!response.ok) throw new Error("FRHD track not found");
-                return response.json();
-              })
-              .then((metadata) => {
-                console.log("FRHD metadata fetched:", metadata);
-                console.log("Ghost from message:", messageGhost);
-
-                if (messageGhost && (messageGhost.url || messageGhost.ghostUrl)) {
-                  console.log("[Ghost] Loading ghost from message data");
+              } else {
+                if (typeof GameManager !== "undefined") {
+                  GameManager.command("change tool", "pattern");
                 }
-
-                let ghostData = null;
-                let fullRaceData = null;
-                let ghoster = metadata.ghoster || '';
-                let ghostTime = metadata.ghostTime || '';
-                let ghostTicks = metadata.ghostTicks || null;
-
-                if (!messageGhost && metadata.ghost) {
-                  ghostData = metadata.ghost.code || metadata.ghost;
-                  ghoster = metadata.ghoster || '';
-                  ghostTime = metadata.ghostTime || '';
-                  ghostTicks = metadata.ghostTicks || metadata.ghost.run_ticks || null;
-
-                  fullRaceData = {
-                    user: {
-                      id: userName || ghoster,
-                      username: userName || ghoster,
-                      displayName: ghoster,
-                      cosmetics: {}
-                    },
-                    ghost: {
-                      code: ghostData,
-                      vehicle: metadata.ghost.vehicle || 'BMX',
-                      desktop: metadata.ghost.desktop || true,
-                      run_ticks: ghostTicks
-                    }
-                  };
-                }
-                return fetch(metadata.trackUrl)
-                  .then(res => {
-                    if (!res.ok) throw new Error("Track code not found");
-                    return res.text();
-                  })
-                  .then((code) => {
-                    console.log("FRHD Track code fetched:", code);
-                    !isSameTrack && (GameManager.command("import", code, true), GameManager.command("clear race"));
-                    GameSettings.trackName = metadata.name || `FRHD Track #${trackId}`;
-                    GameSettings.id = metadata.id;
-                    GameSettings.type = metadata.type;
-                    GameSettings.authors = metadata.authors || ``;
-
-                    const scene = GameManager.game.currentScene;
-                    if (scene.liveRider) {
-                      const newTrackId = `${trackType}/${trackId}`;
-                      const username = GameSettings.user.d_name || 'Player';
-
-                      const modUi = scene.mod.ui?.obj;
-                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
-                      const crHead = modUi?.['crHead']?.checkbox?.checked;
-                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
-                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
-
-                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
-                    }
-
-                    if (messageGhost && (messageGhost.url || messageGhost.ghostUrl)) {
-                      console.log("[Ghost] Loading CPGH ghost from db card");
-                      this.loadGhostFromUrl(messageGhost);
-
-                      GameSettings.ghostData = true;
-                      GameSettings.ghoster = messageGhost.username || '';
-                      GameSettings.ghostTime = messageGhost.time || '';
-                      GameSettings.ghostTicks = messageGhost.ticks || null;
-                    }
-                    else if (ghostData && fullRaceData) {
-                      GameSettings.ghostData = ghostData;
-                      GameSettings.ghoster = ghoster;
-                      GameSettings.ghostTime = ghostTime;
-                      GameSettings.ghostTicks = ghostTicks;
-                      GameSettings.fullRaceData = fullRaceData;
-                      console.log("Ghost data loaded from metadata:", { ghoster, ghostTime, ghostTicks });
-
-                      GameManager.command("add race", fullRaceData);
-                    }
-
-                    const fullPermalink = metadata.permalink;
-                    const urlPath = new URL(fullPermalink).pathname;
-                    const trackName = metadata.name || `FRHD Track #${trackId}`;
-
-                    history.pushState(
-                      { trackId: metadata.id, trackType: metadata.type },
-                      trackName,
-                      urlPath
-                    );
-
-                    document.title = trackName;
-
-                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                    }
-
-                    this.updateNowPlaying({
-                      id: metadata.id,
-                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                      authors: metadata.authors,
-                      thumbnail: metadata.thumbnail,
-                      type: trackType,
-                      description: metadata.description || '',
-                      permalink: metadata.permalink,
-                      published: metadata.published || '',
-                      size: metadata.size || '',
-                      nextId: metadata.nextId,
-                      prevId: metadata.prevId,
-                      ghoster: messageGhost?.username || metadata.ghoster,
-                      ghostTime: messageGhost?.time || metadata.ghostTime,
-                      ghostTicks: messageGhost?.ticks || metadata.ghostTicks
-                    });
-                  });
-              })
-              .catch((error) => {
-                console.error("Failed to load FRHD track:", error);
-              });
-            return;
-          }
-
-          // Plus logic
-          if (trackType === 'plus' || trackType === 't' || trackType === 'app') {
-            console.log("Loading Plus track:", trackId);
-            fetch(`/t/${trackId}?json=true`)
-              .then((response) => {
-                if (!response.ok) throw new Error("Plus track not found");
-                return response.json();
-              })
-              .then((metadata) => {
-                console.log("Plus metadata fetched:", metadata);
-                return fetch(metadata.trackUrl)
-                  .then(res => {
-                    if (!res.ok) throw new Error("Track code not found");
-                    return res.text();
-                  })
-                  .then((code) => {
-                    console.log("Plus Track code fetched:", code);
-                    GameManager.command("import", code, true);
-                    GameSettings.trackName = metadata.name || `Plus Track #${trackId}`;
-                    GameSettings.id = metadata.id;
-                    GameSettings.type = 'plus';
-                    GameSettings.authors = metadata.authors || ``;
-
-                    const scene = GameManager.game.currentScene;
-                    if (scene.liveRider) {
-                      const newTrackId = `${trackType}/${trackId}`;
-                      const username = GameSettings.user.d_name || 'Player';
-
-                      const modUi = scene.mod.ui?.obj;
-                      const hatColor = modUi?.['hatColor']?.colorBox?.style?.backgroundColor || '#000000';
-                      const crHead = modUi?.['crHead']?.checkbox?.checked;
-                      const blackHat = modUi?.['blackHat']?.checkbox?.checked;
-                      const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
-
-                      scene.liveRider.reconnect(newTrackId, username, hatColor, hatType);
-                    }
-
-                    const fullPermalink = metadata.permalink;
-
-                    const urlPath = new URL(fullPermalink).pathname;
-
-                    const trackName = metadata.name || `Plus Track #${trackId}`;
-
-                    history.pushState(
-                      { trackId: metadata.id, trackType: metadata.type },
-                      trackName,
-                      urlPath
-                    );
-
-                    document.title = trackName;
-
-                    if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                      GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                      GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                    }
-
-                    this.updateNowPlaying({
-                      id: metadata.id,
-                      name: metadata.name || `${trackType.toUpperCase()} Track #${metadata.id}`,
-                      authors: metadata.authors,
-                      thumbnail: metadata.thumbnail,
-                      type: trackType, // 'plus'
-                      description: metadata.description || '',
-                      permalink: metadata.permalink,
-                      published: metadata.published || '',
-                      size: metadata.size || '',
-                      nextId: metadata.nextId,
-                      prevId: metadata.prevId,
-                      ghoster: metadata.ghoster,
-                      ghostTime: metadata.ghostTime,
-                      ghostTicks: metadata.ghostTicks
-                    });
-                  });
-              })
-              .catch((error) => {
-                console.error("Failed to load Plus track:", error);
-              });
-            return;
-          }
-
-          // User/page logic
-          if (trackType === 'user' || trackType === 'page') {
-            const fetchUrl = trackType === 'page'
-              ? `/u/${userId}/${trackName}?json=true`
-              : `/u/${trackName}?json=true`;
-
-            fetch(fetchUrl)
-              .then((response) => {
-                if (!response.ok) throw new Error("User page not found");
-                return response.json();
-              })
-              .then((metadata) => {
-                console.log("User metadata fetched:", metadata);
-
-                // Use trackUrl from metadata
-                const trackCodeUrl = metadata.trackUrl;
-
-                if (!trackCodeUrl) {
-                  throw new Error("No track URL found in metadata");
-                }
-
-                // Fetch the track code
-                return fetch(trackCodeUrl)
-                  .then(res => {
-                    if (!res.ok) throw new Error("Track code not found");
-                    return res.text();
-                  })
-                  .then((code) => {
-                    // Check if track code is empty or just "..."
-                    if (!code || code.trim() === '' || code.trim() === '...') {
-                      console.log("User track is empty, loading random created track");
-
-                      // Check if user has created tracks
-                      if (metadata.createdTracks && metadata.createdTracks.length > 0) {
-                        // Pick a random track
-                        const randomIndex = Math.floor(Math.random() * metadata.createdTracks.length);
-                        const randomTrack = metadata.createdTracks[randomIndex];
-
-                        console.log(`Loading random track: ${randomTrack.title} (#${randomTrack.id})`);
-
-                        return fetch(`/frhd/${randomTrack.id}.txt`)
-                          .then(res => {
-                            if (!res.ok) throw new Error("Random track code not found");
-                            return res.text();
-                          })
-                          .then((randomCode) => {
-                            console.log("Random track code fetched, loading into user page context");
-                            GameManager.command("import", randomCode, true);
-                            // keep user page settings
-                            GameSettings.trackName = metadata.name || ``;
-                            GameSettings.id = metadata.id;
-                            GameSettings.type = metadata.type;
-                            GameSettings.authors = metadata.authors || '';
-
-                            const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
-
-                            history.pushState(
-                              { userId: metadata.id, trackType: 'user' },
-                              metadata.name,
-                              urlPath
-                            );
-
-                            document.title = metadata.name || trackName;
-
-                            if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                              GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                              GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                            }
-
-                            this.updateNowPlaying({
-                              id: metadata.id,
-                              name: metadata.name,
-                              authors: metadata.authors,
-                              thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
-                              type: 'user',
-                              description: metadata.description || '',
-                              permalink: `https://freerider.app/u/${userId || trackName}`,
-                              published: metadata.published || '',
-                              size: metadata.size || '',
-                              userId: userId || trackName,
-                              stats: metadata.stats || null,
-                              createdTracks: metadata.createdTracks || []
-                            });
-                          });
-                      } else {
-                        throw new Error("User has no created tracks to load");
-                      }
-                    } else {
-                      console.log("User track code fetched:", code);
-                      GameManager.command("import", code, true);
-                      GameSettings.trackName = metadata.name || `User: ${trackName}`;
-                      GameSettings.id = metadata.id;
-                      GameSettings.type = metadata.type;
-                      GameSettings.authors = metadata.authors || '';
-
-                      const urlPath = userId ? `/u/${userId}` : `/u/${trackName}`;
-
-                      history.pushState(
-                        { userId: metadata.id, trackType: 'user' },
-                        metadata.name,
-                        urlPath
-                      );
-
-                      document.title = metadata.name || trackName;
-
-                      if (GameManager.game.currentScene.mod.ui?.obj?.['play']) {
-                        GameManager.game.currentScene.mod.ui.obj['play'].checkbox.checked = true;
-                        GameManager.game.currentScene.mod.ui.obj['play'].disable();
-                      }
-
-                      this.updateNowPlaying({
-                        id: metadata.id,
-                        name: metadata.name,
-                        authors: metadata.authors,
-                        thumbnail: metadata.thumbnail || '/data/bhr/thumbnails/default.png',
-                        type: metadata.type || trackType,
-                        description: metadata.description || '',
-                        permalink: trackType === 'page'
-                          ? `https://freerider.app/u/${userId}/${trackName}`
-                          : `https://freerider.app/u/${trackName}`,
-                        published: metadata.published || '',
-                        size: metadata.size || '',
-                        userId: userId || trackName,
-                        stats: metadata.stats || null,
-                        createdTracks: metadata.createdTracks || []
-                      });
-                    }
-                  });
-              })
-              .catch((error) => {
-                console.error("Failed to load user page:", error);
-              });
-            return;
-          }
-
-            const fetchUrl = trackType === 'user'
-                ? `/data/page/${trackName}.txt`
-                : `assets/tracks/${trackName}.txt`;
-                
-            fetch(fetchUrl)
-                .then((response) => {
-                    if (!response.ok)
-                        throw new Error("No track ID found, loading as track code.");
-                    return response.text();
-                })
-                .then((data) => {
-                    if (data) {
-                        console.log("Track data fetched:", data);
-                        GameManager.command("import", data, true);
-                        GameSettings.trackName = `${trackName}.txt`;
-
-                        return fetch("assets/tracks/tracklist-data.json");
-                    } else {
-                        console.error("No track data found.");
-                    }
-                })
-                .then((res) => (res ? res.json() : null))
-                .then((trackdata) => {
-                    if (trackdata) {
-                        const match = trackdata.tracks.find(
-                            (t) => t["track-name"] === trackName
-                        );
-                        this.updateNowPlaying(match || { "track-name": trackName });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Primary fetch failed, falling back to FRHD.", error);
-                    const script = document.createElement("script");
-                    script.src = `https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/${trackName}/track-data-v1.js?callback=t`;
-
-                    script.onerror = () => {
-                        console.error("Fallback fetch failed.");
-                    };
-
-                    window.t = (trackData) => {
-                        if (trackData && trackData.code) {
-                            GameSettings.trackName = trackData.title;
-                            GameManager.command("import", trackData.code, true);
-                            console.log("Track loaded from FRHD.");
-
-                            this.updateNowPlaying({
-                                "track-name": trackData.title,
-                                creator: trackData.author || "unknown",
-                                description: trackData.descr || "",
-                                id: trackData.id,
-                                url: trackData.url,
-                            });
-                        } else {
-                            console.error("Failed to load track code from FRHD.");
-                        }
-                        delete window.t;
-                    };
-
-                    document.body.appendChild(script);
-                });
-        } catch (error) {
-            console.error("Error processing URL:", error);
-        }
-    }
-});
+              }
             },
             render: function () {
-              var e = this.state.sidebar,
-                t = "topMenu-button topMenu-button-right",
-                r = "editorgui_icons";
-              r += e
-                ? " editorgui_icons-icon_sidebar_close"
-                : " editorgui_icons-icon_sidebar_open";
-              return e
-                ? n.createElement(
-                    "div",
-                    {
-                      className: t,
-                      onClick: this.toggleSidebar,
-                      title: "Forum",
-                    },
-                    n.createElement("span", { className: "text" }, "Sidebar"),
-                    n.createElement("span", { className: r })
-                  )
-                : n.createElement(
-                    "div",
-                    {
-                      className: t,
-                      onClick: this.toggleSidebar,
-                      title: "Forum",
-                    },
-                    n.createElement("span", { className: r }),
-                    n.createElement("span", { className: "text" }, "Forum")
-                  );
+              var e = "sideButton sideButton_patternTool",
+                r = "Pattern"
+              return (
+                this.props.active && (e += " active"),
+                n.createElement(
+                  "div",
+                  { className: e, onClick: this.handleClick, title: r },
+                  n.createElement("span", {
+                    className: "editorgui_icons editorgui_icons-icon_pattern",
+                  })
+                )
+              );
             },
           });
         t.exports = r;
