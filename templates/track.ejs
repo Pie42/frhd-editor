@@ -87,6 +87,8 @@
     
     <script src="scripts/manifest.js"></script>
 
+    <script src="scripts/config.js"></script>
+
     <script src="scripts/settings.js"></script>
     
     <script src="scripts/offlineeditor.js"></script>
@@ -119,6 +121,14 @@
 
     GameSettings.forumUrl = "<%= track.forumUrl || 'https://forum.freerider.app/feed' %>";
     GameSettings.type === 'bhr' ? GameSettings.blackHat = true : false;
+
+    <% if (typeof dialogFilter !== 'undefined' && dialogFilter) { %>
+    GameSettings.dialogFilter = <%- JSON.stringify(dialogFilter) %>;
+    <% } %>
+    
+    <% if (typeof initialDialog !== 'undefined' && initialDialog) { %>
+    GameSettings.initialDialog = "<%= initialDialog %>";
+    <% } %>
 
     document.title = "<%= track.name %>" || "free rider - draw";
 

@@ -19,8 +19,11 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "frhdv2": "^0.0.31",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.3",
     "lunr": "^2.3.8",
-    "mkdirp": "^1.0.3"
+    "mkdirp": "^1.0.3",
+    "pocketbase": "^0.26.5",
+    "ws": "^8.18.3"
   }
 }

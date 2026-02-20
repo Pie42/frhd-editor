@@ -1,0 +1,4285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Tool Options</title>
+    <link rel="stylesheet" type="text/css" href="/app.css">
+</head>
+
+<body style="margin: 0; padding: 0;">
+    <div class="editorDialog-tools editorDialog-content_brushDialog"
+        style="background: transparent; box-shadow: none; width: 100%; max-width: none; margin: 0; border-radius: 0; height: 100vh; overflow-y:scroll;">
+
+        <!-- TAB NAVIGATION -->
+        <div class="tab-container">
+            <button class="tab-button active" data-tab="tool">
+                <span class="tab-icon editorgui_icons editorgui_icons-icon_camera" style="transform: scale(0.5)"></span>
+                <span class="tab-label">Tool</span>
+            </button>
+            <button class="tab-button" data-tab="grid">
+                <span class="tab-icon editorgui_icons editorgui_icons-icon_grid_on"
+                    style="transform: scale(0.5)"></span>
+                <span class="tab-label">Grid</span>
+            </button>
+            <button class="tab-button" data-tab="snap">
+                <span class="tab-icon editorgui_icons editorgui_icons-icon_snap_on"
+                    style="transform: scale(0.5) translate(1px,0px);"></span>
+                <span class="tab-label">Snap</span>
+            </button>
+            <button class="tab-button" data-tab="object">
+                <span class="tab-icon cube" style="transform: scale(0.325) translate(0px,2px);"></span>
+                <span class="tab-label">Object</span>
+            </button>
+            <button class="tab-button" data-tab="layer">
+                <span class="tab-icon editorgui_icons editorgui_icons-icon_all"
+                    style="transform: scale(0.35) translate(0px,2px);"></span>
+                <span class="tab-label">Layer</span>
+            </button>
+            <!--<button class="tab-button" data-tab="vehicle" style="display: none">
+                <span class="tab-icon editorgui_icons_bottom_vehicle editorgui_icons-icon_bmx"
+                    style="transform: scale(0.6) translate(0px,1px);"></span>
+                <span class="tab-label">Vehicle</span>
+            </button>-->
+            <button class="tab-button" data-tab="vehicle">
+                <span class="tab-icon editorgui_icons_bottom_vehicle editorgui_icons-icon_bmx"
+                    style="transform: scale(0.5) translate(0px,1px);"></span>
+                <span class="tab-label">Track</span>
+            </button>
+            <button class="tab-button" data-tab="mods">
+                <span class="tab-icon" style="display: inline-block; transform: scale(0.7) translate(0px,1px);">
+                    <svg width="20" height="20" viewBox="0 0 32 32" style="transform: translateY(2px);">
+                        <polygon points="16,4 27.4,12.3 23.1,25.7 8.9,25.7 4.6,12.3" fill="none" stroke="#000"
+                            stroke-width="8" stroke-linejoin="round" />
+                        <polygon points="16,4 27.4,12.3 23.1,25.7 8.9,25.7 4.6,12.3" fill="none" stroke="#fff"
+                            stroke-width="4" stroke-linejoin="round" class="pentagon-inner" />
+                    </svg>
+                </span>
+                <span class="tab-label">Mods</span>
+            </button>
+        </div>
+
+        <div id="tab-forum" class="tab-content">
+            <iframe id="forum-iframe" style="width: 100%; height: calc(100vh - 48px); border: none;">
+            </iframe>
+        </div>
+
+        <!-- TOOL TAB CONTENT -->
+        <div id="tab-tool" class="tab-content active">
+            <!-- STRAIGHTLINE OPTIONS -->
+            <div id="section-straightline" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">LINE OPTIONS</h1>
+                    <span class="line-type-badge mode-badge physics">PHYSICS</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to draw the start and endpoints of a straight line.
+                            <br><br>
+                            Press <b>TAB</b> to toggle between physics and scenery line types, or press the line type
+                            icons on the right menu.
+                            <br><br>
+                            Press the object icon on the right menu to enable object line type.
+                            <br><br>
+                            Press <b>G</b> or press the grid icon to enable grid mode.
+                            <br><br>
+                            Hold <b>ALT</b> or press the snap icon to enable line snap.
+                            <br><br>
+                            Hold <b>CTRL</b> to see the angle and length of your line while drawing.
+                            <br><br>
+                            Hold <b>CTRL</b> + <b>Shift</b> to angle lines in 15 degree increments.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                </div>
+            </div>
+
+            <!-- CURVE OPTIONS -->
+            <div id="section-curve" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">CURVE OPTIONS</h1>
+                    <span class="line-type-badge mode-badge physics">PHYSICS</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to draw the start and endpoint of the curve, and click again to set the shape
+                            of the curve.
+                            <br><br>
+                            Hold <b>Shift</b> and use the mouse wheel to change the segment length.
+                            <br><br>
+                            Hold <b>CTRL</b> + <b>Shift</b> to angle lines in 15 degree increments.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Segment Length</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="curve-segmentLength" class="horizontal-slider-2" min="1"
+                                            max="10" step="1" value="4">
+                                        <input type="text" class="toolSettings-input" id="val-curve-segmentLength"
+                                            value="0.4" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CIRCLE OPTIONS -->
+            <div id="section-circle" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">CIRCLE OPTIONS</h1>
+                    <span class="line-type-badge mode-badge physics">PHYSICS</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to draw circles. For ellipses, click and drag to draw the shape of the
+                            ellipse, and then click again to set the rotation of the ellipse.
+                            <br><br>
+                            Hold <b>Shift</b> and use the mouse wheel to change the segment length.
+                            <br><br>
+                            Hold <b>CTRL</b> + <b>Shift</b> to angle in 15 degree increments.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Segment Length</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="circle-segmentLength" class="horizontal-slider-2"
+                                            min="0.1" max="2" step="0.1" value="0.4">
+                                        <input type="text" class="toolSettings-input" id="val-circle-segmentLength"
+                                            value="0.4" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Circle Type</span></td>
+                                <td class="settingInput"><button id="btn-ellipse"
+                                        onclick="toggleEllipse()">Ellipse</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- BRUSH OPTIONS -->
+            <div id="section-brush" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">BRUSH OPTIONS</h1>
+                    <span class="line-type-badge mode-badge physics">PHYSICS</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to draw lines rapidly following your cursor.
+                            <br><br>
+                            <i>Break Length</i> determines how long the line will be before being placed.
+                            <br><br>
+                            <i>Trail Speed</i> determines how quickly the lines follow the cursor.
+                            <br><br>
+                            Press <b>CTRL</b> + <b>Z</b> / <b>CTRL</b> + <b>Y</b> to undo/redo brush lines one at a
+                            time, or press <b>CTRL</b> + <b>Shift</b> + <b>Z</b> / <b>CTRL</b> + <b>Shift</b> + <b>Y</b>
+                            to undo/redo your full brush stroke. Pressing <b>Shift</b> and the undo/redo icons works the
+                            same way.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Break Length</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="brush-breakLength" class="horizontal-slider-2"
+                                            min="0.049" max="10.049" step="0.1" value="1">
+                                        <input type="text" class="toolSettings-input" id="val-brush-breakLength"
+                                            value="1.0" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Trail Speed</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="brush-trailSpeed" class="horizontal-slider-2"
+                                            min="0.049" max="1.049" step="0.1" value="0.5">
+                                        <input type="text" class="toolSettings-input" id="val-brush-trailSpeed"
+                                            value="0.5" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PATTERN OPTIONS -->
+            <div id="section-pattern" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">PATTERN BRUSH OPTIONS</h1>
+                    <span class="line-type-badge mode-badge physics">PHYSICS</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag the pattern brush over an area to fill it with a tiling object pattern.
+                            <br><br>
+                            Use the <i>Brush Size</i> slider to change the size of the brush.
+                            <br><br>
+                            <i>Global Grid</i> aligns the pattern to a fixed grid, while disabling it centers the
+                            pattern on your cursor.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px; display: block;">
+                    <!--<h3 style="margin: 15px 0 10px 0; font-size: 12px;">PATTERNS</h3>-->
+                    <div style="margin-bottom: 10px;">
+                        <button id="btn-pattern-from-db" class="tool-button">+ Import Pattern</button>
+                        <button id="btn-pattern-from-object" class="tool-button">+ Create from Current Object</button>
+                    </div>
+                    <div id="pattern-list" class="object-list">
+                        <!-- Patterns will be populated here -->
+                    </div>
+                    <div id="pattern-details" style="margin-top: 15px; display: none;">
+                        <div id="pattern-thumbnail-container" style="text-align: center; padding: 10px;">
+                            <div class="object-preview-wrapper">
+                                <canvas id="pattern-preview-canvas"></canvas>
+                            </div>
+                            <div id="pattern-name-display" style="font-weight: bold; padding: 15px;">No pattern selected
+                            </div>
+                        </div>
+                    </div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Brush Size</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="pattern-brushSize" class="horizontal-slider-2" min="10"
+                                            max="500" step="10" value="100">
+                                        <input type="text" class="toolSettings-input" id="val-pattern-brushSize"
+                                            value="100" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Brush Shape</span></td>
+                                <td class="settingInput">
+                                    <select id="pattern-brush" class="tool-select">
+                                        <option value="0">Rectangle</option>
+                                        <option value="1" selected>Circle</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Global Grid</span></td>
+                                <td class="settingInput"><input type="checkbox" id="pattern-globalGrid" checked></td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Experimental Speedups</span></td>
+                                <td class="settingInput"><input type="checkbox" id="pattern-experimentalSpeedups"></td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Experimental Stabilization</span></td>
+                                <td class="settingInput"><input type="checkbox" id="pattern-experimentalStabilization">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ERASER OPTIONS -->
+            <div id="section-eraser" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">ERASER OPTIONS</h1>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to erase lines within the eraser radius.
+                            <br><br>
+                            Hold <b>Shift</b> and use the mouse wheel to change eraser radius.
+                            <br><br>
+                            <i>Line Erase</i> will erase entire lines that intersect with the eraser.
+                            <br><br>
+                            <i>Line Trim</i> will only erase the section of the line that overlaps with the eraser.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Radius</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="eraser-radius" class="horizontal-slider-2" min="1"
+                                            max="200" step="1" value="40">
+                                        <input type="text" class="toolSettings-input" id="val-eraser-radius" value="40"
+                                            readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Eraser Type</span></td>
+                                <td class="settingInput"><button id="btn-lineTrim" onclick="toggleLineTrim()">Line
+                                        Erase</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- POWERUP OPTIONS -->
+            <div id="section-powerup" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">POWERUP OPTIONS</h1>
+                    <span id="powerup-selected" class="powerup-badge mode-badge"
+                        style="background: #fae335;">GOAL</span>
+                </div>
+
+                <!-- GOAL -->
+                <div id="powerup-goal" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place a <b>Goal</b> for the rider to collect to complete the track.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- BOOST -->
+                <div id="powerup-boost" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Boost</b> powerups that give the rider a speed boost. Click and drag to
+                                set the boost direction.
+                                <br><br>
+                                The boost direction is indicated by the arrow. While placing the powerup, hold
+                                <b>CTRL</b> to show the angle in degrees, and hold <b>CTRL</b> + <b>Shift</b> to change
+                                the angle in 15 degree increments.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- GRAVITY -->
+                <div id="powerup-gravity" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Gravity</b> powerups that change the direction of gravity. Click and
+                                drag to set the gravity direction.
+                                <br><br>
+                                The gravity direction is indicated by the arrow. While placing the powerup, hold
+                                <b>CTRL</b> to show the angle in degrees, and hold <b>CTRL</b> + <b>Shift</b> to change
+                                the angle in 15 degree increments.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- SLOWMO -->
+                <div id="powerup-slowmo" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Slow Motion</b> powerups that slow down time by 50% for the rider.
+                                <br><br>
+                                The effect lasts until the rider touches both wheels to physics lines simultaneously.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- BOMB -->
+                <div id="powerup-bomb" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Bomb</b> powerups that explode on contact with the rider.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- CHECKPOINT -->
+                <div id="powerup-checkpoint" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Checkpoints</b> that save the rider's progress.
+                                <br><br>
+                                When the rider restarts, they will respawn at the last checkpoint they hit.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- ANTIGRAVITY -->
+                <div id="powerup-antigravity" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click to place <b>Antigravity</b> powerups that turn off gravity for the rider.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+
+                <!-- TELEPORT -->
+                <div id="powerup-teleport" class="powerup-section" style="display: none;">
+                    <div class="description">
+                        <span style="color: #888;">
+                            <p>Click and drag to place matching pairs of <b>Portal</b> powerups that teleport the rider
+                                between them.
+                                <br><br>
+                                The portals can only be used once before becoming inactive.
+                            </p>
+                        </span>
+                    </div>
+                    <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- VEHICLE POWERUP OPTIONS -->
+            <div id="section-vehiclepowerup" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">VEHICLE POWERUP OPTIONS</h1>
+                    <span id="vehiclepowerup-selected" class="powerup-badge mode-badge"
+                        style="background: #f2902e;">HELICOPTER</span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click to place vehicle powerups on the track that temporarily transform the rider into that
+                            respective vehicle.
+                            <br><br>
+                            Use the <i>Vehicle Time</i> slider to change the length of time the rider is transformed.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Vehicle Time</span></td>
+                                <td>
+                                    <div class="horizontal-slider-container-2">
+                                        <input type="range" id="vehiclepowerup-time" class="horizontal-slider-2" min="1"
+                                            max="60" step="1" value="10">
+                                        <input type="text" class="toolSettings-input" id="val-vehiclepowerup-time"
+                                            value="10" readonly>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SELECT OPTIONS -->
+            <div id="section-select" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">SELECT OPTIONS</h1>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to select lines and powerups, or select points to change their position.
+                            <br><br>
+                            Hold <b>ALT</b> to make another select that will be added to your current selection.
+                            <br><br>
+                            Once selected, you can move, scale, rotate, and flip the selection.
+                            <br><br>
+                            Hold <b>CTRL</b> and press the directional keys to move the selection by the <i>Offset
+                                Factor</i>.
+                            Hold <b>Shift</b> to move the cursor relative to your selection and the center point for
+                            transformations.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Rotate Factor</span></td>
+                                <td class="settingInput">
+                                    <select id="select-rotate-factor" class="tool-select">
+                                        <option value="1">1°</option>
+                                        <option value="5">5°</option>
+                                        <option value="15" selected>15°</option>
+                                        <option value="30">30°</option>
+                                        <option value="45">45°</option>
+                                        <option value="90">90°</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Scale Factor</span></td>
+                                <td class="settingInput">
+                                    <select id="select-scale-factor" class="tool-select">
+                                        <option value="0.05">0.05</option>
+                                        <option value="0.1" selected>0.1</option>
+                                        <option value="0.25">0.25</option>
+                                        <option value="0.5">0.5</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Offset Factor</span></td>
+                                <td class="settingInput">
+                                    <select id="select-offset-factor" class="tool-select">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="20">20</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Scale Lock</span></td>
+                                <td class="settingInput"><input type="checkbox" id="select-scaleLock"></td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Selection Type</span></td>
+                                <td class="settingInput"><button id="btn-copy" onclick="toggleCopy()">CUT +
+                                        PASTE</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CAMERA OPTIONS -->
+            <div id="section-camera" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">CAMERA OPTIONS</h1>
+                    <span id="camera-lock-toggle"
+                        class="toggle-icon editorgui_icons_bottom editorgui_icons-icon_camera_lock_off"
+                        style="transform: scale(0.8) translate(0, -4px);" title="Toggle Camera Lock"></span>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Click and drag to pan the camera view.
+                            <br><br>
+                            Toggling the <i>Camera Lock</i> icon will stop the canvas from scrolling when drawing near
+                            the edges of the screen.
+                            <br><br>
+                            Use the mousewheel or press the zoom in/out buttons to zoom the camera, and change the
+                            <i>Zoom Sensitivity</i> to control the zoom speed.
+                            <br><br>
+                            <i>Camera Movement</i> settings allow you to restrict the camera to horizontal, vertical, or
+                            no movement.
+                            <br><br>
+                            <i>Camera Speed</i> settings determine how fast the camera follows the rider.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="settingName"><span class="name">Zoom Sensitivity</span></td>
+                                <td class="settingInput">
+                                    <select id="camera-sensitivity" class="tool-select">
+                                        <option value="0.05">0.05</option>
+                                        <option value="0.1" selected>0.1</option>
+                                        <option value="0.2">0.2</option>
+                                        <option value="0.25">0.25</option>
+                                        <option value="0.5">0.5</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Camera Movement</span></td>
+                                <td class="settingInput">
+                                    <select id="camera-movement" class="tool-select">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="horizontal">Horizontal</option>
+                                        <option value="vertical">Vertical</option>
+                                        <option value="none">None</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="settingName"><span class="name">Camera Speed</span></td>
+                                <td class="settingInput">
+                                    <select id="camera-speed" class="tool-select">
+                                        <option value="3" selected>Fast</option>
+                                        <option value="2">Faster</option>
+                                        <option value="1">Immediate</option>
+                                        <option value="5">Slow</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <!--<tr>
+                        <td class="settingName"><span class="name">Camera Lock</span></td>
+                        <td class="settingInput"><button id="btn-cameraLock" onclick="toggleCameraLock()">Camera Unlocked</button></td>
+                    </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MOVE PETE OPTIONS -->
+            <div id="section-pete" class="tool-section" style="display: none;">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">STARTING POSITION OPTIONS</h1>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p><b>Set Starting Position</b> allows you to click and drag Pete to the position you would like
+                            as the starting position of the rider in your track.
+                            <br><br>
+                            The rider will restart from the set starting position during your session and is saved upon
+                            exporting your track by moving your track relative to the rider.
+                        </p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                    <table>
+                        <tbody>
+                            <!--<tr>
+                        <td class="settingName"><span class="name">Camera Lock</span></td>
+                        <td class="settingInput"><button id="btn-cameraLock" onclick="toggleCameraLock()">Camera Unlocked</button></td>
+                    </tr>-->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- NO TOOL SELECTED -->
+            <div id="section-none" class="tool-section">
+                <div class="editorDialog-toolsTitleBar">
+                    <h1 class="editorDialog-content-title">TOOL OPTIONS</h1>
+                </div>
+                <div class="description">
+                    <span style="color: #888;">
+                        <p>Select a tool to see its options.</p>
+                    </span>
+                </div>
+                <div class="toolsDialogAdvanced" style="padding: 15px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- SNAP TAB CONTENT -->
+        <div id="tab-snap" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">SNAP OPTIONS</h1>
+                <span id="snap-toggle" class="toggle-icon editorgui_icons_bottom editorgui_icons-icon_snapbottom"
+                    style="transform: scale(0.6)" title="Toggle Snap"></span>
+            </div>
+            <div class="description">
+                <span style="color: #888;">
+                    <p>The snap tool option snaps your line, powerup, or cursor to the nearest existing line endpoint.
+                        <br><br>
+                        Hold <b>ALT</b> or press the snap icon to enable snap.
+                        <br><br>
+                        <i>Snap Distance</i> determines the distance between your cursor and a line endpoint before
+                        snapping.
+                        <br><br>
+                        <i>Line Snap</i> will draw a line from the nearest line endpoint to your cursor.
+                        <br><br>
+                        <i>Point Snap</i> will snap your cursor to the nearest line endpoint.
+                        <br><br>
+                        <i>Click Snap</i> will draw a line from the last spot you clicked on the canvas to your cursor.
+                    </p>
+                </span>
+            </div>
+            <div class="toolsDialogAdvanced" style="padding: 15px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="settingName"><span class="name">Snap Distance</span></td>
+                            <td class="settingInput">
+                                <select id="snap-distance" class="tool-select">
+                                    <option value="0">0</option>
+                                    <option value="2">2</option>
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="settingName"><span class="name">Snap Type</span></td>
+                            <td class="settingInput">
+                                <select id="snap-type" class="tool-select">
+                                    <option value="line">Line Snap</option>
+                                    <option value="point">Point Snap</option>
+                                    <option value="click">Click Snap</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="settingName"><span class="name">Snap Cursor</span></td>
+                            <td class="settingInput">
+                                <select id="snap-cursor" class="tool-select">
+                                    <option value="cross">Cross</option>
+                                    <option value="dot">Dot</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GRID TAB CONTENT -->
+        <div id="tab-grid" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">GRID OPTIONS</h1>
+                <span id="grid-toggle" class="toggle-icon editorgui_icons_bottom editorgui_icons-icon_grid_off"
+                    title="Toggle Grid"></span>
+            </div>
+            <div class="description">
+                <span style="color: #888;">
+                    <p>The grid tool option places a grid on the canvas that works as a visual guide with snap
+                        capabilities.
+                        <br><br>
+                        Press <b>G</b> or press the grid icon to enable grid.
+                        <br><br>
+                        You can change the grid type between standard and isometric, and also between visible, hidden,
+                        or no-snap grid.
+                    </p>
+                </span>
+            </div>
+            <div class="toolsDialogAdvanced" style="padding: 15px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="settingName"><span class="name">Grid Size</span></td>
+                            <td class="settingInput">
+                                <select id="grid-size" class="tool-select">
+                                    <option value="2">2</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="25">25</option>
+                                    <option value="40">40</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="settingName"><span class="name">Grid Type</span></td>
+                            <td class="settingInput">
+                                <select id="grid-type" class="tool-select">
+                                    <option value="standard">Standard</option>
+                                    <option value="isometric">Isometric</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="settingName"><span class="name">Grid Visibility</span></td>
+                            <td class="settingInput">
+                                <select id="grid-visibility" class="tool-select">
+                                    <option value="visible">Visible</option>
+                                    <option value="hidden">Hidden</option>
+                                    <option value="no-snap">No Snap</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LAYER TAB CONTENT -->
+        <div id="tab-layer" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">LAYER OPTIONS</h1>
+                <span id="layer-toggle" class="toggle-icon editorgui_icons editorgui_icons-icon_all"
+                    style="transform: scale(0.4); margin-right: -4px;" title="Toggle Layers"></span>
+            </div>
+            <div class="description">
+                <span style="color: #888;">
+                    <p>Layers allow you to create isolated drawing surfaces.
+                        <br><br>
+                        You can rename layers by pressing on the layer name, and you can change the line colors,
+                        hide/show, lock, merge, and delete layers using the buttons next to each layer.
+                        <br><br>
+                        Merging layers moves all lines and powerups from the current layer into another, deleting the
+                        current layer in the process.
+                    </p>
+                </span>
+            </div>
+            <div class="toolsDialogAdvanced" style="padding: 15px; display: block;">
+                <div style="margin-bottom: 10px;">
+                    <button id="btn-layer-add" class="tool-button">+ Add Layer</button>
+                </div>
+
+                <div id="layer-list" class="layer-list">
+                    <!-- Layers will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- OBJECT TAB CONTENT -->
+        <div id="tab-object" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">OBJECT OPTIONS</h1>
+                <span id="object-toggle" class="toggle-icon cube" style="transform: scale(0.4); margin-right: -4px;"
+                    title="Toggle Object"></span>
+            </div>
+            <div class="description">
+                <span style="color: #888;">
+                    <p>Clicking on the cube icon on either toolbar will open the <b>Import Object</b> dialog, where you
+                        can select from pre-made objects in the database or import your own using a track code.
+                        <br><br>
+                        You can use the select tool to select a part of your track and press <b>Save as Object</b> on
+                        the bottom toolbar to create an object.
+                        <br><br>
+                        To place an object, choose any of the line tools, make sure the cube is selected on the right
+                        toolbar, and place your objects like you would place lines.
+                        <br><br>
+                        The straight line tool allows you to place one object at a time, but you can also make curves,
+                        circles, or use the object as a brush.
+                        <br><br>
+                        To transform your object, you can use the controls below or their respective listed hotkeys.
+                        <br><br>
+                        You can toggle rotate and scale jitter, which adds an amount of randomness to your object's
+                        rotation
+                        and scale.
+                        <br><br>
+                        When using an object as a brush, you can set object rotation and scaling based on cursor
+                        movement
+                        and speed.
+                    </p>
+                </span>
+            </div>
+            <div class="toolsDialogAdvanced" style="padding: 15px; display: block;">
+                <div style="margin-bottom: 10px;">
+                    <button id="btn-object-import" class="tool-button">+ Import Object</button><button
+                        id="btn-object-clear-all" class="tool-button">Clear All</button>
+                </div>
+
+                <div id="object-list" class="object-list">
+                    <!-- Objects will be populated here -->
+                </div>
+
+                <div id="object-details" style="margin-top: 15px; display: none;">
+                    <div id="object-thumbnail-container-3" style="text-align: center; padding: 10px;">
+                        <div class="object-preview-wrapper">
+                            <canvas id="object-preview-canvas"></canvas>
+                        </div>
+                        <div id="object-name-2" style="font-weight: bold; padding-top: 15px;">No object selected</div>
+                    </div>
+
+                    <h3
+                        style="margin: 15px 0 10px 0; font-size: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                        TRANSFORM
+                        <button class="tb-btn tb-reset" id="btn-transform-reset"
+                            title="Reset all transforms">Reset</button>
+                    </h3>
+                    <div class="transform-rows"
+                        style="border-bottom: 1px solid #ddd; border-top: 1px solid #ddd; padding: 10px 0px;">
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Rotation</span>
+                                <span class="shortcut">R / Shift+R</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn" id="btn-rotate-ccw" title="Rotate CCW (Shift+R)">↺</button>
+                                <button class="tb-btn" id="btn-rotate-cw" title="Rotate CW (R)">↻</button>
+                            </div>
+                            <span id="obj-rotate" class="tb-val">0°</span>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Scale</span>
+                                <span class="shortcut">S / Shift+S</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn" id="btn-scale-down" title="Scale Down (Shift+S)">−</button>
+                                <button class="tb-btn" id="btn-scale-up" title="Scale Up (S)">+</button>
+                            </div>
+                            <span id="obj-scale" class="tb-val">1.00x</span>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Flip</span>
+                                <span class="shortcut">F / Shift+F</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn" id="btn-flip-x" style="padding-bottom: 2px;"
+                                    title="Flip X (F)">↔</button>
+                                <button class="tb-btn" id="btn-flip-y" style="padding-bottom: 2px;"
+                                    title="Flip Y (Shift+F)">↕</button>
+                            </div>
+                            <span id="obj-flip" class="tb-val">none</span>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Invert</span>
+                                <span class="shortcut">I</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn" id="btn-invert" title="Invert (I)">◑</button>
+                                <button class="tb-btn" id="btn-invert-flat"
+                                    style="font-size: 21px; padding-bottom: 3px;" title="Flatten">●</button>
+                            </div>
+                            <span id="obj-invert" class="tb-val">none</span>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Offset X</span>
+                                <span class="shortcut">Shift+Arrows</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn left" id="btn-offset-left" title="Offset Left"></button>
+                                <button class="tb-btn right" id="btn-offset-right" title="Offset Right"></button>
+                            </div>
+                            <span id="obj-offset-x" class="tb-val">(0)</span>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Offset Y</span>
+                                <span class="shortcut">Shift+Arrows</span>
+                            </div>
+                            <div class="transform-buttons">
+                                <button class="tb-btn up" id="btn-offset-up" title="Offset Up"></button>
+                                <button class="tb-btn down" id="btn-offset-down" title="Offset Down"></button>
+                            </div>
+                            <span id="obj-offset-y" class="tb-val">(0)</span>
+                        </div>
+                    </div>
+                    <div class="transform-rows">
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Rotate Sensitivity</span>
+                            </div>
+                            <select id="object-rotate-sensitivity" class="tool-select">
+                                <option value="1">1°</option>
+                                <option value="5">5°</option>
+                                <option value="15" selected>15°</option>
+                                <option value="30">30°</option>
+                                <option value="45">45°</option>
+                                <option value="90">90°</option>
+                            </select>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Scale Sensitivity</span>
+                            </div>
+                            <select id="object-scale-sensitivity" class="tool-select">
+                                <option value="0.05">0.05</option>
+                                <option value="0.1" selected>0.1</option>
+                                <option value="0.25">0.25</option>
+                                <option value="0.5">0.5</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Offset Sensitivity</span>
+                            </div>
+                            <select id="object-offset-sensitivity" class="tool-select">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="5">5</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Rotate Jitter</span>
+                            </div>
+                            <div class="horizontal-slider-container-2">
+                                <input type="range" id="brush-rotateJitter" class="horizontal-slider-2" min="0"
+                                    max="6.3" step="0.1" value="0">
+                            </div>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Scale Jitter</span>
+                            </div>
+                            <div class="horizontal-slider-container-2">
+                                <input type="range" id="brush-scaleJitter" class="horizontal-slider-2" min="0" max="5"
+                                    step="0.1" value="0">
+                            </div>
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Rotate by Brush Direction</span>
+                            </div>
+                            <input type="checkbox" id="brush-rotate">
+                        </div>
+                        <div class="transform-row">
+                            <div class="transform-name">
+                                <span class="name">Scale by Brush Speed</span>
+                            </div>
+                            <input type="checkbox" id="brush-scale">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRACK TAB CONTENT -->
+        <div id="tab-vehicle" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">NOW PLAYING</h1>
+                <span id="vehicle-selected" class="vehicle-badge mode-badge"
+                    style="color: #fff; background: #000;">BMX</span>
+            </div>
+
+            <div class="description">
+                <span style="color: #888;">
+                    <p><b>Start Position</b> allows you to click and drag Pete to the position you would like
+                        as the starting position of the rider in your track.
+                        <br><br>
+                        <b>Play Mode</b> hides the side toolbars and turns on play hotkeys.
+                        <br><br>
+                        <b>Mobile Mode</b> adds touchscreen controls for playing.
+                    </p>
+                </span>
+            </div>
+
+            <div id="now-playing-wrapper">
+                <div id="now-playing-container" style="padding: 10px;">
+                    <!--<div id="now-playing-empty" style="padding: 20px; color: #888; text-align: center;">
+                    </div>-->
+
+                    <div id="now-playing-content" style="display: none; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                            <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track"></button>
+                            <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
+                            <button id="np-next" class="navi-toggle navi-icon next" title="Next Track"></button>
+                            <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 1; width: auto;"
+                                title="Copy Link">
+                                <span id="copy-button" class="copy-text" style="margin-left: 4px; font-size: 11px;">Copy
+                                    Link</span>
+                            </button>
+                        </div>
+                        <div class="track-item" style="margin-bottom: 10px;">
+                            <div class="thumbnail">
+                                <div class="badge-container" id="np-badges"></div>
+                                <img id="np-thumbnail" class="track-thumbnail" src="" alt="Track thumbnail"
+                                    onerror="handleThumbnailFallback(this)">
+                            </div>
+                        </div>
+
+                        <div class="np-header">
+                            <div class="np-header-text">
+                                <div id="np-name" style="font-weight: bold; font-size: 14px;"></div>
+                                <div id="np-author-line" style="font-size: 12px; color: #666;"></div>
+                            </div>
+                            <div id="np-author-avatars" class="np-author-avatars"></div>
+                        </div>
+
+                        <blockquote id="np-description"
+                            style="display: none; font-size: 11px; margin: 10px 0; font-style: italic; color: #555; padding: 8px 12px; border-left: 4px solid #aaa; background: #f5f5f5; border-radius: 4px; max-height: 120px; overflow-y: auto;">
+                        </blockquote>
+
+                        <div class="toolsDialogAdvanced"
+                            style="padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                            <table style="width: 100%; font-size: 11px;">
+                                <tbody>
+                                    <tr id="np-row-id" style="display: none;">
+                                        <td style="width: 35%; color: #666;">ID</td>
+                                        <td id="np-id"></td>
+                                    </tr>
+                                    <tr id="np-row-frhd-id" style="display: none;">
+                                        <td style="color: #666;">FRHD ID</td>
+                                        <td id="np-frhd-id"></td>
+                                    </tr>
+                                    <tr id="np-row-bhr-id" style="display: none;">
+                                        <td style="color: #666;">BHR ID</td>
+                                        <td id="np-bhr-id"></td>
+                                    </tr>
+                                    <tr id="np-row-cr-id" style="display: none;">
+                                        <td style="color: #666;">CR ID</td>
+                                        <td id="np-cr-id"></td>
+                                    </tr>
+                                    <tr id="np-row-tm-id" style="display: none;">
+                                        <td style="color: #666;">TM ID</td>
+                                        <td id="np-tm-id"></td>
+                                    </tr>
+                                    <tr id="np-row-published" style="display: none;">
+                                        <td style="color: #666;">Published</td>
+                                        <td id="np-published"></td>
+                                    </tr>
+                                    <tr id="np-row-size" style="display: none;">
+                                        <td style="color: #666;">Size</td>
+                                        <td id="np-size"></td>
+                                    </tr>
+                                    <tr id="np-row-votes" style="display: none;">
+                                        <td style="color: #666;">Votes</td>
+                                        <td id="np-votes"></td>
+                                    </tr>
+                                    <tr id="np-row-plays" style="display: none;">
+                                        <td style="color: #666;">Plays</td>
+                                        <td id="np-plays"></td>
+                                    </tr>
+                                    <tr id="np-row-remix-of" style="display: none;">
+                                        <td style="color: #666;">Remix Of</td>
+                                        <td id="np-remix-of"></td>
+                                    </tr>
+                                    <tr id="np-row-remixes" style="display: none;">
+                                        <td style="color: #666;">Remixes</td>
+                                        <td id="np-remixes"></td>
+                                    </tr>
+                                    <tr id="np-row-entry-to" style="display: none;">
+                                        <td style="color: #666;">Entry To</td>
+                                        <td id="np-entry-to"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="np-playlist-info" class="filter-indicator"
+                            style="display: none; margin: 10px 0; padding: 8px; background: #e8f4fc; border: 1px solid #1884cf; border-radius: 4px; font-size: 11px;">
+                            <a href="#" id="np-playlist-name"
+                                style="font-weight: bold; color: #1884cf; text-decoration: none;"></a>
+                            <span id="np-playlist-position" style="color: #666; margin-left: 5px;"></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                        <button id="np-set-start" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
+                            Start Position
+                        </button>
+                        <button id="vehicle-mod-play" class="navi-toggle"
+                            style="flex: 1; padding: 6px; font-size: 11px;">
+                            Play Mode
+                        </button>
+                        <button id="vehicle-mod-mobile" class="navi-toggle"
+                            style="flex: 1; padding: 6px; font-size: 11px;">
+                            Mobile Mode
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Profile Section -->
+            <div id="player-profile" style="display: none; padding: 10px;">
+                <div class="player-avatar-container">
+                    <img id="player-avatar" class="player-avatar" src="" alt="">
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <div>
+                        <div id="player-name" style="font-weight: bold; font-size: 14px;"></div>
+                        <div id="player-aliases" style="font-size: 11px; color: #888;"></div>
+                    </div>
+                </div>
+                <div id="player-stats" style="font-size: 12px; color: #aaa; margin-bottom: 8px;"></div>
+                <div id="player-platforms" style="margin-bottom: 8px;"></div>
+                <button id="player-view-tracks" class="navi-toggle" style="width: 100%; padding: 6px; font-size: 12px;">
+                    View All Tracks
+                </button>
+            </div>
+        </div>
+
+        <!-- MODS TAB CONTENT -->
+        <div id="tab-mods" class="tab-content">
+            <div class="editorDialog-toolsTitleBar">
+                <h1 class="editorDialog-content-title">MOD OPTIONS</h1>
+            </div>
+            <div class="description">
+                    <span style="color: #888;">
+                        <p>Mods are community-created add-ons that can improve the editor experience or add new features.
+                            <br><br>
+                            Mods that affect gameplay will not work on Free Rider HD, but can be used for testing and fun within this editor.
+                        </p>
+                    </span>
+                </div>
+            <div id="mod-settings-list" style="padding: 8px;">
+                <div style="color: #888; text-align: center; padding: 10px;">Loading mod settings...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        body {
+            text-align: left;
+            line-height: 16px;
+        }
+
+        /* Tab styles */
+        .tab-container {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #ccc;
+            padding: 0;
+            height: 45px;
+        }
+
+        .tab-button {
+            flex: 1;
+            border: none;
+            background: #E2E2E2;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            border-right: 1px solid #ccc;
+        }
+
+        /*
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+            border-bottom: 1px solid #ccc;
+            padding: 0;
+            height: auto;
+        }
+
+        .tab-button {
+            flex: 0 0 33.333%;
+            border: none;
+            background: #E2E2E2;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            height: 35px;
+            box-sizing: border-box;
+        }
+
+        .tab-button:nth-child(3n) {
+            border-right: none;
+        }
+
+        .tab-button:nth-last-child(-n+3) {
+            border-bottom: none;
+        }*/
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button:hover {
+            background: #d0d0d0;
+        }
+
+        .tab-button.active {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .mode-badge.physics {
+            background: #000000;
+            color: #fff;
+        }
+
+        .mode-badge.scenery {
+            background: #aaaaaa;
+            color: #fff;
+        }
+
+        .mode-badge.object {
+            background: #1884cf;
+            color: #fff;
+        }
+
+        .tb-val {
+            font-family: monospace;
+            font-size: 12px;
+            color: #fff;
+            background: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        #object-thumbnail,
+        #object-thumbnail-2 {
+            image-rendering: pixelated;
+        }
+
+        #object-no-thumbnail,
+        #object-no-thumbnail-2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 5/3;
+            width: 100%;
+            background: #FFF;
+            border: 1px solid #DDD;
+            border-radius: 4px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .tool-select {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 12px;
+            min-width: 100px;
+        }
+
+        .tool-button {
+            padding: 6px 12px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            background: #000;
+            color: #fff;
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset {
+            width: 64px;
+        }
+
+        .tool-button:hover {
+            background: #555;
+        }
+
+        .tool-button:active {
+            background: #222;
+        }
+
+        input[type="color"] {
+            width: 50px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        td {
+            width: 33vw;
+        }
+
+        #now-playing-content .thumbnail {
+            position: relative;
+            aspect-ratio: 5 / 3;
+            margin: 0 auto 10px;
+            overflow: hidden;
+            border-radius: 4px;
+            background: #fff;
+            display: block;
+            /* padding: 4px; */
+            line-height: 20px;
+            border: 1px solid #ddd;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+        }
+
+        #now-playing-content .track-thumbnail {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            object-fit: cover;
+        }
+
+        #now-playing-content .badge-container {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 80%;
+            z-index: 10;
+        }
+
+        .track-type-badge {
+            position: relative;
+            padding: 2px 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 3px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font: 8px eiven;
+            line-height: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .track-type-badge.frhd {
+            background-color: #1884cf;
+        }
+
+        .track-type-badge.bhr {
+            background-color: #000;
+        }
+
+        .track-type-badge.cr {
+            background-color: #aaa;
+        }
+
+        .track-type-badge.tm {
+            background-color: #aaa;
+        }
+
+        .track-type-badge.fr {
+            background-color: #4a4a4a;
+        }
+
+        .track-type-badge.app {
+            background-color: #a784c5;
+        }
+
+        .track-type-badge.playlist {
+            background: #a784c5;
+        }
+
+        .tab-button[data-tab="mods"]:hover .pentagon-inner {
+            stroke: #1884cf;
+        }
+
+        .mod-setting-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 4px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .mod-setting-row:hover {
+            background: #f0f0f0;
+        }
+
+        .mod-setting-row label {
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .mod-setting-row input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .mod-setting-row input[type="color"] {
+            width: 36px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .mod-folder {
+            margin: 3px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .mod-folder-title {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 8px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border-radius: 4px;
+            user-select: none;
+        }
+
+        .mod-folder-title:hover {
+            background: #eee;
+        }
+
+        .mod-folder[open]>.mod-folder-title {
+            border-radius: 4px 4px 0 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .mod-folder-content {
+            padding: 2px 6px;
+        }
+
+        /*body.dialog-mode .tab-button[data-tab="track"] {
+    display: none;
+}
+
+body.dialog-mode #tab-track {
+    display: none !important;
+}*/
+    </style>
+
+    <script>
+        var state = {
+            copyMode: false,
+            ellipseMode: true,
+            lineTrimMode: false,
+            cameraLockMode: false,
+            currentTab: 'tool'
+        };
+
+        var avatarCache = {};
+
+        function fetchAuthorAvatar(authorName, callback) {
+            if (avatarCache[authorName] !== undefined) {
+                callback(avatarCache[authorName]);
+                return;
+            }
+
+            fetch('/api/player/' + encodeURIComponent(authorName))
+                .then(function (res) { return res.json(); })
+                .then(function (player) {
+                    avatarCache[authorName] = player.avatar || null;
+                    callback(avatarCache[authorName]);
+                })
+                .catch(function () {
+                    avatarCache[authorName] = null;
+                    callback(null);
+                });
+        }
+
+        document.querySelectorAll('.tab-button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+            });
+        });
+
+        function switchTab(tabName) {
+            state.currentTab = tabName;
+
+            document.querySelectorAll('.tab-button').forEach(function (btn) {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-tab') === tabName) {
+                    btn.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('.tab-content').forEach(function (content) {
+                content.classList.remove('active');
+            });
+            document.getElementById('tab-' + tabName).classList.add('active');
+
+            if (tabName === 'forum') {
+                var forumIframe = document.getElementById('forum-iframe');
+                if (!forumIframe.dataset.loaded) {
+                    forumIframe.src = 'https://forum.freerider.app/chat';
+                    forumIframe.dataset.loaded = 'true';
+                }
+
+            }
+            window.parent.focus();
+        }
+
+        function toggleCopy() {
+            state.copyMode = !state.copyMode;
+            document.getElementById('btn-copy').textContent = state.copyMode ? 'COPY + PASTE' : 'CUT + PASTE';
+            send('select-copy', state.copyMode);
+        }
+
+        function toggleEllipse() {
+            state.ellipseMode = !state.ellipseMode;
+            document.getElementById('btn-ellipse').textContent = state.ellipseMode ? 'Ellipse' : 'Circle';
+            send('circle-ellipse', state.ellipseMode);
+        }
+
+        function toggleLineTrim() {
+            state.lineTrimMode = !state.lineTrimMode;
+            document.getElementById('btn-lineTrim').textContent = state.lineTrimMode ? 'Line Trim' : 'Line Erase';
+            send('eraser-lineTrim', state.lineTrimMode);
+        }
+
+        /*function toggleCameraLock() {
+            state.cameraLockMode = !state.cameraLockMode;
+            document.getElementById('btn-cameraLock').textContent = state.cameraLockMode ? 'Camera Locked' : 'Camera Unlocked';
+            send('camera-locked', state.cameraLockMode);
+        }*/
+
+        function send(id, value) {
+            if (window.parent !== window) {
+                window.parent.postMessage({ action: 'toolOptionChange', option: id, value: value }, '*');
+            }
+            window.parent.focus();
+        }
+
+        function updateLineTypeBadge(lineType, objectMode) {
+            var badges = document.querySelectorAll('.line-type-badge');
+
+            badges.forEach(function (badge) {
+                badge.className = 'line-type-badge mode-badge';
+
+                if (!lineType) {
+                    badge.textContent = 'OBJECT';
+                    badge.classList.add('object');
+                } else if (lineType === 'scenery') {
+                    badge.textContent = 'SCENERY';
+                    badge.classList.add('scenery');
+                } else {
+                    badge.textContent = 'PHYSICS';
+                    badge.classList.add('physics');
+                }
+            });
+        }
+
+        function updateGridSettings(s) {
+            if (s.gridSize !== undefined) {
+                document.getElementById('grid-size').value = s.gridSize;
+            }
+            if (s.gridType !== undefined) {
+                document.getElementById('grid-type').value = s.gridType;
+            }
+            if (s.gridVisibility !== undefined) {
+                document.getElementById('grid-visibility').value = s.gridVisibility;
+            }
+
+            var gridToggle = document.getElementById('grid-toggle');
+            if (gridToggle && s.gridActive !== undefined) {
+                if (s.gridActive) {
+                    gridToggle.className = 'toggle-icon editorgui_icons editorgui_icons-icon_grid_on active';
+                } else {
+                    gridToggle.className = 'toggle-icon editorgui_icons_bottom editorgui_icons-icon_grid_off';
+                }
+            }
+        }
+
+        function updateSnapSettings(s) {
+            if (s.snapDistance !== undefined) {
+                document.getElementById('snap-distance').value = s.snapDistance;
+            }
+            if (s.snapType !== undefined) {
+                document.getElementById('snap-type').value = s.snapType;
+            }
+            if (s.snapCursor !== undefined) {
+                document.getElementById('snap-cursor').value = s.snapCursor ? 'cross' : 'dot';
+            }
+
+            var snapToggle = document.getElementById('snap-toggle');
+            if (snapToggle && s.snapActive !== undefined) {
+                if (s.snapActive) {
+                    snapToggle.className = 'toggle-icon editorgui_icons editorgui_icons-icon_snapbottom_on active';
+                } else {
+                    snapToggle.className = 'toggle-icon editorgui_icons_bottom editorgui_icons-icon_snapbottom';
+                }
+            }
+        }
+
+        function updateCameraSettings(s) {
+            if (s.cameraSensitivity !== undefined) {
+                document.getElementById('camera-sensitivity').value = s.cameraSensitivity;
+            }
+            if (s.cameraMovement !== undefined) {
+                document.getElementById('camera-movement').value = s.cameraMovement;
+            }
+            if (s.cameraSpeed !== undefined) {
+                document.getElementById('camera-speed').value = s.cameraSpeed;
+            }
+
+            var cameraLockToggle = document.getElementById('camera-lock-toggle');
+            if (cameraLockToggle && s.cameraLocked !== undefined) {
+                state.cameraLockMode = s.cameraLocked;
+                if (s.cameraLocked) {
+                    cameraLockToggle.className = 'toggle-icon editorgui_icons_bottom editorgui_icons-icon_camera_lock_on active';
+                } else {
+                    cameraLockToggle.className = 'toggle-icon editorgui_icons_bottom editorgui_icons-icon_camera_lock_off';
+                }
+            }
+        }
+
+        function updateLayerSettings(s) {
+            var layerList = document.getElementById('layer-list');
+
+            if (s.layers !== undefined && layerList) {
+                var existingItems = layerList.querySelectorAll('.layer-item');
+                var canUpdateInPlace = existingItems.length === s.layers.length;
+
+                if (canUpdateInPlace) {
+                    s.layers.forEach(function (layer, index) {
+                        var item = existingItems[index];
+                        var isActive = index === s.currentLayerIndex;
+                        var isVisible = layer.visible !== false;
+                        var isLocked = layer.locked || false;
+
+                        if (isActive) {
+                            item.classList.add('active');
+                        } else {
+                            item.classList.remove('active');
+                        }
+
+                        var nameText = item.querySelector('.layer-name-text');
+                        if (nameText && nameText.textContent !== layer.name) {
+                            nameText.textContent = layer.name;
+                        }
+
+                        var physicsSwatch = item.querySelector('.layer-color-swatch.physics');
+                        if (physicsSwatch) {
+                            physicsSwatch.style.background = layer.physicsColor || '#000000';
+                        }
+                        var scenerySwatch = item.querySelector('.layer-color-swatch.scenery');
+                        if (scenerySwatch) {
+                            scenerySwatch.style.background = layer.sceneryColor || '#aaaaaa';
+                        }
+
+                        var lockBtn = item.querySelector('.layer-btn.lock');
+                        if (lockBtn) {
+                            if (isLocked) {
+                                lockBtn.classList.add('layer-locked');
+                                lockBtn.title = 'Unlock';
+                            } else {
+                                lockBtn.classList.remove('layer-locked');
+                                lockBtn.title = 'Lock';
+                            }
+                        }
+
+                        var eyeBtn = item.querySelector('.layer-btn.eye');
+                        if (eyeBtn) {
+                            if (isVisible) {
+                                eyeBtn.classList.remove('layer-hidden');
+                                eyeBtn.title = 'Hide';
+                            } else {
+                                eyeBtn.classList.add('layer-hidden');
+                                eyeBtn.title = 'Show';
+                            }
+                        }
+                    });
+                    return; // don't rebuild
+                }
+
+                // full rebuild if layer count changed
+                layerList.innerHTML = '';
+
+                s.layers.forEach(function (layer, index) {
+                    var isActive = index === s.currentLayerIndex;
+                    var isVisible = layer.visible !== false;
+                    var isLocked = layer.locked || false;
+                    var canDelete = index > 0;
+                    var canMergeInto = !isActive;
+                    var physicsColor = layer.physicsColor || '#000000';
+                    var sceneryColor = layer.sceneryColor || '#aaaaaa';
+
+                    var item = document.createElement('div');
+                    item.className = 'layer-item' + (isActive ? ' active' : '');
+                    item.dataset.index = index;
+
+                    item.innerHTML =
+                        '<span class="layer-name"><span class="layer-name-text" title="Click to rename">' + layer.name + '</span></span>' +
+                        '<div class="layer-colors">' +
+                        '<label class="layer-color-label">' +
+                        '<span class="layer-color-swatch physics" style="background:' + physicsColor + '" title="Physics Color"></span>' +
+                        '<input type="color" class="layer-color-input" data-type="physics" title="Physics lines" data-index="' + index + '" value="' + physicsColor + '">' +
+                        '</label>' +
+                        '<label class="layer-color-label">' +
+                        '<span class="layer-color-swatch scenery" style="background:' + sceneryColor + '" title="Scenery Color"></span>' +
+                        '<input type="color" class="layer-color-input" data-type="scenery" title="Scenery lines" data-index="' + index + '" value="' + sceneryColor + '">' +
+                        '</label>' +
+                        '</div>' +
+                        '<div class="layer-actions">' +
+                        '<button class="layer-btn eye' + (isVisible ? '' : ' layer-hidden') + '" data-action="toggle" title="' + (isVisible ? 'Hide' : 'Show') + '" type="button">👁</button>' +
+                        '<button class="layer-btn lock' + (isLocked ? ' layer-locked' : '') + '" data-action="lock" title="' + (isLocked ? 'Unlock layer' : 'Lock layer') + '" type="button"></button>' +
+                        '<button class="layer-btn merge" data-action="merge" title="Merge current layer into this" type="button"></button>' +
+                        (canDelete ? '<button class="layer-btn clear" data-action="delete" title="Delete" type="button"></button>' : '') +
+                        '</div>';
+
+                    item.addEventListener('click', function (e) {
+                        send('layer-select', index);
+                    });
+
+                    var nameText = item.querySelector('.layer-name-text');
+                    if (nameText) {
+                        nameText.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            var newName = prompt('Rename layer:', layer.name);
+                            if (newName && newName !== layer.name) {
+                                send('layer-rename-index', { index: index, name: newName });
+                            }
+                            window.parent.focus();
+                        });
+                    }
+
+                    item.querySelectorAll('.layer-color-input').forEach(function (input) {
+                        input.addEventListener('input', function (e) {
+                            e.stopPropagation();
+                            var type = this.dataset.type;
+                            var idx = parseInt(this.dataset.index);
+                            var color = this.value;
+
+                            this.previousElementSibling.style.background = color;
+
+                            send('layer-color-' + type + '-index', { index: idx, color: color });
+                        });
+
+                        input.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                        });
+                    });
+
+                    var mergeBtn = item.querySelector('.layer-btn.merge');
+                    if (mergeBtn) {
+                        mergeBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('layer-merge-into', index);
+                        });
+                    }
+
+                    var lockBtn = item.querySelector('.layer-btn.lock');
+                    if (lockBtn) {
+                        lockBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('layer-lock', index);
+                        });
+                    }
+
+                    var eyeBtn = item.querySelector('.layer-btn.eye');
+                    if (eyeBtn) {
+                        eyeBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('layer-toggle-index', index);
+                        });
+                    }
+
+                    var deleteBtn = item.querySelector('.layer-btn.clear');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('layer-delete-index', index);
+                        });
+                    }
+
+                    layerList.appendChild(item);
+                });
+            }
+        }
+
+        function drawObjectPreview(data) {
+            window.lastObjectPreviewData = data;
+            var canvas = document.getElementById('object-preview-canvas');
+            if (!canvas) return;
+
+            var wrapper = canvas.parentElement;
+            var displayWidth = wrapper.clientWidth || 150;
+            var displayHeight = wrapper.clientHeight || 150;
+
+            var dpr = window.devicePixelRatio || 1;
+
+            canvas.width = displayWidth * dpr;
+            canvas.height = displayHeight * dpr;
+
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            var width = displayWidth;
+            var height = displayHeight;
+            var centerX = width / 2;
+            var centerY = height / 2;
+
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(0, 0, width, height);
+
+            var physics = data.physics || [];
+            var scenery = data.scenery || [];
+            var powerups = data.powerups || [];
+
+            if (physics.length === 0 && scenery.length === 0 && powerups.length === 0) {
+                ctx.fillStyle = '#999';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('No preview', centerX, centerY);
+                return;
+            }
+
+            // calculate maximum distance from origin to encompass object in preview circle no matter rotation
+            var maxRadius = 0;
+
+            var powerupSizes = {
+                'goal': 13,
+                'slowmo': 13,
+                'checkpoint': 13,
+                'bomb': 10,
+                'gravity': Math.sqrt(1000) * 0.5,
+                'boost': Math.sqrt(1000) * 0.5,
+                'antigravity': Math.sqrt(1000) * 0.5,
+                'teleport': Math.sqrt(1000) * 0.5,
+                'helicopter': 15,
+                'truck': 15,
+                'balloon': 15,
+                'blob': 15
+            };
+
+            physics.forEach(function (line) {
+                var d1 = Math.sqrt(line.x1 * line.x1 + line.y1 * line.y1);
+                var d2 = Math.sqrt(line.x2 * line.x2 + line.y2 * line.y2);
+                maxRadius = Math.max(maxRadius, d1, d2);
+            });
+
+            scenery.forEach(function (line) {
+                var d1 = Math.sqrt(line.x1 * line.x1 + line.y1 * line.y1);
+                var d2 = Math.sqrt(line.x2 * line.x2 + line.y2 * line.y2);
+                maxRadius = Math.max(maxRadius, d1, d2);
+            });
+
+            powerups.forEach(function (p) {
+                var pSize = powerupSizes[p.name] || 10;
+                var d = Math.sqrt(p.x * p.x + p.y * p.y) + pSize;
+                maxRadius = Math.max(maxRadius, d);
+                if (p.x2 !== undefined && p.y2 !== undefined) {
+                    var d2 = Math.sqrt(p.x2 * p.x2 + p.y2 * p.y2) + pSize;
+                    maxRadius = Math.max(maxRadius, d2);
+                }
+            });
+
+            var padding = 10;
+            var availableRadius = Math.min(width, height) / 2 - padding;
+
+            var objScale = maxRadius > 0 ? availableRadius / maxRadius : 1;
+            objScale = Math.min(objScale, 2);
+
+            ctx.strokeStyle = '#AAA';
+            ctx.lineWidth = Math.max(2 * objScale, 1);
+            ctx.lineCap = 'round';
+            scenery.forEach(function (line) {
+                ctx.beginPath();
+                ctx.moveTo(line.x1 * objScale + centerX, line.y1 * objScale + centerY);
+                ctx.lineTo(line.x2 * objScale + centerX, line.y2 * objScale + centerY);
+                ctx.stroke();
+            });
+
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = Math.max(2 * objScale, 1);
+            physics.forEach(function (line) {
+                ctx.beginPath();
+                ctx.moveTo(line.x1 * objScale + centerX, line.y1 * objScale + centerY);
+                ctx.lineTo(line.x2 * objScale + centerX, line.y2 * objScale + centerY);
+                ctx.stroke();
+            });
+
+            powerups.forEach(function (p) {
+                drawPowerup(ctx, p, objScale, centerX, centerY, objScale);
+            });
+        }
+
+        function drawPatternPreview(data, brushType) {
+            var canvas = document.getElementById('pattern-preview-canvas');
+            if (!canvas || !data) return;
+
+            updatePatternPreviewWrapper(brushType);
+
+            var wrapper = canvas.parentElement;
+            var displaySize = Math.min(wrapper.clientWidth || 150, wrapper.clientHeight || 150);
+
+            var dpr = window.devicePixelRatio || 1;
+
+            canvas.width = displaySize * dpr;
+            canvas.height = displaySize * dpr;
+            canvas.style.width = displaySize + 'px';
+            canvas.style.height = displaySize + 'px';
+
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            ctx.fillStyle = '#FFF';
+            ctx.fillRect(0, 0, displaySize, displaySize);
+
+            var brushSize = data.brushSize || 100;
+            var patternW = data.width;
+            var patternH = data.height;
+            var physics = data.physics || [];
+            var scenery = data.scenery || [];
+
+            if (physics.length === 0 && scenery.length === 0) {
+                ctx.fillStyle = '#999';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('No preview', displaySize / 2, displaySize / 2);
+                return;
+            }
+
+            var scale = (displaySize - 10) / (brushSize * 2);
+            scale = Math.min(scale, 4);
+            scale = Math.max(scale, 0.05);
+
+            var scaledBrushSize = brushSize * scale;
+            var scaledPatternW = patternW * scale;
+            var scaledPatternH = patternH * scale;
+
+            var centerX = displaySize / 2;
+            var centerY = displaySize / 2;
+
+            ctx.save();
+            ctx.beginPath();
+            if (brushType === 0) {
+                ctx.rect(
+                    centerX - scaledBrushSize,
+                    centerY - scaledBrushSize,
+                    scaledBrushSize * 2,
+                    scaledBrushSize * 2
+                );
+            } else {
+                ctx.arc(centerX, centerY, scaledBrushSize, 0, Math.PI * 2);
+            }
+            ctx.clip();
+
+            // calculate how many tiles we need to draw
+            var tilesX = Math.ceil(scaledBrushSize / scaledPatternW) + 2;
+            var tilesY = Math.ceil(scaledBrushSize / scaledPatternH) + 2;
+
+            ctx.lineCap = 'round';
+            ctx.lineWidth = Math.max(2 * scale, 1);
+
+            // offset by half pattern size so center shows where 4 tiles meet
+            var baseOffsetX = centerX - scaledPatternW / 2;
+            var baseOffsetY = centerY - scaledPatternH / 2;
+
+            for (var tx = -tilesX; tx <= tilesX; tx++) {
+                for (var ty = -tilesY; ty <= tilesY; ty++) {
+                    var offsetX = baseOffsetX + tx * scaledPatternW;
+                    var offsetY = baseOffsetY + ty * scaledPatternH;
+
+                    ctx.strokeStyle = '#AAA';
+                    ctx.beginPath();
+                    scenery.forEach(function (line) {
+                        ctx.moveTo(offsetX + line.x1 * scale, offsetY + line.y1 * scale);
+                        ctx.lineTo(offsetX + line.x2 * scale, offsetY + line.y2 * scale);
+                    });
+                    ctx.stroke();
+
+                    ctx.strokeStyle = '#000';
+                    ctx.beginPath();
+                    physics.forEach(function (line) {
+                        ctx.moveTo(offsetX + line.x1 * scale, offsetY + line.y1 * scale);
+                        ctx.lineTo(offsetX + line.x2 * scale, offsetY + line.y2 * scale);
+                    });
+                    ctx.stroke();
+                }
+            }
+
+            ctx.restore();
+
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            if (brushType === 0) {
+                ctx.rect(
+                    centerX - scaledBrushSize,
+                    centerY - scaledBrushSize,
+                    scaledBrushSize * 2,
+                    scaledBrushSize * 2
+                );
+            } else {
+                ctx.arc(centerX, centerY, scaledBrushSize, 0, Math.PI * 2);
+            }
+            ctx.stroke();
+        }
+
+        function drawPowerup(ctx, p, scale, centerX, centerY, objScale) {
+            var x = p.x * objScale + centerX;
+            var y = p.y * objScale + centerY;
+
+            var size;
+            switch (p.name) {
+                case 'goal':
+                case 'slowmo':
+                case 'checkpoint':
+                    size = 13 * scale;
+                    break;
+                case 'bomb':
+                    size = 10 * scale;
+                    break;
+                case 'gravity':
+                case 'boost':
+                case 'antigravity':
+                case 'teleport':
+                    size = Math.sqrt(1000) * 0.5 * scale;
+                    break;
+                case 'helicopter':
+                case 'truck':
+                case 'balloon':
+                case 'blob':
+                    size = 15 * scale;
+                    break;
+                default:
+                    size = 10 * scale;
+            }
+
+            size = Math.max(size, 3);
+
+            ctx.globalAlpha = 0.5;
+            ctx.fillStyle = getPowerupColor(p.name);
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (p.name === 'teleport' && p.x2 !== undefined && p.y2 !== undefined) {
+                var x2 = p.x2 * objScale + centerX;
+                var y2 = p.y2 * objScale + centerY;
+                ctx.beginPath();
+                ctx.arc(x2, y2, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1;
+        }
+
+        function getPowerupColor(name) {
+            var colors = {
+                'goal': '#fae335',
+                'bomb': '#d12929',
+                'gravity': '#376eb7',
+                'boost': '#8ac932',
+                'slowmo': '#733',
+                'checkpoint': '#826cdc',
+                'antigravity': '#09faf3',
+                'teleport': '#dd45ec',
+                'helicopter': '#f2902e',
+                'truck': '#94d44e',
+                'balloon': '#f02728',
+                'blob': '#a784c5'
+            };
+            return colors[name] || '#888';
+        }
+
+        function updateObjectSettings(s) {
+            var objectList = document.getElementById('object-list');
+            var objectDetails = document.getElementById('object-details');
+
+            if (s.objects !== undefined && objectList) {
+                objectList.innerHTML = '';
+
+                var names = Object.keys(s.objects).sort(function (a, b) { return a.localeCompare(b); });
+
+                if (names.length === 0) {
+                    objectList.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">No objects imported</div>';
+                }
+
+                names.forEach(function (name) {
+                    var isActive = name === s.objectName;
+                    var obj = s.objects[name];
+
+                    var item = document.createElement('div');
+                    item.className = 'object-item' + (isActive ? ' active' : '');
+                    item.dataset.name = name;
+
+                    item.innerHTML =
+                        '<span class="object-name"><span class="object-name-text" title="Click to rename">' + name + '</span></span>' +
+                        '<div class="object-actions">' +
+                        '<button class="object-btn export" data-action="export" title="Export" type="button"></button>' +
+                        '<button class="object-btn clear" data-action="delete" title="Remove" type="button"></button>' +
+                        '</div>';
+
+                    item.addEventListener('click', function (e) {
+                        send('object-select', name);
+                    });
+
+                    var nameText = item.querySelector('.object-name-text');
+                    if (nameText) {
+                        nameText.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            var newName = prompt('Rename object:', name);
+                            if (newName && newName !== name) {
+                                send('object-rename-to', { oldName: name, newName: newName });
+                            }
+                            window.parent.focus();
+                        });
+                    }
+
+                    var exportBtn = item.querySelector('.object-btn.export');
+                    if (exportBtn) {
+                        exportBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('object-export-name', name);
+                        });
+                    }
+
+                    var deleteBtn = item.querySelector('.object-btn.clear');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            send('object-remove-name', name);
+                        });
+                    }
+
+                    objectList.appendChild(item);
+                });
+            }
+
+            var objectName = s.objectName || '';
+
+            if (objectDetails) {
+                if (objectName) {
+                    objectDetails.style.display = 'block';
+                } else {
+                    objectDetails.style.display = 'none';
+                }
+            }
+
+            var rotateSensitivity = document.getElementById('object-rotate-sensitivity');
+            var scaleSensitivity = document.getElementById('object-scale-sensitivity');
+            var offsetSensitivity = document.getElementById('object-offset-sensitivity');
+
+
+            if (s.rotateSensitivity !== undefined && rotateSensitivity) {
+                rotateSensitivity.value = s.rotateSensitivity;
+            }
+            if (s.scaleSensitivity !== undefined && scaleSensitivity) {
+                scaleSensitivity.value = s.scaleSensitivity;
+            }
+            if (s.offsetSensitivity !== undefined && offsetSensitivity) {
+                offsetSensitivity.value = s.offsetSensitivity;
+            }
+
+            var objRotate = document.getElementById('obj-rotate');
+            var objScale = document.getElementById('obj-scale');
+            var objStretch = document.getElementById('obj-stretch');
+            //var objOffset = document.getElementById('obj-offset');
+            var objOffsetX = document.getElementById('obj-offset-x');
+            var objOffsetY = document.getElementById('obj-offset-y');
+            var objFlip = document.getElementById('obj-flip');
+            var objInvert = document.getElementById('obj-invert');
+            var objectName2 = document.getElementById('object-name-2');
+
+            if (objRotate) objRotate.textContent = (s.objectRotate || 0) + '°';
+            if (objScale) objScale.textContent = (s.objectScale || 1).toFixed(2) + 'x';
+            if (objStretch) objStretch.textContent = (s.objectStretchX || 1).toFixed(2) + 'x, ' + (s.objectStretchY || 1).toFixed(2) + 'x';
+            if (objOffsetX) objOffsetX.textContent = '(' + (s.objectOffsetX || 0) + ')';
+            if (objOffsetY) objOffsetY.textContent = '(' + (s.objectOffsetY || 0) + ')';
+
+            var flipX = s.objectFlipX ? 'X' : '';
+            var flipY = s.objectFlipY ? 'Y' : '';
+            if (objFlip) objFlip.textContent = (flipX + ' ' + flipY).trim() || 'none';
+
+            var invertText = 'none';
+            if (s.objectInvert && s.objectInvertFlat) invertText = 'scenery';
+            else if (!s.objectInvert && s.objectInvertFlat) invertText = 'physics';
+            else if (s.objectInvert) invertText = 'invert';
+            if (objInvert) objInvert.textContent = invertText;
+
+            var btnFlipX = document.getElementById('btn-flip-x');
+            var btnFlipY = document.getElementById('btn-flip-y');
+            var btnInvert = document.getElementById('btn-invert');
+            var btnInvertFlat = document.getElementById('btn-invert-flat');
+
+            if (btnFlipX) btnFlipX.classList.toggle('engaged', !!s.objectFlipX);
+            if (btnFlipY) btnFlipY.classList.toggle('engaged', !!s.objectFlipY);
+            if (btnInvert) btnInvert.classList.toggle('engaged', !!s.objectInvert);
+            if (btnInvertFlat) btnInvertFlat.classList.toggle('engaged', !!s.objectInvertFlat);
+
+            if (objectName2) objectName2.textContent = objectName || 'No object selected';
+
+            if (s.objectPreviewData) {
+                drawObjectPreview(s.objectPreviewData);
+            }
+        }
+
+        function updatePatternSettings(s) {
+            if (s.patternBrushSize !== undefined) {
+                setVal('pattern-brushSize', s.patternBrushSize);
+            }
+            if (s.patternBrush !== undefined) {
+                document.getElementById('pattern-brush').value = s.patternBrush;
+            }
+            if (s.patternGlobalGrid !== undefined) {
+                document.getElementById('pattern-globalGrid').checked = s.patternGlobalGrid;
+            }
+            if (s.patternExperimentalSpeedups !== undefined) {
+                document.getElementById('pattern-experimentalSpeedups').checked = s.patternExperimentalSpeedups;
+            }
+            if (s.patternExperimentalStabilization !== undefined) {
+                document.getElementById('pattern-experimentalStabilization').checked = s.patternExperimentalStabilization;
+            }
+
+            var patternList = document.getElementById('pattern-list');
+            var patternDetails = document.getElementById('pattern-details');
+            var patternNameDisplay = document.getElementById('pattern-name-display');
+
+            if (s.patterns && patternList) {
+                patternList.innerHTML = '';
+
+                if (s.patterns.length === 0) {
+                    patternList.innerHTML = '<div style="padding: 10px; color: #888; text-align: center;">No patterns loaded</div>';
+                    if (patternDetails) patternDetails.style.display = 'none';
+                    return;
+                }
+
+                s.patterns.forEach(function (pattern, index) {
+                    var isActive = index === s.currentPattern;
+
+                    var item = document.createElement('div');
+                    item.className = 'object-item' + (isActive ? ' active' : '');
+                    item.dataset.index = index;
+
+                    item.innerHTML =
+                        '<span class="object-name"><span class="object-name-text" title="Click to rename">' + pattern.name + '</span></span>' +
+                        '<span style="color: #888; font-size: 10px;">' + pattern.width + 'x' + pattern.height + '</span>' +
+                        '<div class="object-actions">' +
+                        '<button class="object-btn clear" data-action="delete" title="Remove" type="button"></button>' +
+                        '</div>';
+
+                    item.addEventListener('click', function (e) {
+                        if (!e.target.closest('.object-btn') && !e.target.closest('.object-name-text')) {
+                            send('pattern-select', index);
+                        }
+                    });
+
+                    var nameText = item.querySelector('.object-name-text');
+                    if (nameText) {
+                        nameText.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            var newName = prompt('Rename pattern:', pattern.name);
+                            if (newName && newName !== pattern.name) {
+                                send('pattern-rename', { index: index, name: newName });
+                            }
+                            window.parent.focus();
+                        });
+                    }
+
+                    var deleteBtn = item.querySelector('.object-btn.clear');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function (e) {
+                            e.stopPropagation();
+                            if (confirm('Remove pattern "' + pattern.name + '"?')) {
+                                send('pattern-remove', index);
+                            }
+                        });
+                    }
+
+                    patternList.appendChild(item);
+                });
+
+                if (patternDetails) patternDetails.style.display = 'block';
+                if (patternNameDisplay && s.patterns[s.currentPattern]) {
+                    patternNameDisplay.textContent = s.patterns[s.currentPattern].name;
+                }
+            }
+
+            if (s.patternPreviewData) {
+                window.lastPatternPreviewData = s.patternPreviewData;
+                setTimeout(function () {
+                    drawPatternPreview(s.patternPreviewData, s.patternBrush);
+                }, 10);
+            }
+
+            if (s.patternBrush !== undefined) {
+                updatePatternPreviewWrapper(s.patternBrush);
+            }
+        }
+
+        function updatePatternPreviewWrapper(brushType) {
+            var wrapper = document.querySelector('#pattern-thumbnail-container .object-preview-wrapper');
+            if (wrapper) {
+                wrapper.style.borderRadius = (brushType === 0) ? '0' : '50%';
+            }
+        }
+
+        function updateTabIcons(s) {
+            var toolIcon = document.querySelector('.tab-button[data-tab="tool"] .tab-icon');
+            if (toolIcon && s.currentTool) {
+                var toolIconClass = 'editorgui_icons editorgui_icons-icon_';
+                switch (s.currentTool) {
+                    case 'brush':
+                        toolIconClass += 'brush';
+                        break;
+                    case 'straightline':
+                        toolIconClass += 'line';
+                        break;
+                    case 'curve':
+                        toolIconClass += 'curve';
+                        break;
+                    case 'circle':
+                        toolIconClass += 'circle';
+                        break;
+                    case 'eraser':
+                        toolIconClass += 'eraser';
+                        break;
+                    case 'camera':
+                        toolIconClass += 'camera';
+                        break;
+                    case 'select':
+                        toolIconClass += 'select';
+                        break;
+                    case 'powerup':
+                        toolIconClass += 'powerups';
+                        break;
+                    case 'vehiclepowerup':
+                        toolIconClass += 'vehicle_swap';
+                        break;
+                    case 'pattern':
+                        toolIconClass += 'pattern';
+                        break;
+                    default:
+                        toolIconClass += 'camera';
+                }
+                toolIcon.className = 'tab-icon ' + toolIconClass;
+            }
+
+            var vehicleIcon = document.querySelector('.tab-button[data-tab="vehicle"] .tab-icon');
+            if (vehicleIcon && s.vehicle) {
+                var vehicle = s.vehicle.toLowerCase();
+                vehicleIcon.className = 'tab-icon editorgui_icons_bottom_vehicle editorgui_icons-icon_' + vehicle;
+            }
+        }
+
+        // now playing
+        var currentTrackData = null;
+        var playlistContext = null;
+        var filterContext = null;
+
+        function loadTrackData(type, id) {
+            fetch('/' + type + '/' + id + '?json=true')
+                .then(function (r) { return r.json(); })
+                .then(function (track) {
+                    track.type = type;
+                    updateNowPlaying(track);
+
+                    // update playlist index if we have a playlist context
+                    if (playlistContext && playlistContext.tracks) {
+                        var newIndex = -1;
+
+                        for (var i = 0; i < playlistContext.tracks.length; i++) {
+                            var t = playlistContext.tracks[i];
+                            var trackCanonical = track.canonical || track.canonicalId || track.id;
+                            var playlistTrackCanonical = t.canonical || t.id;
+
+                            // match by canonical
+                            if (trackCanonical && playlistTrackCanonical &&
+                                String(trackCanonical) === String(playlistTrackCanonical)) {
+                                newIndex = i;
+                                break;
+                            }
+
+                            // match by type + id
+                            if (t.type === type && String(t.id) === String(id)) {
+                                newIndex = i;
+                                break;
+                            }
+
+                            // match by urlType + urlId
+                            if (t.urlType === type && String(t.urlId) === String(id)) {
+                                newIndex = i;
+                                break;
+                            }
+                        }
+
+                        if (newIndex >= 0) {
+                            playlistContext.currentIndex = newIndex;
+                        }
+                        updatePlaylistUI();
+                    } else if (!filterContext) {
+                        // no playlist or filter - check adjacent tracks for button state
+                        checkAdjacentTracks();
+                    }
+                })
+                .catch(function (e) {
+                    console.error('Failed to load track:', e);
+                });
+        }
+
+        function setPlaylistContext(playlist, currentTrackId) {
+            if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
+                playlistContext = null;
+                updatePlaylistUI();
+                return;
+            }
+
+            var isSamePlaylist = playlistContext &&
+                (playlistContext.id === (playlist.canonical || playlist.id));
+
+            var currentIndex = 0;
+
+            if (isSamePlaylist && playlistContext.currentIndex !== undefined) {
+                currentIndex = playlistContext.currentIndex;
+            } else if (currentTrackId) {
+                for (var i = 0; i < playlist.tracks.length; i++) {
+                    var t = playlist.tracks[i];
+                    if (String(t.id) === String(currentTrackId) ||
+                        t.canonical === currentTrackId ||
+                        String(t.urlId) === String(currentTrackId)) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            playlistContext = {
+                id: playlist.canonical || playlist.id,
+                name: playlist.name,
+                tracks: playlist.tracks,
+                currentIndex: currentIndex
+            };
+
+            filterContext = null;
+            updatePlaylistUI();
+        }
+
+        function setFilterContext(context) {
+            if (!context) {
+                filterContext = null;
+                updateFilterUI();
+                return;
+            }
+
+            filterContext = {
+                type: context.type || 'db',
+                player: context.player || null,
+                query: context.query || null,
+                remixesOf: context.remixesOf || null,
+                sortBy: context.sortBy || 'shuffle',
+                sortOrder: context.sortOrder || 'desc'
+            };
+
+            playlistContext = null;
+            updateFilterUI();
+        }
+
+        function updatePlaylistUI() {
+            var infoEl = document.getElementById('np-playlist-info');
+            var nameEl = document.getElementById('np-playlist-name');
+            var posEl = document.getElementById('np-playlist-position');
+            var prevBtn = document.getElementById('np-prev');
+            var nextBtn = document.getElementById('np-next');
+
+            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+                infoEl.style.display = 'block';
+                infoEl.style.cursor = 'pointer';
+                nameEl.textContent = playlistContext.name;
+                nameEl.style.cursor = 'pointer';
+                nameEl.title = 'Open playlist';
+                posEl.textContent = '(' + (playlistContext.currentIndex + 1) + '/' + playlistContext.tracks.length + ')';
+
+                var hasPrev = playlistContext.currentIndex > 0;
+                var hasNext = playlistContext.currentIndex < playlistContext.tracks.length - 1;
+
+                prevBtn.disabled = !hasPrev;
+                nextBtn.disabled = !hasNext;
+                prevBtn.style.opacity = hasPrev ? '1' : '0.5';
+                nextBtn.style.opacity = hasNext ? '1' : '0.5';
+                prevBtn.title = hasPrev ? 'Previous in playlist' : 'At start of playlist';
+                nextBtn.title = hasNext ? 'Next in playlist' : 'At end of playlist';
+            } else {
+                infoEl.style.display = 'none';
+                updateFilterUI();
+            }
+        }
+
+        function updateFilterUI() {
+            var infoEl = document.getElementById('np-playlist-info');
+            var nameEl = document.getElementById('np-playlist-name');
+            var posEl = document.getElementById('np-playlist-position');
+            var prevBtn = document.getElementById('np-prev');
+            var nextBtn = document.getElementById('np-next');
+
+            if (filterContext && (filterContext.player || filterContext.type !== 'db' || filterContext.query || filterContext.remixesOf)) {
+                infoEl.style.display = 'block';
+                infoEl.style.cursor = 'pointer';
+
+                var label = '';
+                var title = '';
+                if (filterContext.remixesOf) {
+                    var remixName = filterContext.remixesOf.name || filterContext.remixesOf.canonical;
+                    label = 'Remixes of ' + remixName;
+                    title = 'Open remixes';
+                } else if (filterContext.player) {
+                    label = filterContext.player;
+                    title = 'Open player page';
+                } else if (filterContext.query) {
+                    label = filterContext.query;
+                    title = 'Open search';
+                } else if (filterContext.type && filterContext.type !== 'db') {
+                    label = filterContext.type.toUpperCase();
+                    title = 'Open ' + filterContext.type.toUpperCase() + ' tracks';
+                }
+
+                nameEl.textContent = label;
+                nameEl.style.cursor = 'pointer';
+                nameEl.title = title;
+                var sortLabel = filterContext.sortBy && filterContext.sortBy !== 'shuffle'
+                    ? filterContext.sortBy
+                    : 'shuffle';
+                if (filterContext.sortOrder && filterContext.sortOrder !== 'desc' && sortLabel !== 'shuffle') {
+                    sortLabel += ' ' + filterContext.sortOrder;
+                }
+                posEl.textContent = '(' + sortLabel + ')';
+
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                prevBtn.style.opacity = '0.5';
+                nextBtn.style.opacity = '0.5';
+            } else if (!playlistContext) {
+                infoEl.style.display = 'none';
+
+                if (currentTrackData) {
+                    prevBtn.disabled = false;
+                    nextBtn.disabled = false;
+                    prevBtn.style.opacity = '1';
+                    nextBtn.style.opacity = '1';
+                    prevBtn.title = 'Previous track';
+                    nextBtn.title = 'Next track';
+                } else {
+                    prevBtn.disabled = true;
+                    nextBtn.disabled = true;
+                    prevBtn.style.opacity = '0.5';
+                    nextBtn.style.opacity = '0.5';
+                }
+            }
+        }
+
+        var currentPlayer = null;
+
+        function showPlayerProfile(playerName) {
+            fetch('/api/player/' + encodeURIComponent(playerName))
+                .then(function (res) { return res.json(); })
+                .then(function (player) {
+                    currentPlayer = player;
+
+                    document.getElementById('now-playing-wrapper').style.display = 'none';
+                    document.getElementById('player-profile').style.display = 'block';
+
+                    var avatar = document.getElementById('player-avatar');
+                    avatar.style.display = '';
+                    avatar.src = player.avatar;
+                    avatar.onerror = function () {
+                        this.style.display = 'none';
+                    };
+
+                    document.getElementById('player-name').textContent = player.displayName;
+
+                    var aliasesEl = document.getElementById('player-aliases');
+                    var otherAliases = (player.aliases || []).filter(function (a) {
+                        return a.toLowerCase() !== player.displayName.toLowerCase();
+                    });
+                    if (otherAliases.length > 0) {
+                        aliasesEl.textContent = 'Also known as: ' + otherAliases.join(', ');
+                        aliasesEl.style.display = '';
+                    } else {
+                        aliasesEl.style.display = 'none';
+                    }
+
+                    document.getElementById('player-stats').textContent = player.trackCount + ' track' + (player.trackCount !== 1 ? 's' : '') + ' in database';
+
+                    var platformsEl = document.getElementById('player-platforms');
+                    var platformBadges = [];
+                    if (player.platforms.frhd) platformBadges.push('<span class="track-type-badge frhd">FRHD</span>');
+                    if (player.platforms.bhr) platformBadges.push('<span class="track-type-badge bhr">BHR</span>');
+                    if (player.platforms.cr) platformBadges.push('<span class="track-type-badge cr">CR</span>');
+                    platformsEl.innerHTML = platformBadges.join(' ');
+                })
+                .catch(function (err) {
+                    console.error('Failed to load player profile:', err);
+                });
+        }
+
+        function hidePlayerProfile() {
+            document.getElementById('player-profile').style.display = 'none';
+            document.getElementById('now-playing-wrapper').style.display = '';
+            currentPlayer = null;
+        }
+
+        document.getElementById('player-view-tracks').addEventListener('click', function () {
+            if (currentPlayer) {
+                send('open-author', currentPlayer.displayName);
+            }
+        });
+
+        function updateNowPlaying(track) {
+            currentTrackData = track;
+
+            //var emptyEl = document.getElementById('now-playing-empty');
+            var contentEl = document.getElementById('now-playing-content');
+
+            if (!track || !track.name) {
+                //emptyEl.style.display = 'block';
+                contentEl.style.display = 'none';
+                return;
+            }
+
+            //emptyEl.style.display = 'none';
+            contentEl.style.display = 'block';
+
+            document.getElementById('np-thumbnail').src = track.thumbnail || '/' + track.type + '/' + track.id + '.png';
+
+            var badges = track.badges || [track.type];
+            var uniqueBadges = [];
+            var seen = {};
+            for (var i = 0; i < badges.length; i++) {
+                if (!seen[badges[i]]) {
+                    seen[badges[i]] = true;
+                    uniqueBadges.push(badges[i]);
+                }
+            }
+
+            document.getElementById('np-badges').innerHTML = uniqueBadges.map(function (b) {
+                return '<span class="track-type-badge ' + b + '">' + getBadgeText(b) + '</span>';
+            }).join('');
+
+            document.getElementById('np-name').textContent = track.name;
+
+            document.getElementById('np-name').textContent = track.name;
+
+            var authorLine = document.getElementById('np-author-line');
+            var avatarsContainer = document.getElementById('np-author-avatars');
+            var authors = track.authors || 'Unknown';
+            var authorParts = authors.split(/,\s*/);
+
+            var authorHtml = 'by ' + authorParts.map(function (author) {
+                return '<a href="#" class="np-author-link" data-author="' + author.trim() + '" style="color: #1884cf; text-decoration: none; font-weight: bold;">' + author.trim() + '</a>';
+            }).join(', ');
+
+            authorLine.innerHTML = authorHtml;
+
+            avatarsContainer.innerHTML = authorParts.map(function (author) {
+                return '<img class="np-author-avatar" data-author="' + author.trim() + '" src="" alt="" title="' + author.trim() + '" style="display:none;">';
+            }).join('');
+
+            authorParts.forEach(function (author) {
+                var authorName = author.trim();
+                fetchAuthorAvatar(authorName, function (avatarUrl) {
+                    if (avatarUrl) {
+                        var avatarImg = avatarsContainer.querySelector('.np-author-avatar[data-author="' + authorName + '"]');
+                        if (avatarImg) {
+                            avatarImg.src = avatarUrl;
+                            avatarImg.style.display = '';
+                            avatarImg.onerror = function () { this.style.display = 'none'; };
+                        }
+                    }
+                });
+            });
+
+            var descEl = document.getElementById('np-description');
+            if (track.description && track.description.trim()) {
+                descEl.textContent = track.description;
+                descEl.style.display = 'block';
+            } else {
+                descEl.style.display = 'none';
+            }
+
+            setNpRow('id', track.id);
+            setNpRowPublished(track.published);
+            setNpRow('size', formatSize(track.size));
+            setNpRow('plays', track.plays);
+
+            var votesRow = document.getElementById('np-row-votes');
+            var votesEl = document.getElementById('np-votes');
+            if (track.upvotes || track.votes) {
+                votesEl.textContent = track.downvotes ? '+' + track.upvotes + ' / -' + track.downvotes : (track.upvotes || track.votes);
+                votesRow.style.display = '';
+            } else {
+                votesRow.style.display = 'none';
+            }
+
+            var remixOfRow = document.getElementById('np-row-remix-of');
+            var remixOfEl = document.getElementById('np-remix-of');
+            if (remixOfRow && remixOfEl) {
+                if (track.remixOf && track.remixOf.length > 0) {
+                    var remixLinks = track.remixOf.map(function (r) {
+                        return '<a href="#" class="np-track-link" data-type="t" data-id="' + r.canonical + '" data-no-context="true" style="color: #1884cf; text-decoration: none;">' + r.name + '</a>';
+                    }).join(', ');
+                    remixOfEl.innerHTML = remixLinks;
+                    remixOfRow.style.display = '';
+                } else {
+                    remixOfRow.style.display = 'none';
+                }
+            }
+
+            var remixesRow = document.getElementById('np-row-remixes');
+            var remixesEl = document.getElementById('np-remixes');
+            if (remixesRow && remixesEl) {
+                if (track.remixCount && track.remixCount > 0) {
+                    var trackName = track.name || track.id;
+                    var trackCanonical = track.canonical || track.id;
+                    remixesEl.innerHTML = '<a href="#" class="np-remixes-link" data-canonical="' + trackCanonical + '" data-name="' + trackName.replace(/"/g, '&quot;') + '" style="color: #1884cf; text-decoration: none;">' + track.remixCount + ' remix' + (track.remixCount > 1 ? 'es' : '') + '</a>';
+                    remixesRow.style.display = '';
+                } else {
+                    remixesRow.style.display = 'none';
+                }
+            }
+
+            var entryToRow = document.getElementById('np-row-entry-to');
+            var entryToEl = document.getElementById('np-entry-to');
+            if (entryToRow && entryToEl) {
+                if (track.entryTo) {
+                    entryToEl.innerHTML = '<a href="#" class="np-playlist-link" data-playlist-id="' + (track.entryTo.canonical) + '" style="color: #1884cf; text-decoration: none;">' + track.entryTo.name + '</a>';
+                    entryToRow.style.display = '';
+                } else {
+                    entryToRow.style.display = 'none';
+                }
+            }
+
+            setNpRowLink('frhd-id', track.frhdId, 'frhd');
+            setNpRowLink('bhr-id', track.bhrId, 'bhr');
+            setNpRowLink('cr-id', track.crId, 'cr');
+            setNpRowLink('tm-id', track.tmId, 'tm');
+
+            if (!playlistContext && !filterContext && track) {
+                checkAdjacentTracks();
+            }
+        }
+
+        function getBadgeText(type) {
+            var map = { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR', tm: 'TM', app: 'APP' };
+            return map[type] || type.toUpperCase();
+        }
+
+        function setNpRowPublished(dateStr) {
+            var row = document.getElementById('np-row-published');
+            var cell = document.getElementById('np-published');
+
+            if (!dateStr) {
+                row.style.display = 'none';
+                return;
+            }
+
+            var formatted = formatDate(dateStr);
+            if (!formatted) {
+                row.style.display = 'none';
+                return;
+            }
+
+            var year = formatted.substring(0, 4);
+            var rest = formatted.substring(4);
+
+            cell.innerHTML = '<a href="#" class="np-year-link" data-year="' + year + '" style="color: #1884cf; text-decoration: none;">' + year + '</a>' + rest;
+            row.style.display = '';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return null;
+            if (dateStr.includes('T')) return dateStr.split('T')[0];
+            if (dateStr.includes(' ')) return dateStr.split(' ')[0];
+            return dateStr;
+        }
+
+        function formatSize(bytes) {
+            if (bytes === null || bytes === undefined || bytes === 0 || isNaN(bytes)) { return ''; }
+            const k = 1024;
+            const sizes = ['b', 'k', 'm', 'gb', 'tb'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
+        }
+
+        function setNpRowLink(field, value, type) {
+            var row = document.getElementById('np-row-' + field);
+            var cell = document.getElementById('np-' + field);
+            if (row && cell) {
+                if (value && type === 'frhd') {
+                    cell.innerHTML = '<a href="https://freeriderhd.com/t/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                    row.style.display = '';
+                } else if (value && type === 'cr') {
+                    cell.innerHTML = '<a href="https://canvasrider.com/tracks/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                    row.style.display = '';
+                } else if (value && (type !== 'frhd' || type !== 'cr')) {
+                    cell.innerHTML = '<span class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        function handleThumbnailFallback(img) {
+            img.onerror = null;
+            img.src = '/data/bhr/thumbnails/default.png';
+        }
+        window.handleThumbnailFallback = handleThumbnailFallback;
+
+        function setNpRow(field, value) {
+            var row = document.getElementById('np-row-' + field);
+            var cell = document.getElementById('np-' + field);
+            if (value) {
+                cell.textContent = value;
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+
+        function buildFilterParams() {
+            if (!filterContext) return '';
+
+            var params = new URLSearchParams();
+            params.set('sort', 'shuffle');
+            params.set('perPage', '1');
+
+            if (filterContext.type && filterContext.type !== 'db') {
+                params.set('type', filterContext.type);
+            } else {
+                params.set('type', 'db');
+            }
+
+            if (filterContext.player) {
+                params.set('author', filterContext.player);
+            }
+
+            if (filterContext.query) {
+                params.set('q', filterContext.query);
+            }
+
+            return params.toString();
+        }
+
+        document.getElementById('np-prev').addEventListener('click', function () {
+            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+                if (playlistContext.currentIndex > 0) {
+                    var prevTrack = playlistContext.tracks[playlistContext.currentIndex - 1];
+                    var type, id;
+
+                    if (prevTrack.canonical || prevTrack.type === 't') {
+                        type = 't';
+                        id = prevTrack.canonical || prevTrack.id;
+                    } else {
+                        type = prevTrack.urlType || prevTrack.type || 'frhd';
+                        id = prevTrack.urlId || prevTrack.id;
+                    }
+
+                    sendLoadTrack(type, id);
+                }
+            } else if (!filterContext && currentTrackData) {
+                fetchAdjacentTrack('prev');
+            }
+        });
+
+        document.getElementById('np-next').addEventListener('click', function () {
+            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+                if (playlistContext.currentIndex < playlistContext.tracks.length - 1) {
+                    var nextTrack = playlistContext.tracks[playlistContext.currentIndex + 1];
+                    var type, id;
+
+                    if (nextTrack.canonical || nextTrack.type === 't') {
+                        type = 't';
+                        id = nextTrack.canonical || nextTrack.id;
+                    } else {
+                        type = nextTrack.urlType || nextTrack.type || 'frhd';
+                        id = nextTrack.urlId || nextTrack.id;
+                    }
+
+                    sendLoadTrack(type, id);
+                }
+            } else if (!filterContext && currentTrackData) {
+                fetchAdjacentTrack('next');
+            }
+        });
+
+        document.getElementById('np-random').addEventListener('click', function () {
+            if (playlistContext && playlistContext.tracks.length > 1) {
+                var availableIndices = [];
+                for (var i = 0; i < playlistContext.tracks.length; i++) {
+                    if (i !== playlistContext.currentIndex) {
+                        availableIndices.push(i);
+                    }
+                }
+                var randomIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+                var randomTrack = playlistContext.tracks[randomIdx];
+                var type, id;
+
+                if (randomTrack.canonical) {
+                    type = 't';
+                    id = randomTrack.canonical;
+                } else {
+                    type = randomTrack.urlType || randomTrack.type || 'frhd';
+                    id = randomTrack.urlId || randomTrack.id;
+                }
+
+                sendLoadTrack(type, id);
+            } else if (filterContext) {
+                if (filterContext.remixesOf) {
+                    fetch('/api/remixes/' + encodeURIComponent(filterContext.remixesOf.canonical))
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            var remixes = data.remixes || [];
+                            if (remixes.length > 0) {
+                                var track = remixes[Math.floor(Math.random() * remixes.length)];
+                                var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                                var id = track.canonical || track.urlId || track.id;
+                                sendLoadTrack(type, id);
+                            }
+                        })
+                        .catch(function (e) { console.error('Failed to get random remix:', e); });
+                } else {
+                    var params = buildFilterParams();
+                    fetch('/api/db?' + params)
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            if (data.tracks && data.tracks.length > 0) {
+                                var track = data.tracks[0];
+                                var type, id;
+
+                                if (track.canonical) {
+                                    type = 't';
+                                    id = track.canonical;
+                                } else {
+                                    type = track.urlType || track.type || 'frhd';
+                                    id = track.urlId || track.id;
+                                }
+
+                                sendLoadTrack(type, id);
+                            }
+                        })
+                        .catch(function (e) {
+                            console.error('Failed to get random track:', e);
+                        });
+                }
+            } else {
+                fetchRandomTrack();
+            }
+        });
+
+        function fetchRandomTrack() {
+            var params = new URLSearchParams();
+            params.set('type', 'db');
+            params.set('sort', 'shuffle');
+            params.set('perPage', '1');
+
+            if (currentTrackData) {
+                var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+                if (currentCanonical) {
+                    params.set('exclude', currentCanonical);
+                }
+            }
+
+            fetch('/api/db?' + params)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.tracks && data.tracks.length > 0) {
+                        var track = data.tracks[0];
+                        var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                        var id = track.canonical || track.urlId || track.id;
+                        sendLoadTrack(type, id);
+                    }
+                })
+                .catch(function (e) {
+                    console.error('Failed to get random track:', e);
+                });
+        }
+
+        function sendLoadTrack(type, id) {
+            var data = { type: type, id: id };
+            if (playlistContext) data.playlist = playlistContext;
+            else if (filterContext) data.filterContext = filterContext;
+            send('load-track', data);
+        }
+        function fetchAdjacentTrack(direction) {
+            if (!currentTrackData) return;
+
+            var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+
+            var params = new URLSearchParams();
+            params.set('type', 'db');
+            params.set('sort', 'published');
+            params.set('order', 'asc');
+            params.set('perPage', '1');
+
+            if (direction === 'prev') {
+                params.set('beforeCanonical', currentCanonical);
+            } else {
+                params.set('afterCanonical', currentCanonical);
+            }
+
+            fetch('/api/db?' + params)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.tracks && data.tracks.length > 0) {
+                        var track = data.tracks[0];
+                        var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                        var id = track.canonical || track.urlId || track.id;
+                        sendLoadTrack(type, id);
+                    } else {
+                        console.log('No more tracks in ' + direction + ' direction');
+                    }
+                })
+                .catch(function (e) {
+                    console.error('Failed to get adjacent track:', e);
+                });
+        }
+
+        function checkAdjacentTracks() {
+            if (!currentTrackData) {
+                document.getElementById('np-prev').disabled = true;
+                document.getElementById('np-next').disabled = true;
+                document.getElementById('np-prev').style.borderRight = '8px solid #aaa';
+                document.getElementById('np-next').style.borderLeft = '8px solid #aaa';
+                return;
+            }
+
+            var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+
+            var prevParams = new URLSearchParams();
+            prevParams.set('type', 'db');
+            prevParams.set('sort', 'published');
+            prevParams.set('order', 'asc');
+            prevParams.set('perPage', '1');
+            prevParams.set('beforeCanonical', currentCanonical);
+
+            fetch('/api/db?' + prevParams)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var hasPrev = data.tracks && data.tracks.length > 0;
+                    document.getElementById('np-prev').disabled = !hasPrev;
+                    document.getElementById('np-prev').style.opacity = hasPrev ? '1' : '0.5';
+                });
+
+            var nextParams = new URLSearchParams();
+            nextParams.set('type', 'db');
+            nextParams.set('sort', 'published');
+            nextParams.set('order', 'asc');
+            nextParams.set('perPage', '1');
+            nextParams.set('afterCanonical', currentCanonical);
+
+            fetch('/api/db?' + nextParams)
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    var hasNext = data.tracks && data.tracks.length > 0;
+                    document.getElementById('np-next').disabled = !hasNext;
+                    document.getElementById('np-next').style.opacity = hasNext ? '1' : '0.5';
+                });
+        }
+
+        document.getElementById('np-copy').addEventListener('click', function () {
+            if (!currentTrackData) return;
+            var url = currentTrackData.permalink || (window.location.origin + '/' + currentTrackData.type + '/' + currentTrackData.id);
+            navigator.clipboard.writeText(url).then(function () {
+                var btn = document.getElementById('copy-button');
+                btn.textContent = 'Copied!';
+                setTimeout(function () { btn.textContent = 'Copy Link'; }, 1500);
+            });
+        });
+
+        document.getElementById('np-set-start').addEventListener('click', function () {
+            send('change-tool', 'pete');
+        });
+
+        document.getElementById('vehicle-mod-play').addEventListener('click', function () {
+            var active = !this.classList.contains('engaged');
+            this.classList.toggle('engaged', active);
+            send('mod-play', active);
+            var modCb = document.getElementById('mod-play');
+            if (modCb) modCb.checked = active;
+        });
+
+        document.getElementById('vehicle-mod-mobile').addEventListener('click', function () {
+            var active = !this.classList.contains('engaged');
+            this.classList.toggle('engaged', active);
+            send('mod-mobile', active);
+            var modCb = document.getElementById('mod-mobile');
+            if (modCb) modCb.checked = active;
+        });
+
+        /*document.getElementById('np-export-ghost').addEventListener('click', function () {
+            send('export-ghost', true);
+        });*/
+
+        document.getElementById('np-author-line').addEventListener('click', function (e) {
+            var authorLink = e.target.closest('.np-author-link');
+            if (authorLink) {
+                e.preventDefault();
+                var playerName = authorLink.dataset.author;
+                if (playerName) {
+                    showPlayerProfile(playerName);
+                    send('open-author', playerName);
+                }
+            }
+        });
+
+        document.getElementById('np-playlist-name').addEventListener('click', function (e) {
+            e.preventDefault();
+            if (playlistContext && playlistContext.id) {
+                send('open-playlist', playlistContext.id);
+            }
+        });
+
+        document.getElementById('np-playlist-info').addEventListener('click', function (e) {
+            if (e.target.id === 'np-playlist-name' && playlistContext) {
+                return;
+            }
+
+            if (filterContext) {
+                e.preventDefault();
+                if (filterContext.remixesOf) {
+                    send('open-remix-search', filterContext.remixesOf);
+                } else if (filterContext.player) {
+                    send('open-author', {
+                        player: filterContext.player,
+                        type: filterContext.type || 'db',
+                        sortBy: filterContext.sortBy || 'shuffle',
+                        sortOrder: filterContext.sortOrder || 'desc'
+                    });
+                } else if (filterContext.query) {
+                    send('open-filter', {
+                        query: filterContext.query,
+                        type: filterContext.type || 'db',
+                        sortBy: filterContext.sortBy || 'shuffle',
+                        sortOrder: filterContext.sortOrder || 'desc'
+                    });
+                } else if (filterContext.type && filterContext.type !== 'db') {
+                    send('open-filter', {
+                        type: filterContext.type,
+                        sortBy: filterContext.sortBy || 'shuffle',
+                        sortOrder: filterContext.sortOrder || 'desc'
+                    });
+                }
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            var playlistLink = e.target.closest('.np-playlist-link');
+            if (playlistLink) {
+                e.preventDefault();
+                var playlistId = playlistLink.dataset.playlistId;
+                if (playlistId) {
+                    send('open-playlist', playlistId);
+                }
+            }
+        });
+
+        // snap options
+        document.getElementById('snap-distance').addEventListener('change', function () {
+            send('snap-distance', parseInt(this.value));
+        });
+
+        document.getElementById('snap-type').addEventListener('change', function () {
+            send('snap-type', this.value);
+        });
+
+        document.getElementById('snap-cursor').addEventListener('change', function () {
+            send('snap-cursor', this.value);
+        });
+
+        // grid options
+        document.getElementById('grid-size').addEventListener('change', function () {
+            send('grid-size', parseInt(this.value));
+        });
+
+        document.getElementById('grid-type').addEventListener('change', function () {
+            send('grid-type', this.value);
+        });
+
+        document.getElementById('grid-visibility').addEventListener('change', function () {
+            send('grid-visibility', this.value);
+        });
+
+        // select options
+        document.getElementById('select-rotate-factor').addEventListener('change', function () {
+            send('select-rotate-factor', parseInt(this.value));
+        });
+
+        document.getElementById('select-scale-factor').addEventListener('change', function () {
+            send('select-scale-factor', parseFloat(this.value));
+        });
+
+        document.getElementById('select-offset-factor').addEventListener('change', function () {
+            send('select-offset-factor', parseInt(this.value));
+        });
+
+        // camera options
+        document.getElementById('camera-sensitivity').addEventListener('change', function () {
+            send('camera-sensitivity', parseFloat(this.value));
+        });
+
+        document.getElementById('camera-movement').addEventListener('change', function () {
+            send('camera-movement', this.value);
+        });
+
+        document.getElementById('camera-speed').addEventListener('change', function () {
+            send('camera-speed', parseInt(this.value));
+        });
+
+        // layer options
+        document.getElementById('btn-layer-add').addEventListener('click', function () {
+            send('layer-add', true);
+        });
+
+        // object options
+        document.getElementById('btn-object-import').addEventListener('click', function () {
+            send('object-import', true);
+        });
+
+        document.getElementById('btn-object-clear-all').addEventListener('click', function () {
+            send('object-clear-all', true);
+        });
+
+        document.getElementById('object-rotate-sensitivity').addEventListener('change', function () {
+            send('object-rotate-sensitivity', parseInt(this.value));
+        });
+
+        document.getElementById('object-scale-sensitivity').addEventListener('change', function () {
+            send('object-scale-sensitivity', parseFloat(this.value));
+        });
+
+        document.getElementById('object-offset-sensitivity').addEventListener('change', function () {
+            send('object-offset-sensitivity', parseInt(this.value));
+        });
+
+        // pattern options
+        document.getElementById('pattern-brushSize').addEventListener('input', function () {
+            var v = parseInt(this.value);
+            document.getElementById('val-pattern-brushSize').value = v;
+            send('pattern-brushSize', v);
+        });
+
+        document.getElementById('pattern-brush').addEventListener('change', function () {
+            var v = parseInt(this.value);
+            send('pattern-brush', v);
+            updatePatternPreviewWrapper(v);
+
+            if (window.lastPatternPreviewData) {
+                drawPatternPreview(window.lastPatternPreviewData, v);
+            }
+        });
+
+        document.getElementById('pattern-globalGrid').addEventListener('change', function () {
+            send('pattern-globalGrid', this.checked);
+        });
+
+        document.getElementById('pattern-experimentalSpeedups').addEventListener('change', function () {
+            send('pattern-experimentalSpeedups', this.checked);
+        });
+
+        document.getElementById('pattern-experimentalStabilization').addEventListener('change', function () {
+            send('pattern-experimentalStabilization', this.checked);
+        });
+
+        document.getElementById('btn-pattern-from-object').addEventListener('click', function () {
+            send('pattern-from-object', true);
+        });
+
+        document.getElementById('btn-pattern-from-db').addEventListener('click', function () {
+            send('pattern-from-db', true);
+        });
+
+        // transform buttons
+        document.getElementById('btn-rotate-cw').addEventListener('click', function () {
+            send('object-transform', { type: 'rotate', direction: 1 });
+        });
+        document.getElementById('btn-rotate-ccw').addEventListener('click', function () {
+            send('object-transform', { type: 'rotate', direction: -1 });
+        });
+        document.getElementById('btn-scale-up').addEventListener('click', function () {
+            send('object-transform', { type: 'scale', direction: 1 });
+        });
+        document.getElementById('btn-scale-down').addEventListener('click', function () {
+            send('object-transform', { type: 'scale', direction: -1 });
+        });
+        /*document.getElementById('btn-stretch-x-up').addEventListener('click', function() {
+            send('object-transform', { type: 'stretchX', direction: 1 });
+        });
+        document.getElementById('btn-stretch-x-down').addEventListener('click', function() {
+            send('object-transform', { type: 'stretchX', direction: -1 });
+        });
+        document.getElementById('btn-stretch-y-up').addEventListener('click', function() {
+            send('object-transform', { type: 'stretchY', direction: 1 });
+        });
+        document.getElementById('btn-stretch-y-down').addEventListener('click', function() {
+            send('object-transform', { type: 'stretchY', direction: -1 });
+        });*/
+        document.getElementById('btn-offset-left').addEventListener('click', function () {
+            send('object-transform', { type: 'offsetX', direction: -1 });
+        });
+        document.getElementById('btn-offset-right').addEventListener('click', function () {
+            send('object-transform', { type: 'offsetX', direction: 1 });
+        });
+        document.getElementById('btn-offset-up').addEventListener('click', function () {
+            send('object-transform', { type: 'offsetY', direction: -1 });
+        });
+        document.getElementById('btn-offset-down').addEventListener('click', function () {
+            send('object-transform', { type: 'offsetY', direction: 1 });
+        });
+        document.getElementById('btn-flip-x').addEventListener('click', function () {
+            send('object-transform', { type: 'flipX' });
+        });
+        document.getElementById('btn-flip-y').addEventListener('click', function () {
+            send('object-transform', { type: 'flipY' });
+        });
+        document.getElementById('btn-invert').addEventListener('click', function () {
+            send('object-transform', { type: 'invert' });
+        });
+        document.getElementById('btn-invert-flat').addEventListener('click', function () {
+            send('object-transform', { type: 'invertFlat' });
+        });
+        document.getElementById('btn-transform-reset').addEventListener('click', function () {
+            send('object-transform', { type: 'reset' });
+        });
+
+        // toggle event listeners
+        document.getElementById('grid-toggle').addEventListener('click', function () {
+            send('grid-toggle', true);
+        });
+
+        document.getElementById('snap-toggle').addEventListener('click', function () {
+            send('snap-toggle', true);
+        });
+
+        document.getElementById('camera-lock-toggle').addEventListener('click', function () {
+            send('camera-locked', !state.cameraLockMode);
+        });
+
+        // powerup options
+        document.getElementById('vehiclepowerup-time').addEventListener('input', function () {
+            var v = parseInt(this.value);
+            document.getElementById('val-vehiclepowerup-time').value = v;
+            send('vehiclepowerup-time', v);
+        });
+
+        // vehicle options
+        /*
+        document.getElementById('btn-track-import').addEventListener('click', function () {
+            send('open-import', true);
+        });
+        */
+
+        // sliders
+        document.querySelectorAll('input[type="range"]').forEach(function (slider) {
+            var valInput = document.getElementById('val-' + slider.id);
+
+            updateSliderTrack(slider);
+
+            slider.addEventListener('input', function () {
+                var v = parseFloat(this.value);
+                var step = parseFloat(this.step) || 1;
+                var displayVal;
+
+                if (slider.id === 'curve-segmentLength') {
+                    displayVal = (0.1 * v).toFixed(1);
+                } else if (step < 1) {
+                    displayVal = v.toFixed(1);
+                } else {
+                    displayVal = v;
+                }
+
+                this.title = displayVal;
+                if (valInput) valInput.value = displayVal;
+
+                send(slider.id, v);
+                updateSliderTrack(this);
+            });
+        });
+
+        // checkboxes
+        document.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+            cb.addEventListener('change', function () {
+                send(this.id, this.checked);
+            });
+        });
+
+        // avatars
+        document.getElementById('np-author-avatars').addEventListener('click', function (e) {
+            var avatar = e.target.closest('.np-author-avatar');
+            if (avatar) {
+                var playerName = avatar.dataset.author;
+                if (playerName) {
+                    showPlayerProfile(playerName);
+                    send('open-author', playerName);
+                }
+            }
+        });
+
+        // hide button to all descriptions
+        document.querySelectorAll('.description').forEach(function (desc) {
+            var btn = document.createElement('button');
+            btn.className = 'hide-descriptions-btn';
+            btn.textContent = '✕';
+            btn.title = 'Hide all descriptions';
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleDescriptions(false);
+            });
+            desc.appendChild(btn);
+        });
+
+        document.querySelectorAll('.toolsDialogAdvanced').forEach(function (section) {
+            var btn = document.createElement('button');
+            btn.className = 'show-descriptions-btn';
+            btn.textContent = 'HELP';
+            btn.title = 'Show all descriptions';
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleDescriptions(true);
+            });
+            section.appendChild(btn);
+        });
+
+        // linked track clicks
+        document.addEventListener('click', function (e) {
+            var trackLink = e.target.closest('.np-track-link');
+            if (trackLink) {
+                e.preventDefault();
+                var type = trackLink.dataset.type;
+                var id = trackLink.dataset.id;
+                if (type && id) {
+                    if (trackLink.dataset.noContext) {
+                        playlistContext = null;
+                        filterContext = null;
+                        updatePlaylistUI();
+                    }
+                    sendLoadTrack(type, id);
+                }
+            }
+        });
+
+        // remixes link - search for remixes of this track
+        document.addEventListener('click', function (e) {
+            var remixesLink = e.target.closest('.np-remixes-link');
+            if (remixesLink) {
+                e.preventDefault();
+                var canonical = remixesLink.dataset.canonical;
+                var name = remixesLink.dataset.name;
+                if (canonical) {
+                    send('open-remix-search', { canonical: canonical, name: name });
+                }
+            }
+        });
+
+        // published year link
+        document.addEventListener('click', function (e) {
+            var yearLink = e.target.closest('.np-year-link');
+            if (yearLink) {
+                e.preventDefault();
+                var year = yearLink.dataset.year;
+                if (year) {
+                    send('open-filter', { query: 'year=' + year, type: 'db', sort: 'published', sortOrder: 'asc' });
+                }
+            }
+        });
+
+        function updatePowerupSection(selectedPowerup) {
+            // hide all powerup sections
+            document.querySelectorAll('.powerup-section').forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            // show the selected powerup section
+            var sectionId = 'powerup-' + (selectedPowerup || 'none');
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+            } else {
+                document.getElementById('powerup-none').style.display = 'block';
+            }
+        }
+
+        function updatePowerupIcon(s) {
+            var powerupBadge = document.getElementById('powerup-selected');
+            if (powerupBadge && s.selectedPowerup) {
+                var powerupColors = {
+                    'bomb': '#d12929',
+                    'boost': '#8ac932',
+                    'checkpoint': '#826cdc',
+                    'gravity': '#376eb7',
+                    'slowmo': '#aaaaaa',
+                    'goal': '#fae335',
+                    'teleport': '#dd45ec',
+                    'antigravity': '#04cbc5'
+                };
+
+                powerupBadge.style.background = powerupColors[s.selectedPowerup] || '#888';
+                powerupBadge.textContent = s.selectedPowerup.toUpperCase();
+
+                updatePowerupSection(s.selectedPowerup);
+            }
+        }
+
+        function updateVehiclePowerupIcon(s) {
+            var vehicleBadge = document.getElementById('vehiclepowerup-selected');
+            if (vehicleBadge && s.selectedVehiclePowerup) {
+                var vehicleColors = {
+                    'helicopter': '#f2902e',
+                    'truck': '#94d44e',
+                    'balloon': '#f02728',
+                    'blob': '#a784c5'
+                };
+
+                vehicleBadge.style.background = vehicleColors[s.selectedVehiclePowerup] || '#888';
+                vehicleBadge.textContent = s.selectedVehiclePowerup.toUpperCase();
+            }
+        }
+
+        function updateVehicleIcon(s) {
+            var vehicleBadge = document.getElementById('vehicle-selected');
+            if (vehicleBadge && s.vehicle) {
+                var vehicleColors = {
+                    'BMX': '#000000',
+                    'MTB': '#aaaaaa',
+                    'HELI': '#f2902e',
+                    'TRUCK': '#94d44e',
+                    'BALLOON': '#f02728',
+                    'BLOB': '#a784c5'
+                };
+
+                vehicleBadge.style.background = vehicleColors[s.vehicle] || '#888';
+                vehicleBadge.textContent = s.vehicle;
+            }
+        }
+
+        function updateToolSettings(s) {
+            if (s.brush) {
+                setVal('brush-breakLength', s.brush.breakLength);
+                setVal('brush-trailSpeed', s.brush.trailSpeed);
+            }
+            if (s.brushRotate !== undefined) document.getElementById('brush-rotate').checked = s.brushRotate;
+            if (s.brushScale !== undefined) document.getElementById('brush-scale').checked = s.brushScale;
+            if (s.brushRotateJitter !== undefined) setVal('brush-rotateJitter', s.brushRotateJitter);
+            if (s.brushScaleJitter !== undefined) setVal('brush-scaleJitter', s.brushScaleJitter);
+            //if (s.rotateFactor !== undefined) setVal('select-rotateFactor', s.rotateFactor);
+            //if (s.scaleFactor !== undefined) setVal('select-scaleFactor', s.scaleFactor);
+            var rotateFactor = document.getElementById('select-rotate-factor');
+            var scaleFactor = document.getElementById('select-scale-factor');
+            var offsetFactor = document.getElementById('select-offset-factor');
+
+            if (s.rotateFactor !== undefined && rotateFactor) {
+                rotateFactor.value = s.rotateFactor;
+            }
+            if (s.scaleFactor !== undefined && scaleFactor) {
+                scaleFactor.value = s.scaleFactor;
+            }
+            if (s.offsetFactor !== undefined && offsetFactor) {
+                offsetFactor.value = s.offsetFactor;
+            }
+            if (s.scaleLock !== undefined) document.getElementById('select-scaleLock').checked = s.scaleLock;
+            if (s.copy !== undefined) {
+                state.copyMode = s.copy;
+                document.getElementById('btn-copy').textContent = s.copy ? 'COPY + PASTE' : 'CUT + PASTE';
+            }
+            if (s.circleSegmentLength !== undefined) {
+                setVal('circle-segmentLength', s.circleSegmentLength);
+                document.getElementById('val-circle-segmentLength').value = (s.circleSegmentLength).toFixed(1);
+            }
+            if (s.ellipse !== undefined) {
+                state.ellipseMode = s.ellipse;
+                document.getElementById('btn-ellipse').textContent = s.ellipse ? 'Ellipse' : 'Circle';
+            }
+            if (s.eraserRadius !== undefined) setVal('eraser-radius', s.eraserRadius);
+            if (s.lineTrim !== undefined) {
+                state.lineTrimMode = s.lineTrim;
+                document.getElementById('btn-lineTrim').textContent = s.lineTrim ? 'Line Trim' : 'Line Erase';
+            }
+            if (s.curveSegmentLength !== undefined) {
+                setVal('curve-segmentLength', s.curveSegmentLength);
+                document.getElementById('val-curve-segmentLength').value = (0.1 * s.curveSegmentLength).toFixed(1);
+            }
+            if (s.vehiclePowerupTime !== undefined) {
+                setVal('vehiclepowerup-time', s.vehiclePowerupTime);
+            }
+        }
+
+        function toggleDescriptions(show) {
+            var container = document.querySelector('.editorDialog-tools');
+            if (show) {
+                container.classList.remove('hide-descriptions');
+            } else {
+                container.classList.add('hide-descriptions');
+            }
+            localStorage.setItem('tools-hide-descriptions', !show);
+            window.parent.focus();
+        }
+
+        function updateSliderTrack(slider) {
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const value = parseFloat(slider.value);
+            const percentage = ((value - min) / (max - min)) * 100;
+
+            slider.style.background = `linear-gradient(to right, #000 0%, #000 ${percentage}%, #9B9B9B ${percentage}%, #9B9B9B 100%)`;
+        }
+
+        // load saved preference
+        (function () {
+            var hideDescriptions = localStorage.getItem('tools-hide-descriptions') === 'true';
+            if (hideDescriptions) {
+                document.querySelector('.editorDialog-tools').classList.add('hide-descriptions');
+            }
+        })();
+
+        // === MESSAGE LISTENER ===
+        var messageHandlers = {
+            'updateSettings': function (data) {
+                var s = data.settings;
+                updateTabIcons(s);
+                updateLineTypeBadge(s.lineType, s.objectMode);
+                updateSnapSettings(s);
+                updateGridSettings(s);
+                updateCameraSettings(s);
+                updateLayerSettings(s);
+                updateObjectSettings(s);
+                updatePatternSettings(s);
+                updatePowerupIcon(s);
+                updateVehiclePowerupIcon(s);
+                updateVehicleIcon(s);
+                updateToolSettings(s);
+                if (s.currentTool) setCurrentTool(s.currentTool);
+                if (s.modVars) {
+                    updateModSettings(s.modVars);
+                }
+            },
+            'toolChanged': function (data) {
+                setCurrentTool(data.tool);
+            },
+            'updateTrackData': function (data) {
+                updateNowPlaying(data.track);
+            },
+            'trackChanged': function (data) {
+                hidePlayerProfile();
+                if (data.type && data.id) {
+                    loadTrackData(data.type, data.id);
+                }
+
+                // handle playlist context
+                if (data.playlist) {
+                    setPlaylistContext(data.playlist, data.id);
+                } else if (data.filterContext) {
+                    setFilterContext(data.filterContext);
+                } else if (data.clearPlaylist) {
+                    playlistContext = null;
+                    filterContext = null;
+                    updatePlaylistUI();
+                }
+            },
+            'setPlaylistContext': function (data) {
+                if (data.playlist) {
+                    setPlaylistContext(data.playlist, data.currentTrackId);
+                } else {
+                    playlistContext = null;
+                    updatePlaylistUI();
+                }
+            },
+            'setFilterContext': function (data) {
+                if (data.filterContext) {
+                    setFilterContext(data.filterContext);
+                } else {
+                    filterContext = null;
+                    updateFilterUI();
+                }
+            },
+            'showPlayerProfile': function (data) {
+                showPlayerProfile(data.player);
+            },
+            'showToolTab': function (data) {
+                var tool = data.tool;
+
+                var toolToTab = {
+                    'straightline': 'tool',
+                    'curve': 'tool',
+                    'circle': 'tool',
+                    'brush': 'tool',
+                    'pattern': 'tool',
+                    'eraser': 'tool',
+                    'powerup': 'tool',
+                    'vehiclepowerup': 'tool',
+                    'select': 'tool',
+                    'camera': 'tool',
+                    'grid': 'grid',
+                    'snap': 'snap',
+                    'object': 'object',
+                    'layer': 'layer',
+                    'vehicle': 'vehicle',
+                    'mod': 'mods',
+                    'mods': 'mods',
+                };
+
+                var tabName = toolToTab[tool] || 'tool';
+
+                switchTab(tabName);
+
+                if (tabName === 'tool') {
+                    setCurrentTool(tool);
+                }
+            },
+            'enterDialogMode': function (data) {
+                document.body.classList.add('dialog-mode');
+            },
+            'exitDialogMode': function (data) {
+                document.body.classList.remove('dialog-mode');
+            }
+        };
+
+        window.addEventListener('message', function (e) {
+            var handler = messageHandlers[e.data.action];
+            if (handler) handler(e.data);
+        });
+
+        var slidersInitialized = {};
+
+        function setVal(id, value) {
+            var slider = document.getElementById(id);
+            var valInput = document.getElementById('val-' + id);
+
+            if (slider && value !== undefined) {
+                slider.value = value;
+
+                var v = parseFloat(value);
+                var displayVal;
+                if (id === 'curve-segmentLength') {
+                    displayVal = (0.1 * v).toFixed(1);
+                } else if (parseFloat(slider.step) < 1) {
+                    displayVal = v.toFixed(1);
+                } else {
+                    displayVal = v;
+                }
+
+                slider.title = displayVal;
+                if (valInput) valInput.value = displayVal;
+            }
+
+            updateSliderTrack(slider);
+            slidersInitialized[id] = true;
+        }
+
+        function setCurrentTool(tool) {
+            var toolTab = document.getElementById('tab-tool');
+            toolTab.querySelectorAll('.tool-section').forEach(function (section) {
+                section.style.display = 'none';
+            });
+
+            var sectionId = 'section-' + (tool || 'none');
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
+            } else {
+                document.getElementById('section-none').style.display = 'block';
+            }
+        }
+
+        // ---- Mod Layout ----
+
+        var modLayout = [
+            /*{
+                type: 'folder', title: 'Mods',
+                keys: ['mobile', 'play']
+            },*/
+            {
+                type: 'folder', title: "Editor Mods",
+                keys: [/*'lineShadow',*/ 'fadedVehiclePowerups', 'accurateEraser',
+                    /*'keepDeadRiders',*/ 'snap15', 'pointDataAlways']
+            },
+            {
+                type: 'folder', title: 'Bike/Vehicle Mods',
+                keys: ['slowmo', 'rewind', 'oldTimer', 'bikeData', /*'gameData',*/
+                    'hitboxes', 'inputDisplay', 'pixelSnapEverything', 'mario', 'mini', 'propeller', 'crouch',
+                    'frontBrake', 'invincibility', 'invisibleRider', 'noClip']
+            },
+            {
+                type: 'folder', title: 'Nostalgia Mode',
+                keys: ['crHead', 'blackHat', 'crRagdoll', 'crBmx', 'crMtb', 'crHeli', 'crPowerups']
+            },
+            {
+                type: 'folder', title: 'Colors',
+                keys: ['invertColors', 'darkenColors', 'grayscale', 'customColors'],
+                colors: ['vehicleColor', 'riderColor', 'lineColor',
+                    'sceneryColor', 'backgroundColor', 'hatColor']
+            }
+        ];
+
+        var modTitles = {
+            crHead: 'Head', crRagdoll: 'Ragdoll', crBmx: 'BMX', crMtb: 'MTB',
+            crHeli: 'Helicopter', crPowerups: 'Powerups', /*lineShadow: 'Line Shadows',*/
+            fadedVehiclePowerups: 'Faded Powerups', accurateEraser: 'Accurate Eraser',
+            /*keepDeadRiders: 'Keep Dead Riders',*/ pixelSnapEverything: 'Pixel Snap Rider',
+            snap15: 'Snap to 15', pointDataAlways: 'Point Data Always',
+            blackHat: 'Black Hat', mario: 'Mario Mode', mini: 'Mini-Bike',
+            propeller: 'Propeller', crouch: 'Crouch', frontBrake: 'Old-School Front Brake',
+            invincibility: 'Invincibility', invisibleRider: 'Invisible Rider',
+            noClip: 'No Clip', slowmo: 'Slow-Mode', rewind: 'Rewind',
+            oldTimer: 'Old-Timer', bikeData: 'Bike/Vehicle Data', /*gameData: 'Game Data',*/
+            hitboxes: 'Visible Hitboxes', inputDisplay: 'Input Display',
+            mobile: 'Mobile Mode', play: 'Play Mode',
+            invertColors: 'Invert Colors', darkenColors: 'Darken Colors',
+            grayscale: 'Grayscale', customColors: 'Custom Colors',
+            vehicleColor: 'Vehicle Color', riderColor: 'Rider Color',
+            lineColor: 'Line Color', sceneryColor: 'Scenery Color',
+            backgroundColor: 'Background Color', hatColor: 'Hat Color'
+        };
+
+        var modDescriptions = {
+            crHead: "Replaces the Free Rider HD head with the Canvas Rider head.",
+            crRagdoll: "Removes feet from the ragdoll, and adds transparency to the back limbs.",
+            crBmx: "Alters the BMX to look like it did in Canvas Rider.",
+            crMtb: "Alters the MTB to look like it did in Canvas Rider.",
+            crHeli: "Alters the helicopter to look like it did in Free Rider 2.",
+            crPowerups: "Alters the powerups to look like they did in Canvas Rider.",
+            /*lineShadow: "Adds shadows behind the black lines to make them stand out more.",*/
+            fadedVehiclePowerups: "When powerups are collected, they become faded out rather than disappearing.",
+            accurateEraser: "Makes the eraser correctly account for line thickness. More responsive, but precise erases may be harder. Does not work with Line Trim.",
+            /*keepDeadRiders: "When you restart, your old bike and rider are kept on the map. Max 10 copies.",*/
+            pixelSnapEverything: "Snaps the rider's position to pixels. Trades smoothness for accuracy.",
+            snap15: "When holding CTRL, tool angles snap in 15° increments.",
+            pointDataAlways: "Point data is always shown, even without CTRL held.",
+            blackHat: "Replaces Pete's baseball cap with the Black Hat Rider hat.",
+            mario: "Enables horizontal scrolling, replaces goals with Mario stars, and gives Pete a colored cap.",
+            mini: "Shrinks the frame and wheels of the bike.",
+            propeller: "Adds a propeller to the bike. Press 'X' to fly.",
+            crouch: "Press 'X' to crouch.",
+            frontBrake: "Front brake is engaged when pressing the down arrow key.",
+            invincibility: "Makes the rider invincible to line collisions and bombs.",
+            invisibleRider: "Makes the rider invisible.",
+            noClip: "Collisions with the head mass are disabled.",
+            slowmo: "Toggles slow-motion mode. The rider and timer are constantly slowed.",
+            rewind: "Position is saved every tick. Backspace rewinds. Shift+Backspace restarts.",
+            oldTimer: "When restarting from a checkpoint, the timer resets to when the checkpoint was collected.",
+            bikeData: "Shows metadata about the rider, including head angle and speed.",
+            /*gameData: "Shows game data, including FPS.",*/
+            hitboxes: "Shows the hitboxes (masses) and springs for bikes and vehicles.",
+            inputDisplay: "Shows the keys that are pressed.",
+            mobile: "Adds touchscreen controls for playing.",
+            play: "Hides side toolbars and turns on play hotkeys.",
+            invertColors: "Inverts the colors of the entire game as a post-processing effect.",
+            darkenColors: "Darkens the colors of the game.",
+            grayscale: "Applies a grayscale filter to the game.",
+            customColors: "Enables custom colors. Disable to use default colors.",
+            vehicleColor: "The primary color of the vehicles.",
+            riderColor: "The color of the rider.",
+            lineColor: "The color of the physical lines.",
+            sceneryColor: "The color of the scenery lines.",
+            backgroundColor: "The color of the background.",
+            hatColor: "The color of the rider's hat.",
+            seeGhost: "Shows a replay for the track if available."
+        };
+
+        var modFolderDescriptions = {
+            'Mods': "General gameplay mods and display options.",
+            "Editor Mods": "Mods that alter tools and the editor.",
+            'Bike/Vehicle Mods': "Mods that alter the bikes, vehicles, and gameplay.",
+            'Nostalgia Mode': "Options to make the game look like Canvas Rider and Black Hat Rider.",
+            'Colors': "Change some of the colors of the game."
+        };
+
+        var modListBuilt = false;
+
+        // ---- Build Functions ----
+
+        function buildModList(modVars) {
+            if (modListBuilt) return;
+            modListBuilt = true;
+
+            var container = document.getElementById('mod-settings-list');
+            container.innerHTML = '';
+
+            modLayout.forEach(function (item) {
+                container.appendChild(buildModFolder(item, modVars));
+            });
+
+            updateColorDisabledState();
+        }
+
+        function buildModFolder(folder, modVars) {
+            var details = document.createElement('details');
+            details.className = 'mod-folder';
+
+            var summary = document.createElement('summary');
+            summary.className = 'mod-folder-title';
+            summary.textContent = folder.title;
+            details.appendChild(summary);
+
+            var inner = document.createElement('div');
+            inner.className = 'mod-folder-inner';
+
+            var settingsCol = document.createElement('div');
+            settingsCol.className = 'mod-folder-settings';
+
+            var descCol = document.createElement('div');
+            descCol.className = 'mod-folder-description';
+            descCol.textContent = modFolderDescriptions[folder.title] || 'Hover over a setting.';
+
+            function setDesc(text) {
+                if (text) {
+                    descCol.textContent = text;
+                    descCol.classList.add('active');
+                } else {
+                    descCol.textContent = modFolderDescriptions[folder.title] || 'Hover over a setting.';
+                    descCol.classList.remove('active');
+                }
+            }
+
+            (folder.keys || []).forEach(function (key) {
+                settingsCol.appendChild(
+                    buildModCheckbox(key, modTitles[key] || key, modVars, setDesc)
+                );
+            });
+
+            (folder.colors || []).forEach(function (key) {
+                settingsCol.appendChild(
+                    buildModColorInput(key, modTitles[key] || key, modVars, setDesc)
+                );
+            });
+
+            inner.appendChild(settingsCol);
+            inner.appendChild(descCol);
+            details.appendChild(inner);
+            return details;
+        }
+
+        function buildModCheckbox(key, title, modVars, setDesc) {
+            var row = document.createElement('div');
+            row.className = 'mod-setting-row';
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'mod-' + key;
+            checkbox.checked = !!modVars[key];
+
+            var label = document.createElement('label');
+            label.style.cursor = 'pointer';
+            label.textContent = title;
+
+            checkbox.addEventListener('change', function () {
+                send('mod-' + key, this.checked);
+                if (key === 'customColors') updateColorDisabledState();
+            });
+
+            row.addEventListener('click', function (e) {
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    send('mod-' + key, checkbox.checked);
+                    if (key === 'customColors') updateColorDisabledState();
+                }
+            });
+
+            if (setDesc) {
+                row.addEventListener('mouseenter', function () {
+                    setDesc(modDescriptions[key] || '');
+                });
+                row.addEventListener('mouseleave', function () {
+                    setDesc(null);
+                });
+            }
+
+            row.appendChild(checkbox);
+            row.appendChild(label);
+            return row;
+        }
+
+        function buildModColorInput(key, title, modVars, setDesc) {
+            var row = document.createElement('div');
+            row.className = 'mod-setting-row';
+
+            var label = document.createElement('span');
+            label.textContent = title;
+            label.style.cssText = 'font-size: 11px; flex: 1;';
+            label.style.cursor = 'pointer';
+            label.addEventListener('click', function () {
+                colorInput.click();
+            });
+
+            var colorLabel = document.createElement('label');
+            colorLabel.className = 'layer-color-label';
+            colorLabel.style.cssText = 'margin-right: 6px; flex-shrink: 0;';
+
+            var swatch = document.createElement('span');
+            swatch.className = 'layer-color-swatch';
+            var color = modVars[key] || [0, 0, 0];
+            swatch.style.background = rgbToHex(color);
+            swatch.title = title;
+
+            var colorInput = document.createElement('input');
+            colorInput.type = 'color';
+            colorInput.className = 'layer-color-input';
+            colorInput.id = 'mod-' + key;
+            colorInput.value = rgbToHex(color);
+
+            colorInput.addEventListener('input', function () {
+                swatch.style.background = this.value;
+                send('mod-' + key, hexToRgb(this.value));
+            });
+
+            colorInput.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+
+            colorLabel.appendChild(swatch);
+            colorLabel.appendChild(colorInput);
+
+            if (setDesc) {
+                row.addEventListener('mouseenter', function () {
+                    setDesc(modDescriptions[key] || '');
+                });
+                row.addEventListener('mouseleave', function () {
+                    setDesc(null);
+                });
+            }
+
+            row.appendChild(colorLabel);
+            row.appendChild(label);
+            return row;
+        }
+
+        function updateColorDisabledState() {
+            var cb = document.getElementById('mod-customColors');
+            var enabled = cb && cb.checked;
+            var colorKeys = ['vehicleColor', 'riderColor', 'lineColor',
+                'sceneryColor', 'backgroundColor'];
+            colorKeys.forEach(function (key) {
+                var el = document.getElementById('mod-' + key);
+                if (!el) return;
+                var row = el.closest('.mod-setting-row');
+                if (!row) return;
+                if (enabled) {
+                    row.style.opacity = '1';
+                    row.style.pointerEvents = '';
+                } else {
+                    row.style.opacity = '0.35';
+                    row.style.pointerEvents = 'none';
+                }
+            });
+        }
+
+        // ---- Helpers ----
+
+        function rgbToHex(rgb) {
+            return '#' + rgb.map(function (c) {
+                return ('0' + Math.max(0, Math.min(255, c)).toString(16)).slice(-2);
+            }).join('');
+        }
+
+        function hexToRgb(hex) {
+            var r = parseInt(hex.slice(1, 3), 16);
+            var g = parseInt(hex.slice(3, 5), 16);
+            var b = parseInt(hex.slice(5, 7), 16);
+            return [r, g, b];
+        }
+
+        // ---- Update from Parent ----
+
+        function updateModSettings(modVars) {
+            if (!modVars) return;
+
+            buildModList(modVars);
+
+            for (var key in modVars) {
+                var el = document.getElementById('mod-' + key);
+                if (!el) continue;
+
+                if (el.type === 'checkbox') {
+                    el.checked = !!modVars[key];
+                } else if (el.type === 'color') {
+                    var hex = rgbToHex(modVars[key] || [0, 0, 0]);
+                    el.value = hex;
+                    var swatch = el.previousElementSibling;
+                    if (swatch && swatch.classList.contains('layer-color-swatch')) {
+                        swatch.style.background = hex;
+                    }
+                }
+            }
+
+            if (modVars.play !== undefined) {
+                var vPlay = document.getElementById('vehicle-mod-play');
+                if (vPlay) vPlay.classList.toggle('engaged', !!modVars.play);
+            }
+            if (modVars.mobile !== undefined) {
+                var vMobile = document.getElementById('vehicle-mod-mobile');
+                if (vMobile) vMobile.classList.toggle('engaged', !!modVars.mobile);
+            }
+
+            updateColorDisabledState();
+        }
+
+        // Request settings on load
+        if (window.parent !== window) {
+            window.parent.postMessage({ action: 'requestSettings' }, '*');
+        }
+
+        document.body.addEventListener('click', function (e) {
+            // skip focus for settings inputs and sliders
+            if (e.target.closest('.settingInput') ||
+                e.target.closest('.horizontal-slider-container-2') ||
+                e.target.closest('input[type="range"]') ||
+                e.target.closest('input[type="color"]') ||
+                e.target.closest('.layer-color-input') ||
+                e.target.closest('.layer-color-label') ||
+                e.target.closest('.toolSettings-input')) {
+                return;
+            }
+
+            if (window.parent && window.parent.focus) {
+                window.parent.focus();
+            }
+        }, false);
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                var active = document.activeElement;
+                if (active && active.tagName === 'SELECT') {
+                    active.blur();
+                    window.parent.focus();
+                }
+            }
+        });
+
+        window.lastObjectPreviewData = null;
+        window.lastPatternPreviewData = null;
+
+        // resize handler
+        var resizeTimeout;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () {
+                if (window.lastObjectPreviewData) {
+                    drawObjectPreview(window.lastObjectPreviewData);
+                }
+
+                if (window.lastPatternPreviewData) {
+                    var brushType = parseInt(document.getElementById('pattern-brush').value) || 1;
+                    drawPatternPreview(window.lastPatternPreviewData, brushType);
+                }
+            }, 0);
+        });
+
+        (function () {
+            try {
+                var parentPath = window.parent.location.pathname;
+                var match = parentPath.match(/^\/(frhd|bhr|cr|tm|app|t)\/([a-zA-Z0-9_-]+)/);
+                if (match) {
+                    loadTrackData(match[1], match[2]);
+                }
+            } catch (e) {
+                // cross-origin, wait for message
+            }
+        })();
+    </script>
+</body>
+
+</html>

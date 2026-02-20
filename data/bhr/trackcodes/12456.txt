@@ -1,1 +1,0 @@
--18 1i 18 1i,k 1i k -u,-18 18 42 18 42 1i 8e 1i 8e -a ak -a ak 1i 8e 1i,u -3e u -7g 5k -7g,u -3e 5k -3e 5k -7g,5u -76 5u -6i 6i -6i 6i -76 5u -76,8o -3e 5k -3e,8o -68 5k -68,84 a 84 18 76 18 76 a 84 a,6s 18 6s k 68 k 68 18 6s 18,b8 1i b8 -u,-k -k -k 1i,-18 -7g -18 18,-u -3e -u -7g -18 -7g##T 0 u,T 0 -6s,C 5u -3o,G au 1s -b8,G au -42 -5k#BMX

@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Free Rider Archive</title>
+    <link rel="stylesheet" type="text/css" href="/style-black-o.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="content" class="container clearfix">
+        <div class="container">
+            <div class="sticky-header">
+                <div class="controls-row">
+                    <!-- type filters -->
+                    <div class="type-filters">
+                        <strong>
+                            <% const types=['db', 'frhd' , 'bhr' , 'cr' ]; %>
+                                <% types.forEach((t, i)=> { %>
+                                    <span class="track-type-filter" data-type="<%= t %>">
+                                        <span class="type-filter-link">
+                                            <%= t==='plus' ? '+' : t.toUpperCase() %>
+                                        </span>
+                                    </span>
+                                    <%= i < types.length - 1 ? ' / ' : '' %>
+                                        <% }); %>
+                        </strong>
+                    </div>
+
+                    <!-- mode filters -->
+                    <div class="type-filters">
+                        <strong>
+                            <span class="track-type-filter" data-mode="tracks">
+                                <span class="type-filter-link">TRACKS</span>
+                            </span> /
+                            <!--<span class="track-type-filter" data-mode="ghosts">
+                                <span class="type-filter-link">GHOSTS</span>
+                            </span> /-->
+                            <span class="track-type-filter" data-mode="players">
+                                <span class="type-filter-link">PLAYERS</span>
+                            </span>
+                        </strong>
+                    </div>
+
+                    <!-- toggle options -->
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-badges" checked> Badges
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-titles" checked> Titles
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-data" checked> Data
+                        </label>
+                    </div>
+
+                    <!-- search and sort -->
+                    <div class="search-sort-group">
+                        <input type="text" id="search-input" class="search-input" placeholder="Search..."
+                            value="<%= query %>">
+                        <div class="sort-group">
+                            <select id="sort-select" class="sort-select"></select>
+                            <button id="order-toggle" class="order-toggle" title="Toggle sort order">
+                                <span class="order-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="track-grid" class="track-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            // current view mode
+            mode: 'tracks',        // 'tracks' | 'ghosts' | 'players'
+            type: '<%= type %>',   // 'db' | 'frhd' | 'bhr' | 'cr' | 'tm' | 'plus' | 'app'
+            playerPlatform: '<%= type === "user" || type === "playlist" ? "db" : type %>',
+
+            // search and sort
+            query: '<%= query %>',
+            sortBy: '<%= sortBy || "shuffle" %>',
+            sortOrder: '<%= sortOrder || "desc" %>',
+
+            // pagination
+            page: 1,
+            perPage: 24,
+            hasMore: true,
+            isLoading: false,
+
+            // filters
+            player: '',
+            playlist: '',
+            remixesOf: ''
+        };
+
+        let currentFetchController = null;
+        let liveSessions = {};
+        let playlistsData = [];
+        let specialTracksCache = {};
+
+        const trackGrid = document.getElementById('track-grid');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const orderToggle = document.getElementById('order-toggle');
+
+        function formatSize(bytes) {
+            if (bytes >= 1e6) return (bytes / 1e6).toFixed(1) + 'M';
+            if (bytes >= 1e3) return (bytes / 1e3).toFixed(1) + 'K';
+            return bytes;
+        }
+
+        function pluralize(count, singular, plural = null) {
+            return count === 1 ? `${count} ${singular}` : `${count} ${plural || singular + 's'}`;
+        }
+
+        function getBadgeText(type) {
+            return { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR', tm: 'TM', app: 'APP' }[type] || type.toUpperCase();
+        }
+
+        function handleThumbnailFallback(img) {
+            img.onerror = null;
+            img.src = '/data/bhr/thumbnails/default.png';
+        }
+        window.handleThumbnailFallback = handleThumbnailFallback;
+
+        function updateURL(push = false) {
+            const params = new URLSearchParams();
+
+            if (state.mode === 'ghosts') {
+                params.set('mode', 'ghosts');
+            } else if (state.mode === 'players') {
+                params.set('mode', 'players');
+            }
+
+            if (state.type && state.type !== 'db') {
+                params.set('type', state.type);
+            }
+
+            params.set('sort', state.sortBy);
+            params.set('order', state.sortOrder);
+            if (state.query) params.set('q', state.query);
+            if (state.player) params.set('player', state.player);
+            if (state.playlist) params.set('playlist', state.playlist);
+
+            const newURL = `/db?${params.toString()}`;
+
+            if (push) {
+                history.pushState({ ...state }, '', newURL);
+            } else {
+                history.replaceState({ ...state }, '', newURL);
+            }
+        }
+
+        function parseURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            console.log('URL search:', window.location.search);
+            console.log('All params:', Object.fromEntries(params.entries()));
+
+            const paramMap = {
+                'type': 'type',
+                'player': 'player',
+                'author': 'player',
+                'playlist': 'playlist',
+                'sort': 'sortBy',
+                'order': 'sortOrder',
+                'q': 'query'
+            };
+
+            for (const [param, stateKey] of Object.entries(paramMap)) {
+                if (params.get(param)) {
+                    state[stateKey] = params.get(param);
+                    console.log(`Set state.${stateKey} = ${params.get(param)}`);
+                }
+            }
+
+            const mode = params.get('mode');
+            if (mode === 'ghosts' || mode === 'players') {
+                state.mode = mode;
+            }
+
+            console.log('Final state.player:', state.player);
+        }
+
+        function updateSortOptions() {
+            const options = {
+                ghosts: [
+                    { value: 'shuffle', label: 'Shuffle' },
+                    { value: 'time_ticks', label: 'Time' },
+                    { value: 'name', label: 'Player' },
+                    { value: 'published', label: 'Date' }
+                ],
+                players: [
+                    { value: 'shuffle', label: 'Shuffle' },
+                    { value: 'name', label: 'Name' }
+                ],
+                tracks: [
+                    { value: 'shuffle', label: 'Shuffle' },
+                    { value: 'id', label: 'ID' },
+                    { value: 'name', label: 'Name' },
+                    { value: 'upvotes', label: 'Votes' },
+                    { value: 'size', label: 'Size' },
+                    { value: 'plays', label: 'Plays' },
+                    { value: 'published', label: 'Date' }
+                ]
+            };
+
+            const opts = options[state.mode] || options.tracks;
+            sortSelect.innerHTML = opts.map(o =>
+                `<option value="${o.value}" ${state.sortBy === o.value ? 'selected' : ''}>${o.label}</option>`
+            ).join('');
+        }
+
+        function getSortValueDisplay(track) {
+            switch (state.sortBy) {
+                case 'upvotes':
+                    if (track.type === 'cr' && track.votes !== null) {
+                        return track.votes;
+                    }
+                    return track.upvotes || null;
+                case 'id':
+                    return track.id || null;
+                case 'plays':
+                    return track.plays || null;
+                case 'size':
+                    return track.size ? formatSize(track.size) : null;
+                case 'published':
+                    return track.published || null;
+                case 'favorites':
+                    return track.favorites || null;
+                default:
+                    return null;
+            }
+        }
+
+        function updateFilterStyles() {
+            document.querySelectorAll('.track-type-filter').forEach(filter => {
+                const filterType = filter.dataset.type;
+                const filterMode = filter.dataset.mode;
+                let isActive = false;
+
+                if (filterMode) {
+                    isActive = state.mode === filterMode;
+                } else if (filterType) {
+                    isActive = filterType === state.type;
+                }
+
+                filter.style.color = isActive ? '#000' : '#aaa';
+            });
+        }
+
+        function updateOrderToggle() {
+            const icon = orderToggle.querySelector('.order-icon');
+
+            if (state.sortBy === 'shuffle') {
+                icon.className = 'order-icon shuffle';
+                orderToggle.title = 'Reshuffle';
+            } else {
+                icon.className = `order-icon ${state.sortOrder}`;
+                orderToggle.title = state.sortOrder === 'desc'
+                    ? 'Descending (click for ascending)'
+                    : 'Ascending (click for descending)';
+            }
+        }
+
+        function adjustContentPadding() {
+            const header = document.querySelector('.sticky-header');
+            document.getElementById('content').style.paddingTop = header.offsetHeight + 'px';
+        }
+
+        function showFilterIndicator(html, type) {
+            const indicator = document.createElement('div');
+            indicator.className = 'filter-indicator';
+            indicator.dataset.filterType = type;
+            indicator.innerHTML = `${html} <span class="clear-filter" onclick="clearFilter('${type}')">×</span>`;
+            document.querySelector('.controls-row').appendChild(indicator);
+            requestAnimationFrame(adjustContentPadding);
+        }
+
+        function clearFilterIndicators() {
+            document.querySelectorAll('.filter-indicator').forEach(el => el.remove());
+            requestAnimationFrame(adjustContentPadding);
+        }
+
+        function updatePlayerIndicatorForMode() {
+            if (!state.player) return;
+
+            const indicator = document.querySelector('.filter-indicator[data-filter-type="player"]');
+            if (!indicator) return;
+
+            let endpoint;
+            if (state.mode === 'ghosts') {
+                let ghostParams = `player=${encodeURIComponent(state.player)}&perPage=1`;
+                if (state.type && !['db', 'all'].includes(state.type)) {
+                    ghostParams += `&type=${state.type}`;
+                }
+                endpoint = `/api/ghosts?${ghostParams}`;
+            } else {
+                endpoint = `/api/user-aliases/${encodeURIComponent(state.player)}?type=${state.type}`;
+            }
+
+            fetch(endpoint)
+                .then(res => res.json())
+                .then(data => {
+                    let text;
+                    if (state.mode === 'ghosts') {
+                        const count = data.pagination?.totalItems || 0;
+                        text = `<strong>${state.player}</strong> (${pluralize(count, 'ghost')})`;
+                    } else {
+                        text = `<strong>${state.player}</strong>`;
+                        const otherNames = data.aliases?.filter(a =>
+                            a.toLowerCase() !== state.player.toLowerCase()
+                        ) || [];
+                        if (otherNames.length > 0) {
+                            text += ` (also: ${otherNames.join(', ')})`;
+                        }
+                        text += ` (${pluralize(data.trackCount, 'track')})`;
+                    }
+                    indicator.innerHTML = `${text} <span class="clear-filter" onclick="clearFilter('player')">×</span>`;
+                })
+                .catch(() => { });
+        }
+
+        function setPlayerFilter(playerName) {
+            state.player = playerName;
+            state.playlist = '';
+            state.remixesOf = '';
+            state._remixesOfName = '';
+            clearFilterIndicators();
+            showFilterIndicator(`<strong>${playerName}</strong>`, 'player');
+            updatePlayerIndicatorForMode();
+            resetAndFetch();
+
+            if (window.self !== window.top) {
+                window.parent.postMessage({
+                    action: 'filterChanged',
+                    filter: { player: playerName }
+                }, '*');
+            }
+        }
+
+        async function setPlaylistFilter(playlistId) {
+            const playlistSummary = playlistsData.find(p => p.id === playlistId || p.canonical === playlistId);
+            if (!playlistSummary) return;
+
+            try {
+                const response = await fetch(`/api/playlist/${encodeURIComponent(playlistId)}`);
+                const fullPlaylist = await response.json();
+                state.currentPlaylistData = fullPlaylist;
+            } catch (e) {
+                console.error('Failed to fetch full playlist:', e);
+                state.currentPlaylistData = null;
+            }
+
+            if (!state.playlistHistory) state.playlistHistory = [];
+            if (state.playlist && state.playlist !== playlistId) {
+                state.playlistHistory.push(state.playlist);
+            }
+
+            state.playlist = playlistId;
+            state.player = '';
+            state.remixesOf = '';
+            state._remixesOfName = '';
+            state.mode = 'tracks';
+            state.query = '';
+            searchInput.value = '';
+
+            clearFilterIndicators();
+
+            let breadcrumb = '';
+            if (state.playlistHistory.length > 0) {
+                const parentId = state.playlistHistory[state.playlistHistory.length - 1];
+                const parent = playlistsData.find(p => p.id === parentId || p.canonical === parentId);
+                if (parent) {
+                    breadcrumb = `<span class="playlist-breadcrumb" onclick="goToParentPlaylist()">${parent.name}</span> → `;
+                }
+            }
+
+            showFilterIndicator(
+                `${breadcrumb}<strong>${playlistSummary.name}</strong> (${pluralize(playlistSummary.trackCount || 0, 'track')})`,
+                'playlist'
+            );
+            updateFilterStyles();
+            resetAndFetch();
+
+            if (window.self !== window.top) {
+                window.parent.postMessage({
+                    action: 'filterChanged',
+                    filter: { playlist: playlistSummary.canonical || playlistId }
+                }, '*');
+            }
+        }
+
+        async function goToParentPlaylist() {
+            if (!state.playlistHistory || state.playlistHistory.length === 0) {
+                clearFilter('playlist');
+                return;
+            }
+
+            const parentId = state.playlistHistory.pop();
+            state.playlist = parentId;
+
+            try {
+                const response = await fetch(`/api/playlist/${encodeURIComponent(parentId)}`);
+                state.currentPlaylistData = await response.json();
+            } catch (e) {
+                console.error('Failed to fetch full playlist:', e);
+                state.currentPlaylistData = null;
+            }
+
+            const playlist = playlistsData.find(p => p.id === parentId || p.canonical === parentId);
+
+            clearFilterIndicators();
+
+            let breadcrumb = '';
+            if (state.playlistHistory.length > 0) {
+                const grandparentId = state.playlistHistory[state.playlistHistory.length - 1];
+                const grandparent = playlistsData.find(p => p.id === grandparentId || p.canonical === grandparentId);
+                if (grandparent) {
+                    breadcrumb = `<span class="playlist-breadcrumb" onclick="goToParentPlaylist()">${grandparent.name}</span> → `;
+                }
+            }
+
+            if (playlist) {
+                showFilterIndicator(
+                    `${breadcrumb}<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount || 0, 'track')})`,
+                    'playlist'
+                );
+            }
+
+            updateURL(true);
+            resetAndFetch();
+        }
+
+        window.goToParentPlaylist = goToParentPlaylist;
+
+        function updatePlaylistIndicator() {
+            if (!state.playlist) return;
+
+            const indicator = document.querySelector('.filter-indicator[data-filter-type="playlist"]');
+            if (!indicator) return;
+
+            const playlist = playlistsData.find(p => p.id === state.playlist);
+            if (!playlist) return;
+
+            const params = new URLSearchParams({
+                playlist: state.playlist,
+                type: state.type,
+                perPage: 1
+            });
+
+            fetch(`/api/db?${params}`)
+                .then(res => res.json())
+                .then(data => {
+                    const filteredCount = data.pagination?.totalCount || 0;
+                    const totalCount = playlist.trackCount || 0;
+
+                    let text;
+                    if (state.type !== 'db' && filteredCount !== totalCount) {
+                        text = `<strong>${playlist.name}</strong> (${filteredCount}/${totalCount} tracks)`;
+                    } else {
+                        text = `<strong>${playlist.name}</strong> (${pluralize(totalCount, 'track')})`;
+                    }
+                    indicator.innerHTML = `${text} <span class="clear-filter" onclick="clearFilter('playlist')">×</span>`;
+                })
+                .catch(() => { });
+        }
+
+        function setRemixesFilter(canonical, trackName, fromParent = false) {
+            state.remixesOf = canonical;
+            state._remixesOfName = trackName || canonical;
+            state.player = '';
+            state.playlist = '';
+            state.playlistHistory = [];
+            state.currentPlaylistData = null;
+            clearFilterIndicators();
+            showFilterIndicator(`Remixes of <strong>${state._remixesOfName}</strong>`, 'remixes');
+            updateFilterStyles();
+            resetAndFetch();
+
+            if (!fromParent && window.self !== window.top) {
+                window.parent.postMessage({
+                    action: 'filterChanged',
+                    filter: { remixesOf: { canonical: canonical, name: trackName } }
+                }, '*');
+            }
+        }
+
+        function clearFilter(type) {
+            if (type === 'player') {
+                state.player = '';
+            } else if (type === 'playlist') {
+                state.playlist = '';
+                state.playlistHistory = [];
+                state.currentPlaylistData = null;
+            } else if (type === 'remixes') {
+                state.remixesOf = '';
+                state._remixesOfName = '';
+            } else if (type === 'type') {
+                state.type = 'db';
+            } else if (type === 'author') {
+                state.author = '';
+            } else if (type === 'query') {
+                state.query = '';
+                searchInput.value = '';
+            }
+
+            state.mode = 'tracks';
+            if (!state.type || state.type === '') {
+                state.type = 'db';
+            }
+
+            document.querySelectorAll(`.filter-indicator[data-filter-type="${type}"]`).forEach(el => el.remove());
+            requestAnimationFrame(adjustContentPadding);
+
+            updateSortOptions();
+            updateFilterStyles();
+            resetAndFetch();
+
+            if (window.self !== window.top) {
+                window.parent.postMessage({
+                    action: 'filterCleared',
+                    clearedType: type
+                }, '*');
+            }
+        }
+
+        window.setRemixesFilter = setRemixesFilter;
+
+        window.setPlayerFilter = setPlayerFilter;
+        window.setPlaylistFilter = setPlaylistFilter;
+        window.clearFilter = clearFilter;
+
+        function renderBadges(badges) {
+            return badges.map(type =>
+                `<span class="track-type-badge ${type}">${getBadgeText(type)}</span>`
+            ).join('');
+        }
+
+        /*function renderBadges(badges) {
+            if (!badges || badges.length === 0) return '';
+            
+            const typePriority = ['cr', 'bhr', 'frhd', 'app'];
+            let primaryBadge = badges[0];
+            for (const priorityType of typePriority) {
+                if (badges.includes(priorityType)) {
+                    primaryBadge = priorityType;
+                    break;
+                }
+            }
+            
+            return `<span class="track-type-badge ${primaryBadge}">${getBadgeText(primaryBadge)}</span>`;
+        }*/
+
+        function renderAuthorsHtml(authorsArray, fallbackAuthor) {
+            if (authorsArray?.length > 0) {
+                const filtered = authorsArray.filter(a => a);
+                const display = filtered.slice(0, 3);
+                const remaining = filtered.length - 3;
+
+                let html = display
+                    .map(a => `<a href="#" class="player-link" data-player="${a}"><strong>${a}</strong></a>`)
+                    .join(', ');
+
+                if (remaining > 0) {
+                    html += ` <span class="more-authors">+${remaining}</span>`;
+                }
+                return html;
+            }
+
+            const author = fallbackAuthor || 'Unknown';
+            return `<a href="#" class="player-link" data-player="${author}"><strong>${author}</strong></a>`;
+        }
+
+        function renderRemixOfHtml(remixOf) {
+            if (!remixOf || remixOf.length === 0) return '';
+
+            const links = remixOf.map(r =>
+                `<a href="/t/${r.canonical}" class="track-link" data-no-context="true" style="color: #888;">${r.name}</a>`
+            ).join(', ');
+
+            return `<br><small style="color: #888;">Remix of ${links}</small>`;
+        }
+
+        function renderEntryToHtml(entryTo) {
+            if (!entryTo) return '';
+
+            return `<br><small style="color: #888;">Entry to <a href="#" class="playlist-link" data-playlist-id="${entryTo.id || entryTo.canonical}" style="color: #888;">${entryTo.name}</a></small>`;
+        }
+
+        function renderTrackCard(track) {
+            let urlType, urlId;
+
+            if (track.urlType && track.urlId) {
+                urlType = track.urlType;
+                urlId = track.urlId;
+            } else if (track.type === 't' || (state.type === 'db' && track.canonical)) {
+                urlType = 't';
+                urlId = track.canonical || track.id;
+            } else {
+                urlType = track.type;
+                urlId = track.id;
+            }
+
+            const trackUrl = `/${urlType}/${urlId}`;
+            const thumbUrl = `/${urlType}/${urlId}.png`;
+
+            let badges = track.badges || [];
+            if (badges.length === 0 && track.type && track.type !== 't') {
+                badges = [track.type];
+            }
+            badges = badges.filter(b => b && b !== 't');
+
+            const liveKey = `${urlType}/${urlId}`;
+            const liveBadge = liveSessions[liveKey] > 0 ? '<span class="live-badge">LIVE</span>' : '';
+            const sortValue = getSortValueDisplay(track);
+            const sortValueHtml = sortValue ? `<br><small style="color: #888;">${sortValue}</small>` : '';
+
+            const remixHtml = renderRemixOfHtml(track.remixOf);
+            const entryToHtml = renderEntryToHtml(track.entryTo);
+
+            let remixesHtml = '';
+            const canonicalForRemixes = track.canonical || (track.type === 't' ? track.id : null);
+            if (track.remixCount > 0 && canonicalForRemixes) {
+                const remixText = track.remixCount === 1 ? '1 remix' : `${track.remixCount} remixes`;
+                remixesHtml = `<br><small><a href="#" class="remixes-link" data-canonical="${canonicalForRemixes}" data-name="${track.name}" style="color: #888;">${remixText}</a></small>`;
+            }
+
+            return `
+        <div class="track-item" data-track-type="${track.type}">
+            <div class="track-thumb">
+                <a href="${trackUrl}" class="track-link">
+                    <div class="thumbnail">
+                        <div class="badge-container">${badges.length > 0 ? renderBadges(badges) : ''}</div>
+                        ${liveBadge}
+                        <img class="track-thumbnail" src="${thumbUrl}" alt="${track.name}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="${trackUrl}" class="track-link">${track.name}</a>
+                    by ${renderAuthorsHtml(track.authorsArray, track.username || track.authors)}
+                    <span class="trackdata">
+                    ${remixHtml}
+                    ${entryToHtml}
+                    ${remixesHtml}
+                    ${sortValueHtml}
+                    </span>
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        function renderGhostCard(ghost) {
+            const urlType = ghost.urlType || ghost.trackType;
+            const urlId = ghost.urlId || ghost.trackId;
+            const trackUrl = `/${urlType}/${urlId}`;
+            const vehicleClass = (ghost.vehicle || 'BMX').toLowerCase();
+            const badges = ghost.badges || [ghost.trackType];
+
+            return `
+        <div class="track-item ghost-item" data-track-type="${ghost.trackType}">
+            <div class="track-thumb">
+                <a href="${trackUrl}" class="track-link ghost-track-link"
+                   data-ghost-url="${ghost.ghostUrl || ''}"
+                   data-key-url="${ghost.keyUrl || ''}"
+                   data-ghost-vehicle="${ghost.vehicle || 'BMX'}"
+                   data-ghost-time="${ghost.time || ''}"
+                   data-ghost-ticks="${ghost.timeTicks || ''}"
+                   data-ghoster="${ghost.ghostUsername || ''}">
+                    <div class="thumbnail">
+                        <div class="badge-container">${renderBadges(badges)}</div>
+                        <div class="ghost-badge">
+                            <span class="ghost-time">${ghost.time}</span>
+                            <span class="ghost-badge-sprite ${vehicleClass}"></span>
+                        </div>
+                        <img class="track-thumbnail" src="${trackUrl}.png" alt="${ghost.trackName}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="${trackUrl}" class="track-link">${ghost.trackName}</a>
+                    <br><small style="color: #888;">${ghost.ghostUsername}${ghost.isGuest ? ' (Guest)' : ''}</small>
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        function renderAuthorCard(playerData) {
+            const displayName = playerData.displayName || playerData.canonical || 'Unknown';
+            const initial = displayName[0].toUpperCase();
+            const avatarUrl = `/avatars/${playerData.canonical}.png`;
+
+            return `
+        <div class="player-item">
+            <div class="player-thumb">
+                <a href="#" class="player-link-card" data-player="${displayName}">
+                    <div class="thumbnail">
+                        <img class="player-avatar" src="${avatarUrl}" alt="${displayName}"
+                             loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span class="player-initial" style="display: none;">${initial}</span>
+                    </div>
+                </a>
+                <p class="desc"><strong>${displayName}</strong></p>
+            </div>
+        </div>
+    `;
+        }
+
+        function renderPlaylistCard(playlist) {
+            const thumbnail = playlist.thumbnail || '../../data/default-thumbnail.png';
+            const username = playlist.username;
+
+            const byLine = username && username !== 'Unknown'
+                ? ` by <a href="#" class="player-link" data-player="${username}"><strong>${username}</strong></a>`
+                : '';
+
+            return `
+        <div class="track-item playlist-card" data-playlist-id="${playlist.id}">
+            <div class="track-thumb">
+                <a href="#" class="playlist-link" data-playlist-id="${playlist.id}">
+                    <div class="thumbnail">
+                        <div class="badge-container">
+                            <span class="track-type-badge playlist">PLAYLIST</span>
+                        </div>
+                        <span class="playlist-count-badge">${pluralize(playlist.trackCount, 'track')}</span>
+                        <img class="track-thumbnail" src="${thumbnail}" alt="${playlist.name}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="#" class="playlist-link" data-playlist-id="${playlist.id}" 
+                       style="color: inherit; text-decoration: none;"><strong>${playlist.name}</strong></a>${byLine}
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        function buildFetchParams() {
+            const params = new URLSearchParams({
+                page: state.page,
+                perPage: state.perPage,
+                sort: state.sortBy,
+                order: state.sortOrder
+            });
+
+            if (state.query) params.set('q', state.query);
+            if (state.playlist) params.set('playlist', state.playlist);
+
+            return params;
+        }
+
+        function getEndpointAndParams() {
+            const params = buildFetchParams();
+            let endpoint;
+
+            switch (state.mode) {
+                case 'ghosts':
+                    endpoint = '/api/ghosts';
+                    if (state.type && !['db', 'all'].includes(state.type)) {
+                        params.set('type', state.type);
+                    }
+                    if (state.player) params.set('player', state.player);
+                    break;
+
+                case 'players':
+                    endpoint = '/api/authors-by-platform';
+                    params.set('platform', state.type);
+                    break;
+
+                default: // tracks
+                    if (state.remixesOf) {
+                        endpoint = `/api/remixes/${encodeURIComponent(state.remixesOf)}`;
+                    } else {
+                        endpoint = '/api/db';
+                        params.set('type', state.type);
+                        if (state.player) params.set('author', state.player);
+                    }
+                    break;
+            }
+
+            return { endpoint, params };
+        }
+
+        async function fetchTracks(append = false) {
+            if (state.isLoading && !append) {
+                currentFetchController?.abort();
+            }
+            if (append && !state.hasMore) return;
+
+            state.isLoading = true;
+            currentFetchController = new AbortController();
+
+            let loader = document.getElementById('loading-indicator');
+            if (!loader) {
+                loader = document.createElement('div');
+                loader.id = 'loading-indicator';
+                loader.className = 'loading-indicator';
+                loader.textContent = 'Loading...';
+                trackGrid.appendChild(loader);
+            }
+            loader.classList.remove('hidden');
+
+            const { endpoint, params } = getEndpointAndParams();
+
+            try {
+                const response = await fetch(`${endpoint}?${params}`, { signal: currentFetchController.signal });
+                const data = await response.json();
+
+                loader.remove();
+
+                let items, html;
+
+                if (data.mode === 'playlists' && data.playlists && !state.playlist) {
+                    items = data.playlists || [];
+                    html = items.map(renderPlaylistCard).join('');
+                    state.hasMore = data.pagination
+                        ? state.page < data.pagination.totalPages
+                        : false;
+                } else if (state.mode === 'ghosts') {
+                    items = data.ghosts || [];
+                    html = items.map(renderGhostCard).join('');
+                } else if (state.mode === 'players') {
+                    items = data.players || [];
+                    html = items.map(renderAuthorCard).join('');
+                } else if (state.remixesOf) {
+                    items = data.remixes || [];
+                    html = items.map(renderTrackCard).join('');
+                    state.hasMore = false;
+                } else {
+                    items = data.tracks || [];
+                    html = items.map(renderTrackCard).join('');
+                }
+
+                if (!(data.mode === 'playlists' && !state.playlist)) {
+                    if (!state.remixesOf) {
+                        state.hasMore = data.pagination
+                            ? state.page < data.pagination.totalPages
+                            : !data.allLoaded;
+                    }
+                }
+
+                if (items.length === 0 && !append) {
+                    const typeLabel = (data.mode === 'playlists' && !state.playlist) ? 'playlists' :
+                        state.mode === 'ghosts' ? 'ghosts' :
+                            state.mode === 'players' ? 'players' : 'tracks';
+                    trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>No ${typeLabel} found</h2>
+                    <p>Try a different search term or filter</p>
+                </div>
+            `;
+                } else if (append) {
+                    trackGrid.insertAdjacentHTML('beforeend', html);
+                } else {
+                    let prefix = '';
+                    if (state.mode === 'tracks' && state.page === 1 && !state.player && !state.remixesOf && !(data.mode === 'playlists' && !state.playlist)) {
+                        prefix = await getSpecialCards();
+                    }
+                    trackGrid.innerHTML = prefix + html;
+                }
+
+                if (state.hasMore) {
+                    loader = document.createElement('div');
+                    loader.id = 'loading-indicator';
+                    loader.className = 'loading-indicator hidden';
+                    loader.textContent = 'Loading...';
+                    trackGrid.appendChild(loader);
+                }
+
+                if (!append) {
+                    updateURL();
+                    updateFilterStyles();
+                }
+
+                state.isLoading = false;
+                currentFetchController = null;
+
+                if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
+                    setTimeout(() => {
+                        if (!state.isLoading && state.hasMore) {
+                            state.page++;
+                            fetchTracks(true);
+                        }
+                    }, 100);
+                }
+
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+
+                console.error('Fetch error:', error);
+                state.isLoading = false;
+                currentFetchController = null;
+
+                if (!append) {
+                    trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>Error loading content</h2>
+                    <p>Please try again later</p>
+                </div>
+            `;
+                }
+            }
+        }
+
+        function resetAndFetch() {
+            currentFetchController?.abort();
+            currentFetchController = null;
+            state.page = 1;
+            state.hasMore = true;
+            state.isLoading = false;
+            trackGrid.innerHTML = '';
+            fetchTracks(false);
+        }
+
+        let currentRandomPlaylist = null;
+
+        async function getSpecialCards() {
+            if (state.mode !== 'tracks') return '';
+
+            let html = '';
+
+            if (state.type === 'db' && !state.playlist && !state.query) {
+                let filteredPlaylists = playlistsData.filter(p => p.show === true);
+
+                if (filteredPlaylists.length > 0) {
+                    if (state.sortBy === 'shuffle' || !currentRandomPlaylist || !filteredPlaylists.find(p => p.id === currentRandomPlaylist.id)) {
+                        const randomIndex = Math.floor(Math.random() * filteredPlaylists.length);
+                        currentRandomPlaylist = filteredPlaylists[randomIndex];
+                    }
+
+                    if (currentRandomPlaylist) {
+                        html += renderPlaylistCard(currentRandomPlaylist);
+                    }
+                }
+            }
+
+            return html;
+        }
+
+        function renderSpecialTrackCard(track, specialType) {
+            if (!track) return '';
+
+            const urlType = track.type === 'plus' ? 't' : track.type;
+            const trackUrl = track.url || `/${urlType}/${track.trackId}`;
+
+            return `
+        <div class="track-item" data-track-type="${track.type}" data-special="${specialType}">
+            <div class="track-thumb">
+                <a href="${trackUrl}" class="track-link">
+                    <div class="thumbnail">
+                        <div class="badge-container">
+                            <span class="track-type-badge ${track.type}">${getBadgeText(track.type)}</span>
+                        </div>
+                        <span class="special-badge ${specialType}">${specialType.toUpperCase()}</span>
+                        <img class="track-thumbnail" src="${track.thumbnail}" alt="${track.name}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="${trackUrl}" class="track-link" style="color: inherit; text-decoration: none;">${track.name}</a>
+                    by ${renderAuthorsHtml(null, track.authors)}
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        function handleFilterClick(e) {
+            const filter = e.target.closest('.track-type-filter');
+            if (!filter) return;
+
+            const mode = filter.dataset.mode;
+            const newType = filter.dataset.type;
+
+            if (mode) {
+                state.mode = mode;
+                updatePlayerIndicatorForMode();
+
+                if (window.self !== window.top) {
+                    window.parent.postMessage({
+                        action: 'filterChanged',
+                        filter: { type: state.type, mode: mode }
+                    }, '*');
+                }
+            } else if (newType) {
+                state.type = newType;
+
+                if (state.player) {
+                    updatePlayerIndicatorForMode();
+                }
+                if (state.playlist) {
+                    updatePlaylistIndicator();
+                }
+            }
+
+            updateSortOptions();
+            updateFilterStyles();
+            resetAndFetch();
+
+            if (window.self !== window.top && newType) {
+                if (state.player) {
+                    window.parent.postMessage({
+                        action: 'filterChanged',
+                        filter: { player: state.player, type: newType }
+                    }, '*');
+                } else if (state.playlist) {
+                    window.parent.postMessage({
+                        action: 'filterChanged',
+                        filter: { playlist: state.playlist, type: newType }
+                    }, '*');
+                } else if (state.remixesOf) {
+                    window.parent.postMessage({
+                        action: 'filterChanged',
+                        filter: { remixesOf: { canonical: state.remixesOf, name: state._remixesOfName }, type: newType }
+                    }, '*');
+                } else {
+                    window.parent.postMessage({
+                        action: 'filterChanged',
+                        filter: { type: newType }
+                    }, '*');
+                }
+            }
+        }
+
+        function handleSearch(e) {
+            clearTimeout(handleSearch.timeout);
+            if (currentFetchController) {
+                currentFetchController.abort();
+            }
+            handleSearch.timeout = setTimeout(() => {
+                state.query = e.target.value;
+                resetAndFetch();
+            }, 300);
+        }
+
+        function handleSortChange(e) {
+            state.sortBy = e.target.value;
+            updateOrderToggle();
+            resetAndFetch();
+        }
+
+        function handleOrderToggle() {
+            if (state.sortBy === 'shuffle') {
+                currentRandomPlaylist = null;
+                resetAndFetch();
+            } else {
+                state.sortOrder = state.sortOrder === 'desc' ? 'asc' : 'desc';
+                updateOrderToggle();
+                resetAndFetch();
+            }
+        }
+
+        function handleScroll() {
+            if (state.isLoading || !state.hasMore) return;
+
+            const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+            if (scrollBottom < 1000) {
+                state.page++;
+                fetchTracks(true);
+            }
+        }
+
+        function handleGridClick(e) {
+            const playlistLink = e.target.closest('.playlist-link');
+            if (playlistLink) {
+                e.preventDefault();
+                setPlaylistFilter(playlistLink.dataset.playlistId);
+                return;
+            }
+
+            const remixesLink = e.target.closest('.remixes-link');
+            if (remixesLink) {
+                e.preventDefault();
+                const canonical = remixesLink.dataset.canonical;
+                const name = remixesLink.dataset.name;
+                setRemixesFilter(canonical, name);
+                return;
+            }
+
+            const playerCardLink = e.target.closest('.player-link-card');
+            if (playerCardLink && playerCardLink.dataset.player) {
+                e.preventDefault();
+
+                if (window.self !== window.top) {
+                    window.parent.postMessage({
+                        action: 'playerProfile',
+                        player: playerCardLink.dataset.player
+                    }, '*');
+                }
+
+                if (state.mode === 'players') {
+                    state.mode = 'tracks';
+                    updateSortOptions();
+                }
+                setPlayerFilter(playerCardLink.dataset.player);
+                return;
+            }
+
+            const playerLink = e.target.closest('.player-link');
+            if (playerLink && playerLink.dataset.player) {
+                e.preventDefault();
+
+                if (window.self !== window.top) {
+                    window.parent.postMessage({
+                        action: 'playerProfile',
+                        player: playerLink.dataset.player
+                    }, '*');
+                }
+
+                setPlayerFilter(playerLink.dataset.player);
+                return;
+            }
+        }
+
+        function initializeLinkHijacking() {
+            if (window.self === window.top) return;
+            if (window._linkHijackingInitialized) return;
+            window._linkHijackingInitialized = true;
+
+            const trackUrlRegex = /\/(frhd|bhr|cr|tm|app|t)\/([a-zA-Z0-9_-]+)/i;
+            const userUrlRegex = /\/u\/([a-zA-Z0-9_-]+)/i;
+
+            document.getElementById('content').addEventListener('click', function (e) {
+                if (e.defaultPrevented) return;
+
+                const link = e.target.closest('a');
+                if (!link || link.classList.contains('playlist-link')) return;
+
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('javascript:')) return;
+
+                const userMatch = link.href.match(userUrlRegex);
+                if (userMatch) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    window.parent.postMessage({
+                        action: 'linkClicked',
+                        url: link.href,
+                        name: userMatch[1]
+                    }, '*');
+                    return;
+                }
+
+                const trackMatch = link.href.match(trackUrlRegex);
+                if (!trackMatch) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+
+                if (link.dataset.messageSent) return;
+                link.dataset.messageSent = 'true';
+                setTimeout(() => delete link.dataset.messageSent, 100);
+
+                const message = {
+                    action: 'loadTrack',
+                    type: trackMatch[1],
+                    id: trackMatch[2]
+                };
+
+                if (link.dataset.noContext) {
+                    message.clearPlaylist = true;
+                } else if (state.playlist && state.currentPlaylistData) {
+                    message.playlist = {
+                        id: state.currentPlaylistData.id,
+                        canonical: state.currentPlaylistData.canonical,
+                        name: state.currentPlaylistData.name,
+                        tracks: state.currentPlaylistData.tracks
+                    };
+                } else {
+                    message.filterContext = {
+                        type: state.type,
+                        player: state.player || null,
+                        query: state.query || null,
+                        remixesOf: state.remixesOf ? { canonical: state.remixesOf, name: state._remixesOfName } : null,
+                        sortBy: state.sortBy,
+                        sortOrder: state.sortOrder
+                    };
+                }
+
+                if (link.dataset.ghostUrl) {
+                    message.ghost = {
+                        url: link.dataset.ghostUrl,
+                        keyUrl: link.dataset.keyUrl,
+                        vehicle: link.dataset.ghostVehicle,
+                        time: link.dataset.ghostTime,
+                        ticks: parseInt(link.dataset.ghostTicks) || null,
+                        username: link.dataset.ghoster
+                    };
+                }
+
+                window.parent.postMessage(message, '*');
+            }, true);
+        }
+
+        function initToggles() {
+            document.getElementById('toggle-badges').addEventListener('change', e => {
+                trackGrid.classList.toggle('hide-badges', !e.target.checked);
+            });
+
+            document.getElementById('toggle-titles').addEventListener('change', e => {
+                trackGrid.classList.toggle('hide-titles', !e.target.checked);
+            });
+
+            document.getElementById('toggle-data').addEventListener('change', e => {
+                trackGrid.classList.toggle('hide-data', !e.target.checked);
+            });
+        }
+
+        async function fetchLiveSessions() {
+            try {
+                liveSessions = await fetch('/api/live-sessions').then(r => r.json());
+            } catch (e) {
+                liveSessions = {};
+            }
+        }
+
+        async function fetchPlaylists() {
+            try {
+                const data = await fetch('/api/playlists/all').then(r => r.json());
+                playlistsData = data.playlists || [];
+            } catch (e) {
+                playlistsData = [];
+            }
+        }
+
+        function initEventListeners() {
+            document.querySelectorAll('.track-type-filter').forEach(f =>
+                f.addEventListener('click', handleFilterClick)
+            );
+
+            searchInput.addEventListener('input', handleSearch);
+            sortSelect.addEventListener('change', handleSortChange);
+            orderToggle.addEventListener('click', handleOrderToggle);
+            trackGrid.addEventListener('click', handleGridClick);
+            window.addEventListener('scroll', handleScroll);
+            window.addEventListener('resize', adjustContentPadding);
+        }
+
+        function initAuthorFromURL() {
+            console.log('initAuthorFromURL called, state.player =', state.player);
+            if (!state.player) return;
+
+            const endpoint = `/api/user-aliases/${encodeURIComponent(state.player)}?type=${state.type}`;
+            console.log('Fetching:', endpoint);
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(data => {
+                    console.log('Got player data:', data);
+                    let text = `<strong>${data.displayName || state.player}</strong>`;
+                    const others = data.aliases?.filter(a => a.toLowerCase() !== state.player.toLowerCase()) || [];
+                    if (others.length) text += ` (also: ${others.join(', ')})`;
+                    text += ` (${pluralize(data.trackCount, 'track')})`;
+                    showFilterIndicator(text, 'player');
+                })
+                .catch(err => {
+                    console.error('Error fetching player:', err);
+                    showFilterIndicator(`<strong>${state.player}</strong>`, 'player');
+                });
+        }
+
+        async function showInitialFilterIndicators() {
+            if (state.remixesOf) {
+                const name = state._remixesOfName || state.remixesOf;
+                showFilterIndicator(`Remixes of <strong>${name}</strong>`, 'remixes');
+            }
+            if (state.playlist) {
+                const playlist = playlistsData.find(p => p.id === state.playlist || p.canonical === state.playlist);
+
+                try {
+                    const response = await fetch(`/api/playlist/${encodeURIComponent(state.playlist)}`);
+                    state.currentPlaylistData = await response.json();
+                } catch (e) {
+                    console.error('Failed to fetch full playlist:', e);
+                    state.currentPlaylistData = null;
+                }
+
+                if (playlist) {
+                    showFilterIndicator(`<strong>${playlist.name}</strong> (${pluralize(playlist.trackCount, 'track')})`, 'playlist');
+                } else {
+                    showFilterIndicator(`Playlist: <strong>${state.playlist}</strong>`, 'playlist');
+                }
+            }
+            if (state.query) {
+                showFilterIndicator(`Search: <strong>${state.query}</strong>`, 'query');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            parseURLParams();
+
+            if (window.parent !== window && window.parent.GameSettings && window.parent.GameSettings.dialogFilter) {
+                const filter = window.parent.GameSettings.dialogFilter;
+                console.log('dialogFilter:', filter);
+
+                if (filter.mode) {
+                    state.mode = filter.mode;
+                }
+
+                if (filter.remixesOf) {
+                    state.remixesOf = filter.remixesOf.canonical;
+                    state._remixesOfName = filter.remixesOf.name || filter.remixesOf.canonical;
+                }
+                if (filter.query) {
+                    state.query = filter.query;
+                    searchInput.value = filter.query;
+                }
+
+                if (filter.sortBy) {
+                    state.sortBy = filter.sortBy;
+                    sortSelect.value = filter.sortBy;
+                }
+                if (filter.sortOrder) {
+                    state.sortOrder = filter.sortOrder;
+                }
+                if (filter.player) {
+                    state.player = filter.player;
+                }
+                if (filter.playlist) {
+                    state.playlist = filter.playlist;
+                }
+                if (filter.type) {
+                    state.type = filter.type;
+                }
+
+                window.parent.GameSettings.dialogFilter = null;
+            }
+
+            await Promise.all([
+                fetchLiveSessions(),
+                fetchPlaylists()
+            ]);
+
+            initEventListeners();
+            initToggles();
+            initializeLinkHijacking();
+            updateSortOptions();
+            updateFilterStyles();
+            updateOrderToggle();
+            adjustContentPadding();
+
+            window.addEventListener('message', function (e) {
+                if (e.data.action === 'applyDialogFilter') {
+                    const filter = window.parent && window.parent.GameSettings && window.parent.GameSettings.dialogFilter;
+                    if (!filter) return;
+                    window.parent.GameSettings.dialogFilter = null;
+
+                    state.query = filter.query || '';
+                    state.player = filter.player || '';
+                    state.playlist = filter.playlist || '';
+                    state.remixesOf = filter.remixesOf ? (filter.remixesOf.canonical || '') : '';
+                    state._remixesOfName = filter.remixesOf ? (filter.remixesOf.name || '') : '';
+                    state.mode = filter.mode || 'tracks';
+                    state.type = filter.type || state.type || 'db';
+                    searchInput.value = state.query;
+
+                    if (filter.sortBy) { state.sortBy = filter.sortBy; sortSelect.value = filter.sortBy; }
+                    if (filter.sortOrder) { state.sortOrder = filter.sortOrder; updateOrderToggle(); }
+
+                    clearFilterIndicators();
+                    showInitialFilterIndicators();
+                    updateSortOptions();
+                    updateFilterStyles();
+                    resetAndFetch();
+                }
+                if (e.data.action === 'setFilter') {
+                    if (e.data.type) {
+                        state.type = e.data.type;
+                    } else if (!state.type || state.type === '') {
+                        state.type = 'db';
+                    }
+
+                    if (e.data.mode) {
+                        state.mode = e.data.mode;
+                        state.player = '';
+                        state.playlist = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.query = '';
+                        searchInput.value = '';
+
+                        if (!e.data.type) {
+                            state.type = 'db';
+                        }
+
+                        clearFilterIndicators();
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                        return;
+                    }
+
+                    if (e.data.remixesOf) {
+                        setRemixesFilter(e.data.remixesOf.canonical, e.data.remixesOf.name, true);
+                    } else if (e.data.player) {
+                        state.player = e.data.player;
+                        state.playlist = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.mode = 'tracks';
+                        clearFilterIndicators();
+                        showFilterIndicator(`<strong>${e.data.player}</strong>`, 'player');
+                        updatePlayerIndicatorForMode();
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                    } else if (e.data.playlist) {
+                        const playlistId = e.data.playlist;
+                        const playlistSummary = playlistsData.find(p => p.id === playlistId || p.canonical === playlistId);
+
+                        state.playlist = playlistId;
+                        state.player = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.playlistHistory = [];
+                        state.mode = 'tracks';
+                        state.query = '';
+                        searchInput.value = '';
+
+                        clearFilterIndicators();
+
+                        if (playlistSummary) {
+                            showFilterIndicator(
+                                `<strong>${playlistSummary.name}</strong> (${pluralize(playlistSummary.trackCount || 0, 'track')})`,
+                                'playlist'
+                            );
+                        } else {
+                            showFilterIndicator(`Playlist: <strong>${playlistId}</strong>`, 'playlist');
+                        }
+
+                        fetch(`/api/playlist/${encodeURIComponent(playlistId)}`)
+                            .then(r => r.json())
+                            .then(data => {
+                                state.currentPlaylistData = data;
+                            })
+                            .catch(() => {
+                                state.currentPlaylistData = null;
+                            });
+
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                    } else if (e.data.query) {
+                        state.query = e.data.query;
+                        searchInput.value = e.data.query;
+                        state.player = '';
+                        state.playlist = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.mode = 'tracks';
+
+                        if (e.data.sortBy) {
+                            state.sortBy = e.data.sortBy;
+                            sortSelect.value = e.data.sortBy;
+                        }
+                        if (e.data.sortOrder) {
+                            state.sortOrder = e.data.sortOrder;
+                            updateOrderToggle();
+                        }
+
+                        clearFilterIndicators();
+                        showFilterIndicator(`Search: <strong>${e.data.query}</strong>`, 'query');
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                    } else if (e.data.type && !e.data.query && !e.data.player && !e.data.playlist && !e.data.remixesOf) {
+                        state.player = '';
+                        state.playlist = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.mode = 'tracks';
+                        state.query = '';
+                        searchInput.value = '';
+                        clearFilterIndicators();
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                    } else {
+                        state.player = '';
+                        state.playlist = '';
+                        state.remixesOf = '';
+                        state._remixesOfName = '';
+                        state.query = '';
+                        state.type = 'db';
+                        state.mode = 'tracks';
+                        searchInput.value = '';
+                        clearFilterIndicators();
+                        updateSortOptions();
+                        updateFilterStyles();
+                        resetAndFetch();
+                    }
+                }
+            });
+
+            await showInitialFilterIndicators();
+
+            initAuthorFromURL();
+            fetchTracks(false);
+            setInterval(fetchLiveSessions, 10000);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,1 +1,0 @@
-18 1i -3o 1i -3o -u -18 -u -18 -3e 18 -3e 18 -5u,18 1i 18 -u 3o -u 3o -3e 8o -3e 8o -5u 18 -5u##G -2g 1s -5k,T -2g a,G -2g -18 -b8,G -1i -26 -2q,T -1i -18,G 1i a -8e,G 0 1s -5k,G 2g -k -5k,T 1i -k,G 0 -3o -b8,G u -4m -2q,G 2g -68 -b8,T u -3o,G 42 -26 -8e,G 50 -34 -5k,T 42 -34,G 50 -68 -b8,G 7g -68 -b8,G 92 -4m -8e,T 7g -4m,G 7g -34 -5k,G -42 a -2q#BMX

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Object Database - Free Rider Archive</title>
+    <link rel="stylesheet" type="text/css" href="/style-black-o.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <div id="content" class="container clearfix">
+        <div class="container">
+            <div class="sticky-header">
+                <div class="controls-row">
+                    <!-- group filters (like type filters in db.ejs) -->
+                    <div class="type-filters">
+                        <strong>
+                            <span class="track-type-filter" data-group="">
+                                <span class="type-filter-link">ALL</span>
+                            </span>
+                            <% groups.forEach((g, i) => { %>
+                                / <span class="track-type-filter" data-group="<%= g %>">
+                                    <span class="type-filter-link"><%= g.toUpperCase() %></span>
+                                </span>
+                            <% }); %>
+                        </strong>
+                    </div>
+
+                    <!-- toggle options -->
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-badges" checked> Badges
+                        </label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="toggle-titles" checked> Titles
+                        </label>
+                    </div>
+
+                    <!-- search and sort -->
+                    <div class="search-sort-group">
+                        <input type="text" id="search-input" class="search-input" 
+                               placeholder="Search objects..." value="<%= query %>">
+                        <div class="sort-group">
+                            <select id="sort-select" class="sort-select">
+                                <option value="name" <%= sortBy === 'name' ? 'selected' : '' %>>Name</option>
+                                <option value="group" <%= sortBy === 'group' ? 'selected' : '' %>>Group</option>
+                                <option value="shuffle" <%= sortBy === 'shuffle' ? 'selected' : '' %>>Shuffle</option>
+                                <option value="created" <%= sortBy === 'created' ? 'selected' : '' %>>Created</option>
+                                <option value="updated" <%= sortBy === 'updated' ? 'selected' : '' %>>Updated</option>
+                            </select>
+                            <button id="order-toggle" class="order-toggle" title="Toggle sort order">
+                                <span class="order-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="track-grid" class="track-grid"></div>
+        </div>
+    </div>
+
+<script>
+const state = {
+    // search and sort
+    query: '<%= query %>',
+    group: '<%= group %>',
+    sortBy: '<%= sortBy || "name" %>',
+    sortOrder: '<%= sortOrder || "asc" %>',
+    
+    // pagination
+    page: 1,
+    perPage: 24,
+    hasMore: true,
+    isLoading: false,
+    
+    // selection
+    selectedObject: null
+};
+
+let currentFetchController = null;
+let groupsData = <%- JSON.stringify(groups) %>;
+
+const trackGrid = document.getElementById('track-grid');
+const searchInput = document.getElementById('search-input');
+const sortSelect = document.getElementById('sort-select');
+const orderToggle = document.getElementById('order-toggle');
+
+function getBadgeText(group) {
+    return group ? group.toUpperCase() : 'OBJ';
+}
+
+function handleThumbnailFallback(img) {
+    img.onerror = null;
+    img.src = '/data/bhr/thumbnails/default.png';
+}
+window.handleThumbnailFallback = handleThumbnailFallback;
+
+function updateURL(push = false) {
+    const params = new URLSearchParams();
+    
+    if (state.group) {
+        params.set('group', state.group);
+    }
+    
+    params.set('sort', state.sortBy);
+    params.set('order', state.sortOrder);
+    if (state.query) params.set('q', state.query);
+
+    const newURL = `/objects?${params.toString()}`;
+    
+    if (push) {
+        history.pushState({...state}, '', newURL);
+    } else {
+        history.replaceState({...state}, '', newURL);
+    }
+}
+
+function parseURLParams() {
+    const params = new URLSearchParams(window.location.search);
+    
+    if (params.get('group')) {
+        state.group = params.get('group');
+    }
+    
+    if (params.get('sort')) {
+        state.sortBy = params.get('sort');
+    }
+    
+    if (params.get('order')) {
+        state.sortOrder = params.get('order');
+    }
+    
+    if (params.get('q')) {
+        state.query = params.get('q');
+    }
+}
+
+function updateFilterStyles() {
+    document.querySelectorAll('.track-type-filter').forEach(filter => {
+        const filterGroup = filter.dataset.group;
+        const isActive = filterGroup === (state.group || '');
+        filter.style.color = isActive ? '#000' : '#aaa';
+    });
+}
+
+function updateOrderToggle() {
+    const icon = orderToggle.querySelector('.order-icon');
+    
+    if (state.sortBy === 'shuffle') {
+        icon.className = 'order-icon shuffle';
+        orderToggle.title = 'Reshuffle';
+    } else {
+        icon.className = `order-icon ${state.sortOrder}`;
+        orderToggle.title = state.sortOrder === 'desc' 
+            ? 'Descending (click for ascending)' 
+            : 'Ascending (click for descending)';
+    }
+}
+
+function adjustContentPadding() {
+    const header = document.querySelector('.sticky-header');
+    document.getElementById('content').style.paddingTop = header.offsetHeight + 'px';
+}
+
+function showFilterIndicator(html, type) {
+    const indicator = document.createElement('div');
+    indicator.className = 'filter-indicator';
+    indicator.dataset.filterType = type;
+    indicator.innerHTML = `${html} <span class="clear-filter" onclick="clearFilter('${type}')">×</span>`;
+    document.querySelector('.controls-row').appendChild(indicator);
+    requestAnimationFrame(adjustContentPadding);
+}
+
+function clearFilterIndicators() {
+    document.querySelectorAll('.filter-indicator').forEach(el => el.remove());
+    requestAnimationFrame(adjustContentPadding);
+}
+
+function clearFilter(type) {
+    if (type === 'group') state.group = '';
+    clearFilterIndicators();
+    updateFilterStyles();
+    updateURL(true);
+    resetAndFetch();
+}
+
+window.clearFilter = clearFilter;
+
+function renderObjectCard(obj) {
+    const isSelected = state.selectedObject === obj.id;
+    const thumbUrl = obj.thumbnailUrl || '/data/bhr/thumbnails/default.png';
+    const badge = obj.group || 'obj';
+    
+    return `
+        <div class="track-item object-item ${isSelected ? 'selected' : ''}" 
+             data-object-id="${obj.id}"
+             data-object-name="${obj.name}"
+             data-object-path="${obj.filePath}"
+             data-code-url="${obj.codeUrl}">
+            <div class="track-thumb">
+                <a href="#" class="object-link" data-object-id="${obj.id}">
+                    <div class="thumbnail">
+                        <div class="badge-container">
+                            <span class="track-type-badge object">${getBadgeText(obj.group)}</span>
+                        </div>
+                        <img class="track-thumbnail" src="${thumbUrl}" alt="${obj.name}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="#" class="object-link" data-object-id="${obj.id}">${obj.name}</a>
+                    ${obj.folder ? `<br><small style="color: #888;">${obj.folder}</small>` : ''}
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function renderGroupCard(group) {
+    return `
+        <div class="track-item playlist-card" data-group="${group.name}">
+            <div class="track-thumb">
+                <a href="#" class="group-link" data-group="${group.name}">
+                    <div class="thumbnail">
+                        <div class="badge-container">
+                            <span class="track-type-badge playlist">${group.name.toUpperCase()}</span>
+                        </div>
+                        <span class="playlist-count-badge">${group.count} object${group.count !== 1 ? 's' : ''}</span>
+                        <img class="track-thumbnail" src="/data/bhr/thumbnails/default.png" alt="${group.name}"
+                             loading="lazy" onerror="handleThumbnailFallback(this)">
+                    </div>
+                </a>
+                <p class="desc">
+                    <a href="#" class="group-link" data-group="${group.name}" 
+                       style="color: inherit; text-decoration: none;"><strong>${group.name}</strong></a>
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+async function fetchObjects(append = false) {
+    if (state.isLoading && !append) {
+        currentFetchController?.abort();
+    }
+    if (append && !state.hasMore) return;
+
+    state.isLoading = true;
+    currentFetchController = new AbortController();
+
+    let loader = document.getElementById('loading-indicator');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'loading-indicator';
+        loader.className = 'loading-indicator';
+        loader.textContent = 'Loading...';
+        trackGrid.appendChild(loader);
+    }
+    loader.classList.remove('hidden');
+
+    const params = new URLSearchParams({
+        page: state.page,
+        perPage: state.perPage,
+        sort: state.sortBy,
+        order: state.sortOrder
+    });
+    
+    if (state.query) params.set('q', state.query);
+    if (state.group) params.set('group', state.group);
+
+    try {
+        const response = await fetch(`/api/objects?${params}`, { signal: currentFetchController.signal });
+        const data = await response.json();
+        
+        loader.remove();
+        
+        const items = data.objects || [];
+        const html = items.map(renderObjectCard).join('');
+
+        state.hasMore = data.pagination 
+            ? state.page < data.pagination.totalPages 
+            : false;
+        
+        if (items.length === 0 && !append) {
+            trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>No objects found</h2>
+                    <p>Try a different search term or group filter</p>
+                </div>
+            `;
+        } else if (append) {
+            trackGrid.insertAdjacentHTML('beforeend', html);
+        } else {
+            let prefix = '';
+            /*if (!state.group && !state.query && state.page === 1) {
+                prefix = await getGroupCards();
+            }*/
+            trackGrid.innerHTML = prefix + html;
+        }
+        
+        if (state.hasMore) {
+            loader = document.createElement('div');
+            loader.id = 'loading-indicator';
+            loader.className = 'loading-indicator hidden';
+            loader.textContent = 'Loading...';
+            trackGrid.appendChild(loader);
+        }
+        
+        if (!append) {
+            updateURL();
+            updateFilterStyles();
+        }
+        
+        state.isLoading = false;
+        currentFetchController = null;
+        
+        if (state.hasMore && document.documentElement.scrollHeight <= window.innerHeight) {
+            setTimeout(() => {
+                if (!state.isLoading && state.hasMore) {
+                    state.page++;
+                    fetchObjects(true);
+                }
+            }, 100);
+        }
+
+    } catch (error) {
+        if (error.name === 'AbortError') return;
+        
+        console.error('Fetch error:', error);
+        state.isLoading = false;
+        currentFetchController = null;
+        
+        if (!append) {
+            trackGrid.innerHTML = `
+                <div class="no-results">
+                    <h2>Error loading objects</h2>
+                    <p>Please try again later</p>
+                </div>
+            `;
+        }
+    }
+}
+
+async function getGroupCards() {
+    try {
+        const response = await fetch('/api/objects/groups');
+        const data = await response.json();
+        const groups = data.groups || [];
+        return groups.map(renderGroupCard).join('');
+    } catch (e) {
+        return '';
+    }
+}
+
+function resetAndFetch() {
+    currentFetchController?.abort();
+    currentFetchController = null;
+    state.page = 1;
+    state.hasMore = true;
+    state.isLoading = false;
+    trackGrid.innerHTML = '';
+    fetchObjects(false);
+}
+
+function handleFilterClick(e) {
+    const filter = e.target.closest('.track-type-filter');
+    if (!filter) return;
+    
+    const newGroup = filter.dataset.group;
+    if (newGroup !== undefined) {
+        state.group = newGroup;
+    }
+
+    updateFilterStyles();
+    updateURL(true);
+    resetAndFetch();
+}
+
+window.addEventListener('popstate', (event) => {
+    if (event.state) {
+        Object.assign(state, event.state);
+    } else {
+        state.group = '';
+        state.query = '';
+        state.sortBy = 'name';
+        state.sortOrder = 'asc';
+        parseURLParams();
+    }
+    searchInput.value = state.query;
+    clearFilterIndicators();
+    updateFilterStyles();
+    updateOrderToggle();
+    resetAndFetch();
+});
+
+function handleSearch(e) {
+    clearTimeout(handleSearch.timeout);
+    if (currentFetchController) {
+        currentFetchController.abort();
+    }
+    handleSearch.timeout = setTimeout(() => {
+        state.query = e.target.value;
+        resetAndFetch();
+    }, 300);
+}
+
+function handleSortChange(e) {
+    state.sortBy = e.target.value;
+    updateOrderToggle();
+    resetAndFetch();
+}
+
+function handleOrderToggle() {
+    if (state.sortBy === 'shuffle') {
+        resetAndFetch();
+    } else {
+        state.sortOrder = state.sortOrder === 'desc' ? 'asc' : 'desc';
+        updateOrderToggle();
+        resetAndFetch();
+    }
+}
+
+function handleScroll() {
+    if (state.isLoading || !state.hasMore) return;
+    
+    const scrollBottom = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+    if (scrollBottom < 1000) {
+        state.page++;
+        fetchObjects(true);
+    }
+}
+
+function handleGridClick(e) {
+    const groupLink = e.target.closest('.group-link');
+    if (groupLink) {
+        e.preventDefault();
+        state.group = groupLink.dataset.group;
+        updateFilterStyles();
+        updateURL(true);
+        resetAndFetch();
+        return;
+    }
+    
+    const objectLink = e.target.closest('.object-link');
+    if (objectLink) {
+        e.preventDefault();
+        const objectItem = objectLink.closest('.object-item');
+        if (!objectItem) return;
+        
+        const objectId = objectItem.dataset.objectId;
+        const objectName = objectItem.dataset.objectName;
+        const codeUrl = objectItem.dataset.codeUrl;
+        
+        // Highlight selection
+        document.querySelectorAll('.object-item.selected').forEach(el => {
+            el.classList.remove('selected');
+        });
+        objectItem.classList.add('selected');
+        state.selectedObject = objectId;
+        
+        // If in iframe, auto-import the object
+        if (window.self !== window.top) {
+            window.parent.postMessage({
+                action: 'importObject',
+                object: {
+                    id: objectId,
+                    name: objectName,
+                    codeUrl: codeUrl
+                }
+            }, '*');
+        }
+        return;
+    }
+}
+
+function initializeLinkHijacking() {
+    if (window.self === window.top) return;
+    if (window._linkHijackingInitialized) return;
+    window._linkHijackingInitialized = true;
+
+    document.getElementById('content').addEventListener('click', function(e) {
+        if (e.defaultPrevented) return;
+        
+        const link = e.target.closest('a');
+        if (!link) return;
+        
+        if (link.classList.contains('object-link') || link.classList.contains('group-link')) {
+            return;
+        }
+        
+        const href = link.getAttribute('href');
+        if (!href || href === '#' || href.startsWith('javascript:')) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+    }, true);
+}
+
+function initToggles() {
+    document.getElementById('toggle-badges').addEventListener('change', e => {
+        trackGrid.classList.toggle('hide-badges', !e.target.checked);
+    });
+    
+    document.getElementById('toggle-titles').addEventListener('change', e => {
+        trackGrid.classList.toggle('hide-titles', !e.target.checked);
+    });
+}
+
+function initEventListeners() {
+    document.querySelectorAll('.track-type-filter').forEach(f => 
+        f.addEventListener('click', handleFilterClick)
+    );
+    
+    searchInput.addEventListener('input', handleSearch);
+    sortSelect.addEventListener('change', handleSortChange);
+    orderToggle.addEventListener('click', handleOrderToggle);
+    trackGrid.addEventListener('click', handleGridClick);
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', adjustContentPadding);
+}
+
+window.addEventListener('message', async (event) => {
+    if (event.data.action === 'getObjectCode' && event.data.codeUrl) {
+        try {
+            const response = await fetch(event.data.codeUrl);
+            const code = await response.text();
+            window.parent.postMessage({
+                action: 'objectCode',
+                code: code,
+                name: event.data.name
+            }, '*');
+        } catch (error) {
+            console.error('Failed to fetch object code:', error);
+        }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    parseURLParams();
+    initEventListeners();
+    initToggles();
+    initializeLinkHijacking();
+    updateFilterStyles();
+    updateOrderToggle();
+    adjustContentPadding();
+    fetchObjects(false);
+});
+</script>
+</body>
+</html>
