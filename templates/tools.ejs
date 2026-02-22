@@ -1068,19 +1068,24 @@
                 </span>
             </div>
 
+            <div class="toolsDialogAdvanced" style="padding: 0; display: block;"></div>
+
             <div id="now-playing-wrapper">
                 <div id="now-playing-container" style="padding: 10px;">
-                    <!--<div id="now-playing-empty" style="padding: 20px; color: #888; text-align: center;">
-                    </div>-->
+                    <div id="now-playing-empty" style="padding: 5px; color: #888; text-align: left;">
+                            <div style="margin-bottom: 10px;">
+                                <button id="btn-track-import" class="tool-button">+ Import Track</button>
+                            </div>
+                        </div>
 
                     <div id="now-playing-content" style="display: none; margin-bottom: 10px;">
                         <div style="display: flex; gap: 5px; margin-bottom: 10px;">
                             <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track"></button>
                             <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
                             <button id="np-next" class="navi-toggle navi-icon next" title="Next Track"></button>
-                            <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 1; width: auto;"
+                            <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 0; width: auto;"
                                 title="Copy Link">
-                                <span id="copy-button" class="copy-text" style="margin-left: 4px; font-size: 11px;">Copy
+                                <span id="copy-button" class="copy-text" style="margin: 8px; font-size: 11px; text-wrap: nowrap;">Copy
                                     Link</span>
                             </button>
                         </div>
@@ -1104,7 +1109,7 @@
                             style="display: none; font-size: 11px; margin: 10px 0; font-style: italic; color: #555; padding: 8px 12px; border-left: 4px solid #aaa; background: #f5f5f5; border-radius: 4px; max-height: 120px; overflow-y: auto;">
                         </blockquote>
 
-                        <div class="toolsDialogAdvanced"
+                        <div class="toolsMetadata"
                             style="padding: 10px; background: #f5f5f5; border-radius: 4px;">
                             <table style="width: 100%; font-size: 11px;">
                                 <tbody>
@@ -1216,10 +1221,12 @@
                         </p>
                     </span>
                 </div>
-            <div id="mod-settings-list" style="padding: 8px;">
-                <div style="color: #888; text-align: center; padding: 10px;">Loading mod settings...</div>
+                <div class="toolsDialogAdvanced" style="padding: 0; display: block;">
+                    <div id="mod-settings-list" style="padding: 8px;">
+                        <div style="color: #888; text-align: center; padding: 10px;">Loading mod settings...</div>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
 
         <!-- LIVE CHAT -->
@@ -2775,16 +2782,16 @@ body.dialog-mode #tab-track {
         function updateNowPlaying(track) {
             currentTrackData = track;
 
-            //var emptyEl = document.getElementById('now-playing-empty');
+            var emptyEl = document.getElementById('now-playing-empty');
             var contentEl = document.getElementById('now-playing-content');
 
             if (!track || !track.name) {
-                //emptyEl.style.display = 'block';
+                emptyEl.style.display = 'block';
                 contentEl.style.display = 'none';
                 return;
             }
 
-            //emptyEl.style.display = 'none';
+            emptyEl.style.display = 'none';
             contentEl.style.display = 'block';
 
             document.getElementById('np-thumbnail').src = track.thumbnail || '/' + track.type + '/' + track.id + '.png';
@@ -3510,11 +3517,10 @@ body.dialog-mode #tab-track {
         });
 
         // vehicle options
-        /*
         document.getElementById('btn-track-import').addEventListener('click', function () {
             send('open-import', true);
         });
-        */
+        
 
         // sliders
         document.querySelectorAll('input[type="range"]').forEach(function (slider) {

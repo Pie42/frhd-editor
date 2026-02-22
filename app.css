@@ -5450,18 +5450,6 @@ body.tools-dialog-open #toolsIframe {
     display: none;
 }
 
-.bottom-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    height: 36px;
-    background: #fff;
-    border-top: 1px solid #ccc;
-    z-index: 100;
-}
-
 .bottom-bar-button {
     flex: 1;
     border: none;
@@ -5526,4 +5514,13 @@ body.tools-dialog-open #toolsIframe {
 
 .editorDialog-tools.has-bottom-bar {
     height: calc(100dvh - 36px) !important;
+}
+
+.trackMetadata {
+    font-size: .75em;
+    padding: 10px;
+    /*min-height: 200px;*/
+    display: inline-grid;
+    position: relative;
+    display: flex;
 }

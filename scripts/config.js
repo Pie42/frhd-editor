@@ -334,6 +334,16 @@ saveSettings = function (debounce) {
         settings._mod[key] = value;
       }
     });
+  } else {
+    var existing = localStorage.getItem('editorSettings');
+    if (existing) {
+      try {
+        var parsed = JSON.parse(existing);
+        if (parsed._mod) {
+          settings._mod = parsed._mod;
+        }
+      } catch (e) { }
+    }
   }
 
   localStorage.setItem('editorSettings', JSON.stringify(settings));

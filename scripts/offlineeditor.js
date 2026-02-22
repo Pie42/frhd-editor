@@ -5591,10 +5591,10 @@
                   )
                 ),
                 n.createElement("iframe", {
-                  src: "/db",  // Change this URL
+                  src: "/db",
                   style: {
                     width: "100%",
-                    height: "calc(100% - 39px)",  // Subtract titlebar height
+                    height: "calc(100% - 39px)",
                     border: "none",
                     display: "block"
                   }
@@ -7217,7 +7217,7 @@
 
 
               c.right = sidebar
-                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "20%"))
+                ? (window.innerHeight >= 1440 ? "calc(25% + 5px)" : (window.innerHeight <= 800 ? "calc(25% - 5px)" : "25%"))
                 : (window.innerHeight >= 1440 ? "5px" : (window.innerHeight <= 800 ? "-5px" : "0"));
               switch (e) {
                 case "straightline":
@@ -34366,6 +34366,10 @@
               ? GameSettings.sidebar !== false
               : false;
 
+            if (newState && typeof GameManager !== "undefined") {
+              GameManager.command("dialog", false);
+            }
+
             this.setState({ sidebar: newState });
 
             var iframe = document.getElementById("toolsIframe");
@@ -34732,7 +34736,25 @@
                   "div",
                   { className: "editorDialog-titleBar" },
                   n.createElement("span", { className: "editorDialog-close", onClick: this.closeDialog }, "×"),
-                  n.createElement("h1", { className: "editorDialog-content-title" }, "IMPORT TRACK")
+                  n.createElement("h1", { className: "editorDialog-content-title", style: { display: "inline", verticalAlign: "middle" } }, "IMPORT TRACK"),
+                  n.createElement(
+                    "span",
+                    {
+                      className: "editorDialog-importCode",
+                      onClick: function () {
+                        GameManager.command("dialog", "import");
+                      },
+                      style: {
+                        cursor: "pointer",
+                        marginLeft: "14px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: "#888",
+                        verticalAlign: "middle"
+                      }
+                    },
+                    "IMPORT FROM CODE"
+                  )
                 ),
                 n.createElement("iframe", {
                   src: iframeSrc,

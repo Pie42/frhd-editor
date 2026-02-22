@@ -28722,6 +28722,7 @@
             set(t, e, s) {
               if (t !== s && e && e.currentScene) {
                 e.currentScene.updateMainPlayerHotkeys();
+                e.currentScene.toolHandler.setTool("camera")
               }
             },
           },
@@ -31607,12 +31608,12 @@ var v = window.setInterval(function() {
   if (GameManager != undefined && GameManager.game != undefined) {
       rInterval();
       load();
-      loadPatternTool();
       registerModConfig();
         if (window._pendingModSettings) {
             console.log('[Mod] Pending settings found, applying...');
         }
         applyModSettings();
+      loadPatternTool();
   }
 }, 250)
 
@@ -33043,9 +33044,8 @@ function loadPatternTool() {
   scene.loadPatterns();
 
   const patternTool = scene.toolHandler.tools.pattern;
-  if (patternTool.patterns.length === 0) {
-  GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01'])
-  } 
+
+  //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['object-01'])
   //GameManager.game.currentScene.toolHandler.tools.pattern.addPattern('brick', GameManager.game.currentScene.objects['DARKMATTER']) 
 }
 
