@@ -14244,16 +14244,29 @@
             const mini = this.mini ? GameSettings.mini : 1;
             const isGhost = this.player._ghost;
             const ghostHatType = this.player._hatType;
+            const ghostVehicleColor = isGhost ? this.player._vehicleColor : null;
+            const ghostRiderColor = isGhost ? this.player._riderColor : null;
+
+            function hexToRgba(hex, a) {
+              if (!hex) return null;
+              var r = parseInt(hex.slice(1, 3), 16),
+                g = parseInt(hex.slice(3, 5), 16),
+                b = parseInt(hex.slice(5, 7), 16);
+              return a < 1 ? "rgba(" + r + "," + g + "," + b + "," + a + ")" : "rgb(" + r + "," + g + "," + b + ")";
+            }
             const e = this.scene,
-              s = e.game.mod.getVar("crBmx"),
+              s = isGhost ? !!this.player._crBmx : e.game.mod.getVar("crBmx"),
               i = isGhost
                 ? (ghostHatType === "CR")
                 : (e.game.mod.getVar("crHead") || e.game.mod.getVar("mario")),
               n = e.game.mod.getVar("customColors"),
-              r = n ? Q(e.game.mod.getVar("vehicleColor")) : "#000",
+              r = isGhost
+                ? (ghostVehicleColor || "#000")
+                : (n ? Q(e.game.mod.getVar("vehicleColor")) : "#000"),
               o = isGhost
                 ? (ghostHatType === "BHR")
                 : e.game.mod.getVar("blackHat"),
+              propeller = isGhost ? !!this.player._propeller : e.game.mod.getVar("propeller"),
               a = this.rearWheel.pos.toScreen(e),
               h = this.frontWheel.pos.toScreen(e),
               l = this.head.pos.toScreen(e),
@@ -14307,7 +14320,7 @@
             const gg = new W(ff,pp,dd);             
   
             const mm = (.25) * Math.cos(rotor); // propeller
-            if (this.scene.game.mod.getVar("propeller")) {
+            if (propeller) {
                     y.beginPath();  
                     y.strokeStyle = "#000000",
                     y.lineWidth = 3 * v,
@@ -14331,9 +14344,11 @@
             const L = M.add(I.factor(0.5)).add(B.factor(200 / I.lenSqr())),
               z = A.add(I.factor(0.12)).add(B.factor(50 / I.lenSqr()));
             this.crashed ||
-              ((y.strokeStyle = n
-                ? tt([...e.game.mod.getVar("riderColor"), 0.5])
-                : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.5)"),
+              ((y.strokeStyle = isGhost
+                ? (ghostRiderColor ? hexToRgba(ghostRiderColor, 0.5) : "rgba(0,0,0,0.5)")
+                : n
+                  ? tt([...e.game.mod.getVar("riderColor"), 0.5])
+                  : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.5)"),
               (y.lineWidth = 6 * v),
               y.beginPath(),
               y.moveTo(A.x, A.y),
@@ -14392,7 +14407,9 @@
               this.ragdoll.draw();
             else {
               (y.lineWidth = 6 * v),
-                (y.strokeStyle = n ? Q(e.game.mod.getVar("riderColor")) : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "#000"),
+                (y.strokeStyle = isGhost
+                  ? (ghostRiderColor ? hexToRgba(ghostRiderColor, 1) : "#000")
+                  : n ? Q(e.game.mod.getVar("riderColor")) : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "#000"),
                 y.beginPath(),
                 y.moveTo(S.x, S.y),
                 y.lineTo(D.x, D.y),
@@ -14480,8 +14497,13 @@
                     y.stroke();
                   }
               } else {
-                var headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
-                  || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
+                var headCosmetic;
+                if (isGhost) {
+                  headCosmetic = { id: "1", classname: "forward_cap", name: "classic", type: "1", options: { back: this.player._hatColor || "#000000" } };
+                } else {
+                  headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+                    || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
+                }
                 GameInventoryManager.getItem(headCosmetic).draw(y, a.x, a.y, this.drawHeadAngle, v, this.dir);
               }
               y.globalAlpha = 1;
@@ -15874,16 +15896,29 @@
           const mini = this.mini ? GameSettings.mini : 1;
           const isGhost = this.player._ghost;
           const ghostHatType = this.player._hatType;
+          const ghostVehicleColor = isGhost ? this.player._vehicleColor : null;
+          const ghostRiderColor = isGhost ? this.player._riderColor : null;
+
+          function hexToRgba(hex, a) {
+            if (!hex) return null;
+            var r = parseInt(hex.slice(1, 3), 16),
+              g = parseInt(hex.slice(3, 5), 16),
+              b = parseInt(hex.slice(5, 7), 16);
+            return a < 1 ? "rgba(" + r + "," + g + "," + b + "," + a + ")" : "rgb(" + r + "," + g + "," + b + ")";
+          }
           const e = this.scene,
-            s = e.game.mod.getVar("crMtb"),
+            s = isGhost ? !!this.player._crMtb : e.game.mod.getVar("crMtb"),
             i = isGhost
               ? (ghostHatType === "CR")
               : (e.game.mod.getVar("crHead") || e.game.mod.getVar("mario")),
             n = e.game.mod.getVar("customColors"),
-            r = n ? Q(e.game.mod.getVar("vehicleColor")) : "#000",
+            r = isGhost
+              ? (ghostVehicleColor || "#000")
+              : (n ? Q(e.game.mod.getVar("vehicleColor")) : "#000"),
             o = isGhost
               ? (ghostHatType === "BHR")
               : e.game.mod.getVar("blackHat"),
+            propeller = isGhost ? !!this.player._propeller : e.game.mod.getVar("propeller"),
             a = this.frontWheel.pos.toScreen(e),
             h = this.rearWheel.pos.toScreen(e),
             l = this.head.pos.toScreen(e),
@@ -15944,7 +15979,7 @@
           const gg = new W(ff,pp,dd);             
 
           const mm = (.25) * Math.cos(rotor); // propeller
-          if (this.scene.game.mod.getVar("propeller")) {
+          if (propeller) {
                   u.beginPath();  
                   u.strokeStyle = "#000000",
                   u.lineWidth = 3 * c,
@@ -15954,12 +15989,14 @@
                   u.stroke();
                   u.closePath();}
 
-
+          (u.globalAlpha = d);
           if (
             (this.crashed ||
-              ((u.strokeStyle = n
-                ? tt([...e.game.mod.getVar("riderColor"), 0.5 * d])
-                : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "rgba(0,0,0," + 0.5 * d + ")"),
+              ((u.strokeStyle = isGhost
+                ? (ghostRiderColor ? hexToRgba(ghostRiderColor, 0.5) : "rgba(0,0,0,0.5)")
+                : n
+                  ? tt([...e.game.mod.getVar("riderColor"), 0.5])
+                  : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.5)"),
               (u.lineWidth = 6 * c),
               u.beginPath(),
               u.moveTo(C.x, C.y),
@@ -15972,7 +16009,6 @@
                 u.moveTo(C.x, C.y),
                 u.lineTo(E.x, E.y),
                 u.stroke())),
-            (u.globalAlpha = d),
             (u.strokeStyle = "#000000"),
             (u.lineWidth = w * c),
             (u.lineCap = "round"),
@@ -16049,7 +16085,9 @@
           else {
             if (
               ((u.lineWidth = 6 * c),
-              (u.strokeStyle = n ? Q(e.game.mod.getVar("riderColor")) : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "#000"),
+                (u.strokeStyle = isGhost
+                  ? (ghostRiderColor ? hexToRgba(ghostRiderColor, 1) : "#000")
+                  : n ? Q(e.game.mod.getVar("riderColor")) : (e.game.mod.getVar("invisibleRider")) ? "rgba(0,0,0,0)" : "#000"),
               u.beginPath(),
               u.moveTo(T.x, T.y),
               u.lineTo(I.x, I.y),
@@ -16126,13 +16164,15 @@
                   (u.lineWidth = 2 * c),
                   u.stroke();
                 u.closePath()
+              } else {
+              var headCosmetic;
+              if (isGhost) {
+                headCosmetic = { id: "1", classname: "forward_cap", name: "classic", type: "1", options: { back: this.player._hatColor || "#000000" } };
+              } else {
+                headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
+                  || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
               }
-            else {
-              var headCosmetic = (GameSettings.user && GameSettings.user.cosmetics && GameSettings.user.cosmetics.head)
-                || { id: "1", classname: "forwardcap", name: "classic", options: { back: "white" } };
-              const t = GameInventoryManager.getItem(headCosmetic),
-                e = this.drawHeadAngle;
-              t.draw(u, z.x, z.y, e, c, this.dir);
+              GameInventoryManager.getItem(headCosmetic).draw(u, z.x, z.y, this.drawHeadAngle, c, this.dir);
             }
             u.globalAlpha = 1;
           }
@@ -18175,7 +18215,7 @@
         }
         checkGrid() {
           const t = this.scene.camera;
-          if (t.zoom !== t.desiredZoom || t.zoom !== this._lastGridZoom) {
+          if (t.zoom === t.desiredZoom && t.zoom !== this._lastGridZoom) {
             this.gridCache = false;
             this._lastGridZoom = t.zoom;
           }
@@ -18619,31 +18659,39 @@
         drawCachedGrid(t, e) {
           if (this.options.isometricGrid) {
             return this.drawCachedGridIsometric(t, e);
-          } else {
-            this.gridCache || this.cacheGrid(e);
-            const s = this.gridCache,
-              i = s.width,
-              n = s.height,
-              r = this.scene.screen.center,
-              o = 2 + (r.x / i | 0),
-              a = 2 + (r.y / n | 0),
-              h = this.camera.zoom;
-            let l = (this.camera.position.x * h) % i;
-            let c = (this.camera.position.y * h) % n;
-            if (l < 0) l += i;
-            if (c < 0) c += n;
-            t.globalAlpha = this.gridCacheAlpha;
-            t.globalCompositeOperation = "destination-over";
-            for (let e = -o; e < o; e++) {
-              for (let o = -a; o < a; o++) {
-                const a = e * i - l + r.x,
-                  h = o * n - c + r.y;
-                t.drawImage(s, 0, 0, i, n, a, h, i, n);
-              }
-            }
-            t.globalAlpha = 1;
-            t.globalCompositeOperation = "source-over";
           }
+
+          this.gridCache || this.cacheGrid(e);
+
+          const s = this.gridCache,
+            cachedZoom = this.gridCacheZoom,
+            currentZoom = this.camera.zoom,
+            scaleFactor = currentZoom / cachedZoom,
+            i = s.width * scaleFactor,
+            n = s.height * scaleFactor,
+            r = this.scene.screen.center,
+            o = 2 + (r.x / i | 0),
+            a = 2 + (r.y / n | 0);
+
+          let l = (this.camera.position.x * currentZoom) % i;
+          let c = (this.camera.position.y * currentZoom) % n;
+          if (l < 0) l += i;
+          if (c < 0) c += n;
+
+          t.globalAlpha = this.gridCacheAlpha;
+          t.globalCompositeOperation = "destination-over";
+
+          for (let e = -o; e < o; e++) {
+            for (let o = -a; o < a; o++) {
+              const a = e * i - l + r.x,
+                h = o * n - c + r.y;
+              // draw the cached tile scaled to current zoom
+              t.drawImage(s, 0, 0, s.width, s.height, a, h, i, n);
+            }
+          }
+
+          t.globalAlpha = 1;
+          t.globalCompositeOperation = "source-over";
         }
 
         drawCachedGridIsometric(t, e) {
@@ -18681,6 +18729,7 @@
             r = document.createElement("canvas");
           r.width = s;
           r.height = i;
+          this.gridCacheZoom = t;
           const o = r.getContext("2d");
           o.strokeStyle = this.options.gridMinorLineColor;
           o.strokeWidth = 1;
@@ -31607,13 +31656,24 @@ class LiveRiderManager {
     this.username = username;
 
     this.ws.onopen = () => {
-    this.connected = true;
-    this.ws.send(JSON.stringify({
+      this.connected = true;
+      const mod = this.scene.mod;
+      const customColors = mod ? mod.getVar('customColors') : false;
+      const vehicleColorRgb = (customColors && mod) ? mod.getVar('vehicleColor') : null;
+      const riderColorRgb = (customColors && mod) ? mod.getVar('riderColor') : null;
+      const toHex = (rgb) => rgb ? '#' + rgb.map(c => ('0' + c.toString(16)).slice(-2)).join('') : null;
+
+      this.ws.send(JSON.stringify({
         type: 'join',
         trackId,
         hatColor: hatColor || '#000000',
-        hatType: hatType || 'none'
-    }));
+        hatType: hatType || 'none',
+        vehicleColor: toHex(vehicleColorRgb),
+        riderColor: toHex(riderColorRgb),
+        crBmx: mod ? mod.getVar('crBmx') || false : false,
+        crMtb: mod ? mod.getVar('crMtb') || false : false,
+        propeller: mod ? mod.getVar('propeller') || false : false,
+      }));
     };
 
     this.ws.onmessage = (e) => {
@@ -31629,8 +31689,14 @@ class LiveRiderManager {
                 ghost: null,
                 username: p.username,
                 hatColor: p.hatColor,
-                hatType: p.hatType
+                hatType: p.hatType,
+                vehicleColor: p.vehicleColor,
+                riderColor: p.riderColor,
+                crBmx: p.crBmx || false,
+                crMtb: p.crMtb || false,
+                propeller: p.propeller || false
               });
+              setTimeout(() => this.sendAppearance(), 500);
             }
           });
         } else if (msg.type === 'player_joined' && msg.playerId !== this.playerId) {
@@ -31638,7 +31704,12 @@ class LiveRiderManager {
             ghost: null,
             username: msg.username,
             hatColor: msg.hatColor,
-            hatType: msg.hatType
+            hatType: msg.hatType,
+            vehicleColor: msg.vehicleColor,
+            riderColor: msg.riderColor,
+            crBmx: msg.crBmx || false,
+            crMtb: msg.crMtb || false,
+            propeller: msg.propeller || false
           });
         } else if (msg.type === 'player_left') {
           this.removeGhost(msg.playerId);
@@ -31647,9 +31718,19 @@ class LiveRiderManager {
           if (playerData) {
             playerData.hatColor = msg.hatColor;
             playerData.hatType = msg.hatType;
+            playerData.vehicleColor = msg.vehicleColor;
+            playerData.riderColor = msg.riderColor;
+            playerData.crBmx = msg.crBmx || false;
+            playerData.crMtb = msg.crMtb || false;
+            playerData.propeller = msg.propeller || false;
             if (playerData.ghost) {
               playerData.ghost._hatColor = msg.hatColor;
               playerData.ghost._hatType = msg.hatType;
+              playerData.ghost._vehicleColor = msg.vehicleColor;
+              playerData.ghost._riderColor = msg.riderColor;
+              playerData.ghost._crBmx = msg.crBmx || false;
+              playerData.ghost._crMtb = msg.crMtb || false;
+              playerData.ghost._propeller = msg.propeller || false;
             }
           }
         }
@@ -31787,7 +31868,7 @@ class LiveRiderManager {
     v.slow = slow;
 
     if (v.mini !== undefined) v.mini = mini;
-    if (v.propeller !== undefined) v.propeller = propeller;
+    if (v.propeller !== undefined) v.propeller = xButton ? GameSettings.propeller * 0.3 : 0;
     if (v.crouch !== undefined) v.crouch = crouch;
 
     switch (vehicleCode) {
@@ -31882,21 +31963,33 @@ class LiveRiderManager {
     const mod = this.scene.mod;
     const hatColorRgb = mod ? mod.getVar('hatColor') : null;
     const hatColor = hatColorRgb
-        ? '#' + hatColorRgb.map(function(c) { return ('0' + c.toString(16)).slice(-2); }).join('')
-        : '#000000';
+      ? '#' + hatColorRgb.map(c => ('0' + c.toString(16)).slice(-2)).join('')
+      : '#000000';
     const crHead = mod ? mod.getVar('crHead') : false;
     const blackHat = mod ? mod.getVar('blackHat') : false;
     const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+    const customColors = mod ? mod.getVar('customColors') : false;
+    const vehicleColorRgb = (customColors && mod) ? mod.getVar('vehicleColor') : null;
+    const riderColorRgb = (customColors && mod) ? mod.getVar('riderColor') : null;
+    const toHex = (rgb) => rgb ? '#' + rgb.map(c => ('0' + c.toString(16)).slice(-2)).join('') : null;
+
     this.ws.send(JSON.stringify({
-        type: 'appearance',
-        hatColor,
-        hatType
+      type: 'appearance',
+      hatColor,
+      hatType,
+      vehicleColor: toHex(vehicleColorRgb),
+      riderColor: toHex(riderColorRgb),
+      crBmx: mod ? mod.getVar('crBmx') || false : false,
+      crMtb: mod ? mod.getVar('crMtb') || false : false,
+      propeller: mod ? mod.getVar('propeller') || false : false,
     }));
   }
 
   createGhost(playerId, username, hatColor, hatType) {
     const pm = this.scene.playerManager;
     const Vehicles = window.GameVehicles;
+    const playerData = this.ghostPlayers.get(playerId);
 
     const ghost = pm.createPlayer(this.scene, {
       u_id: playerId.hashCode(),
@@ -31908,8 +32001,13 @@ class LiveRiderManager {
 
     ghost._ghost = true;
     ghost._liveRider = true;
-    ghost._hatColor = hatColor;
-    ghost._hatType = hatType;
+    ghost._hatColor = playerData.hatColor;
+    ghost._hatType = playerData.hatType;
+    ghost._vehicleColor = playerData.vehicleColor;
+    ghost._riderColor = playerData.riderColor;
+    ghost._crBmx = playerData.crBmx;
+    ghost._crMtb = playerData.crMtb;
+    ghost._propeller = playerData.propeller;
     ghost._baseVehicleType = 'BMX';
     ghost._baseVehicle = new Vehicles.BMX(ghost, { x: 0, y: 35 }, 1, { x: 0, y: 0 });
     ghost._tempVehicle = false;
@@ -31920,12 +32018,7 @@ class LiveRiderManager {
 
     pm.addPlayer(ghost);
 
-    this.ghostPlayers.set(playerId, {
-      ghost: ghost,
-      username: username,
-      hatColor: hatColor,
-      hatType: hatType
-    });
+    playerData.ghost = ghost;
   }
 
   disableCollisions(vehicle) {

@@ -35688,7 +35688,7 @@
           'crPowerups', 'mario', 'seeGhost'
         ];
 
-        var hatKeys = ['hatColor', 'crHead', 'blackHat'];
+        var appearanceKeys = ['hatColor', 'crHead', 'blackHat', 'vehicleColor', 'riderColor', 'customColors', 'crBmx', 'crMtb', 'propeller'];
 
         modBoolKeys.forEach(function (key) {
           registerSingle('mod-' + key, function (v) {
@@ -35696,7 +35696,7 @@
             if (scene && scene.game && scene.game.mod) {
               scene.game.mod.setVar(key, v);
             }
-            if (hatKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
+            if (appearanceKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
               scene.liveRider.sendAppearance();
             }
           });
@@ -35714,7 +35714,7 @@
             if (scene && scene.game && scene.game.mod) {
               scene.game.mod.setVar(key, v); // v should be [r, g, b]
             }
-            if (hatKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
+            if (appearanceKeys.indexOf(key) !== -1 && scene && scene.liveRider) {
               scene.liveRider.sendAppearance();
             }
           });

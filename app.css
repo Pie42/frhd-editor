@@ -2150,7 +2150,7 @@ span.editorgui_icons-icon_pattern {
 
 .editorDialog-fuller {
     width: 100%;
-    height: calc(100vh - 72px);
+    height: calc(100dvh - 72px);
     background: #FFF;
     position: relative;
     box-shadow: 0 0 1px #DDD;
@@ -2161,7 +2161,7 @@ span.editorgui_icons-icon_pattern {
 
 .editorDialog-db {
     width: 90%;
-    height: calc(90vh - 25px);
+    height: calc(90dvh - 25px);
     background: #FFF;
     border: 1px solid #C2C2C2;
     margin: auto;
@@ -2620,7 +2620,7 @@ span.editorgui_icons-icon_pattern {
 
 .editorDialog {
     width: 100%;
-    height: calc(100vh - 72px);
+    height: calc(100dvh - 72px);
     position: absolute;
     top: 36px;
     background: rgba(0, 0, 0, 0);
@@ -3347,7 +3347,7 @@ only screen and (min-device-pixel-ratio:3) {
     top: 0;
     right: 0;
     width: 25%;
-    height: 100vh;
+    height: 100dvh;
     border-style: solid;
     border-bottom: none;
     border-top: none;
@@ -3532,7 +3532,7 @@ div.sideDivider {
     top: 0;
     right: 0;
     width: 25%;
-    height: 100vh;
+    height: 100dvh;
     border-style: solid;
     border-bottom: none;
     border-top: none;
@@ -5048,7 +5048,7 @@ input[type="color"] {
     transform: translate(-50%, -50%);
     width: 400px;
     max-width: 95vw;
-    height: calc(75vh - 25px);
+    height: calc(75dvh - 25px);
     max-height: 800px;
     z-index: 101;
     background: #fff;
@@ -5068,7 +5068,7 @@ body.tools-dialog-open #toolsIframe {
     transform: translate(-50%, -50%) !important;
     width: 400px !important;
     max-width: 95vw !important;
-    height: calc(75vh - 25px - 39px) !important;
+    height: calc(75dvh - 25px - 39px) !important;
     max-height: 761px !important;
     margin-top: 19.5px !important;
     z-index: 101 !important;
@@ -5441,10 +5441,89 @@ body.tools-dialog-open #toolsIframe {
 }
 
 @media (max-width: 400px) {
-    .tab-label {
-        display: none;
-    }
     .tab-container {
         height: 36px;
     }
+}
+
+.tab-label {
+    display: none;
+}
+
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    height: 36px;
+    background: #fff;
+    border-top: 1px solid #ccc;
+    z-index: 100;
+}
+
+.bottom-bar-button {
+    flex: 1;
+    border: none;
+    background: #e2e2e2;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #888;
+    border-right: 1px solid #ccc;
+}
+
+.bottom-bar-button:last-child {
+    border-right: none;
+}
+
+.bottom-bar-button:hover {
+    background: #d0d0d0;
+}
+
+.bottom-bar-button.active {
+    background: #fff;
+    color: #000;
+}
+
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    height: 36px;
+    background: #fff;
+    border-top: 1px solid #ccc;
+    z-index: 100;
+}
+
+.bottom-bar-button {
+    flex: 1;
+    border: none;
+    background: #e2e2e2;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #888;
+    border-right: 1px solid #ccc;
+}
+
+.bottom-bar-button:last-child {
+    border-right: none;
+}
+
+.bottom-bar-button:hover {
+    background: #d0d0d0;
+}
+
+.bottom-bar-button.active {
+    background: #fff;
+    color: #000;
+}
+
+.editorDialog-tools.has-bottom-bar {
+    height: calc(100dvh - 36px) !important;
 }

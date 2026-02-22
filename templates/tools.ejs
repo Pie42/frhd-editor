@@ -9,8 +9,10 @@
 
 <body style="margin: 0; padding: 0;">
     <div class="editorDialog-tools editorDialog-content_brushDialog"
-        style="background: transparent; box-shadow: none; width: 100%; max-width: none; margin: 0; border-radius: 0; height: 100vh; overflow-y:scroll;">
+        style="background: transparent; box-shadow: none; width: 100%; max-width: none; margin: 0; border-radius: 0; height: 100dvh; overflow-y:scroll;">
 
+        <div id="toolbox-content">
+            
         <!-- TAB NAVIGATION -->
         <div class="tab-container">
             <button class="tab-button active" data-tab="tool">
@@ -57,11 +59,6 @@
                 </span>
                 <span class="tab-label">Mods</span>
             </button>
-        </div>
-
-        <div id="tab-forum" class="tab-content">
-            <iframe id="forum-iframe" style="width: 100%; height: calc(100vh - 48px); border: none;">
-            </iframe>
         </div>
 
         <!-- TOOL TAB CONTENT -->
@@ -1223,7 +1220,18 @@
                 <div style="color: #888; text-align: center; padding: 10px;">Loading mod settings...</div>
             </div>
         </div>
+        </div>
 
+        <!-- LIVE CHAT -->
+        <div id="forum-content" style="display: none;">
+            <iframe id="forum-iframe" style="width: 100%; height: calc(100dvh - 36px); border: none;"></iframe>
+        </div>
+        
+        <!-- BOTTOM BAR -->
+        <div id="bottom-bar" class="bottom-bar" style="display: none;">
+            <button class="bottom-bar-button active" data-panel="toolbox">Toolbox</button>
+            <button class="bottom-bar-button" data-panel="forum">Forum</button>
+        </div>
     </div>
 
     <style>
@@ -1595,6 +1603,40 @@ body.dialog-mode #tab-track {
                 switchTab(tabName);
             });
         });
+
+        document.querySelectorAll('.bottom-bar-button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var panel = this.dataset.panel;
+
+                document.querySelectorAll('.bottom-bar-button').forEach(function (b) {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                var toolbox = document.getElementById('toolbox-content');
+                var chat = document.getElementById('forum-content');
+
+                if (panel === 'forum') {
+                    toolbox.style.display = 'none';
+                    chat.style.display = 'block';
+                    document.querySelector('.editorDialog-tools').style.overflowY = 'hidden';
+                    var iframe = document.getElementById('forum-iframe');
+                    if (!iframe.dataset.loaded) {
+                        iframe.src = 'https://forum.freerider.app/';
+                        iframe.dataset.loaded = 'true';
+                    }
+                } else {
+                    chat.style.display = 'none';
+                    toolbox.style.display = '';
+                    document.querySelector('.editorDialog-tools').style.overflowY = 'scroll';
+                }
+
+                window.parent.focus();
+            });
+        });
+
+        document.getElementById('bottom-bar').style.display = '';
+        document.querySelector('.editorDialog-tools').classList.add('has-bottom-bar');
 
         function switchTab(tabName) {
             state.currentTab = tabName;

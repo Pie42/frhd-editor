@@ -97,7 +97,12 @@ function setupLiveRacing(server) {
                         username,
                         vehicleType: msg.vehicleType || 'BMX',
                         hatColor: msg.hatColor || '#000000',
-                        hatType: msg.hatType || 'none'
+                        hatType: msg.hatType || 'none',
+                        vehicleColor: msg.vehicleColor || null,
+                        riderColor: msg.riderColor || null,
+                        crBmx: msg.crBmx || false,
+                        crMtb: msg.crMtb || false,
+                        propeller: msg.propeller || false
                     });
 
                     const players = [];
@@ -107,7 +112,12 @@ function setupLiveRacing(server) {
                             username: p.username,
                             vehicleType: p.vehicleType,
                             hatColor: p.hatColor,
-                            hatType: p.hatType
+                            hatType: p.hatType,
+                            vehicleColor: p.vehicleColor,
+                            riderColor: p.riderColor,
+                            crBmx: p.crBmx,
+                            crMtb: p.crMtb,
+                            propeller: p.propeller || false
                         });
                     }
 
@@ -123,21 +133,36 @@ function setupLiveRacing(server) {
                         username,
                         vehicleType: msg.vehicleType || 'BMX',
                         hatColor: msg.hatColor || '#000000',
-                        hatType: msg.hatType || 'none'
+                        hatType: msg.hatType || 'none',
+                        vehicleColor: msg.vehicleColor || null,
+                        riderColor: msg.riderColor || null,
+                        crBmx: msg.crBmx || false,
+                        crMtb: msg.crMtb || false,
+                        propeller: msg.propeller || false
                     }, playerId);
                 } else if (msg.type === 'appearance' && session && playerId) {
                     const playerInfo = session.get(playerId);
                     if (playerInfo) {
                         playerInfo.hatColor = msg.hatColor;
                         playerInfo.hatType = msg.hatType;
+                        playerInfo.vehicleColor = msg.vehicleColor;
+                        playerInfo.riderColor = msg.riderColor || null;
+                        playerInfo.crBmx = msg.crBmx || false;
+                        playerInfo.crMtb = msg.crMtb || false;
+                        playerInfo.propeller = msg.propeller || false;
                     }
 
                     broadcastJSON(session, {
                         type: 'appearance',
-                        playerId: senderPlayerId,
+                        playerId: playerId,
                         hatColor: msg.hatColor,
-                        hatType: msg.hatType
-                    }, senderPlayerId);
+                        hatType: msg.hatType,
+                        vehicleColor: msg.vehicleColor,
+                        riderColor: msg.riderColor || null,
+                        crBmx: msg.crBmx || false,
+                        crMtb: msg.crMtb || false,
+                        propeller: msg.propeller || false
+                    }, playerId);
                 }
             } catch (e) {
                 console.error('[Live] Error:', e.message);

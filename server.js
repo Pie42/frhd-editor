@@ -3218,7 +3218,7 @@ async function startServer() {
     await loadPlaylistsFromDb();
     await loadObjectsCache();
 
-    //setupLiveRacing(server);
+    setupLiveRacing(server);
 
     setInterval(refreshCaches, CACHE_REFRESH_INTERVAL);
 
