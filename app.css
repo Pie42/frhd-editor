@@ -5524,3 +5524,16 @@ body.tools-dialog-open #toolsIframe {
     position: relative;
     display: flex;
 }
+
+.layer-item[draggable="true"] {
+    cursor: grab;
+}
+.layer-item.dragging {
+    opacity: 0.4;
+}
+.layer-item.drag-over-top {
+    border-top: 2px solid #1884cf;
+}
+.layer-item.drag-over-bottom {
+    border-bottom: 2px solid #1884cf;
+}

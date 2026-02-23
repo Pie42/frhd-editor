@@ -995,9 +995,9 @@
                     powerup.angle = i.angle;
                   }
                 } else if (i.name === 'teleport') {
-                  if (i.hasOwnProperty('x2') && i.hasOwnProperty('y2')) {
-                    powerup.x2 = i.x2 - centerX;
-                    powerup.y2 = i.y2 - centerY;
+                  if (i.otherPortal) {
+                    powerup.x2 = i.otherPortal.x - centerX;
+                    powerup.y2 = i.otherPortal.y - centerY;
                   }
                 } else if (['helicopter', 'truck', 'balloon', 'blob'].includes(i.name)) {
                   if (i.hasOwnProperty('time')) {
@@ -1719,7 +1719,7 @@
           a = n.createClass({
             displayName: "Layer",
             getInitialState: function () {
-              return { open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default' };
+              return { open: false, layerListOpen: false, settingsOpen: false, mergeOpen: false, name: 'Default', rerender: false};
             },
             stopClickPropagation: function (e) {
               //e.preventDefault();
@@ -1783,45 +1783,121 @@
             },
             renderSettings: function () {
               let o = this.state.settingsOpen;
-              let l = GameManager.game.currentScene.track.currentLayer;
+              let t = GameManager.game.currentScene.track;
+              let l = t.currentLayer;
+              let c = t.layerIndex;
+              let num = t.layers.length;
               //this.state.name != l.name && this.setState({name: l.name});
-              return n.createElement("span", {},
-                n.createElement("button", {
-                  onClick: this.openSettings,
-                  className: "margin"
-                }, "Settings"),
-                o ? this.modal(
-                  // name
-                  // this does not work and i have no idea why; just use the console if you want to change a layer name
-                  n.createElement('div', null,
-                    //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
-                    //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
-                    n.createElement('button', { onClick: (e) => { this.stopClickPropagation(e); let n = prompt('What would you like to name this layer?', l.name); if (n) l.name = e.target.innerText = n; } }, l.name)
-                  ),
-                  // physics line color
-                  n.createElement("label", { htmlFor: "layer-physics-color" }, "Physics line color: "),
-                  n.createElement("input", { type: "color", id: "layer-physics-color", value: this.fixColor(l.physicsLineColor), onChange: (e) => { let c = e.target.value; l.physicsLineColor = c; l.update(); } }),
-                  // scenery line color
-                  n.createElement("label", { htmlFor: "layer-scenery-color" }, "Scenery line color: "),
-                  n.createElement("input", { type: "color", id: "layer-scenery-color", value: this.fixColor(l.sceneryLineColor), onChange: (e) => { let c = e.target.value; l.sceneryLineColor = c; l.update(); } }),
-                  // uses default colors
-                  n.createElement("button", { onClick: l.resetColors.bind(l) }, "Reset colors"),
-                  // show/hide
-                  n.createElement("button", {
-                    onClick: (e) => {
-                      this.stopClickPropagation(e);
-                      if (!l) return;
-                      l.toggle();
-                      e.target.innerHTML = l.show ? "Hide" : "Show";
-                    }
-                  }, GameManager.game.currentScene.track.currentLayer.show ? 'Hide' : 'Show')
-                  // end modal
-                ) : null);
+              return n.createElement(
+                'span',
+                {},
+                n.createElement(
+                  'button',
+                  {
+                    onClick: this.openSettings,
+                    className: 'margin',
+                  },
+                  'Settings'
+                ),
+                o
+                  ? this.modal(
+                    // name
+                    // this does not work and i have no idea why; just use the console if you want to change a layer name
+                    n.createElement('div', null,
+                      //n.createElement("input", {type: "text", value: this.state.name, onChange: e => this.onNameInput(e), name: 'layer-name'}),
+                      //n.createElement("input", {type: 'text', ref: 'layerName', defaultValue: l.name, onInput: this.onNameInput, onFocus: e => console.log(e), onKeyDown: e => {console.log(e); this.stopClickPropagation(e)}, name: 'layer-name'})
+                      n.createElement('button', {
+                        onClick: (e) => {
+                          this.stopClickPropagation(e);
+                          let n = prompt(
+                            'What would you like to name this layer?',
+                            l.name
+                          );
+                          if (n)
+                            l.name = e.target.innerText = n;
+                        }
+                      }, l.name)
+                    ),
+                    // physics line color
+                    n.createElement('label', { htmlFor: 'layer-physics-color' }, 'Physics line color: '
+                    ),
+                    n.createElement('input', {
+                      type: 'color',
+                      id: 'layer-physics-color',
+                      value: this.fixColor(l.physicsLineColor),
+                      onChange: (e) => {
+                        let c = e.target.value;
+                        l.physicsLineColor = c;
+                        l.update();
+                      },
+                    }),
+                    // scenery line color
+                    n.createElement('label', { htmlFor: 'layer-scenery-color' }, 'Scenery line color: '),
+                    n.createElement('input', {
+                      type: 'color',
+                      id: 'layer-scenery-color',
+                      value: this.fixColor(l.sceneryLineColor),
+                      onChange: (e) => {
+                        let c = e.target.value;
+                        l.sceneryLineColor = c;
+                        l.update();
+                      },
+                    }),
+                    // uses default colors
+                    n.createElement('button', { onClick: l.resetColors.bind(l) }, 'Reset colors'),
+                    // reorder
+                    n.createElement('span', {}, 'Move ',
+                      n.createElement('button', {
+                        disabled: !(c > 0),
+                        onClick: (e) => {
+                          this.stopClickPropagation(e);
+                          if (!l) return;
+                          t.layers.splice(c - 1, 0,
+                            ...t.layers.splice(c, 1)
+                          );
+                          t.layerIndex--;
+                          l.update();
+                          this.setState({
+                            rerender: !this.state.rerender,
+                          })
+                        }
+                      }, 'Up'), ' / ',
+                      n.createElement('button', {
+                        disabled: !(c < num - 1),
+                        onClick: (e) => {
+                          this.stopClickPropagation(e);
+                          if (!l) return;
+                          t.layers.splice(c + 1, 0,
+                            ...t.layers.splice(c, 1)
+                          );
+                          t.layerIndex++;
+                          l.update();
+                          this.setState({
+                            rerender: !this.state.rerender,
+                          })
+                        }
+                      }, 'Down')),
+                    // show/hide
+                    n.createElement('button', {
+                      onClick: (e) => {
+                        this.stopClickPropagation(e);
+                        if (!l) return;
+                        l.toggle();
+                        e.target.innerHTML = l.show
+                          ? 'Hide'
+                          : 'Show';
+                      },
+                    }, GameManager.game.currentScene.track.currentLayer
+                      .show ? 'Hide' : 'Show')
+                    // end modal
+                  )
+                  : null
+              );
             },
             renderControls: function () {
               let l = GameManager.game.currentScene.track.layers,
                 c = GameManager.game.currentScene.track.layerIndex,
-                f = c > 0,
+                f = !GameManager.game.currentScene.track.currentLayer.isDefault,
                 o = this.state.mergeOpen;
               return n.createElement("span", {},
                 n.createElement("button", {
@@ -34281,6 +34357,24 @@
               settings.patternExperimentalStabilization = GameSettings.pattern ? GameSettings.pattern.experimentalStabilization : false;
             }
 
+            var selectTool = scene.toolHandler.tools.select;
+            if (selectTool && selectTool.selected && selectTool.selected.length > 0) {
+              settings.selectHasSelection = true;
+              settings.selectCount = selectTool.selected.length;
+              var lineCount = 0, powerupCount = 0;
+              for (var j = 0; j < selectTool.selected.length; j++) {
+                if (selectTool.selected[j].p1) lineCount++;
+                else powerupCount++;
+              }
+              settings.selectLineCount = lineCount;
+              settings.selectPowerupCount = powerupCount;
+              settings.selectIsPoint = lineCount === 1 && powerupCount === 0 && selectTool.isPointSelect;
+              settings.selectTransformState = selectTool.getTransformState();
+              settings.selectPreviewData = selectTool.getPreviewData();
+            } else {
+              settings.selectHasSelection = false;
+            }
+
             if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.mod) {
               var mod = GameManager.game.mod;
               settings.modVars = {};
@@ -34917,6 +35011,85 @@
           copy: function (v) { GameSettings.copy = v; }
         });
 
+        registerSingle('select-transform', function (v) {
+          var scene = getScene();
+          if (!scene) return;
+          var selectTool = scene.toolHandler.tools.select;
+          if (!selectTool || !selectTool.selected.length) return;
+          selectTool.applyButtonTransform(v);
+          scene.stateChanged();
+        });
+
+        registerSingle('select-save-object', function () {
+          var scene = getScene();
+          if (!scene) return;
+          var tool = scene.toolHandler.tools.select;
+          if (!tool || !tool.selected || !tool.selected.length) return;
+
+          var center = tool.findCenter();
+          var centerX = center.centerX;
+          var centerY = center.centerY;
+          var selected = tool.selected;
+
+          var objectPhysics = [];
+          var objectScenery = [];
+          var objectPowerups = [];
+
+          for (var j = 0; j < selected.length; j++) {
+            var item = selected[j];
+            if ('p1' in item && 'p2' in item) {
+              var line = {
+                x1: item.p1.x - centerX, y1: item.p1.y - centerY,
+                x2: item.p2.x - centerX, y2: item.p2.y - centerY
+              };
+              if ('highlight' in item) objectPhysics.push(line);
+              else objectScenery.push(line);
+            } else if ('name' in item) {
+              var powerup = { name: item.name, x: item.x - centerX, y: item.y - centerY };
+              if (item.name === 'boost' || item.name === 'gravity') {
+                if (item.hasOwnProperty('angle')) powerup.angle = item.angle;
+              } else if (item.name === 'teleport') {
+                if (item.hasOwnProperty('x2') && item.hasOwnProperty('y2')) {
+                  powerup.x2 = item.x2 - centerX;
+                  powerup.y2 = item.y2 - centerY;
+                }
+              } else if (['helicopter', 'truck', 'balloon', 'blob'].indexOf(item.name) !== -1) {
+                if (item.hasOwnProperty('time')) powerup.time = item.time;
+              }
+              objectPowerups.push(powerup);
+            }
+          }
+
+          scene.objectPhysics = objectPhysics;
+          scene.objectScenery = objectScenery;
+          scene.objectPowerups = objectPowerups;
+
+          var name;
+          while (!name || scene.objects[name])
+            name = 'object-' + String(scene.objectNamegen++).padStart(2, '0');
+
+          scene.objectName = name;
+          scene.objects[name] = { objectPhysics: objectPhysics, objectScenery: objectScenery, objectPowerups: objectPowerups };
+
+          GameSettings.objectRotate = 0;
+          GameSettings.objectScale = 1;
+          GameSettings.objectStretchX = 1;
+          GameSettings.objectStretchY = 1;
+          GameSettings.objectOffsetX = 0;
+          GameSettings.objectOffsetY = 0;
+          GameSettings.objectFlipX = false;
+          GameSettings.objectFlipY = false;
+          GameSettings.objectInvert = false;
+
+          scene.transformObjects();
+          scene.saveObjects();
+          GameSettings.customBrush = true;
+          if (!scene.toolHandler.options.object) {
+            GameManager.command("object");
+          }
+          scene.stateChanged();
+        });
+
         // ---- Circle ----
 
         register('circle', {
@@ -35103,6 +35276,29 @@
             var layer = scene.track.currentLayer;
             if (layer) layer.toggle();
           },
+          'reorder': function (v) {
+            var scene = getScene();
+            if (!scene) return;
+            var track = scene.track;
+            var from = v.fromIndex;
+            var to = v.toIndex;
+            if (from === to || !track.layers[from]) return;
+
+            var layer = track.layers.splice(from, 1)[0];
+            track.layers.splice(to, 0, layer);
+
+            if (track.layerIndex === from) {
+              track.layerIndex = to;
+            } else if (from < track.layerIndex && to >= track.layerIndex) {
+              track.layerIndex--;
+            } else if (from > track.layerIndex && to <= track.layerIndex) {
+              track.layerIndex++;
+            }
+            track.currentLayer = track.layers[track.layerIndex];
+            track.canvasPool.update();
+            track.undraw();
+            scene.stateChanged();
+          },
           'reset-colors': function () {
             var scene = getScene();
             if (!scene) return;
@@ -35262,6 +35458,7 @@
             GameSettings.objectFlipY = false;
             GameSettings.objectInvert = false;
             scene.transformObjects();
+            scene.stateChanged();
             if (!scene.toolHandler.options.object) {
               GameManager.command("object");
             }

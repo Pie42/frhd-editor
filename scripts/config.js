@@ -75,6 +75,14 @@ var Config = {
   copy: { gs: 'copy', default: false },
   scaleLock: { gs: 'scaleLock', invertFalse: true },
 
+  selectState: {
+    computed: function (scene) {
+      var tool = scene.toolHandler.tools.select;
+      if (!tool || !tool.selected || !tool.selected.length) return 0;
+      return tool.selected.length + '|' + tool.actionPointer + '|' + JSON.stringify(tool.getTransformState());
+    }
+  },
+
   // Camera settings
   cameraSpeed: { gs: 'cameraSpeed', default: 3 },
   cameraSensitivity: { gs: 'cameraSensitivity', default: 0.05 },

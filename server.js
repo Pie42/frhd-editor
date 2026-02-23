@@ -2185,6 +2185,25 @@ function filterCachedTracks(tracks, query, author, platformType = null) {
         else if (query.toLowerCase() === 'remix' || query.toLowerCase() === 'remixes') {
             filtered = filtered.filter(t => t.remixOf && t.remixOf.length > 0);
         }
+        else if (query.toLowerCase() === 'live') {
+            const activeTrackIds = new Set();
+            for (const [trackId, players] of liveSessions) {
+                if (players.size > 0) {
+                    activeTrackIds.add(String(trackId));
+                    const slashIndex = trackId.indexOf('/');
+                    if (slashIndex !== -1) {
+                        activeTrackIds.add(trackId.substring(slashIndex + 1));
+                    }
+                }
+            }
+            filtered = filtered.filter(t =>
+                activeTrackIds.has(String(t.canonical)) ||
+                activeTrackIds.has(String(t.canonicalId)) ||
+                activeTrackIds.has(String(t.id)) ||
+                activeTrackIds.has(`${t.type}-${t.id}`) ||
+                activeTrackIds.has(`${t.urlType}/${t.urlId}`)
+            );
+        }
         else if (query.toLowerCase() === 'playlists' || query.toLowerCase() === 'is:playlist') {
             filtered = [];
             filtered._showPlaylists = true;
