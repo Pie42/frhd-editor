@@ -10703,10 +10703,11 @@ legend body,
 .sticky-header {
   position: fixed;
   width: 100%;
-  top: 0;
+  top: -5px;
+  left: -5px;
   background: #fff;
   z-index: 100;
-  padding: 10px 0;
+  padding: 15px 5px;
   border-bottom: 1px solid #ddd;
 }
 

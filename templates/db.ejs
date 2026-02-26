@@ -16,15 +16,18 @@
                     <!-- type filters -->
                     <div class="type-filters">
                         <strong>
-                            <% const types=['db', 'frhd' , 'bhr' , 'cr' ]; %>
-                                <% types.forEach((t, i)=> { %>
-                                    <span class="track-type-filter" data-type="<%= t %>">
-                                        <span class="type-filter-link">
-                                            <%= t==='plus' ? '+' : t.toUpperCase() %>
-                                        </span>
-                                    </span>
-                                    <%= i < types.length - 1 ? ' / ' : '' %>
-                                        <% }); %>
+                            <span class="track-type-filter" data-type="db">
+                                <span class="type-filter-link">DB</span>
+                            </span> /
+                            <span class="track-type-filter" data-type="frhd">
+                                <span class="type-filter-link">FRHD</span>
+                            </span> /
+                            <span class="track-type-filter" data-type="bhr">
+                                <span class="type-filter-link">BHR</span>
+                            </span> /
+                            <span class="track-type-filter" data-type="cr">
+                                <span class="type-filter-link">CR</span>
+                            </span>
                         </strong>
                     </div>
 

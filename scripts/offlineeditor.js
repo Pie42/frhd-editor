@@ -5670,7 +5670,7 @@
                   src: "/db",
                   style: {
                     width: "100%",
-                    height: "calc(100% - 39px)",
+                    height: "calc(100% - 41px)",
                     border: "none",
                     display: "block"
                   }
@@ -34110,6 +34110,7 @@
       function (e, t) {
         var n = e("react"),
           HistoryManager = e("./historyManager"),
+          TrackLoader = e("./trackLoader"),
           optionHandlers = e("./optionHandlers");
 
         var r = n.createClass({
@@ -34167,6 +34168,33 @@
             var self = this;
 
             window.addEventListener('message', function (event) {
+              if (event.data.action === 'loadTrack') {
+                var trackType = event.data.type;
+                var trackId = event.data.id;
+                if (!trackType || !trackId) return;
+
+                if (event.data.playlist) {
+                  TrackLoader._currentPlaylist = event.data.playlist;
+                  TrackLoader._currentFilterContext = null;
+                } else if (event.data.filterContext) {
+                  TrackLoader._currentFilterContext = event.data.filterContext;
+                  TrackLoader._currentPlaylist = null;
+                }
+
+                TrackLoader.load(
+                  { type: trackType, id: trackId },
+                  event.data.ghost || null,
+                  false
+                );
+              }
+
+              if (event.data.action === 'linkClicked') {
+                var TrackRouter = e("./trackRouter");
+                var parsed = TrackRouter.parse(event.data.url);
+                if (parsed) {
+                  TrackLoader.load(parsed, event.data.ghost || null, false);
+                }
+              }
               if (event.data.action === 'toolOptionChange') {
                 optionHandlers.handle(event.data.option, event.data.value);
                 saveSettings(true);
@@ -34852,7 +34880,7 @@
                 ),
                 n.createElement("iframe", {
                   src: iframeSrc,
-                  style: { width: "100%", height: "calc(100% - 39px)", border: "none", display: "block" }
+                  style: { width: "100%", height: "calc(100% - 41px)", border: "none", display: "block" }
                 }),
                 isLoading ? n.createElement(
                   "div",

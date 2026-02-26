@@ -7,6 +7,340 @@
     <link rel="stylesheet" type="text/css" href="/app.css">
 </head>
 
+<style>
+        body {
+            text-align: left;
+            line-height: 16px;
+        }
+
+        /* Tab styles */
+        .tab-container {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #ccc;
+            padding: 0;
+            height: 45px;
+        }
+
+        .tab-button {
+            flex: 1;
+            border: none;
+            background: #E2E2E2;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            border-right: 1px solid #ccc;
+        }
+
+        /*
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            background: #fff;
+            border-bottom: 1px solid #ccc;
+            padding: 0;
+            height: auto;
+        }
+
+        .tab-button {
+            flex: 0 0 33.333%;
+            border: none;
+            background: #E2E2E2;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #666;
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            height: 35px;
+            box-sizing: border-box;
+        }
+
+        .tab-button:nth-child(3n) {
+            border-right: none;
+        }
+
+        .tab-button:nth-last-child(-n+3) {
+            border-bottom: none;
+        }*/
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button:hover {
+            background: #d0d0d0;
+        }
+
+        .tab-button.active {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .mode-badge.physics {
+            background: #000000;
+            color: #fff;
+        }
+
+        .mode-badge.scenery {
+            background: #aaaaaa;
+            color: #fff;
+        }
+
+        .mode-badge.object {
+            background: #1884cf;
+            color: #fff;
+        }
+
+        .tb-val {
+            font-family: monospace;
+            font-size: 12px;
+            color: #fff;
+            background: #000;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        #object-thumbnail,
+        #object-thumbnail-2 {
+            image-rendering: pixelated;
+        }
+
+        #object-no-thumbnail,
+        #object-no-thumbnail-2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 5/3;
+            width: 100%;
+            background: #FFF;
+            border: 1px solid #DDD;
+            border-radius: 4px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .tool-select {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 12px;
+            min-width: 100px;
+        }
+
+        .tool-button {
+            padding: 6px 12px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            background: #000;
+            color: #fff;
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset {
+            width: 64px;
+        }
+
+        .tool-button:hover {
+            background: #555;
+        }
+
+        .tool-button:active {
+            background: #222;
+        }
+
+        input[type="color"] {
+            width: 50px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        td {
+            width: 33vw;
+        }
+
+        #now-playing-content .thumbnail {
+            position: relative;
+            aspect-ratio: 5 / 3;
+            margin: 0 auto 10px;
+            overflow: hidden;
+            border-radius: 4px;
+            background: #fff;
+            display: block;
+            /* padding: 4px; */
+            line-height: 20px;
+            border: 1px solid #ddd;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+        }
+
+        #now-playing-content .track-thumbnail {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            object-fit: cover;
+        }
+
+        #now-playing-content .badge-container {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-width: 80%;
+            z-index: 10;
+        }
+
+        .track-type-badge {
+            position: relative;
+            padding: 2px 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+            border-radius: 3px;
+            z-index: 10;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            font: 8px eiven;
+            line-height: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .track-type-badge.frhd {
+            background-color: #1884cf;
+        }
+
+        .track-type-badge.bhr {
+            background-color: #000;
+        }
+
+        .track-type-badge.cr {
+            background-color: #aaa;
+        }
+
+        .track-type-badge.tm {
+            background-color: #aaa;
+        }
+
+        .track-type-badge.fr {
+            background-color: #4a4a4a;
+        }
+
+        .track-type-badge.app {
+            background-color: #a784c5;
+        }
+
+        .track-type-badge.playlist {
+            background: #a784c5;
+        }
+
+        .tab-button[data-tab="mods"]:hover .pentagon-inner {
+            stroke: #1884cf;
+        }
+
+        .mod-setting-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 4px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .mod-setting-row:hover {
+            background: #f0f0f0;
+        }
+
+        .mod-setting-row label {
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .mod-setting-row input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .mod-setting-row input[type="color"] {
+            width: 36px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .mod-folder {
+            margin: 3px 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .mod-folder-title {
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 8px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border-radius: 4px;
+            user-select: none;
+        }
+
+        .mod-folder-title:hover {
+            background: #eee;
+        }
+
+        .mod-folder[open]>.mod-folder-title {
+            border-radius: 4px 4px 0 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .mod-folder-content {
+            padding: 2px 6px;
+        }
+
+        /*body.dialog-mode .tab-button[data-tab="track"] {
+    display: none;
+}
+
+body.dialog-mode #tab-track {
+    display: none !important;
+}*/
+    </style>
+
 <body style="margin: 0; padding: 0;">
     <div class="editorDialog-tools editorDialog-content_brushDialog"
         style="background: transparent; box-shadow: none; width: 100%; max-width: none; margin: 0; border-radius: 0; height: 100dvh; overflow-y:scroll;">
@@ -1353,347 +1687,19 @@
         <div id="forum-content" style="display: none;">
             <iframe id="forum-iframe" style="width: 100%; height: calc(100dvh - 36px); border: none;"></iframe>
         </div>
+
+        <!-- DATABASE -->
+        <div id="db-content" style="display: none;">
+            <iframe id="db-iframe" style="width: 100%; height: calc(100dvh - 36px); border: none;"></iframe>
+        </div>
         
         <!-- BOTTOM BAR -->
         <div id="bottom-bar" class="bottom-bar" style="display: none;">
             <button class="bottom-bar-button active" data-panel="toolbox">Toolbox</button>
+            <button class="bottom-bar-button" data-panel="db">Database</button>
             <button class="bottom-bar-button" data-panel="forum">Forum</button>
         </div>
     </div>
-
-    <style>
-        body {
-            text-align: left;
-            line-height: 16px;
-        }
-
-        /* Tab styles */
-        .tab-container {
-            display: flex;
-            background: #fff;
-            border-bottom: 1px solid #ccc;
-            padding: 0;
-            height: 45px;
-        }
-
-        .tab-button {
-            flex: 1;
-            border: none;
-            background: #E2E2E2;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #666;
-            border-right: 1px solid #ccc;
-        }
-
-        /*
-        .tab-container {
-            display: flex;
-            flex-wrap: wrap;
-            background: #fff;
-            border-bottom: 1px solid #ccc;
-            padding: 0;
-            height: auto;
-        }
-
-        .tab-button {
-            flex: 0 0 33.333%;
-            border: none;
-            background: #E2E2E2;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #666;
-            border-right: 1px solid #ccc;
-            border-bottom: 1px solid #ccc;
-            height: 35px;
-            box-sizing: border-box;
-        }
-
-        .tab-button:nth-child(3n) {
-            border-right: none;
-        }
-
-        .tab-button:nth-last-child(-n+3) {
-            border-bottom: none;
-        }*/
-
-        .tab-button:last-child {
-            border-right: none;
-        }
-
-        .tab-button:hover {
-            background: #d0d0d0;
-        }
-
-        .tab-button.active {
-            background: #ffffff;
-            color: #000000;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .mode-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .mode-badge.physics {
-            background: #000000;
-            color: #fff;
-        }
-
-        .mode-badge.scenery {
-            background: #aaaaaa;
-            color: #fff;
-        }
-
-        .mode-badge.object {
-            background: #1884cf;
-            color: #fff;
-        }
-
-        .tb-val {
-            font-family: monospace;
-            font-size: 12px;
-            color: #fff;
-            background: #000;
-            padding: 2px 6px;
-            border-radius: 3px;
-        }
-
-        #object-thumbnail,
-        #object-thumbnail-2 {
-            image-rendering: pixelated;
-        }
-
-        #object-no-thumbnail,
-        #object-no-thumbnail-2 {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 5/3;
-            width: 100%;
-            background: #FFF;
-            border: 1px solid #DDD;
-            border-radius: 4px;
-            color: #999;
-            font-size: 12px;
-        }
-
-        .tool-select {
-            padding: 4px 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background: #fff;
-            font-size: 12px;
-            min-width: 100px;
-        }
-
-        .tool-button {
-            padding: 6px 12px;
-            margin: 2px;
-            border: none;
-            border-radius: 4px;
-            background: #000;
-            color: #fff;
-            font-size: 11px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .reset {
-            width: 64px;
-        }
-
-        .tool-button:hover {
-            background: #555;
-        }
-
-        .tool-button:active {
-            background: #222;
-        }
-
-        input[type="color"] {
-            width: 50px;
-            height: 30px;
-            padding: 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        td {
-            width: 33vw;
-        }
-
-        #now-playing-content .thumbnail {
-            position: relative;
-            aspect-ratio: 5 / 3;
-            margin: 0 auto 10px;
-            overflow: hidden;
-            border-radius: 4px;
-            background: #fff;
-            display: block;
-            /* padding: 4px; */
-            line-height: 20px;
-            border: 1px solid #ddd;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-radius: 4px;
-            -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-            -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
-        }
-
-        #now-playing-content .track-thumbnail {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            object-fit: cover;
-        }
-
-        #now-playing-content .badge-container {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            max-width: 80%;
-            z-index: 10;
-        }
-
-        .track-type-badge {
-            position: relative;
-            padding: 2px 8px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: #fff;
-            border-radius: 3px;
-            z-index: 10;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            font: 8px eiven;
-            line-height: 20px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .track-type-badge.frhd {
-            background-color: #1884cf;
-        }
-
-        .track-type-badge.bhr {
-            background-color: #000;
-        }
-
-        .track-type-badge.cr {
-            background-color: #aaa;
-        }
-
-        .track-type-badge.tm {
-            background-color: #aaa;
-        }
-
-        .track-type-badge.fr {
-            background-color: #4a4a4a;
-        }
-
-        .track-type-badge.app {
-            background-color: #a784c5;
-        }
-
-        .track-type-badge.playlist {
-            background: #a784c5;
-        }
-
-        .tab-button[data-tab="mods"]:hover .pentagon-inner {
-            stroke: #1884cf;
-        }
-
-        .mod-setting-row {
-            display: flex;
-            align-items: center;
-            padding: 4px 4px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .mod-setting-row:hover {
-            background: #f0f0f0;
-        }
-
-        .mod-setting-row label {
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .mod-setting-row input[type="checkbox"] {
-            width: 14px;
-            height: 14px;
-            margin-right: 6px;
-            flex-shrink: 0;
-        }
-
-        .mod-setting-row input[type="color"] {
-            width: 36px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-
-        .mod-folder {
-            margin: 3px 0;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-        }
-
-        .mod-folder-title {
-            font-size: 11px;
-            font-weight: bold;
-            padding: 5px 8px;
-            cursor: pointer;
-            background: #f5f5f5;
-            border-radius: 4px;
-            user-select: none;
-        }
-
-        .mod-folder-title:hover {
-            background: #eee;
-        }
-
-        .mod-folder[open]>.mod-folder-title {
-            border-radius: 4px 4px 0 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .mod-folder-content {
-            padding: 2px 6px;
-        }
-
-        /*body.dialog-mode .tab-button[data-tab="track"] {
-    display: none;
-}
-
-body.dialog-mode #tab-track {
-    display: none !important;
-}*/
-    </style>
 
     <script>
         var state = {
@@ -1741,20 +1747,35 @@ body.dialog-mode #tab-track {
                 this.classList.add('active');
 
                 var toolbox = document.getElementById('toolbox-content');
-                var chat = document.getElementById('forum-content');
+                var forum = document.getElementById('forum-content');
+                var db = document.getElementById('db-content');
 
                 if (panel === 'forum') {
                     toolbox.style.display = 'none';
-                    chat.style.display = 'block';
+                    forum.style.display = 'block';
+                    db.style.display = 'none';
                     document.querySelector('.editorDialog-tools').style.overflowY = 'hidden';
                     var iframe = document.getElementById('forum-iframe');
                     if (!iframe.dataset.loaded) {
                         iframe.src = 'https://forum.freerider.app/';
                         iframe.dataset.loaded = 'true';
                     }
-                } else {
-                    chat.style.display = 'none';
-                    toolbox.style.display = '';
+                }
+                if (panel === 'db') {
+                    toolbox.style.display = 'none';
+                    forum.style.display = 'none';
+                    db.style.display = 'block';
+                    document.querySelector('.editorDialog-tools').style.overflowY = 'hidden';
+                    var iframe = document.getElementById('db-iframe');
+                    if (!iframe.dataset.loaded) {
+                        iframe.src = '/db';
+                        iframe.dataset.loaded = 'true';
+                    }
+                } 
+                if (panel === 'toolbox') {
+                    forum.style.display = 'none';
+                    db.style.display = 'none';
+                    toolbox.style.display = 'block';
                     document.querySelector('.editorDialog-tools').style.overflowY = 'scroll';
                 }
 
@@ -1789,15 +1810,6 @@ body.dialog-mode #tab-track {
             if (tabName === 'tool' && window.lastPatternPreviewData) {
                 var brushType = parseInt(document.getElementById('pattern-brush').value) || 1;
                 setTimeout(function () { drawPatternPreview(window.lastPatternPreviewData, brushType); }, 0);
-            }
-
-            if (tabName === 'forum') {
-                var forumIframe = document.getElementById('forum-iframe');
-                if (!forumIframe.dataset.loaded) {
-                    forumIframe.src = 'https://forum.freerider.app/chat';
-                    forumIframe.dataset.loaded = 'true';
-                }
-
             }
             window.parent.focus();
         }
@@ -4329,9 +4341,27 @@ body.dialog-mode #tab-track {
             }
         };
 
-        window.addEventListener('message', function (e) {
+        /*window.addEventListener('message', function (e) {
             var handler = messageHandlers[e.data.action];
             if (handler) handler(e.data);
+        });*/
+
+        window.addEventListener('message', function (e) {
+        var forwardActions = [
+            'loadTrack',
+            'filterChanged',
+            'filterCleared',
+            'playerProfile',
+            'linkClicked'
+        ];
+        if (forwardActions.indexOf(e.data.action) !== -1) {
+            if (window.parent !== window) {
+                window.parent.postMessage(e.data, '*');
+            }
+            return;
+        }
+        var handler = messageHandlers[e.data.action];
+        if (handler) handler(e.data);
         });
 
         var slidersInitialized = {};
@@ -4721,6 +4751,7 @@ body.dialog-mode #tab-track {
                 e.target.closest('input[type="color"]') ||
                 e.target.closest('.layer-color-input') ||
                 e.target.closest('.layer-color-label') ||
+                e.target.closest('.tool-select') ||
                 e.target.closest('.toolSettings-input')) {
                 return;
             }

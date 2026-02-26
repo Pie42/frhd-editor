@@ -1436,6 +1436,23 @@ app.get('/api/db', async (req, res) => {
                 return processTrackWithLinks(track);
             });
 
+            if (query) {
+                const lowerQuery = query.toLowerCase();
+                const playerInfo = findPlayerAliases(query);
+                const aliasesLower = playerInfo.aliases.map(a => a.toLowerCase());
+
+                allTracks = allTracks.filter(t => {
+                    if (t.name?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.authors?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.authorsArray?.some(a => a?.toLowerCase().includes(lowerQuery))) return true;
+                    if (t.description?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.id?.toString().includes(query)) return true;
+                    if (t.canonical?.toLowerCase().includes(lowerQuery)) return true;
+                    if (t.authorsArray?.some(a => aliasesLower.includes(a?.toLowerCase()))) return true;
+                    return false;
+                });
+            }
+
             allTracks = sortTracks(allTracks, sortBy, sortOrder);
 
             const playlistInfo = {
@@ -2237,7 +2254,7 @@ function filterCachedTracks(tracks, query, author, platformType = null) {
             });
         }
         else {
-            filtered = searchByText(query, filtered);
+            filtered = searchByText(query, tracks);
         }
     }
 
