@@ -21540,7 +21540,7 @@
                     y: p1.y + dirY * (distP1ToClosest - distToEdge)
                   };
                   if (this.distanceBetweenPoints(p1, newEndpoint1) >= 2) {
-                    this.addLine(p1, newEndpoint1, type);
+                    this.addLine(p1, newEndpoint1, type, line.layer);
                   }
                 }
 
@@ -21550,7 +21550,7 @@
                     y: p2.y - dirY * (distP2ToClosest - distToEdge)
                   };
                   if (this.distanceBetweenPoints(newEndpoint2, p2) >= 2) {
-                    this.addLine(newEndpoint2, p2, type);
+                    this.addLine(newEndpoint2, p2, type, line.layer);
                   }
                 }
               }
@@ -21634,16 +21634,34 @@
       distanceBetweenPoints(point1, point2) {
         return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
       }
-      addLine(point1, point2, type) {
+      addLine(point1, point2, type, layer) {
         if (this.distanceBetweenPoints(point1, point2) >= 2) {
           let n = !1;
+          const track = this.scene.track;
+          const originalLayer = track.currentLayer;
+          const originalIndex = track.layerIndex;
+
+          if (layer && layer !== originalLayer) {
+            const layerIndex = track.layers.indexOf(layer);
+            if (layerIndex !== -1) {
+              track.currentLayer = layer;
+              track.layerIndex = layerIndex;
+            }
+          }
+
           if (type === 'physics') {
-            n = this.scene.track.addPhysicsLine(point1.x, point1.y, point2.x, point2.y);
+            n = track.addPhysicsLine(point1.x, point1.y, point2.x, point2.y);
             this.addedObjects.push(n);
           } else if (type === 'scenery') {
-            n = this.scene.track.addSceneryLine(point1.x, point1.y, point2.x, point2.y);
+            n = track.addSceneryLine(point1.x, point1.y, point2.x, point2.y);
             this.addedObjects.push(n);
           }
+          
+          if (layer && layer !== originalLayer) {
+            track.currentLayer = originalLayer;
+            track.layerIndex = originalIndex;
+          }
+
           return n;
         }
         return !1;

@@ -34337,7 +34337,12 @@
 
             if (typeof GameManager !== "undefined" && GameManager.game && GameManager.game.currentScene) {
               var scene = GameManager.game.currentScene;
-              settings.objects = scene.objects || {};
+              /*settings.objects = scene.objects || {};*/
+              var objectMap = {};
+              for (var name in (scene.objects || {})) {
+                objectMap[name] = true;
+              }
+              settings.objects = objectMap;
               settings.objectPreviewData = {
                 physics: scene.modObjectPhysics || [],
                 scenery: scene.modObjectScenery || [],
