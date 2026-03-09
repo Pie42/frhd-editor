@@ -6866,7 +6866,7 @@
                   n.createElement(x, { active: "circle" === e }),
                   //n.createElement(xxx, { active: "object" === e }),
                   n.createElement(i, { active: "brush" === e }),
-                  n.createElement(pa, { active: "pattern" === e }),
+                  //n.createElement(pa, { active: "pattern" === e }),
                   n.createElement(a, { active: "eraser" === e }),
                   n.createElement(s, { active: "powerup" === e }),
                   n.createElement(l, { active: "vehiclepowerup" === e }),
