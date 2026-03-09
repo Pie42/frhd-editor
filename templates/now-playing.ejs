@@ -1,0 +1,1712 @@
+<!-- NOW PLAYING -->
+<div class="editorDialog-toolsTitleBar">
+    <h1 class="editorDialog-content-title">NOW PLAYING</h1>
+    <span id="np-vehicle-selected" class="vehicle-badge mode-badge" style="color: #fff; background: #000;">BMX</span>
+</div>
+
+<div id="now-playing-wrapper">
+    <div id="now-playing-container" style="padding: 10px;">
+        <div id="now-playing-empty" style="padding: 5px; color: #888; text-align: left;">
+            <div style="margin-bottom: 10px;">
+                <button id="btn-track-import" class="tool-button">+ Import Track</button>
+            </div>
+        </div>
+
+        <div id="now-playing-content" style="display: none; margin-bottom: 10px;">
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track"></button>
+                <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
+                <button id="np-next" class="navi-toggle navi-icon next" title="Next Track"></button>
+                <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 0; width: auto;" title="Copy Link">
+                    <span id="copy-button" class="copy-text"
+                        style="margin: 8px; font-size: 11px; text-wrap: nowrap;">Copy
+                        Link</span>
+                </button>
+            </div>
+            <div class="track-item" style="margin-bottom: 10px;">
+                <div class="thumbnail">
+                    <div class="badge-container" id="np-badges"></div>
+                    <img id="np-thumbnail" class="track-thumbnail" src="" alt="Track thumbnail"
+                        onerror="handleThumbnailFallback(this)">
+                </div>
+            </div>
+
+            <div class="np-header">
+                <div class="np-header-text">
+                    <div id="np-name" style="font-weight: bold; font-size: 14px;"></div>
+                    <div id="np-author-line" style="font-size: 12px; color: #666;"></div>
+                </div>
+                <div id="np-author-avatars" class="np-author-avatars"></div>
+            </div>
+
+            <blockquote id="np-description"
+                style="display: none; font-size: 11px; margin: 10px 0; font-style: italic; color: #555; padding: 8px 12px; border-left: 4px solid #aaa; background: #f5f5f5; border-radius: 4px; max-height: 120px; overflow-y: auto;">
+            </blockquote>
+
+            <div class="toolsMetadata" style="padding: 10px; background: #f5f5f5; border-radius: 4px;">
+                <table style="width: 100%; font-size: 11px;">
+                    <tbody>
+                        <tr id="np-row-id" style="display: none;">
+                            <td style="width: 35%; color: #666;">ID</td>
+                            <td id="np-id"></td>
+                        </tr>
+                        <tr id="np-row-frhd-id" style="display: none;">
+                            <td style="color: #666;">FRHD ID</td>
+                            <td id="np-frhd-id"></td>
+                        </tr>
+                        <tr id="np-row-bhr-id" style="display: none;">
+                            <td style="color: #666;">BHR ID</td>
+                            <td id="np-bhr-id"></td>
+                        </tr>
+                        <tr id="np-row-cr-id" style="display: none;">
+                            <td style="color: #666;">CR ID</td>
+                            <td id="np-cr-id"></td>
+                        </tr>
+                        <tr id="np-row-tm-id" style="display: none;">
+                            <td style="color: #666;">TM ID</td>
+                            <td id="np-tm-id"></td>
+                        </tr>
+                        <tr id="np-row-published" style="display: none;">
+                            <td style="color: #666;">Published</td>
+                            <td id="np-published"></td>
+                        </tr>
+                        <tr id="np-row-size" style="display: none;">
+                            <td style="color: #666;">Size</td>
+                            <td id="np-size"></td>
+                        </tr>
+                        <tr id="np-row-votes" style="display: none;">
+                            <td style="color: #666;">Votes</td>
+                            <td id="np-votes"></td>
+                        </tr>
+                        <tr id="np-row-plays" style="display: none;">
+                            <td style="color: #666;">Plays</td>
+                            <td id="np-plays"></td>
+                        </tr>
+                        <tr id="np-row-remix-of" style="display: none;">
+                            <td style="color: #666;">Remix Of</td>
+                            <td id="np-remix-of"></td>
+                        </tr>
+                        <tr id="np-row-remixes" style="display: none;">
+                            <td style="color: #666;">Remixes</td>
+                            <td id="np-remixes"></td>
+                        </tr>
+                        <tr id="np-row-entry-to" style="display: none;">
+                            <td style="color: #666;">Entry To</td>
+                            <td id="np-entry-to"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="np-playlist-info" class="filter-indicator"
+                style="display: none; margin: 10px 0; padding: 8px; background: #e8f4fc; border: 1px solid #1884cf; border-radius: 4px; font-size: 11px;">
+                <a href="#" id="np-playlist-name" style="font-weight: bold; color: #1884cf; text-decoration: none;"></a>
+                <span id="np-playlist-position" style="color: #666; margin-left: 5px;"></span>
+            </div>
+        </div>
+
+        <div id="np-ghosts-section"
+            style="display: none; margin-top: 10px; padding: 10px 0px; border-bottom: 1px solid #ddd; border-top: 1px solid #ddd;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <strong style="font-size: 11px; text-transform: uppercase; color: #666;">Ghosts</strong>
+                <div style="display: flex; gap: 4px;">
+                    <button id="np-ghost-clear-all" class="navi-toggle"
+                        style="font-size: 11px; padding: 3px 8px; width: auto; display: none;"
+                        title="Remove all ghosts from race">Clear All</button>
+                    <button id="np-ghost-upload" class="navi-toggle"
+                        style="font-size: 11px; padding: 3px 8px; width: auto;"
+                        title="Upload your ghost to leaderboard">Upload Ghost</button>
+                    <button id="np-ghost-export" class="navi-toggle"
+                        style="font-size: 11px; padding: 3px 8px; width: auto;" title="Export your ghost">Export
+                        Ghost</button>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                <div id="np-ghost-vehicle-tabs" style="display: flex; gap: 2px; flex: 1;"></div>
+            </div>
+            <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                <button id="np-ghost-filter-app" class="navi-toggle"
+                    style="font-size: 10px; padding: 2px 8px; width: auto; display: none">APP</button>
+                <button id="np-ghost-mod-filter" class="navi-toggle"
+                    style="font-size: 10px; padding: 2px 8px; width: auto; display: none">No Mods</button>
+                <button id="np-ghost-filter-frhd" class="navi-toggle"
+                    style="font-size: 10px; padding: 2px 8px; width: auto; display: none">FRHD</button>
+            </div>
+            <div id="np-ghost-list" style="font-size: 11px;"></div>
+        </div>
+
+        <div id="np-live-section" style="display: none; padding: 10px 0px; border-bottom: 1px solid #ddd;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <strong style="font-size: 11px; text-transform: uppercase; color: #666;">
+                    Live
+                    <!--<span id="np-live-dot"
+                        style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #d12929; margin-left: 4px; vertical-align: middle;"></span>-->
+                </strong>
+                <button id="np-live-clear" class="navi-toggle"
+                    style="font-size: 11px; padding: 3px 8px; width: auto; display: none;"
+                    title="Remove all live riders from view">Clear All</button>
+            </div>
+            <div id="np-live-list" style="font-size: 11px;"></div>
+        </div>
+
+        <div style="display: flex; gap: 5px; margin-bottom: 10px; margin-top: 10px;">
+            <!--<button id="np-set-start" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
+                Start Position
+            </button>-->
+            <button id="vehicle-mod-play" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
+                Play Mode
+            </button>
+            <button id="vehicle-mod-mobile" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
+                Mobile Mode
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="player-profile" style="display: none; padding: 10px;">
+    <div class="player-avatar-container">
+        <img id="player-avatar" class="player-avatar" src="" alt="">
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div>
+            <div id="player-name" style="font-weight: bold; font-size: 14px;"></div>
+            <div id="player-aliases" style="font-size: 11px; color: #888;"></div>
+        </div>
+    </div>
+    <div id="player-stats" style="font-size: 12px; color: #aaa; margin-bottom: 8px;"></div>
+    <div id="player-platforms" style="margin-bottom: 8px;"></div>
+    <button id="player-view-tracks" class="navi-toggle" style="width: 100%; padding: 6px; font-size: 12px;">
+        View All Tracks
+    </button>
+</div>
+
+<script>
+    var currentTrackData = null;
+    var playlistContext = null;
+    var filterContext = null;
+    var currentPlayer = null;
+    var ghostModFilter = false;
+    var currentFocusedId = null;
+    var currentFocusType = null;
+    var livePlayers = new Map();
+    var ghostSourceFilter = 'app';
+    var cachedFrhdGhosts = null;
+    var cachedAppGhosts = null;
+
+    var avatarCache = {};
+
+    function fetchAuthorAvatar(authorName, callback) {
+        if (avatarCache[authorName] !== undefined) {
+            callback(avatarCache[authorName]);
+            return;
+        }
+
+        fetch('/api/player/' + encodeURIComponent(authorName))
+            .then(function (res) { return res.json(); })
+            .then(function (player) {
+                avatarCache[authorName] = player.avatar || null;
+                callback(avatarCache[authorName]);
+            })
+            .catch(function () {
+                avatarCache[authorName] = null;
+                callback(null);
+            });
+    }
+
+    function loadTrackData(type, id) {
+        fetch('/' + type + '/' + id + '?json=true')
+            .then(function (r) { return r.json(); })
+            .then(function (track) {
+                track.type = type;
+                updateNowPlaying(track);
+
+                if (playlistContext && playlistContext.tracks) {
+                    var newIndex = -1;
+
+                    for (var i = 0; i < playlistContext.tracks.length; i++) {
+                        var t = playlistContext.tracks[i];
+                        var trackCanonical = track.canonical || track.canonicalId || track.id;
+                        var playlistTrackCanonical = t.canonical || t.id;
+
+                        if (trackCanonical && playlistTrackCanonical &&
+                            String(trackCanonical) === String(playlistTrackCanonical)) {
+                            newIndex = i;
+                            break;
+                        }
+
+                        if (t.type === type && String(t.id) === String(id)) {
+                            newIndex = i;
+                            break;
+                        }
+
+                        if (t.urlType === type && String(t.urlId) === String(id)) {
+                            newIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (newIndex >= 0) {
+                        playlistContext.currentIndex = newIndex;
+                    }
+                    updatePlaylistUI();
+                } else if (!filterContext) {
+                    checkAdjacentTracks();
+                }
+            })
+            .catch(function (e) {
+                console.error('Failed to load track:', e);
+            });
+    }
+
+    function setPlaylistContext(playlist, currentTrackId) {
+        if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
+            playlistContext = null;
+            updatePlaylistUI();
+            return;
+        }
+
+        var isSamePlaylist = playlistContext &&
+            (playlistContext.id === (playlist.canonical || playlist.id));
+
+        var currentIndex = 0;
+
+        if (isSamePlaylist && playlistContext.currentIndex !== undefined) {
+            currentIndex = playlistContext.currentIndex;
+        } else if (currentTrackId) {
+            for (var i = 0; i < playlist.tracks.length; i++) {
+                var t = playlist.tracks[i];
+                if (String(t.id) === String(currentTrackId) ||
+                    t.canonical === currentTrackId ||
+                    String(t.urlId) === String(currentTrackId)) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+        }
+
+        playlistContext = {
+            id: playlist.canonical || playlist.id,
+            name: playlist.name,
+            tracks: playlist.tracks,
+            currentIndex: currentIndex
+        };
+
+        filterContext = null;
+        updatePlaylistUI();
+    }
+
+    function setFilterContext(context) {
+        if (!context) {
+            filterContext = null;
+            updateFilterUI();
+            return;
+        }
+
+        filterContext = {
+            type: context.type || 'db',
+            player: context.player || null,
+            query: context.query || null,
+            remixesOf: context.remixesOf || null,
+            sortBy: context.sortBy || 'shuffle',
+            sortOrder: context.sortOrder || 'desc'
+        };
+
+        playlistContext = null;
+        updateFilterUI();
+    }
+
+    function updatePlaylistUI() {
+        var infoEl = document.getElementById('np-playlist-info');
+        var nameEl = document.getElementById('np-playlist-name');
+        var posEl = document.getElementById('np-playlist-position');
+        var prevBtn = document.getElementById('np-prev');
+        var nextBtn = document.getElementById('np-next');
+
+        if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+            infoEl.style.display = 'block';
+            infoEl.style.cursor = 'pointer';
+            nameEl.textContent = playlistContext.name;
+            nameEl.style.cursor = 'pointer';
+            nameEl.title = 'Open playlist';
+            posEl.textContent = '(' + (playlistContext.currentIndex + 1) + '/' + playlistContext.tracks.length + ')';
+
+            var hasPrev = playlistContext.currentIndex > 0;
+            var hasNext = playlistContext.currentIndex < playlistContext.tracks.length - 1;
+
+            prevBtn.disabled = !hasPrev;
+            nextBtn.disabled = !hasNext;
+            prevBtn.style.opacity = hasPrev ? '1' : '0.5';
+            nextBtn.style.opacity = hasNext ? '1' : '0.5';
+            prevBtn.title = hasPrev ? 'Previous in playlist' : 'At start of playlist';
+            nextBtn.title = hasNext ? 'Next in playlist' : 'At end of playlist';
+        } else {
+            infoEl.style.display = 'none';
+            updateFilterUI();
+        }
+    }
+
+    function updateFilterUI() {
+        var infoEl = document.getElementById('np-playlist-info');
+        var nameEl = document.getElementById('np-playlist-name');
+        var posEl = document.getElementById('np-playlist-position');
+        var prevBtn = document.getElementById('np-prev');
+        var nextBtn = document.getElementById('np-next');
+
+        if (filterContext && (filterContext.player || filterContext.type !== 'db' || filterContext.query || filterContext.remixesOf)) {
+            infoEl.style.display = 'block';
+            infoEl.style.cursor = 'pointer';
+
+            var label = '';
+            var title = '';
+            if (filterContext.remixesOf) {
+                var remixName = filterContext.remixesOf.name || filterContext.remixesOf.canonical;
+                label = 'Remixes of ' + remixName;
+                title = 'Open remixes';
+            } else if (filterContext.player) {
+                label = filterContext.player;
+                title = 'Open player page';
+            } else if (filterContext.query) {
+                label = filterContext.query;
+                title = 'Open search';
+            } else if (filterContext.type && filterContext.type !== 'db') {
+                label = filterContext.type.toUpperCase();
+                title = 'Open ' + filterContext.type.toUpperCase() + ' tracks';
+            }
+
+            nameEl.textContent = label;
+            nameEl.style.cursor = 'pointer';
+            nameEl.title = title;
+            var sortLabel = filterContext.sortBy && filterContext.sortBy !== 'shuffle'
+                ? filterContext.sortBy
+                : 'shuffle';
+            if (filterContext.sortOrder && filterContext.sortOrder !== 'desc' && sortLabel !== 'shuffle') {
+                sortLabel += ' ' + filterContext.sortOrder;
+            }
+            posEl.textContent = '(' + sortLabel + ')';
+
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            prevBtn.style.opacity = '0.5';
+            nextBtn.style.opacity = '0.5';
+        } else if (!playlistContext) {
+            infoEl.style.display = 'none';
+
+            if (currentTrackData) {
+                prevBtn.disabled = false;
+                nextBtn.disabled = false;
+                prevBtn.style.opacity = '1';
+                nextBtn.style.opacity = '1';
+                prevBtn.title = 'Previous track';
+                nextBtn.title = 'Next track';
+            } else {
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                prevBtn.style.opacity = '0.5';
+                nextBtn.style.opacity = '0.5';
+            }
+        }
+    }
+
+    function showPlayerProfile(playerName) {
+        fetch('/api/player/' + encodeURIComponent(playerName))
+            .then(function (res) { return res.json(); })
+            .then(function (player) {
+                currentPlayer = player;
+
+                document.getElementById('now-playing-wrapper').style.display = 'none';
+                document.getElementById('player-profile').style.display = 'block';
+
+                var avatar = document.getElementById('player-avatar');
+                avatar.style.display = '';
+                avatar.src = player.avatar;
+                avatar.onerror = function () {
+                    this.style.display = 'none';
+                };
+
+                document.getElementById('player-name').textContent = player.displayName;
+
+                var aliasesEl = document.getElementById('player-aliases');
+                var otherAliases = (player.aliases || []).filter(function (a) {
+                    return a.toLowerCase() !== player.displayName.toLowerCase();
+                });
+                if (otherAliases.length > 0) {
+                    aliasesEl.textContent = 'Also known as: ' + otherAliases.join(', ');
+                    aliasesEl.style.display = '';
+                } else {
+                    aliasesEl.style.display = 'none';
+                }
+
+                document.getElementById('player-stats').textContent = player.trackCount + ' track' + (player.trackCount !== 1 ? 's' : '') + ' in database';
+
+                var platformsEl = document.getElementById('player-platforms');
+                var platformBadges = [];
+                if (player.platforms.frhd) platformBadges.push('<span class="track-type-badge frhd">FRHD</span>');
+                if (player.platforms.bhr) platformBadges.push('<span class="track-type-badge bhr">BHR</span>');
+                if (player.platforms.cr) platformBadges.push('<span class="track-type-badge cr">CR</span>');
+                platformsEl.innerHTML = platformBadges.join(' ');
+            })
+            .catch(function (err) {
+                console.error('Failed to load player profile:', err);
+            });
+    }
+
+    function hidePlayerProfile() {
+        document.getElementById('player-profile').style.display = 'none';
+        document.getElementById('now-playing-wrapper').style.display = '';
+        currentPlayer = null;
+    }
+
+    function updateNowPlaying(track) {
+        currentTrackData = track;
+
+        var emptyEl = document.getElementById('now-playing-empty');
+        var contentEl = document.getElementById('now-playing-content');
+
+        if (!track || !track.name) {
+            emptyEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+        contentEl.style.display = 'block';
+
+        document.getElementById('np-thumbnail').src = track.thumbnail || '/' + track.type + '/' + track.id + '.png';
+
+        var badges = track.badges || [track.type];
+        var uniqueBadges = [];
+        var seen = {};
+        for (var i = 0; i < badges.length; i++) {
+            if (!seen[badges[i]]) {
+                seen[badges[i]] = true;
+                uniqueBadges.push(badges[i]);
+            }
+        }
+
+        document.getElementById('np-badges').innerHTML = uniqueBadges.map(function (b) {
+            return '<span class="track-type-badge ' + b + '">' + getBadgeText(b) + '</span>';
+        }).join('');
+
+        document.getElementById('np-name').textContent = track.name;
+
+        var authorLine = document.getElementById('np-author-line');
+        var avatarsContainer = document.getElementById('np-author-avatars');
+        var authors = track.authors || 'Unknown';
+        var authorParts = authors.split(/,\s*/);
+
+        var authorHtml = 'by ' + authorParts.map(function (author) {
+            return '<a href="#" class="np-author-link" data-author="' + author.trim() + '" style="color: #1884cf; text-decoration: none; font-weight: bold;">' + author.trim() + '</a>';
+        }).join(', ');
+
+        authorLine.innerHTML = authorHtml;
+
+        avatarsContainer.innerHTML = authorParts.map(function (author) {
+            return '<img class="np-author-avatar" data-author="' + author.trim() + '" src="" alt="" title="' + author.trim() + '" style="display:none;">';
+        }).join('');
+
+        authorParts.forEach(function (author) {
+            var authorName = author.trim();
+            fetchAuthorAvatar(authorName, function (avatarUrl) {
+                if (avatarUrl) {
+                    var avatarImg = avatarsContainer.querySelector('.np-author-avatar[data-author="' + authorName + '"]');
+                    if (avatarImg) {
+                        avatarImg.src = avatarUrl;
+                        avatarImg.style.display = '';
+                        avatarImg.onerror = function () { this.style.display = 'none'; };
+                    }
+                }
+            });
+        });
+
+        var descEl = document.getElementById('np-description');
+        if (track.description && track.description.trim()) {
+            descEl.textContent = track.description;
+            descEl.style.display = 'block';
+        } else {
+            descEl.style.display = 'none';
+        }
+
+        setNpRow('id', track.id);
+        setNpRowPublished(track.published);
+        setNpRow('size', formatSize(track.size));
+        setNpRow('plays', track.plays);
+
+        var votesRow = document.getElementById('np-row-votes');
+        var votesEl = document.getElementById('np-votes');
+        if (track.upvotes || track.votes) {
+            votesEl.textContent = track.downvotes ? '+' + track.upvotes + ' / -' + track.downvotes : (track.upvotes || track.votes);
+            votesRow.style.display = '';
+        } else {
+            votesRow.style.display = 'none';
+        }
+
+        var remixOfRow = document.getElementById('np-row-remix-of');
+        var remixOfEl = document.getElementById('np-remix-of');
+        if (remixOfRow && remixOfEl) {
+            if (track.remixOf && track.remixOf.length > 0) {
+                var remixLinks = track.remixOf.map(function (r) {
+                    return '<a href="#" class="np-track-link" data-type="t" data-id="' + r.canonical + '" data-no-context="true" style="color: #1884cf; text-decoration: none;">' + r.name + '</a>';
+                }).join(', ');
+                remixOfEl.innerHTML = remixLinks;
+                remixOfRow.style.display = '';
+            } else {
+                remixOfRow.style.display = 'none';
+            }
+        }
+
+        var remixesRow = document.getElementById('np-row-remixes');
+        var remixesEl = document.getElementById('np-remixes');
+        if (remixesRow && remixesEl) {
+            if (track.remixCount && track.remixCount > 0) {
+                var trackName = track.name || track.id;
+                var trackCanonical = track.canonical || track.id;
+                remixesEl.innerHTML = '<a href="#" class="np-remixes-link" data-canonical="' + trackCanonical + '" data-name="' + trackName.replace(/"/g, '&quot;') + '" style="color: #1884cf; text-decoration: none;">' + track.remixCount + ' remix' + (track.remixCount > 1 ? 'es' : '') + '</a>';
+                remixesRow.style.display = '';
+            } else {
+                remixesRow.style.display = 'none';
+            }
+        }
+
+        var entryToRow = document.getElementById('np-row-entry-to');
+        var entryToEl = document.getElementById('np-entry-to');
+        if (entryToRow && entryToEl) {
+            if (track.entryTo) {
+                entryToEl.innerHTML = '<a href="#" class="np-playlist-link" data-playlist-id="' + (track.entryTo.canonical) + '" style="color: #1884cf; text-decoration: none;">' + track.entryTo.name + '</a>';
+                entryToRow.style.display = '';
+            } else {
+                entryToRow.style.display = 'none';
+            }
+        }
+
+        setNpRowLink('frhd-id', track.frhdId, 'frhd');
+        setNpRowLink('bhr-id', track.bhrId, 'bhr');
+        setNpRowLink('cr-id', track.crId, 'cr');
+        setNpRowLink('tm-id', track.tmId, 'tm');
+
+        if (!playlistContext && !filterContext && track) {
+            checkAdjacentTracks();
+        }
+
+        var ghostType = track.type || 'db';
+        var ghostId = track.canonical || track.id;
+        fetchTrackGhosts(ghostType, ghostId);
+    }
+
+    function getBadgeText(type) {
+        var map = { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR', tm: 'TM', app: 'APP' };
+        return map[type] || type.toUpperCase();
+    }
+
+    function setNpRowPublished(dateStr) {
+        var row = document.getElementById('np-row-published');
+        var cell = document.getElementById('np-published');
+
+        if (!dateStr) {
+            row.style.display = 'none';
+            return;
+        }
+
+        var formatted = formatDate(dateStr);
+        if (!formatted) {
+            row.style.display = 'none';
+            return;
+        }
+
+        var year = formatted.substring(0, 4);
+        var rest = formatted.substring(4);
+
+        cell.innerHTML = '<a href="#" class="np-year-link" data-year="' + year + '" style="color: #1884cf; text-decoration: none;">' + year + '</a>' + rest;
+        row.style.display = '';
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return null;
+        if (dateStr.includes('T')) return dateStr.split('T')[0];
+        if (dateStr.includes(' ')) return dateStr.split(' ')[0];
+        return dateStr;
+    }
+
+    function formatSize(bytes) {
+        if (bytes === null || bytes === undefined || bytes === 0 || isNaN(bytes)) { return ''; }
+        const k = 1024;
+        const sizes = ['b', 'k', 'm', 'gb', 'tb'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
+    }
+
+    function setNpRowLink(field, value, type) {
+        var row = document.getElementById('np-row-' + field);
+        var cell = document.getElementById('np-' + field);
+        if (row && cell) {
+            if (value && type === 'frhd') {
+                cell.innerHTML = '<a href="https://freeriderhd.com/t/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                row.style.display = '';
+            } else if (value && type === 'cr') {
+                cell.innerHTML = '<a href="https://canvasrider.com/tracks/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                row.style.display = '';
+            } else if (value && (type !== 'frhd' || type !== 'cr')) {
+                cell.innerHTML = '<span class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    function handleThumbnailFallback(img) {
+        img.onerror = null;
+        img.src = '/data/bhr/thumbnails/default.png';
+    }
+    window.handleThumbnailFallback = handleThumbnailFallback;
+
+    function setNpRow(field, value) {
+        var row = document.getElementById('np-row-' + field);
+        var cell = document.getElementById('np-' + field);
+        if (value) {
+            cell.textContent = value;
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+
+    function buildFilterParams() {
+        if (!filterContext) return '';
+
+        var params = new URLSearchParams();
+        params.set('sort', 'shuffle');
+        params.set('perPage', '1');
+
+        if (filterContext.type && filterContext.type !== 'db') {
+            params.set('type', filterContext.type);
+        } else {
+            params.set('type', 'db');
+        }
+
+        if (filterContext.player) {
+            params.set('author', filterContext.player);
+        }
+
+        if (filterContext.query) {
+            params.set('q', filterContext.query);
+        }
+
+        return params.toString();
+    }
+
+    function sendLoadTrack(type, id) {
+        var data = { type: type, id: id };
+        if (playlistContext) data.playlist = playlistContext;
+        else if (filterContext) data.filterContext = filterContext;
+        send('load-track', data);
+    }
+
+    function fetchAdjacentTrack(direction) {
+        if (!currentTrackData) return;
+
+        var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+
+        var params = new URLSearchParams();
+        params.set('type', 'db');
+        params.set('sort', 'published');
+        params.set('order', 'asc');
+        params.set('perPage', '1');
+
+        if (direction === 'prev') {
+            params.set('beforeCanonical', currentCanonical);
+        } else {
+            params.set('afterCanonical', currentCanonical);
+        }
+
+        fetch('/api/db?' + params)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.tracks && data.tracks.length > 0) {
+                    var track = data.tracks[0];
+                    var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                    var id = track.canonical || track.urlId || track.id;
+                    sendLoadTrack(type, id);
+                } else {
+                    console.log('No more tracks in ' + direction + ' direction');
+                }
+            })
+            .catch(function (e) {
+                console.error('Failed to get adjacent track:', e);
+            });
+    }
+
+    function checkAdjacentTracks() {
+        if (!currentTrackData) {
+            document.getElementById('np-prev').disabled = true;
+            document.getElementById('np-next').disabled = true;
+            document.getElementById('np-prev').style.borderRight = '8px solid #aaa';
+            document.getElementById('np-next').style.borderLeft = '8px solid #aaa';
+            return;
+        }
+
+        var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+
+        var prevParams = new URLSearchParams();
+        prevParams.set('type', 'db');
+        prevParams.set('sort', 'published');
+        prevParams.set('order', 'asc');
+        prevParams.set('perPage', '1');
+        prevParams.set('beforeCanonical', currentCanonical);
+
+        fetch('/api/db?' + prevParams)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var hasPrev = data.tracks && data.tracks.length > 0;
+                document.getElementById('np-prev').disabled = !hasPrev;
+                document.getElementById('np-prev').style.opacity = hasPrev ? '1' : '0.5';
+            });
+
+        var nextParams = new URLSearchParams();
+        nextParams.set('type', 'db');
+        nextParams.set('sort', 'published');
+        nextParams.set('order', 'asc');
+        nextParams.set('perPage', '1');
+        nextParams.set('afterCanonical', currentCanonical);
+
+        fetch('/api/db?' + nextParams)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var hasNext = data.tracks && data.tracks.length > 0;
+                document.getElementById('np-next').disabled = !hasNext;
+                document.getElementById('np-next').style.opacity = hasNext ? '1' : '0.5';
+            });
+    }
+
+    function fetchRandomTrack() {
+        var params = new URLSearchParams();
+        params.set('type', 'db');
+        params.set('sort', 'shuffle');
+        params.set('perPage', '1');
+
+        if (currentTrackData) {
+            var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
+            if (currentCanonical) {
+                params.set('exclude', currentCanonical);
+            }
+        }
+
+        fetch('/api/db?' + params)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.tracks && data.tracks.length > 0) {
+                    var track = data.tracks[0];
+                    var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                    var id = track.canonical || track.urlId || track.id;
+                    sendLoadTrack(type, id);
+                }
+            })
+            .catch(function (e) {
+                console.error('Failed to get random track:', e);
+            });
+    }
+
+    var currentActiveGhost = null;
+    var cachedGhosts = [];
+    var ghostVehicleFilter = 'BMX';
+
+    var vehicleTabColors = {
+        'all': '#000', 'BMX': '#000', 'MTB': '#aaa', 'HELI': '#f2902e',
+        'TRUCK': '#94d44e', 'BALLOON': '#f02728', 'BLOB': '#a784c5'
+    };
+
+    function fetchTrackGhosts(type, id) {
+        var section = document.getElementById('np-ghosts-section');
+        section.style.display = 'block';
+
+        var previousSourceFilter = ghostSourceFilter || 'app';
+        var previousVehicleFilter = ghostVehicleFilter || 'BMX';
+
+        cachedGhosts = [];
+        cachedFrhdGhosts = null;
+        currentActiveGhost = null;
+        currentFocusedId = null;
+        currentFocusType = null;
+
+        document.getElementById('np-ghost-filter-app').classList.add('engaged');
+        document.getElementById('np-ghost-filter-frhd').classList.remove('engaged');
+        document.getElementById('np-ghost-mod-filter').classList.remove('engaged');
+
+        ghostSourceFilter = previousSourceFilter;
+        ghostVehicleFilter = previousVehicleFilter;
+        buildVehicleTabs();
+
+        var frhdId = currentTrackData && (currentTrackData.frhdId ||
+            (currentTrackData.type === 'frhd' ? currentTrackData.id : null));
+
+        var appPromise = fetch('/api/ghosts/' + encodeURIComponent(type) + '/' + encodeURIComponent(id) + '?limit=50')
+            .then(function (r) { return r.json(); })
+            .catch(function () { return { leaderboard: [] }; });
+
+        var frhdPromise = frhdId
+            ? fetch('/api/ghosts/frhd-leaderboard/' + encodeURIComponent(frhdId))
+                .then(function (r) { return r.json(); })
+                .catch(function () { return { leaderboard: [] }; })
+            : Promise.resolve({ leaderboard: [] });
+
+        document.getElementById('np-ghost-filter-frhd').style.display = frhdId ? 'none' : 'none'; // '' : 'none' if we want to reintroduce frhd ghosts, it's just trouble though
+
+        Promise.all([appPromise, frhdPromise]).then(function (results) {
+            cachedAppGhosts = results[0].leaderboard || [];
+            cachedFrhdGhosts = results[1].leaderboard || [];
+            cachedGhosts = ghostSourceFilter === 'frhd' ? cachedFrhdGhosts : cachedAppGhosts;
+
+            document.getElementById('np-ghost-filter-app').classList.toggle('engaged', ghostSourceFilter === 'app');
+            document.getElementById('np-ghost-filter-frhd').classList.toggle('engaged', ghostSourceFilter === 'frhd');
+            renderGhostList();
+            applyPendingGhostFocus();
+        });
+    }
+
+    function setActiveGhost(ghostInfo) {
+        currentActiveGhost = ghostInfo;
+        refreshGhostHighlight();
+    }
+
+    function clearActiveGhost() {
+        currentActiveGhost = null;
+        refreshGhostHighlight();
+    }
+
+    function refreshGhostHighlight() {
+        var rows = document.querySelectorAll('.np-ghost-row');
+        rows.forEach(function (row) {
+            var isActive = currentActiveGhost &&
+                currentActiveGhost.ghostUrl === row.dataset.ghostUrl;
+
+            row.classList.toggle('active', isActive);
+            row.style.background = isActive ? '#e8f4fc' : '#f5f5f5';
+            row.style.border = isActive ? '1px solid #1884cf' : '1px solid transparent';
+
+            var nameSpan = row.children[2];
+            if (nameSpan) {
+                nameSpan.style.fontWeight = isActive ? 'bold' : 'normal';
+            }
+
+            var existing = row.querySelector('.np-ghost-active-icon');
+            if (isActive && !existing) {
+                var icon = document.createElement('span');
+                icon.className = 'np-ghost-active-icon';
+                icon.style.cssText = 'color: #1884cf; font-size: 10px; font-weight: bold;';
+                icon.textContent = '▶';
+                row.appendChild(icon);
+            } else if (!isActive && existing) {
+                existing.remove();
+            }
+        });
+    }
+
+    function buildVehicleTabs() {
+        var tabsContainer = document.getElementById('np-ghost-vehicle-tabs');
+
+        var vehicleDisplayNames = {
+            'BMX': 'BMX', 'MTB': 'MTB', 'HELI': 'Helicopter',
+            'TRUCK': 'Truck', 'BALLOON': 'Balloon', 'BLOB': 'Blob'
+        };
+
+        var order = ghostSourceFilter === 'frhd'
+            ? ['BMX', 'MTB']
+            : ['BMX', 'MTB', 'HELI', 'TRUCK', 'BALLOON', 'BLOB'];
+
+        if (order.indexOf(ghostVehicleFilter) === -1) {
+            ghostVehicleFilter = 'BMX';
+        }
+
+        tabsContainer.style.display = 'flex';
+        tabsContainer.innerHTML = '';
+
+        order.forEach(function (v) {
+            var btn = document.createElement('button');
+            btn.className = 'np-ghost-tab';
+            btn.dataset.vehicle = v;
+            btn.title = vehicleDisplayNames[v] || v;
+            btn.innerHTML = '<span class="editorgui_icons_bottom_vehicle editorgui_icons-icon_' + v.toLowerCase() + '" style="transform: scale(0.50); display: inline-block; pointer-events: none;"></span>';
+            styleGhostTab(btn, v, v === ghostVehicleFilter);
+
+            btn.addEventListener('mouseenter', function () {
+                if (this.dataset.vehicle !== ghostVehicleFilter) {
+                    var color = vehicleTabColors[this.dataset.vehicle] || '#888';
+                    this.style.background = color;
+                    this.style.borderColor = color;
+                    this.style.color = '#fff';
+                    var icon = this.querySelector('.editorgui_icons_bottom_vehicle');
+                    if (icon) icon.style.filter = 'brightness(0) invert(1)';
+                }
+            });
+            btn.addEventListener('mouseleave', function () {
+                if (this.dataset.vehicle !== ghostVehicleFilter) {
+                    this.style.background = '#f5f5f5';
+                    this.style.borderColor = '#ccc';
+                    this.style.color = '#666';
+                    var icon = this.querySelector('.editorgui_icons_bottom_vehicle');
+                    if (icon) icon.style.filter = 'none';
+                }
+            });
+
+            tabsContainer.appendChild(btn);
+        });
+    }
+
+    function styleGhostTab(btn, vehicle, isActive) {
+        var color = vehicleTabColors[vehicle] || '#888';
+        btn.style.cssText = 'flex: 1; font-size: 10px; padding: 0; min-width: 0; border-radius: 3px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 1px solid ' +
+            (isActive ? color : '#ccc') + '; background: ' +
+            (isActive ? color : '#f5f5f5') + '; color: ' +
+            (isActive ? '#fff' : '#666') + ';';
+
+        var icon = btn.querySelector('.editorgui_icons_bottom_vehicle');
+        if (icon) {
+            icon.style.filter = isActive ? 'brightness(0) invert(1)' : 'none';
+        }
+    }
+
+    document.getElementById('np-ghost-vehicle-tabs').addEventListener('click', function (e) {
+        var tab = e.target.closest('.np-ghost-tab');
+        if (!tab) return;
+
+        ghostVehicleFilter = tab.dataset.vehicle;
+
+        this.querySelectorAll('.np-ghost-tab').forEach(function (t) {
+            styleGhostTab(t, t.dataset.vehicle, t.dataset.vehicle === ghostVehicleFilter);
+        });
+
+        renderGhostList();
+    });
+
+    var pendingGhostFocus = null;
+
+    function applyPendingGhostFocus() {
+        if (!pendingGhostFocus) return;
+
+        var found = false;
+        [cachedAppGhosts, cachedFrhdGhosts, cachedGhosts].forEach(function (list) {
+            (list || []).forEach(function (g) {
+                if (g.ghostUrl === pendingGhostFocus) {
+                    g._inRace = true;
+                    found = true;
+                }
+            });
+        });
+
+        if (found) {
+            currentFocusedId = pendingGhostFocus;
+            pendingGhostFocus = null;
+            renderGhostList();
+        }
+    }
+
+    function renderGhostList() {
+        var list = document.getElementById('np-ghost-list');
+        list.style.height = '148px';
+        list.style.overflowY = 'auto';
+        list.style.paddingRight = '2px';
+        list.style.display = '';
+        list.innerHTML = '';
+
+        var shownMods = ['mini', 'propeller', 'invincibility', 'noClip'];
+        var filtered = cachedGhosts.filter(function (g) {
+            if (ghostSourceFilter === 'frhd' && g.source !== 'frhd') return false;
+            if (ghostSourceFilter === 'app' && g.source === 'frhd') return false;
+            if (g.vehicle !== ghostVehicleFilter) return false;
+            if (ghostModFilter) {
+                var mods = g.modsUsed || [];
+                return !mods.some(function (m) { return shownMods.indexOf(m) !== -1; });
+            }
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            list.style.display = 'flex';
+            list.style.flexDirection = 'column';
+            list.innerHTML = '<div style="margin: auto; color: #aaa; text-align: center;">No ghosts here!</div>';
+            return;
+        }
+
+        var withTime = [], withoutTime = [];
+        filtered.forEach(function (g) {
+            (g.timeTicks || g.time ? withTime : withoutTime).push(g);
+        });
+        var sorted = withTime.concat(withoutTime);
+
+        sorted.forEach(function (ghost, index) {
+            var isActive = currentActiveGhost && currentActiveGhost.ghostUrl === ghost.ghostUrl;
+            var isFocused = currentFocusType === 'ghost' && currentFocusedId && currentFocusedId === ghost.ghostUrl;
+
+            var row = document.createElement('div');
+            row.className = 'np-ghost-row' + (isActive ? ' active' : '');
+            row.style.cssText =
+                'display: flex; align-items: center; gap: 6px; padding: 5px 8px; cursor: pointer; border-radius: 4px;' +
+                (index < sorted.length - 1 ? ' margin-bottom: 2px;' : '') +
+                ((isActive || isFocused) ? ' background: #e8f4fc; border: 1px solid #1884cf;' : ' background: #f5f5f5; border: 1px solid transparent;');
+
+
+            row.dataset.ghostUrl = ghost.ghostUrl || '';
+            row.dataset.keyUrl = ghost.keyUrl || '';
+            row.dataset.vehicle = ghost.vehicle || 'BMX';
+            row.dataset.time = ghost.time || '';
+            row.dataset.timeTicks = ghost.timeTicks || '';
+            row.dataset.username = ghost.username || '';
+            row.dataset.hatColor = ghost.hatColor || '';
+            row.dataset.hatType = ghost.hatType || '';
+            row.dataset.vehicleColor = ghost.vehicleColor || '';
+            row.dataset.riderColor = ghost.riderColor || '';
+            row.dataset.crBmx = ghost.crBmx || false;
+            row.dataset.crMtb = ghost.crMtb || false;
+            row.dataset.modsUsed = JSON.stringify(ghost.modsUsed || []);
+            row.dataset.ghostCode = ghost.ghostCode ? JSON.stringify(ghost.ghostCode) : '';
+
+            var hasTime = ghost.timeTicks || ghost.time;
+            var timeDisplay = hasTime ? ghost.time : '<span style="color:#aaa;">—</span>';
+            var mods = ghost.modsUsed || [];
+
+            var modLabels = {
+                mini: { label: 'mini', show: true, title: 'Mini-Bike' },
+                propeller: { label: 'prop', show: true, title: 'Propeller' },
+                invincibility: { label: 'inv', show: true, title: 'Invincibility' },
+                noClip: { label: 'noclip', show: true, title: 'No Clip' }
+            };
+            var modsHtml = mods.length > 0
+                ? '<span style="display:flex;gap:2px;flex-shrink:0;">' +
+                mods.filter(function (m) { return modLabels[m] && modLabels[m].show; })
+                    .map(function (m) {
+                        return '<span title="' + modLabels[m].title +
+                            '" style="font-size:9px;padding:0px 4px;border-radius:2px;background:#e0e0e0;color:#555;font-weight:bold;">' +
+                            modLabels[m].label + '</span>';
+                    }).join('') +
+                '</span>'
+                : '';
+
+            var verifiedHtml = ghost.verified
+                ? '<span title="Verified" style="color:#1884cf;font-size:11px;flex-shrink:0;">✓</span>'
+                : '';
+
+            var removeHtml = ghost._inRace
+                ? '<button class="np-ghost-remove" title="Remove from race" data-ghost-url="' + ghost.ghostUrl +
+                '" style="flex-shrink:0;border:none;background:transparent;color:#e55;font-size:12px;cursor:pointer;padding:0 2px;line-height:1;">×</button>'
+                : '';
+
+            var sourceHtml = ghost.source === 'frhd'
+                ? '<span title="FRHD leaderboard" style="font-size:9px;padding:0 4px;border-radius:2px;background:#1884cf;color:#fff;font-weight:bold;flex-shrink:0;">FRHD</span>'
+                : '';
+
+            row.innerHTML =
+                '<span style="font-weight:bold;color:#bbb;width:18px;text-align:right;">' + (index + 1) + '</span>' +
+                /*'<span class="ghost-badge-sprite ' + (ghost.vehicle || 'BMX').toLowerCase() + '" style="flex-shrink:0;" title="' + (ghost.vehicle || 'BMX') + '"></span>' +*/
+                '<span style="flex:1;">' +
+                ghost.username + (ghost.isGuest ? ' <span style="color:#aaa;">(Guest)</span>' : '') +
+                '</span>' +
+                verifiedHtml + sourceHtml + modsHtml +
+                '<span style="color:#666;font-family:monospace;font-size:11px;">' + timeDisplay + '</span>' +
+                removeHtml;
+
+            row.addEventListener('click', function (evt) {
+                if (evt.target.classList.contains('np-ghost-remove')) return;
+
+                var ghostUrl = this.dataset.ghostUrl;
+                var match = cachedGhosts.find(function (g) { return g.ghostUrl === ghostUrl; });
+
+                currentFocusedId = ghostUrl;
+                currentFocusType = 'ghost';
+
+                if (match && match._inRace) {
+                    if (window.parent !== window) {
+                        window.parent.postMessage({ action: 'toolOptionChange', option: 'focus-ghost', value: { ghostUrl: ghostUrl } }, '*');
+                    }
+                    renderLiveList();
+                    renderGhostList();
+                } else {
+                    var ghostInfo = {
+                        url: this.dataset.ghostUrl,
+                        ghostUrl: this.dataset.ghostUrl,
+                        keyUrl: this.dataset.keyUrl,
+                        ghostCode: this.dataset.ghostCode ? JSON.parse(this.dataset.ghostCode) : null,
+                        vehicle: this.dataset.vehicle,
+                        time: this.dataset.time,
+                        ticks: parseInt(this.dataset.timeTicks) || null,
+                        username: this.dataset.username,
+                        hatColor: this.dataset.hatColor,
+                        hatType: this.dataset.hatType,
+                        vehicleColor: this.dataset.vehicleColor,
+                        riderColor: this.dataset.riderColor,
+                        crBmx: this.dataset.crBmx === 'true',
+                        crMtb: this.dataset.crMtb === 'true'
+                    };
+
+                    if (match) match._inRace = true;
+
+                    if (window.parent !== window) {
+                        window.parent.postMessage({ action: 'toolOptionChange', option: 'load-ghost', value: ghostInfo }, '*');
+                    }
+
+                    renderLiveList();
+                    renderGhostList();
+                }
+            });
+
+            row.addEventListener('click', function (evt) {
+                if (!evt.target.classList.contains('np-ghost-remove')) return;
+                evt.stopPropagation();
+
+                var ghostUrl = evt.target.dataset.ghostUrl;
+
+                (cachedAppGhosts || []).forEach(function (g) { if (g.ghostUrl === ghostUrl) g._inRace = false; });
+                (cachedFrhdGhosts || []).forEach(function (g) { if (g.ghostUrl === ghostUrl) g._inRace = false; });
+
+                if (currentFocusedId === ghostUrl) {
+                    currentFocusedId = null;
+                    currentFocusType = null;
+                }
+
+                if (window.parent !== window) {
+                    window.parent.postMessage({ action: 'toolOptionChange', option: 'remove-ghost', value: { ghostUrl: ghostUrl } }, '*');
+                }
+
+                renderLiveList();
+                renderGhostList();
+            });
+
+            row.addEventListener('mouseenter', function () {
+                if (!this.classList.contains('active')) this.style.background = '#eee';
+            });
+            row.addEventListener('mouseleave', function () {
+                if (!this.classList.contains('active')) {
+                    this.style.background = (currentFocusedId === this.dataset.ghostUrl) ? '#e8f4fc' : '#f5f5f5';
+                }
+            });
+
+            list.appendChild(row);
+        });
+    }
+
+    function renderLiveList() {
+        var section = document.getElementById('np-live-section');
+        var list = document.getElementById('np-live-list');
+
+        if (livePlayers.size === 0) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+        list.innerHTML = '';
+
+        livePlayers.forEach(function (p, playerId) {
+            var isFocused = currentFocusType === 'live' && currentFocusedId && currentFocusedId === playerId;
+
+            var vehicleColors = {
+                'BMX': '#000', 'MTB': '#aaa', 'HELI': '#f2902e',
+                'TRUCK': '#94d44e', 'BALLOON': '#f02728', 'BLOB': '#a784c5'
+            };
+            var vColor = vehicleColors[p.vehicleType] || '#888';
+
+            var row = document.createElement('div');
+            row.style.cssText =
+                'display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 4px; margin-bottom: 2px; cursor: pointer;' +
+                (isFocused ? 'background: #fff8e1; border: 1px solid #f2902e;' : 'background: #f5f5f5; border: 1px solid transparent;');
+
+            row.innerHTML =
+                '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#d12929;flex-shrink:0;"></span>' +
+                '<span style="flex:1;font-weight:' + (isFocused ? 'bold' : 'normal') + ';">' + p.username + '</span>' +
+                '<span class="vehicle-badge mode-badge" style="font-family: roboto_condensed_bold, Arial, Helvetica, sans-serif;font-size:10px;padding:2px 6px;border-radius:2px;color:#fff;background:' + vColor + ';flex-shrink:0;">' + p.vehicleType + '</span>'
+            row.addEventListener('click', function () {
+                if (currentFocusedId === playerId) {
+                    currentFocusedId = null;
+                    currentFocusType = null;
+                    if (window.parent !== window) {
+                        window.parent.postMessage({ action: 'toolOptionChange', option: 'focus-main-player' }, '*');
+                    }
+                    renderLiveList();
+                    renderGhostList();
+                } else {
+                    currentFocusedId = playerId;
+                    currentFocusType = 'live';
+                    if (window.parent !== window) {
+                        window.parent.postMessage({
+                            action: 'toolOptionChange',
+                            option: 'focus-live-rider',
+                            value: { playerId: playerId }
+                        }, '*');
+                    }
+
+                    renderLiveList();
+                    renderGhostList();
+                }
+            });
+
+            row.addEventListener('mouseenter', function () {
+                if (currentFocusedId !== playerId) this.style.background = '#eee';
+            });
+            row.addEventListener('mouseleave', function () {
+                if (currentFocusedId !== playerId) this.style.background = '#f5f5f5';
+            });
+
+            list.appendChild(row);
+        });
+    }
+
+    function clearAllInRaceFlags() {
+        (cachedAppGhosts || []).forEach(function (g) { g._inRace = false; });
+        (cachedFrhdGhosts || []).forEach(function (g) { g._inRace = false; });
+        cachedGhosts.forEach(function (g) { g._inRace = false; });
+    }
+
+    document.getElementById('np-prev').addEventListener('click', function () {
+        if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+            if (playlistContext.currentIndex > 0) {
+                var prevTrack = playlistContext.tracks[playlistContext.currentIndex - 1];
+                var type, id;
+
+                if (prevTrack.canonical || prevTrack.type === 't') {
+                    type = 't';
+                    id = prevTrack.canonical || prevTrack.id;
+                } else {
+                    type = prevTrack.urlType || prevTrack.type || 'frhd';
+                    id = prevTrack.urlId || prevTrack.id;
+                }
+
+                sendLoadTrack(type, id);
+            }
+        } else if (!filterContext && currentTrackData) {
+            fetchAdjacentTrack('prev');
+        }
+    });
+
+    document.getElementById('np-next').addEventListener('click', function () {
+        if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
+            if (playlistContext.currentIndex < playlistContext.tracks.length - 1) {
+                var nextTrack = playlistContext.tracks[playlistContext.currentIndex + 1];
+                var type, id;
+
+                if (nextTrack.canonical || nextTrack.type === 't') {
+                    type = 't';
+                    id = nextTrack.canonical || nextTrack.id;
+                } else {
+                    type = nextTrack.urlType || nextTrack.type || 'frhd';
+                    id = nextTrack.urlId || nextTrack.id;
+                }
+
+                sendLoadTrack(type, id);
+            }
+        } else if (!filterContext && currentTrackData) {
+            fetchAdjacentTrack('next');
+        }
+    });
+
+    document.getElementById('np-random').addEventListener('click', function () {
+        if (playlistContext && playlistContext.tracks.length > 1) {
+            var availableIndices = [];
+            for (var i = 0; i < playlistContext.tracks.length; i++) {
+                if (i !== playlistContext.currentIndex) {
+                    availableIndices.push(i);
+                }
+            }
+            var randomIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            var randomTrack = playlistContext.tracks[randomIdx];
+            var type, id;
+
+            if (randomTrack.canonical) {
+                type = 't';
+                id = randomTrack.canonical;
+            } else {
+                type = randomTrack.urlType || randomTrack.type || 'frhd';
+                id = randomTrack.urlId || randomTrack.id;
+            }
+
+            sendLoadTrack(type, id);
+        } else if (filterContext) {
+            if (filterContext.remixesOf) {
+                fetch('/api/remixes/' + encodeURIComponent(filterContext.remixesOf.canonical))
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        var remixes = data.remixes || [];
+                        if (remixes.length > 0) {
+                            var track = remixes[Math.floor(Math.random() * remixes.length)];
+                            var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
+                            var id = track.canonical || track.urlId || track.id;
+                            sendLoadTrack(type, id);
+                        }
+                    })
+                    .catch(function (e) { console.error('Failed to get random remix:', e); });
+            } else {
+                var params = buildFilterParams();
+                fetch('/api/db?' + params)
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        if (data.tracks && data.tracks.length > 0) {
+                            var track = data.tracks[0];
+                            var type, id;
+
+                            if (track.canonical) {
+                                type = 't';
+                                id = track.canonical;
+                            } else {
+                                type = track.urlType || track.type || 'frhd';
+                                id = track.urlId || track.id;
+                            }
+
+                            sendLoadTrack(type, id);
+                        }
+                    })
+                    .catch(function (e) {
+                        console.error('Failed to get random track:', e);
+                    });
+            }
+        } else {
+            fetchRandomTrack();
+        }
+    });
+
+    document.getElementById('np-copy').addEventListener('click', function () {
+        if (!currentTrackData) return;
+        var url = currentTrackData.permalink || (window.location.origin + '/' + currentTrackData.type + '/' + currentTrackData.id);
+        navigator.clipboard.writeText(url).then(function () {
+            var btn = document.getElementById('copy-button');
+            btn.textContent = 'Copied!';
+            setTimeout(function () { btn.textContent = 'Copy Link'; }, 1500);
+        });
+    });
+
+    /*document.getElementById('np-set-start').addEventListener('click', function () {
+        send('change-tool', 'pete');
+    });*/
+
+    document.getElementById('vehicle-mod-play').addEventListener('click', function () {
+        var active = !this.classList.contains('engaged');
+        this.classList.toggle('engaged', active);
+        send('mod-play', active);
+        var modCb = document.getElementById('mod-play');
+        if (modCb) modCb.checked = active;
+    });
+
+    document.getElementById('vehicle-mod-mobile').addEventListener('click', function () {
+        var active = !this.classList.contains('engaged');
+        this.classList.toggle('engaged', active);
+        send('mod-mobile', active);
+        var modCb = document.getElementById('mod-mobile');
+        if (modCb) modCb.checked = active;
+    });
+
+    document.getElementById('np-author-line').addEventListener('click', function (e) {
+        var authorLink = e.target.closest('.np-author-link');
+        if (authorLink) {
+            e.preventDefault();
+            var playerName = authorLink.dataset.author;
+            if (playerName) {
+                showPlayerProfile(playerName);
+                send('open-author', playerName);
+            }
+        }
+    });
+
+    document.getElementById('np-playlist-name').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (playlistContext && playlistContext.id) {
+            send('open-playlist', playlistContext.id);
+        }
+    });
+
+    document.getElementById('np-playlist-info').addEventListener('click', function (e) {
+        if (e.target.id === 'np-playlist-name' && playlistContext) {
+            return;
+        }
+
+        if (filterContext) {
+            e.preventDefault();
+            if (filterContext.remixesOf) {
+                send('open-remix-search', filterContext.remixesOf);
+            } else if (filterContext.player) {
+                send('open-author', {
+                    player: filterContext.player,
+                    type: filterContext.type || 'db',
+                    sortBy: filterContext.sortBy || 'shuffle',
+                    sortOrder: filterContext.sortOrder || 'desc'
+                });
+            } else if (filterContext.query) {
+                send('open-filter', {
+                    query: filterContext.query,
+                    type: filterContext.type || 'db',
+                    sortBy: filterContext.sortBy || 'shuffle',
+                    sortOrder: filterContext.sortOrder || 'desc'
+                });
+            } else if (filterContext.type && filterContext.type !== 'db') {
+                send('open-filter', {
+                    type: filterContext.type,
+                    sortBy: filterContext.sortBy || 'shuffle',
+                    sortOrder: filterContext.sortOrder || 'desc'
+                });
+            }
+        }
+    });
+
+    document.getElementById('np-author-avatars').addEventListener('click', function (e) {
+        var avatar = e.target.closest('.np-author-avatar');
+        if (avatar) {
+            var playerName = avatar.dataset.author;
+            if (playerName) {
+                showPlayerProfile(playerName);
+                send('open-author', playerName);
+            }
+        }
+    });
+
+    document.getElementById('player-view-tracks').addEventListener('click', function () {
+        if (currentPlayer) {
+            send('open-author', currentPlayer.displayName);
+        }
+    });
+
+    document.getElementById('btn-track-import').addEventListener('click', function () {
+        send('open-import', true);
+    });
+
+    document.getElementById('np-ghost-export').addEventListener('click', function () {
+        send('export-ghost', true);
+    });
+
+    document.getElementById('np-ghost-upload').addEventListener('click', function () {
+        send('upload-ghost', true);
+    });
+
+    document.getElementById('np-ghost-filter-frhd').addEventListener('click', function () {
+        ghostSourceFilter = ghostSourceFilter === 'frhd' ? 'app' : 'frhd';
+
+        this.classList.toggle('engaged', ghostSourceFilter === 'frhd');
+        document.getElementById('np-ghost-filter-app').classList.toggle('engaged', ghostSourceFilter === 'app');
+
+        if (ghostSourceFilter === 'frhd') {
+            cachedGhosts = cachedFrhdGhosts || [];
+        } else {
+            var type = currentTrackData.type;
+            var id = currentTrackData.canonical || currentTrackData.id;
+            fetch('/api/ghosts/' + encodeURIComponent(type) + '/' + encodeURIComponent(id) + '?limit=50')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    cachedGhosts = data.leaderboard || [];
+                    ghostVehicleFilter = 'BMX';
+                    buildVehicleTabs();
+                    renderGhostList();
+                });
+            return;
+        }
+
+        ghostVehicleFilter = 'BMX';
+        buildVehicleTabs();
+        renderGhostList();
+    });
+
+    document.getElementById('np-ghost-filter-app').addEventListener('click', function () {
+        ghostSourceFilter = ghostSourceFilter === 'app' ? null : 'app';
+        this.classList.toggle('engaged', ghostSourceFilter === 'app');
+        document.getElementById('np-ghost-filter-frhd').classList.remove('engaged');
+
+        cachedGhosts = cachedAppGhosts || [];
+
+        ghostVehicleFilter = 'BMX';
+        buildVehicleTabs();
+        renderGhostList();
+    });
+
+    document.getElementById('np-ghost-mod-filter').addEventListener('click', function () {
+        ghostModFilter = !ghostModFilter;
+        this.classList.toggle('engaged', ghostModFilter);
+        renderGhostList();
+    });
+
+    document.getElementById('np-ghost-clear-all').addEventListener('click', function () {
+        clearAllInRaceFlags();
+        currentActiveGhost = null;
+        currentFocusedId = null;
+        currentFocusType = null;
+
+        if (window.parent !== window) {
+            window.parent.postMessage({ action: 'toolOptionChange', option: 'clear-ghosts', value: true }, '*');
+        }
+
+        renderGhostList();
+    });
+
+    window.addEventListener('message', function (e) {
+        if (!e.data) return;
+
+        if (e.data.action === 'cameraFocusChanged') {
+            if (e.data.ghostUrl) {
+                currentFocusedId = e.data.ghostUrl;
+                currentFocusType = 'ghost';
+            } else if (e.data.livePlayerId) {
+                currentFocusedId = e.data.livePlayerId;
+                currentFocusType = 'live';
+            } else {
+                currentFocusedId = null;
+                currentFocusType = null;
+            }
+            renderGhostList();
+            renderLiveList();
+        }
+
+        if (e.data.action === 'livePlayerJoined') {
+            livePlayers.set(e.data.playerId, {
+                username: e.data.username,
+                vehicleType: e.data.vehicleType || 'BMX',
+                hatColor: e.data.hatColor || '#000'
+            });
+            renderLiveList();
+        }
+
+        if (e.data.action === 'livePlayerLeft') {
+            var leaving = livePlayers.get(e.data.playerId);
+            if (leaving && currentFocusedId === e.data.playerId) {
+                currentFocusedId = null;
+                currentFocusType = null;
+            }
+            livePlayers.delete(e.data.playerId);
+            renderLiveList();
+            renderGhostList();
+        }
+
+        if (e.data.action === 'livePlayersCleared' || e.data.action === 'clearGhosts' || e.data.action === 'trackChanged') {
+            livePlayers.clear();
+            renderLiveList();
+            clearAllInRaceFlags();
+            cachedGhosts.forEach(function (g) { g._inRace = false; });
+            currentActiveGhost = null;
+            currentFocusedId = null;
+            currentFocusType = null;
+            renderGhostList();
+        }
+
+        if (e.data.action === 'trackRestarted') {
+            currentFocusedId = null;
+            currentFocusType = null;
+            renderGhostList();
+        }
+
+        if (e.data.action === 'livePlayerVehicleChanged') {
+            var p = livePlayers.get(e.data.playerId);
+            if (p) {
+                p.vehicleType = e.data.vehicleType;
+                renderLiveList();
+            }
+        }
+
+        if (e.data.action === 'ghostAddedToRace') {
+            pendingGhostFocus = e.data.ghostUrl;
+            applyPendingGhostFocus();
+        }
+    });
+
+    document.getElementById('np-live-clear').addEventListener('click', function () {
+        livePlayers.forEach(function (p, playerId) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    action: 'toolOptionChange',
+                    option: 'remove-live-rider',
+                    value: { playerId: playerId }
+                }, '*');
+            }
+        });
+
+        livePlayers.clear();
+        currentFocusedId = null;
+        currentFocusType = null;
+        renderLiveList();
+        renderGhostList();
+    });
+
+    document.addEventListener('click', function (e) {
+        var playlistLink = e.target.closest('.np-playlist-link');
+        if (playlistLink) {
+            e.preventDefault();
+            var playlistId = playlistLink.dataset.playlistId;
+            if (playlistId) {
+                send('open-playlist', playlistId);
+            }
+        }
+
+        var trackLink = e.target.closest('.np-track-link');
+        if (trackLink) {
+            e.preventDefault();
+            var type = trackLink.dataset.type;
+            var id = trackLink.dataset.id;
+            if (type && id) {
+                if (trackLink.dataset.noContext) {
+                    playlistContext = null;
+                    filterContext = null;
+                    updatePlaylistUI();
+                }
+                sendLoadTrack(type, id);
+            }
+        }
+
+        var remixesLink = e.target.closest('.np-remixes-link');
+        if (remixesLink) {
+            e.preventDefault();
+            var canonical = remixesLink.dataset.canonical;
+            var name = remixesLink.dataset.name;
+            if (canonical) {
+                send('open-remix-search', { canonical: canonical, name: name });
+            }
+        }
+
+        var yearLink = e.target.closest('.np-year-link');
+        if (yearLink) {
+            e.preventDefault();
+            var year = yearLink.dataset.year;
+            if (year) {
+                send('open-filter', { query: 'year=' + year, type: 'db', sort: 'published', sortOrder: 'asc' });
+            }
+        }
+    });
+
+    function updateVehicleIcon(s) {
+        var vtVehicleBadge = document.getElementById('vt-vehicle-selected');
+        var npVehicleBadge = document.getElementById('np-vehicle-selected');
+        if (npVehicleBadge && vtVehicleBadge && s.vehicle) {
+            var vehicleColors = {
+                'BMX': '#000000',
+                'MTB': '#aaaaaa',
+                'HELI': '#f2902e',
+                'TRUCK': '#94d44e',
+                'BALLOON': '#f02728',
+                'BLOB': '#a784c5'
+            };
+
+            npVehicleBadge.style.background = vehicleColors[s.vehicle] || '#888';
+            npVehicleBadge.textContent = s.vehicle;
+            vtVehicleBadge.style.background = vehicleColors[s.vehicle] || '#888';
+            vtVehicleBadge.textContent = s.vehicle;
+        }
+    }
+
+    window.addEventListener('message', function (e) {
+        if (e.data && (e.data.action === 'ghostLeaderboardUpdate' || e.data.action === 'ghostUploaded')) {
+            if (currentTrackData) {
+                var ghostType = currentTrackData.type || 'db';
+                var ghostId = currentTrackData.canonical || currentTrackData.id;
+                fetchTrackGhosts(ghostType, ghostId);
+            }
+        }
+    });
+
+    (function () {
+        try {
+            var parentPath = window.parent.location.pathname;
+            var match = parentPath.match(/^\/(frhd|bhr|cr|tm|app|t)\/([a-zA-Z0-9_-]+)/);
+            if (match) {
+                loadTrackData(match[1], match[2]);
+            }
+        } catch (e) {
+            // cross-origin, wait for message
+        }
+    })();
+
+    if (window.parent !== window) {
+    window.parent.postMessage({ action: 'requestLivePlayers' }, '*');
+    setTimeout(function () {
+        window.parent.postMessage({ action: 'requestLivePlayers' }, '*');
+    }, 2000);
+}
+</script>

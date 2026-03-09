@@ -6866,7 +6866,7 @@
                   n.createElement(x, { active: "circle" === e }),
                   //n.createElement(xxx, { active: "object" === e }),
                   n.createElement(i, { active: "brush" === e }),
-                  //n.createElement(pa, { active: "pattern" === e }),
+                  n.createElement(pa, { active: "pattern" === e }),
                   n.createElement(a, { active: "eraser" === e }),
                   n.createElement(s, { active: "powerup" === e }),
                   n.createElement(l, { active: "vehiclepowerup" === e }),
@@ -33610,6 +33610,8 @@
               var e = this.refs.code.getDOMNode(),
                 t = e.getAttribute("data-paste-code"),
                 n = e.value;
+
+              if (!n && !t) return;
               const trackName = e.value.replace(/(\.\.\/)/g, '');
 
               const isCPGH = trackName.endsWith('.cpgh');
@@ -33687,6 +33689,15 @@
               } else {
                 try {
                   const parsedInput = JSON.parse(n);
+
+                  // raw key format
+                  if (!parsedInput.data && !parsedInput.race && !parsedInput.code) {
+                    if (typeof GameManager !== "undefined") {
+                      GameManager.command("add race", parsedInput, true);
+                    }
+                    return;
+                  }
+
                   let raceData;
                   if (Array.isArray(parsedInput)) {
                     raceData = parsedInput[0].race;
@@ -33696,15 +33707,18 @@
                     raceData = parsedInput.race;
                   }
 
-                  const parsedCode = JSON.parse(raceData.code || "{}");
+                  if (!raceData || !raceData.code) {
+                    console.error("No valid race data found");
+                    return;
+                  }
 
+                  const parsedCode = JSON.parse(raceData.code || "{}");
                   const filteredData = {
                     code: parsedCode,
                     vehicle: raceData.vehicle,
                     desktop: raceData.desktop,
                     run_ticks: raceData.run_ticks
                   };
-
                   if (typeof GameManager !== "undefined") {
                     GameManager.command("add race", filteredData, true);
                   }
@@ -33791,16 +33805,22 @@
               if (isJsonFile) {
                 try {
                   const parsedInput = JSON.parse(fileContent);
+
+                  if (!parsedInput.data && !parsedInput.race && !parsedInput.code) {
+                    if (typeof GameManager !== "undefined") {
+                      GameManager.command("add race", parsedInput, true);
+                    }
+                    return;
+                  }
+
                   const raceData = parsedInput.data ? parsedInput.data[0].race : parsedInput;
                   const parsedCode = JSON.parse(raceData.code);
-
                   const filteredData = {
                     code: parsedCode,
                     vehicle: raceData.vehicle,
                     desktop: raceData.desktop,
                     run_ticks: raceData.run_ticks
                   };
-
                   if (typeof GameManager !== "undefined") {
                     GameManager.command("add race", filteredData, true);
                   }
@@ -34169,6 +34189,8 @@
 
             window.addEventListener('message', function (event) {
               if (event.data.action === 'loadTrack') {
+                var toolsIframe = document.getElementById("toolsIframe");
+                if (toolsIframe && event.source !== toolsIframe.contentWindow) return;
                 var trackType = event.data.type;
                 var trackId = event.data.id;
                 if (!trackType || !trackId) return;
@@ -34179,6 +34201,9 @@
                 } else if (event.data.filterContext) {
                   TrackLoader._currentFilterContext = event.data.filterContext;
                   TrackLoader._currentPlaylist = null;
+                } else {
+                  TrackLoader._currentPlaylist = null;
+                  TrackLoader._currentFilterContext = null;
                 }
 
                 TrackLoader.load(
@@ -34824,6 +34849,9 @@
                   TrackLoader._currentPlaylist = event.data.playlist;
                 } else if (event.data.filterContext) {
                   TrackLoader._currentFilterContext = event.data.filterContext;
+                } else {
+                  TrackLoader._currentPlaylist = null;
+                  TrackLoader._currentFilterContext = null;
                 }
 
                 TrackLoader.load(
@@ -34980,6 +35008,7 @@
     249: [
       function (e, t) {
         var TrackLoader = e("./trackLoader");
+        var GhostLoader = e("./ghostLoader");
 
         // ---- Registry ----
 
@@ -35755,8 +35784,142 @@
           } else if (data.filterContext) {
             TrackLoader._currentFilterContext = data.filterContext;
             TrackLoader._currentPlaylist = null;
+          } else {
+            TrackLoader._currentPlaylist = null;
+            TrackLoader._currentFilterContext = null;
           }
           TrackLoader.load(data);
+        });
+
+        // ---- Ghost Loading ----
+
+        registerSingle('load-ghost', function (ghostInfo) {
+          if (!ghostInfo || (!ghostInfo.url && !ghostInfo.ghostUrl)) return;
+
+          GhostLoader.load(ghostInfo).then(function () {
+            GhostLoader.updateSettings(ghostInfo);
+            var scene = getScene();
+            if (!scene) return;
+
+            var ghostUrl = ghostInfo.ghostUrl || ghostInfo.url;
+            var players = scene.playerManager._players;
+            for (var i = 1; i < players.length; i++) {
+              if (players[i].isGhost() && !players[i]._ghostUrl && !players[i]._liveRider) {
+                players[i]._ghostUrl = ghostUrl;
+                scene.camera.focusIndex = i;
+                scene.camera.focusOnPlayer();
+                break;
+              }
+            }
+
+            scene.stateChanged();
+          });
+        });
+
+        registerSingle('remove-ghost', function (data) {
+          if (!data || !data.ghostUrl) return;
+          var scene = getScene();
+          if (!scene) return;
+
+          var players = scene.playerManager._players;
+          var focusedPlayer = players[scene.camera.focusIndex];
+          if (focusedPlayer && focusedPlayer._ghostUrl === data.ghostUrl) {
+            scene.camera.focusIndex = 0;
+          }
+          
+          for (var i = players.length - 1; i >= 1; i--) {
+            if (players[i]._ghostUrl === data.ghostUrl && !players[i]._liveRider) {
+              players.splice(i, 1);
+              break;
+            }
+          }
+
+          scene.camera.focusOnPlayer();
+          scene.stateChanged();
+        });
+
+        registerSingle('clear-ghosts', function () {
+          var scene = getScene();
+          if (!scene) return;
+
+          scene.playerManager.clear();
+          scene.camera.focusIndex = 0;
+          scene.camera.focusOnPlayer();
+          scene.stateChanged();
+        });
+
+        registerSingle('remove-live-rider', function (data) {
+          if (!data || !data.playerId) return;
+
+          var scene = getScene();
+          if (!scene || !scene.liveRider) return;
+
+          scene.liveRider.removeGhost(data.playerId);
+          scene.stateChanged();
+        });
+
+        registerSingle('focus-ghost', function (data) {
+          if (!data || !data.ghostUrl) return;
+          var scene = getScene();
+          if (!scene) return;
+
+          var players = scene.playerManager._players;
+          for (var i = 0; i < players.length; i++) {
+            if (players[i]._ghostUrl === data.ghostUrl) {
+              scene.camera.focusIndex = i;
+              scene.camera.focusOnPlayer();
+              break;
+            }
+          }
+        });
+
+        registerSingle('focus-live-rider', function (data) {
+          if (!data || !data.playerId) { console.log('[focus] no playerId'); return; }
+          var scene = getScene();
+          if (!scene || !scene.liveRider) { console.log('[focus] no scene/liveRider'); return; }
+
+          var playerData = scene.liveRider.ghostPlayers.get(data.playerId);
+          console.log('[focus] ghostPlayers keys:', [...scene.liveRider.ghostPlayers.keys()]);
+          console.log('[focus] looking for:', data.playerId, 'found:', !!playerData);
+
+          if (!playerData || !playerData.ghost) { console.log('[focus] no playerData/ghost'); return; }
+
+          var players = scene.playerManager._players;
+          var idx = players.indexOf(playerData.ghost);
+          console.log('[focus] player index in _players:', idx, 'playerCount:', players.length);
+
+          if (idx > -1) {
+            scene.camera.focusIndex = idx;
+            scene.camera.focusOnPlayer();
+            console.log('[focus] focused on index', idx);
+          } else {
+            console.log('[focus] ghost not found in _players array');
+          }
+        });
+
+        registerSingle('focus-main-player', function () {
+          var scene = getScene();
+          if (!scene) return;
+          scene.camera.focusOnMainPlayer();
+        });
+
+        registerSingle('requestLivePlayers', function () {
+          var scene = getScene();
+          if (!scene?.liveRider) return;
+
+          var toolsIframe = document.getElementById('toolsIframe');
+          if (!toolsIframe?.contentWindow) return;
+
+          for (var [playerId, playerData] of scene.liveRider.ghostPlayers) {
+            toolsIframe.contentWindow.postMessage({
+              action: 'livePlayerJoined',
+              playerId: playerId,
+              username: playerData.username,
+              vehicleType: playerData.ghost?._baseVehicleType || 'BMX',
+              hatColor: playerData.hatColor,
+              hatType: playerData.hatType
+            }, '*');
+          }
         });
 
         // ---- Navigation / Dialogs ----
@@ -35925,6 +36088,33 @@
           }
         });
 
+        registerSingle('upload-ghost', function () {
+          var scene = getScene();
+          if (!scene) return;
+
+          var player = scene.playerManager && scene.playerManager.firstPlayer;
+          if (!player) return;
+
+          var gamepad = player.getGamepad();
+          if (!gamepad || !gamepad.recording) {
+            alert('No ghost data recorded yet. Play the track first!');
+            return;
+          }
+
+          if (!GameSettings.type || !GameSettings.id) {
+            alert('No track loaded. Import a track first!');
+            return;
+          }
+
+          if (!scene.completedTicks) {
+            alert('You need to complete the track before uploading a ghost.');
+            return;
+          }
+
+          scene.ghostUploadPrompted = true;  // prevent trackComplete() from also prompting
+          scene.promptGhostUpload(gamepad);
+        });
+
         // ---- Mod Settings ----
 
         // Register each boolean mod
@@ -35993,7 +36183,7 @@
         };
         window.optionHandlers = t.exports;
       },
-      { "./trackLoader": 252 }
+      { "./trackLoader": 252, "./ghostLoader": 251 }
     ],
     250: [
       function (e, t) {
@@ -36086,6 +36276,16 @@
                 return;
               }
 
+              if (ghostInfo.ghostCode) {
+                GameManager.command("add race", {
+                  code: ghostInfo.ghostCode,
+                  vehicle: ghostInfo.vehicle || 'BMX',
+                  run_ticks: ghostInfo.ticks || null
+                }, true);
+                resolve(ghostInfo.ghostCode);
+                return;
+              }
+
               console.log("[Ghost] Loading from URL:", ghostUrl);
               var isCPGH = ghostUrl.endsWith(".cpgh") || ghostUrl.includes("ghost_data");
 
@@ -36116,7 +36316,13 @@
                     cpghData: arrayBuffer,
                     keyData: keyData,
                     vehicle: ghostInfo.vehicle || ghostInfo.ghostVehicle || "BMX",
-                    username: ghostInfo.username || ghostInfo.ghoster || "Ghost"
+                    username: ghostInfo.username || ghostInfo.ghoster || "Ghost",
+                    hatColor: ghostInfo.hatColor,
+                    hatType: ghostInfo.hatType,
+                    vehicleColor: ghostInfo.vehicleColor,
+                    riderColor: ghostInfo.riderColor,
+                    crBmx: ghostInfo.crBmx,
+                    crMtb: ghostInfo.crMtb
                   };
 
                   if (typeof GameManager !== "undefined") {
@@ -36157,6 +36363,12 @@
               user: {
                 id: userName || metadata.ghoster,
                 username: userName || metadata.ghoster,
+                hatColor: metadata.hatColor,
+                hatType: metadata.hatType,
+                vehicleColor: metadata.vehicleColor,
+                riderColor: metadata.riderColor,
+                crBmx: metadata.crBmx,
+                crMtb: metadata.crMtb,
                 displayName: metadata.ghoster,
                 cosmetics: {}
               },
@@ -36196,6 +36408,12 @@
                 ghostUrl: messageGhost.ghostUrl,
                 keyUrl: messageGhost.keyUrl,
                 vehicle: messageGhost.vehicle || messageGhost.ghostVehicle,
+                hatColor: messageGhost.hatColor,
+                hatType: messageGhost.hatType,
+                vehicleColor: messageGhost.vehicleColor,
+                riderColor: messageGhost.riderColor,
+                crBmx: messageGhost.crBmx,
+                crMtb: messageGhost.crMtb,
                 time: messageGhost.time || messageGhost.ghostTime,
                 ticks: messageGhost.ticks || messageGhost.ghostTicks,
                 username: messageGhost.username || messageGhost.ghoster,
@@ -36208,6 +36426,12 @@
                 ghostUrl: metadata.ghostUrl,
                 keyUrl: metadata.keyUrl,
                 vehicle: metadata.ghostVehicle || (metadata.ghost && metadata.ghost.vehicle),
+                hatColor: metadata.hatColor,
+                hatType: metadata.hatType,
+                vehicleColor: metadata.vehicleColor,
+                riderColor: metadata.riderColor,
+                crBmx: metadata.crBmx,
+                crMtb: metadata.crMtb,
                 time: metadata.ghostTime,
                 ticks: metadata.ghostTicks,
                 username: metadata.ghoster,
@@ -36335,6 +36559,28 @@
                 if (ghostInfo) {
                   GhostLoader.load(ghostInfo).then(function () {
                     GhostLoader.updateSettings(ghostInfo);
+
+                    var scene = GameManager.game.currentScene;
+                    if (scene) {
+                      var ghostUrl = ghostInfo.ghostUrl || ghostInfo.url;
+                      var players = scene.playerManager._players;
+                      for (var i = 1; i < players.length; i++) {
+                        if (players[i].isGhost() && !players[i]._ghostUrl && !players[i]._liveRider) {
+                          players[i]._ghostUrl = ghostUrl;
+                          scene.camera.focusIndex = i;
+                          scene.camera.focusOnPlayer();
+                          break;
+                        }
+                      }
+                    }
+
+                    var toolsIframe = document.getElementById('toolsIframe');
+                    if (toolsIframe && toolsIframe.contentWindow) {
+                      toolsIframe.contentWindow.postMessage({
+                        action: 'ghostAddedToRace',
+                        ghostUrl: ghostInfo.ghostUrl || ghostInfo.url
+                      }, '*');
+                    }
                   });
                 }
 

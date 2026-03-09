@@ -56,16 +56,125 @@ function formatGhostTime(ticks, fps = 30) {
     return `${minutes.toString().padStart(2, '0')}:${seconds.toFixed(2).padStart(5, '0')}`;
 }
 
+router.get('/frhd-leaderboard/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const frhdModule = await import('frhdv2');
+        const { getTrackLeaderboard } = frhdModule;
+
+        const raw = await getTrackLeaderboard(parseInt(id));
+        const leaderboard = (raw?.track_leaderboard || []).filter(function(race) {
+            return race.u_id && race.user && race.user.u_name;
+        });
+
+        if (leaderboard.length === 0) {
+            return res.json({ leaderboard: [], totalEntries: 0 });
+        }
+
+        const uIds = leaderboard.map(r => r.u_id).join(',');
+        const url = new URL('https://www.freeriderhd.com/track_api/load_races');
+        url.searchParams.set('ajax', 'true');
+        url.searchParams.set('t_1', 'ref');
+        url.searchParams.set('t_2', 'desk');
+
+        const batchRes = await fetch(url.toString(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ t_id: id, u_ids: uIds }).toString()
+        });
+
+        const batchJson = await batchRes.json();
+
+        const raceByUid = {};
+        for (const entry of (batchJson.data || [])) {
+            if (entry.user?.u_id) {
+                raceByUid[entry.user.u_id] = entry.race;
+            }
+        }
+
+        const entries = leaderboard.map(function(race) {
+            const raceData = raceByUid[race.u_id] || {};
+            const code = typeof raceData.code === 'string'
+                ? (() => { try { return JSON.parse(raceData.code); } catch { return null; } })()
+                : raceData.code || null;
+
+            return {
+                rank: race.place,
+                username: race.user.d_name || race.user.u_name,
+                userId: race.u_id,
+                isGuest: false,
+                time: race.run_time || '',
+                timeTicks: raceData.run_ticks || 0,
+                vehicle: raceData.vehicle || 'BMX',
+                verified: false,
+                hatColor: '#000000',
+                hatType: 'none',
+                vehicleColor: '',
+                riderColor: '',
+                crBmx: false,
+                crMtb: false,
+                modsUsed: [],
+                keyUrl: `/api/ghosts/frhd-race/${id}/${race.u_id}`,
+                ghostCode: code,
+                ghostUrl: `/api/ghosts/frhd-race/${id}/${race.u_id}`,
+                source: 'frhd'
+            };
+        });
+
+        res.json({ leaderboard: entries, totalEntries: entries.length });
+
+    } catch (error) {
+        console.error('FRHD leaderboard fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch FRHD leaderboard', details: error.message });
+    }
+});
+
+router.get('/frhd-race/:id/:uid', async (req, res) => {
+    const { id, uid } = req.params;
+
+    try {
+        const url = new URL('https://www.freeriderhd.com/track_api/load_races');
+        url.searchParams.set('ajax', 'true');
+        url.searchParams.set('t_1', 'ref');
+        url.searchParams.set('t_2', 'desk');
+
+        const body = new URLSearchParams({ t_id: id, u_ids: uid });
+
+        const response = await fetch(url.toString(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString()
+        });
+
+        const json = await response.json();
+
+        if (!json.result || !json.data || !json.data[0]) {
+            return res.status(404).json({ error: 'No race found' });
+        }
+
+        const race = json.data[0].race;
+        const code = typeof race.code === 'string' ? JSON.parse(race.code) : race.code;
+
+        res.json(code);
+
+    } catch (error) {
+        console.error('FRHD race relay error:', error);
+        res.status(500).json({ error: 'Failed to fetch race data', details: error.message });
+    }
+});
+
 // upload ghost - allows guests
 router.post('/upload', optionalAuth, async (req, res) => {
     try {
-        const { trackType, trackId, timeTicks, timeFormatted, vehicle, ghostData, keyData, guestUsername } = req.body;
+        const { trackType, trackId, timeTicks, timeFormatted, vehicle, ghostData, keyData, guestUsername,
+        hatColor, hatType, vehicleColor, riderColor, crBmx, crMtb, modsUsed } = req.body;
 
         if (!trackType || !trackId || !timeTicks || !ghostData) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
-        if (!['frhd', 'bhr', 'cr'].includes(trackType)) {
+        if (!['frhd', 'bhr', 'cr', 't'].includes(trackType)) {
             return res.status(400).json({ error: 'Invalid track type' });
         }
 
@@ -91,7 +200,7 @@ router.post('/upload', optionalAuth, async (req, res) => {
 
         const formData = new FormData();
         formData.append('track_type', trackType);
-        formData.append('track_id', parseInt(trackId));
+        formData.append('track_id', trackId);
         formData.append('user_id', userId);
         formData.append('username', username);
         formData.append('is_guest', isGuest);
@@ -101,33 +210,13 @@ router.post('/upload', optionalAuth, async (req, res) => {
         formData.append('ghost_data', ghostBlob, `ghost_${trackType}_${trackId}_${username}_${Date.now()}.cpgh`);
         formData.append('key_data', keyBlob, `keys_${trackType}_${trackId}_${username}_${Date.now()}.json`);
         formData.append('verified', false);
-
-        // for logged-in users, check for existing ghost and update if better
-        if (!isGuest) {
-            const existing = await pb.collection('ghosts').getList(1, 1, {
-                filter: `track_type = "${trackType}" && track_id = ${trackId} && user_id = ${userId}`,
-                requestKey: `ghost-check-${Date.now()}`
-            });
-
-            if (existing.items.length > 0) {
-                const existingGhost = existing.items[0];
-                if (parseInt(timeTicks) < existingGhost.time_ticks) {
-                    const record = await pb.collection('ghosts').update(existingGhost.id, formData);
-                    console.log(`[Ghost] Updated: ${username} on ${trackType}/${trackId}: ${timeFormatted}`);
-                    return res.json({
-                        success: true,
-                        ghostId: record.id,
-                        message: 'Ghost updated!'
-                    });
-                } else {
-                    return res.json({
-                        success: false,
-                        message: 'Your existing time is better',
-                        existingTime: existingGhost.time_formatted
-                    });
-                }
-            }
-        }
+        formData.append('hat_color', hatColor || '#000000');
+        formData.append('hat_type', hatType || 'none');
+        formData.append('vehicle_color', vehicleColor || '');
+        formData.append('rider_color', riderColor || '');
+        formData.append('cr_bmx', crBmx || false);
+        formData.append('cr_mtb', crMtb || false);
+        formData.append('mods_used', JSON.stringify(modsUsed || []));
 
         // create new ghost
         const record = await pb.collection('ghosts').create(formData);
@@ -153,12 +242,12 @@ router.get('/:type/:id', async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 10, 100);
     const includeGuests = req.query.guests !== 'false';
 
-    if (!['frhd', 'bhr', 'cr'].includes(type)) {
+    if (!['frhd', 'bhr', 'cr', 't'].includes(type)) {
         return res.status(400).json({ error: 'Invalid track type' });
     }
 
     try {
-        let filter = `track_type = "${type}" && track_id = ${id}`;
+        let filter = `track_type = "${type}" && track_id = "${id}"`;
         if (!includeGuests) {
             filter += ' && is_guest = false';
         }
@@ -177,6 +266,13 @@ router.get('/:type/:id', async (req, res) => {
             time: ghost.time_formatted,
             timeTicks: ghost.time_ticks,
             vehicle: ghost.vehicle,
+            hatColor: ghost.hat_color,
+            hatType: ghost.hat_type,
+            vehicleColor: ghost.vehicle_color,
+            riderColor: ghost.rider_color,
+            crBmx: ghost.cr_bmx,
+            crMtb: ghost.cr_mtb,
+            modsUsed: Array.isArray(ghost.mods_used) ? ghost.mods_used : [],
             verified: ghost.verified,
             ghostUrl: pb.files.getURL(ghost, ghost.ghost_data),
             keyUrl: ghost.key_data ? pb.files.getURL(ghost, ghost.key_data) : null,
@@ -185,7 +281,7 @@ router.get('/:type/:id', async (req, res) => {
 
         res.json({
             trackType: type,
-            trackId: parseInt(id),
+            trackId: id,
             leaderboard,
             totalEntries: result.totalItems
         });
@@ -201,12 +297,12 @@ router.get('/:type/:id/best', async (req, res) => {
     const { type, id } = req.params;
     const includeGuests = req.query.guests !== 'false';
 
-    if (!['frhd', 'bhr', 'cr'].includes(type)) {
+    if (!['frhd', 'bhr', 'cr', 't'].includes(type)) {
         return res.status(400).json({ error: 'Invalid track type' });
     }
 
     try {
-        let filter = `track_type = "${type}" && track_id = ${id}`;
+        let filter = `track_type = "${type}" && track_id = "${id}"`;
         if (!includeGuests) {
             filter += ' && is_guest = false';
         }
@@ -231,6 +327,12 @@ router.get('/:type/:id/best', async (req, res) => {
             time: ghost.time_formatted,
             timeTicks: ghost.time_ticks,
             vehicle: ghost.vehicle,
+            hatColor: ghost.hat_color,
+            hatType: ghost.hat_type,
+            vehicleColor: ghost.vehicle_color,
+            riderColor: ghost.rider_color,
+            crBmx: ghost.cr_bmx,
+            crMtb: ghost.cr_mtb,
             ghostUrl: pb.files.getURL(ghost, ghost.ghost_data),
             keyUrl: ghost.key_data ? pb.files.getURL(ghost, ghost.key_data) : null
         });
@@ -261,6 +363,12 @@ router.get('/user/:username', async (req, res) => {
             timeTicks: ghost.time_ticks,
             vehicle: ghost.vehicle,
             verified: ghost.verified,
+            hatColor: ghost.hat_color,
+            hatType: ghost.hat_type,
+            vehicleColor: ghost.vehicle_color,
+            riderColor: ghost.rider_color,
+            crBmx: ghost.cr_bmx,
+            crMtb: ghost.cr_mtb,
             ghostUrl: pb.files.getURL(ghost, ghost.ghost_data),
             keyUrl: ghost.key_data ? pb.files.getURL(ghost, ghost.key_data) : null,
             uploadedAt: ghost.created
@@ -288,7 +396,7 @@ router.get('/user/:username', async (req, res) => {
 router.delete('/:type/:id', requireAuth, async (req, res) => {
     const { type, id } = req.params;
 
-    if (!['frhd', 'bhr', 'cr'].includes(type)) {
+    if (!['frhd', 'bhr', 'cr', 't'].includes(type)) {
         return res.status(400).json({ error: 'Invalid track type' });
     }
 
@@ -332,7 +440,7 @@ router.get('/', async (req, res) => {
         let filter = '';
         const filterParts = [];
         
-        if (trackType && ['frhd', 'bhr', 'cr'].includes(trackType)) {
+        if (trackType && ['frhd', 'bhr', 'cr', 't'].includes(trackType)) {
             filterParts.push(`track_type = "${trackType}"`);
         }
         
@@ -385,7 +493,7 @@ router.get('/', async (req, res) => {
             requestKey: `ghosts-list-${page}-${Date.now()}`
         });
 
-        const tracksByType = { frhd: [], bhr: [], cr: [] };
+        const tracksByType = { frhd: [], bhr: [], cr: [], t: [] };
         for (const ghost of result.items) {
             if (tracksByType[ghost.track_type]) {
                 tracksByType[ghost.track_type].push(ghost.track_id);
@@ -399,8 +507,25 @@ router.get('/', async (req, res) => {
 
             const uniqueIds = [...new Set(ids)];
 
+            if (type === 't') {
+                const uniqueIds = [...new Set(ids)];
+                for (const id of uniqueIds) {
+                    const linked = trackLinksLookup.get(`t-${id}`) ||
+                        Array.from(trackLinksLookup.values()).find(l => l.canonical === id);
+                    if (linked) {
+                        trackCache.set(`t-${id}`, {
+                            name: linked.name || id,
+                            authors: linked.authors ? linked.authors.join(', ') : '',
+                            authorsArray: linked.authors || [],
+                            username: ''
+                        });
+                    }
+                }
+                continue;
+            }
+
             try {
-                const idFilter = uniqueIds.map(id => `_id = ${id}`).join(' || ');
+                const idFilter = uniqueIds.map(id => `_id = "${id}"`).join(' || ');
 
                 const tracks = await pb.collection(type).getFullList({
                     filter: idFilter,
@@ -466,7 +591,7 @@ router.get('/', async (req, res) => {
                     trackAuthors = trackAuthorsArray.join(', ');
                 }
 
-                const typePriority = ['cr', 'bhr', 'frhd'];
+                const typePriority = ['t', 'cr', 'bhr', 'frhd'];
                 for (const priorityType of typePriority) {
                     const found = linked.tracks.find(t => t.type === priorityType);
                     if (found) {
@@ -494,6 +619,13 @@ router.get('/', async (req, res) => {
                 time: ghost.time_formatted,
                 timeTicks: ghost.time_ticks,
                 vehicle: ghost.vehicle,
+                hatColor: ghost.hat_color,
+                hatType: ghost.hat_type,
+                vehicleColor: ghost.vehicle_color,
+                riderColor: ghost.rider_color,
+                crBmx: ghost.cr_bmx,
+                crMtb: ghost.cr_mtb,
+                modsUsed: Array.isArray(ghost.mods_used) ? ghost.mods_used : [],
                 verified: ghost.verified,
                 ghostUrl: pb.files.getURL(ghost, ghost.ghost_data),
                 keyUrl: ghost.key_data ? pb.files.getURL(ghost, ghost.key_data) : null,

@@ -234,7 +234,7 @@ var GameSettings = {
         "flip" : 70,
         "change_camera": 96
     },
-    "keysToRecord": ["up", "down", "left", "right", "enter", "backspace", "z"],
+    "keysToRecord": ["up", "down", "left", "right", "enter", "backspace", "z", "x"],
     "user": {
         "d_name": "Guest",
         "u_id": false,

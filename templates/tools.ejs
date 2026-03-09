@@ -11,6 +11,7 @@
         body {
             text-align: left;
             line-height: 16px;
+            user-select: none;
         }
 
         /* Tab styles */
@@ -372,15 +373,10 @@ body.dialog-mode #tab-track {
                     style="transform: scale(0.35) translate(0px,2px);"></span>
                 <span class="tab-label">Layer</span>
             </button>
-            <!--<button class="tab-button" data-tab="vehicle" style="display: none">
-                <span class="tab-icon editorgui_icons_bottom_vehicle editorgui_icons-icon_bmx"
-                    style="transform: scale(0.6) translate(0px,1px);"></span>
-                <span class="tab-label">Vehicle</span>
-            </button>-->
             <button class="tab-button" data-tab="vehicle">
                 <span class="tab-icon editorgui_icons_bottom_vehicle editorgui_icons-icon_bmx"
                     style="transform: scale(0.5) translate(0px,1px);"></span>
-                <span class="tab-label">Track</span>
+                <span class="tab-label">Vehicle</span>
             </button>
             <button class="tab-button" data-tab="mods">
                 <span class="tab-icon" style="display: inline-block; transform: scale(0.7) translate(0px,1px);">
@@ -572,13 +568,11 @@ body.dialog-mode #tab-track {
                     </span>
                 </div>
                 <div class="toolsDialogAdvanced" style="padding: 15px; display: block;">
-                    <!--<h3 style="margin: 15px 0 10px 0; font-size: 12px;">PATTERNS</h3>-->
                     <div style="margin-bottom: 10px;">
                         <button id="btn-pattern-from-db" class="tool-button">+ Import Pattern</button>
                         <button id="btn-pattern-from-object" class="tool-button">+ Create from Current Object</button>
                     </div>
                     <div id="pattern-list" class="object-list">
-                        <!-- Patterns will be populated here -->
                     </div>
                     <div id="pattern-details" style="margin-top: 15px; display: none;">
                         <div id="pattern-thumbnail-container" style="text-align: center; padding: 10px;">
@@ -1082,10 +1076,6 @@ body.dialog-mode #tab-track {
                                     </select>
                                 </td>
                             </tr>
-                            <!--<tr>
-                        <td class="settingName"><span class="name">Camera Lock</span></td>
-                        <td class="settingInput"><button id="btn-cameraLock" onclick="toggleCameraLock()">Camera Unlocked</button></td>
-                    </tr>-->
                         </tbody>
                     </table>
                 </div>
@@ -1107,14 +1097,6 @@ body.dialog-mode #tab-track {
                     </span>
                 </div>
                 <div class="toolsDialogAdvanced" style="padding: 15px;">
-                    <table>
-                        <tbody>
-                            <!--<tr>
-                        <td class="settingName"><span class="name">Camera Lock</span></td>
-                        <td class="settingInput"><button id="btn-cameraLock" onclick="toggleCameraLock()">Camera Unlocked</button></td>
-                    </tr>-->
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -1291,7 +1273,6 @@ body.dialog-mode #tab-track {
                 </div>
 
                 <div id="layer-list" class="layer-list">
-                    <!-- Layers will be populated here -->
                 </div>
             </div>
         </div>
@@ -1336,7 +1317,6 @@ body.dialog-mode #tab-track {
                 </div>
 
                 <div id="object-list" class="object-list">
-                    <!-- Objects will be populated here -->
                 </div>
 
                 <div id="object-details" style="margin-top: 15px; display: none;">
@@ -1502,11 +1482,11 @@ body.dialog-mode #tab-track {
             </div>
         </div>
 
-        <!-- TRACK TAB CONTENT -->
+        <!-- VEHICLE TAB CONTENT -->
         <div id="tab-vehicle" class="tab-content">
             <div class="editorDialog-toolsTitleBar">
-                <h1 class="editorDialog-content-title">NOW PLAYING</h1>
-                <span id="vehicle-selected" class="vehicle-badge mode-badge"
+                <h1 class="editorDialog-content-title">VEHICLE OPTIONS</h1>
+                <span id="vt-vehicle-selected" class="vehicle-badge mode-badge"
                     style="color: #fff; background: #000;">BMX</span>
             </div>
 
@@ -1515,6 +1495,9 @@ body.dialog-mode #tab-track {
                     <p><b>Start Position</b> allows you to click and drag Pete to the position you would like
                         as the starting position of the rider in your track.
                         <br><br>
+                        The rider will restart from the set starting position during your session and is saved upon
+                        exporting your track by moving your track relative to the rider.
+                        <br><br>
                         <b>Play Mode</b> hides the side toolbars and turns on play hotkeys.
                         <br><br>
                         <b>Mobile Mode</b> adds touchscreen controls for playing.
@@ -1522,143 +1505,21 @@ body.dialog-mode #tab-track {
                 </span>
             </div>
 
-            <div class="toolsDialogAdvanced" style="padding: 0; display: block;"></div>
+            <div class="toolsDialogAdvanced" style="padding: 15px; display: block;">
 
-            <div id="now-playing-wrapper">
-                <div id="now-playing-container" style="padding: 10px;">
-                    <div id="now-playing-empty" style="padding: 5px; color: #888; text-align: left;">
-                            <div style="margin-bottom: 10px;">
-                                <button id="btn-track-import" class="tool-button">+ Import Track</button>
-                            </div>
-                        </div>
-
-                    <div id="now-playing-content" style="display: none; margin-bottom: 10px;">
-                        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                            <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track"></button>
-                            <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
-                            <button id="np-next" class="navi-toggle navi-icon next" title="Next Track"></button>
-                            <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 0; width: auto;"
-                                title="Copy Link">
-                                <span id="copy-button" class="copy-text" style="margin: 8px; font-size: 11px; text-wrap: nowrap;">Copy
-                                    Link</span>
-                            </button>
-                        </div>
-                        <div class="track-item" style="margin-bottom: 10px;">
-                            <div class="thumbnail">
-                                <div class="badge-container" id="np-badges"></div>
-                                <img id="np-thumbnail" class="track-thumbnail" src="" alt="Track thumbnail"
-                                    onerror="handleThumbnailFallback(this)">
-                            </div>
-                        </div>
-
-                        <div class="np-header">
-                            <div class="np-header-text">
-                                <div id="np-name" style="font-weight: bold; font-size: 14px;"></div>
-                                <div id="np-author-line" style="font-size: 12px; color: #666;"></div>
-                            </div>
-                            <div id="np-author-avatars" class="np-author-avatars"></div>
-                        </div>
-
-                        <blockquote id="np-description"
-                            style="display: none; font-size: 11px; margin: 10px 0; font-style: italic; color: #555; padding: 8px 12px; border-left: 4px solid #aaa; background: #f5f5f5; border-radius: 4px; max-height: 120px; overflow-y: auto;">
-                        </blockquote>
-
-                        <div class="toolsMetadata"
-                            style="padding: 10px; background: #f5f5f5; border-radius: 4px;">
-                            <table style="width: 100%; font-size: 11px;">
-                                <tbody>
-                                    <tr id="np-row-id" style="display: none;">
-                                        <td style="width: 35%; color: #666;">ID</td>
-                                        <td id="np-id"></td>
-                                    </tr>
-                                    <tr id="np-row-frhd-id" style="display: none;">
-                                        <td style="color: #666;">FRHD ID</td>
-                                        <td id="np-frhd-id"></td>
-                                    </tr>
-                                    <tr id="np-row-bhr-id" style="display: none;">
-                                        <td style="color: #666;">BHR ID</td>
-                                        <td id="np-bhr-id"></td>
-                                    </tr>
-                                    <tr id="np-row-cr-id" style="display: none;">
-                                        <td style="color: #666;">CR ID</td>
-                                        <td id="np-cr-id"></td>
-                                    </tr>
-                                    <tr id="np-row-tm-id" style="display: none;">
-                                        <td style="color: #666;">TM ID</td>
-                                        <td id="np-tm-id"></td>
-                                    </tr>
-                                    <tr id="np-row-published" style="display: none;">
-                                        <td style="color: #666;">Published</td>
-                                        <td id="np-published"></td>
-                                    </tr>
-                                    <tr id="np-row-size" style="display: none;">
-                                        <td style="color: #666;">Size</td>
-                                        <td id="np-size"></td>
-                                    </tr>
-                                    <tr id="np-row-votes" style="display: none;">
-                                        <td style="color: #666;">Votes</td>
-                                        <td id="np-votes"></td>
-                                    </tr>
-                                    <tr id="np-row-plays" style="display: none;">
-                                        <td style="color: #666;">Plays</td>
-                                        <td id="np-plays"></td>
-                                    </tr>
-                                    <tr id="np-row-remix-of" style="display: none;">
-                                        <td style="color: #666;">Remix Of</td>
-                                        <td id="np-remix-of"></td>
-                                    </tr>
-                                    <tr id="np-row-remixes" style="display: none;">
-                                        <td style="color: #666;">Remixes</td>
-                                        <td id="np-remixes"></td>
-                                    </tr>
-                                    <tr id="np-row-entry-to" style="display: none;">
-                                        <td style="color: #666;">Entry To</td>
-                                        <td id="np-entry-to"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div id="np-playlist-info" class="filter-indicator"
-                            style="display: none; margin: 10px 0; padding: 8px; background: #e8f4fc; border: 1px solid #1884cf; border-radius: 4px; font-size: 11px;">
-                            <a href="#" id="np-playlist-name"
-                                style="font-weight: bold; color: #1884cf; text-decoration: none;"></a>
-                            <span id="np-playlist-position" style="color: #666; margin-left: 5px;"></span>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                        <button id="np-set-start" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
-                            Start Position
-                        </button>
-                        <button id="vehicle-mod-play" class="navi-toggle"
-                            style="flex: 1; padding: 6px; font-size: 11px;">
-                            Play Mode
-                        </button>
-                        <button id="vehicle-mod-mobile" class="navi-toggle"
-                            style="flex: 1; padding: 6px; font-size: 11px;">
-                            Mobile Mode
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Player Profile Section -->
-            <div id="player-profile" style="display: none; padding: 10px;">
-                <div class="player-avatar-container">
-                    <img id="player-avatar" class="player-avatar" src="" alt="">
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                    <div>
-                        <div id="player-name" style="font-weight: bold; font-size: 14px;"></div>
-                        <div id="player-aliases" style="font-size: 11px; color: #888;"></div>
-                    </div>
-                </div>
-                <div id="player-stats" style="font-size: 12px; color: #aaa; margin-bottom: 8px;"></div>
-                <div id="player-platforms" style="margin-bottom: 8px;"></div>
-                <button id="player-view-tracks" class="navi-toggle" style="width: 100%; padding: 6px; font-size: 12px;">
-                    View All Tracks
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                <button id="vt-set-start" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
+                    Start Position
                 </button>
+                <button id="vt-mod-play" class="navi-toggle"
+                    style="flex: 1; padding: 6px; font-size: 11px;">
+                    Play Mode
+                </button>
+                <button id="vt-mod-mobile" class="navi-toggle"
+                    style="flex: 1; padding: 6px; font-size: 11px;">
+                    Mobile Mode
+                </button>
+            </div>
             </div>
         </div>
 
@@ -1683,6 +1544,11 @@ body.dialog-mode #tab-track {
             </div>
         </div>
 
+        <!-- PLAY (NOW PLAYING) -->
+        <div id="play-content" style="display: none;">
+            <%- include('./now-playing') %>
+        </div>
+
         <!-- LIVE CHAT -->
         <div id="forum-content" style="display: none;">
             <iframe id="forum-iframe" style="width: 100%; height: calc(100dvh - 36px); border: none;"></iframe>
@@ -1695,9 +1561,10 @@ body.dialog-mode #tab-track {
         
         <!-- BOTTOM BAR -->
         <div id="bottom-bar" class="bottom-bar" style="display: none;">
-            <button class="bottom-bar-button active" data-panel="toolbox">Toolbox</button>
-            <button class="bottom-bar-button" data-panel="db">Database</button>
-            <button class="bottom-bar-button" data-panel="forum">Forum</button>
+            <button class="bottom-bar-button active" data-panel="toolbox">Draw</button>
+            <button class="bottom-bar-button" data-panel="play">Play</button>
+            <button class="bottom-bar-button" data-panel="db">DB</button>
+            <button class="bottom-bar-button" data-panel="forum">Talk</button>
         </div>
     </div>
 
@@ -1709,26 +1576,6 @@ body.dialog-mode #tab-track {
             cameraLockMode: false,
             currentTab: 'tool'
         };
-
-        var avatarCache = {};
-
-        function fetchAuthorAvatar(authorName, callback) {
-            if (avatarCache[authorName] !== undefined) {
-                callback(avatarCache[authorName]);
-                return;
-            }
-
-            fetch('/api/player/' + encodeURIComponent(authorName))
-                .then(function (res) { return res.json(); })
-                .then(function (player) {
-                    avatarCache[authorName] = player.avatar || null;
-                    callback(avatarCache[authorName]);
-                })
-                .catch(function () {
-                    avatarCache[authorName] = null;
-                    callback(null);
-                });
-        }
 
         document.querySelectorAll('.tab-button').forEach(function (btn) {
             btn.addEventListener('click', function () {
@@ -1747,23 +1594,31 @@ body.dialog-mode #tab-track {
                 this.classList.add('active');
 
                 var toolbox = document.getElementById('toolbox-content');
+                var playContent = document.getElementById('play-content');
                 var forum = document.getElementById('forum-content');
                 var db = document.getElementById('db-content');
 
-                if (panel === 'forum') {
-                    toolbox.style.display = 'none';
+                // hide all panels
+                toolbox.style.display = 'none';
+                playContent.style.display = 'none';
+                forum.style.display = 'none';
+                db.style.display = 'none';
+
+                if (panel === 'toolbox') {
+                    toolbox.style.display = 'block';
+                    document.querySelector('.editorDialog-tools').style.overflowY = 'scroll';
+                } else if (panel === 'play') {
+                    playContent.style.display = 'block';
+                    document.querySelector('.editorDialog-tools').style.overflowY = 'scroll';
+                } else if (panel === 'forum') {
                     forum.style.display = 'block';
-                    db.style.display = 'none';
                     document.querySelector('.editorDialog-tools').style.overflowY = 'hidden';
                     var iframe = document.getElementById('forum-iframe');
                     if (!iframe.dataset.loaded) {
                         iframe.src = 'https://forum.freerider.app/';
                         iframe.dataset.loaded = 'true';
                     }
-                }
-                if (panel === 'db') {
-                    toolbox.style.display = 'none';
-                    forum.style.display = 'none';
+                } else if (panel === 'db') {
                     db.style.display = 'block';
                     document.querySelector('.editorDialog-tools').style.overflowY = 'hidden';
                     var iframe = document.getElementById('db-iframe');
@@ -1771,12 +1626,6 @@ body.dialog-mode #tab-track {
                         iframe.src = '/db';
                         iframe.dataset.loaded = 'true';
                     }
-                } 
-                if (panel === 'toolbox') {
-                    forum.style.display = 'none';
-                    db.style.display = 'none';
-                    toolbox.style.display = 'block';
-                    document.querySelector('.editorDialog-tools').style.overflowY = 'scroll';
                 }
 
                 window.parent.focus();
@@ -1785,6 +1634,13 @@ body.dialog-mode #tab-track {
 
         document.getElementById('bottom-bar').style.display = '';
         document.querySelector('.editorDialog-tools').classList.add('has-bottom-bar');
+
+        function send(id, value) {
+            if (window.parent !== window) {
+                window.parent.postMessage({ action: 'toolOptionChange', option: id, value: value }, '*');
+            }
+            window.parent.focus();
+        }
 
         function switchTab(tabName) {
             state.currentTab = tabName;
@@ -1830,19 +1686,6 @@ body.dialog-mode #tab-track {
             state.lineTrimMode = !state.lineTrimMode;
             document.getElementById('btn-lineTrim').textContent = state.lineTrimMode ? 'Line Trim' : 'Line Erase';
             send('eraser-lineTrim', state.lineTrimMode);
-        }
-
-        /*function toggleCameraLock() {
-            state.cameraLockMode = !state.cameraLockMode;
-            document.getElementById('btn-cameraLock').textContent = state.cameraLockMode ? 'Camera Locked' : 'Camera Unlocked';
-            send('camera-locked', state.cameraLockMode);
-        }*/
-
-        function send(id, value) {
-            if (window.parent !== window) {
-                window.parent.postMessage({ action: 'toolOptionChange', option: id, value: value }, '*');
-            }
-            window.parent.focus();
         }
 
         function updateLineTypeBadge(lineType, objectMode) {
@@ -1984,10 +1827,9 @@ body.dialog-mode #tab-track {
                             }
                         }
                     });
-                    return; // don't rebuild
+                    return;
                 }
 
-                // full rebuild if layer count changed
                 layerList.innerHTML = '';
 
                 s.layers.forEach(function (layer, index) {
@@ -1995,7 +1837,6 @@ body.dialog-mode #tab-track {
                     var isVisible = layer.visible !== false;
                     var isLocked = layer.locked || false;
                     var canDelete = index > 0;
-                    var canMergeInto = !isActive;
                     var physicsColor = layer.physicsColor || '#000000';
                     var sceneryColor = layer.sceneryColor || '#aaaaaa';
 
@@ -2178,7 +2019,7 @@ body.dialog-mode #tab-track {
             var dataCenterX = data.centerX || 0;
             var dataCenterY = data.centerY || 0;
 
-            maxRadius = data.maxRadius ? data.maxRadius : maxRadius;
+            var maxRadius = data.maxRadius || 0;
 
             var powerupSizes = {
                 'goal': 13, 'slowmo': 13, 'checkpoint': 13, 'bomb': 10,
@@ -2303,22 +2144,13 @@ body.dialog-mode #tab-track {
                 return;
             }
 
-            // calculate maximum distance from origin to encompass object in preview circle no matter rotation
             var maxRadius = 0;
 
             var powerupSizes = {
-                'goal': 13,
-                'slowmo': 13,
-                'checkpoint': 13,
-                'bomb': 10,
-                'gravity': Math.sqrt(1000) * 0.5,
-                'boost': Math.sqrt(1000) * 0.5,
-                'antigravity': Math.sqrt(1000) * 0.5,
-                'teleport': Math.sqrt(1000) * 0.5,
-                'helicopter': 15,
-                'truck': 15,
-                'balloon': 15,
-                'blob': 15
+                'goal': 13, 'slowmo': 13, 'checkpoint': 13, 'bomb': 10,
+                'gravity': Math.sqrt(1000) * 0.5, 'boost': Math.sqrt(1000) * 0.5,
+                'antigravity': Math.sqrt(1000) * 0.5, 'teleport': Math.sqrt(1000) * 0.5,
+                'helicopter': 15, 'truck': 15, 'balloon': 15, 'blob': 15
             };
 
             physics.forEach(function (line) {
@@ -2447,14 +2279,12 @@ body.dialog-mode #tab-track {
             }
             ctx.clip();
 
-            // calculate how many tiles we need to draw
             var tilesX = Math.ceil(scaledBrushSize / scaledPatternW) + 2;
             var tilesY = Math.ceil(scaledBrushSize / scaledPatternH) + 2;
 
             ctx.lineCap = 'round';
             ctx.lineWidth = Math.max(2 * scale, 1);
 
-            // offset by half pattern size so center shows where 4 tiles meet
             var baseOffsetX = centerX - scaledPatternW / 2;
             var baseOffsetY = centerY - scaledPatternH / 2;
 
@@ -2505,26 +2335,14 @@ body.dialog-mode #tab-track {
 
             var size;
             switch (p.name) {
-                case 'goal':
-                case 'slowmo':
-                case 'checkpoint':
-                    size = 13 * scale;
-                    break;
+                case 'goal': case 'slowmo': case 'checkpoint':
+                    size = 13 * scale; break;
                 case 'bomb':
-                    size = 10 * scale;
-                    break;
-                case 'gravity':
-                case 'boost':
-                case 'antigravity':
-                case 'teleport':
-                    size = Math.sqrt(1000) * 0.5 * scale;
-                    break;
-                case 'helicopter':
-                case 'truck':
-                case 'balloon':
-                case 'blob':
-                    size = 15 * scale;
-                    break;
+                    size = 10 * scale; break;
+                case 'gravity': case 'boost': case 'antigravity': case 'teleport':
+                    size = Math.sqrt(1000) * 0.5 * scale; break;
+                case 'helicopter': case 'truck': case 'balloon': case 'blob':
+                    size = 15 * scale; break;
                 default:
                     size = 10 * scale;
             }
@@ -2550,18 +2368,10 @@ body.dialog-mode #tab-track {
 
         function getPowerupColor(name) {
             var colors = {
-                'goal': '#fae335',
-                'bomb': '#d12929',
-                'gravity': '#376eb7',
-                'boost': '#8ac932',
-                'slowmo': '#733',
-                'checkpoint': '#826cdc',
-                'antigravity': '#09faf3',
-                'teleport': '#dd45ec',
-                'helicopter': '#f2902e',
-                'truck': '#94d44e',
-                'balloon': '#f02728',
-                'blob': '#a784c5'
+                'goal': '#fae335', 'bomb': '#d12929', 'gravity': '#376eb7',
+                'boost': '#8ac932', 'slowmo': '#733', 'checkpoint': '#826cdc',
+                'antigravity': '#09faf3', 'teleport': '#dd45ec', 'helicopter': '#f2902e',
+                'truck': '#94d44e', 'balloon': '#f02728', 'blob': '#a784c5'
             };
             return colors[name] || '#888';
         }
@@ -2577,7 +2387,6 @@ body.dialog-mode #tab-track {
 
             if (selectDetails) selectDetails.style.display = 'block';
 
-            var count = s.selectCount || 0;
             if (selectInfo) {
                 var parts = [];
                 if (s.selectLineCount) {
@@ -2703,32 +2512,19 @@ body.dialog-mode #tab-track {
             var objectName = s.objectName || '';
 
             if (objectDetails) {
-                if (objectName) {
-                    objectDetails.style.display = 'block';
-                } else {
-                    objectDetails.style.display = 'none';
-                }
+                objectDetails.style.display = objectName ? 'block' : 'none';
             }
 
             var rotateSensitivity = document.getElementById('object-rotate-sensitivity');
             var scaleSensitivity = document.getElementById('object-scale-sensitivity');
             var offsetSensitivity = document.getElementById('object-offset-sensitivity');
 
-
-            if (s.rotateSensitivity !== undefined && rotateSensitivity) {
-                rotateSensitivity.value = s.rotateSensitivity;
-            }
-            if (s.scaleSensitivity !== undefined && scaleSensitivity) {
-                scaleSensitivity.value = s.scaleSensitivity;
-            }
-            if (s.offsetSensitivity !== undefined && offsetSensitivity) {
-                offsetSensitivity.value = s.offsetSensitivity;
-            }
+            if (s.rotateSensitivity !== undefined && rotateSensitivity) rotateSensitivity.value = s.rotateSensitivity;
+            if (s.scaleSensitivity !== undefined && scaleSensitivity) scaleSensitivity.value = s.scaleSensitivity;
+            if (s.offsetSensitivity !== undefined && offsetSensitivity) offsetSensitivity.value = s.offsetSensitivity;
 
             var objRotate = document.getElementById('obj-rotate');
             var objScale = document.getElementById('obj-scale');
-            var objStretch = document.getElementById('obj-stretch');
-            //var objOffset = document.getElementById('obj-offset');
             var objOffsetX = document.getElementById('obj-offset-x');
             var objOffsetY = document.getElementById('obj-offset-y');
             var objFlip = document.getElementById('obj-flip');
@@ -2737,7 +2533,6 @@ body.dialog-mode #tab-track {
 
             if (objRotate) objRotate.textContent = (s.objectRotate || 0) + '°';
             if (objScale) objScale.textContent = (s.objectScale || 1).toFixed(2) + 'x';
-            if (objStretch) objStretch.textContent = (s.objectStretchX || 1).toFixed(2) + 'x, ' + (s.objectStretchY || 1).toFixed(2) + 'x';
             if (objOffsetX) objOffsetX.textContent = '(' + (s.objectOffsetX || 0) + ')';
             if (objOffsetY) objOffsetY.textContent = '(' + (s.objectOffsetY || 0) + ')';
 
@@ -2769,21 +2564,11 @@ body.dialog-mode #tab-track {
         }
 
         function updatePatternSettings(s) {
-            if (s.patternBrushSize !== undefined) {
-                setVal('pattern-brushSize', s.patternBrushSize);
-            }
-            if (s.patternBrush !== undefined) {
-                document.getElementById('pattern-brush').value = s.patternBrush;
-            }
-            if (s.patternGlobalGrid !== undefined) {
-                document.getElementById('pattern-globalGrid').checked = s.patternGlobalGrid;
-            }
-            if (s.patternExperimentalSpeedups !== undefined) {
-                document.getElementById('pattern-experimentalSpeedups').checked = s.patternExperimentalSpeedups;
-            }
-            if (s.patternExperimentalStabilization !== undefined) {
-                document.getElementById('pattern-experimentalStabilization').checked = s.patternExperimentalStabilization;
-            }
+            if (s.patternBrushSize !== undefined) setVal('pattern-brushSize', s.patternBrushSize);
+            if (s.patternBrush !== undefined) document.getElementById('pattern-brush').value = s.patternBrush;
+            if (s.patternGlobalGrid !== undefined) document.getElementById('pattern-globalGrid').checked = s.patternGlobalGrid;
+            if (s.patternExperimentalSpeedups !== undefined) document.getElementById('pattern-experimentalSpeedups').checked = s.patternExperimentalSpeedups;
+            if (s.patternExperimentalStabilization !== undefined) document.getElementById('pattern-experimentalStabilization').checked = s.patternExperimentalStabilization;
 
             var patternList = document.getElementById('pattern-list');
             var patternDetails = document.getElementById('pattern-details');
@@ -2873,38 +2658,17 @@ body.dialog-mode #tab-track {
             if (toolIcon && s.currentTool) {
                 var toolIconClass = 'editorgui_icons editorgui_icons-icon_';
                 switch (s.currentTool) {
-                    case 'brush':
-                        toolIconClass += 'brush';
-                        break;
-                    case 'straightline':
-                        toolIconClass += 'line';
-                        break;
-                    case 'curve':
-                        toolIconClass += 'curve';
-                        break;
-                    case 'circle':
-                        toolIconClass += 'circle';
-                        break;
-                    case 'eraser':
-                        toolIconClass += 'eraser';
-                        break;
-                    case 'camera':
-                        toolIconClass += 'camera';
-                        break;
-                    case 'select':
-                        toolIconClass += 'select';
-                        break;
-                    case 'powerup':
-                        toolIconClass += 'powerups';
-                        break;
-                    case 'vehiclepowerup':
-                        toolIconClass += 'vehicle_swap';
-                        break;
-                    case 'pattern':
-                        toolIconClass += 'pattern';
-                        break;
-                    default:
-                        toolIconClass += 'camera';
+                    case 'brush': toolIconClass += 'brush'; break;
+                    case 'straightline': toolIconClass += 'line'; break;
+                    case 'curve': toolIconClass += 'curve'; break;
+                    case 'circle': toolIconClass += 'circle'; break;
+                    case 'eraser': toolIconClass += 'eraser'; break;
+                    case 'camera': toolIconClass += 'camera'; break;
+                    case 'select': toolIconClass += 'select'; break;
+                    case 'powerup': toolIconClass += 'powerups'; break;
+                    case 'vehiclepowerup': toolIconClass += 'vehicle_swap'; break;
+                    case 'pattern': toolIconClass += 'pattern'; break;
+                    default: toolIconClass += 'camera';
                 }
                 toolIcon.className = 'tab-icon ' + toolIconClass;
             }
@@ -2916,825 +2680,98 @@ body.dialog-mode #tab-track {
             }
         }
 
-        // now playing
-        var currentTrackData = null;
-        var playlistContext = null;
-        var filterContext = null;
-
-        function loadTrackData(type, id) {
-            fetch('/' + type + '/' + id + '?json=true')
-                .then(function (r) { return r.json(); })
-                .then(function (track) {
-                    track.type = type;
-                    updateNowPlaying(track);
-
-                    // update playlist index if we have a playlist context
-                    if (playlistContext && playlistContext.tracks) {
-                        var newIndex = -1;
-
-                        for (var i = 0; i < playlistContext.tracks.length; i++) {
-                            var t = playlistContext.tracks[i];
-                            var trackCanonical = track.canonical || track.canonicalId || track.id;
-                            var playlistTrackCanonical = t.canonical || t.id;
-
-                            // match by canonical
-                            if (trackCanonical && playlistTrackCanonical &&
-                                String(trackCanonical) === String(playlistTrackCanonical)) {
-                                newIndex = i;
-                                break;
-                            }
-
-                            // match by type + id
-                            if (t.type === type && String(t.id) === String(id)) {
-                                newIndex = i;
-                                break;
-                            }
-
-                            // match by urlType + urlId
-                            if (t.urlType === type && String(t.urlId) === String(id)) {
-                                newIndex = i;
-                                break;
-                            }
-                        }
-
-                        if (newIndex >= 0) {
-                            playlistContext.currentIndex = newIndex;
-                        }
-                        updatePlaylistUI();
-                    } else if (!filterContext) {
-                        // no playlist or filter - check adjacent tracks for button state
-                        checkAdjacentTracks();
-                    }
-                })
-                .catch(function (e) {
-                    console.error('Failed to load track:', e);
-                });
-        }
-
-        function setPlaylistContext(playlist, currentTrackId) {
-            if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
-                playlistContext = null;
-                updatePlaylistUI();
-                return;
-            }
-
-            var isSamePlaylist = playlistContext &&
-                (playlistContext.id === (playlist.canonical || playlist.id));
-
-            var currentIndex = 0;
-
-            if (isSamePlaylist && playlistContext.currentIndex !== undefined) {
-                currentIndex = playlistContext.currentIndex;
-            } else if (currentTrackId) {
-                for (var i = 0; i < playlist.tracks.length; i++) {
-                    var t = playlist.tracks[i];
-                    if (String(t.id) === String(currentTrackId) ||
-                        t.canonical === currentTrackId ||
-                        String(t.urlId) === String(currentTrackId)) {
-                        currentIndex = i;
-                        break;
-                    }
-                }
-            }
-
-            playlistContext = {
-                id: playlist.canonical || playlist.id,
-                name: playlist.name,
-                tracks: playlist.tracks,
-                currentIndex: currentIndex
-            };
-
-            filterContext = null;
-            updatePlaylistUI();
-        }
-
-        function setFilterContext(context) {
-            if (!context) {
-                filterContext = null;
-                updateFilterUI();
-                return;
-            }
-
-            filterContext = {
-                type: context.type || 'db',
-                player: context.player || null,
-                query: context.query || null,
-                remixesOf: context.remixesOf || null,
-                sortBy: context.sortBy || 'shuffle',
-                sortOrder: context.sortOrder || 'desc'
-            };
-
-            playlistContext = null;
-            updateFilterUI();
-        }
-
-        function updatePlaylistUI() {
-            var infoEl = document.getElementById('np-playlist-info');
-            var nameEl = document.getElementById('np-playlist-name');
-            var posEl = document.getElementById('np-playlist-position');
-            var prevBtn = document.getElementById('np-prev');
-            var nextBtn = document.getElementById('np-next');
-
-            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
-                infoEl.style.display = 'block';
-                infoEl.style.cursor = 'pointer';
-                nameEl.textContent = playlistContext.name;
-                nameEl.style.cursor = 'pointer';
-                nameEl.title = 'Open playlist';
-                posEl.textContent = '(' + (playlistContext.currentIndex + 1) + '/' + playlistContext.tracks.length + ')';
-
-                var hasPrev = playlistContext.currentIndex > 0;
-                var hasNext = playlistContext.currentIndex < playlistContext.tracks.length - 1;
-
-                prevBtn.disabled = !hasPrev;
-                nextBtn.disabled = !hasNext;
-                prevBtn.style.opacity = hasPrev ? '1' : '0.5';
-                nextBtn.style.opacity = hasNext ? '1' : '0.5';
-                prevBtn.title = hasPrev ? 'Previous in playlist' : 'At start of playlist';
-                nextBtn.title = hasNext ? 'Next in playlist' : 'At end of playlist';
-            } else {
-                infoEl.style.display = 'none';
-                updateFilterUI();
-            }
-        }
-
-        function updateFilterUI() {
-            var infoEl = document.getElementById('np-playlist-info');
-            var nameEl = document.getElementById('np-playlist-name');
-            var posEl = document.getElementById('np-playlist-position');
-            var prevBtn = document.getElementById('np-prev');
-            var nextBtn = document.getElementById('np-next');
-
-            if (filterContext && (filterContext.player || filterContext.type !== 'db' || filterContext.query || filterContext.remixesOf)) {
-                infoEl.style.display = 'block';
-                infoEl.style.cursor = 'pointer';
-
-                var label = '';
-                var title = '';
-                if (filterContext.remixesOf) {
-                    var remixName = filterContext.remixesOf.name || filterContext.remixesOf.canonical;
-                    label = 'Remixes of ' + remixName;
-                    title = 'Open remixes';
-                } else if (filterContext.player) {
-                    label = filterContext.player;
-                    title = 'Open player page';
-                } else if (filterContext.query) {
-                    label = filterContext.query;
-                    title = 'Open search';
-                } else if (filterContext.type && filterContext.type !== 'db') {
-                    label = filterContext.type.toUpperCase();
-                    title = 'Open ' + filterContext.type.toUpperCase() + ' tracks';
-                }
-
-                nameEl.textContent = label;
-                nameEl.style.cursor = 'pointer';
-                nameEl.title = title;
-                var sortLabel = filterContext.sortBy && filterContext.sortBy !== 'shuffle'
-                    ? filterContext.sortBy
-                    : 'shuffle';
-                if (filterContext.sortOrder && filterContext.sortOrder !== 'desc' && sortLabel !== 'shuffle') {
-                    sortLabel += ' ' + filterContext.sortOrder;
-                }
-                posEl.textContent = '(' + sortLabel + ')';
-
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-                prevBtn.style.opacity = '0.5';
-                nextBtn.style.opacity = '0.5';
-            } else if (!playlistContext) {
-                infoEl.style.display = 'none';
-
-                if (currentTrackData) {
-                    prevBtn.disabled = false;
-                    nextBtn.disabled = false;
-                    prevBtn.style.opacity = '1';
-                    nextBtn.style.opacity = '1';
-                    prevBtn.title = 'Previous track';
-                    nextBtn.title = 'Next track';
-                } else {
-                    prevBtn.disabled = true;
-                    nextBtn.disabled = true;
-                    prevBtn.style.opacity = '0.5';
-                    nextBtn.style.opacity = '0.5';
-                }
-            }
-        }
-
-        var currentPlayer = null;
-
-        function showPlayerProfile(playerName) {
-            fetch('/api/player/' + encodeURIComponent(playerName))
-                .then(function (res) { return res.json(); })
-                .then(function (player) {
-                    currentPlayer = player;
-
-                    document.getElementById('now-playing-wrapper').style.display = 'none';
-                    document.getElementById('player-profile').style.display = 'block';
-
-                    var avatar = document.getElementById('player-avatar');
-                    avatar.style.display = '';
-                    avatar.src = player.avatar;
-                    avatar.onerror = function () {
-                        this.style.display = 'none';
-                    };
-
-                    document.getElementById('player-name').textContent = player.displayName;
-
-                    var aliasesEl = document.getElementById('player-aliases');
-                    var otherAliases = (player.aliases || []).filter(function (a) {
-                        return a.toLowerCase() !== player.displayName.toLowerCase();
-                    });
-                    if (otherAliases.length > 0) {
-                        aliasesEl.textContent = 'Also known as: ' + otherAliases.join(', ');
-                        aliasesEl.style.display = '';
-                    } else {
-                        aliasesEl.style.display = 'none';
-                    }
-
-                    document.getElementById('player-stats').textContent = player.trackCount + ' track' + (player.trackCount !== 1 ? 's' : '') + ' in database';
-
-                    var platformsEl = document.getElementById('player-platforms');
-                    var platformBadges = [];
-                    if (player.platforms.frhd) platformBadges.push('<span class="track-type-badge frhd">FRHD</span>');
-                    if (player.platforms.bhr) platformBadges.push('<span class="track-type-badge bhr">BHR</span>');
-                    if (player.platforms.cr) platformBadges.push('<span class="track-type-badge cr">CR</span>');
-                    platformsEl.innerHTML = platformBadges.join(' ');
-                })
-                .catch(function (err) {
-                    console.error('Failed to load player profile:', err);
-                });
-        }
-
-        function hidePlayerProfile() {
-            document.getElementById('player-profile').style.display = 'none';
-            document.getElementById('now-playing-wrapper').style.display = '';
-            currentPlayer = null;
-        }
-
-        document.getElementById('player-view-tracks').addEventListener('click', function () {
-            if (currentPlayer) {
-                send('open-author', currentPlayer.displayName);
-            }
-        });
-
-        function updateNowPlaying(track) {
-            currentTrackData = track;
-
-            var emptyEl = document.getElementById('now-playing-empty');
-            var contentEl = document.getElementById('now-playing-content');
-
-            if (!track || !track.name) {
-                emptyEl.style.display = 'block';
-                contentEl.style.display = 'none';
-                return;
-            }
-
-            emptyEl.style.display = 'none';
-            contentEl.style.display = 'block';
-
-            document.getElementById('np-thumbnail').src = track.thumbnail || '/' + track.type + '/' + track.id + '.png';
-
-            var badges = track.badges || [track.type];
-            var uniqueBadges = [];
-            var seen = {};
-            for (var i = 0; i < badges.length; i++) {
-                if (!seen[badges[i]]) {
-                    seen[badges[i]] = true;
-                    uniqueBadges.push(badges[i]);
-                }
-            }
-
-            document.getElementById('np-badges').innerHTML = uniqueBadges.map(function (b) {
-                return '<span class="track-type-badge ' + b + '">' + getBadgeText(b) + '</span>';
-            }).join('');
-
-            document.getElementById('np-name').textContent = track.name;
-
-            document.getElementById('np-name').textContent = track.name;
-
-            var authorLine = document.getElementById('np-author-line');
-            var avatarsContainer = document.getElementById('np-author-avatars');
-            var authors = track.authors || 'Unknown';
-            var authorParts = authors.split(/,\s*/);
-
-            var authorHtml = 'by ' + authorParts.map(function (author) {
-                return '<a href="#" class="np-author-link" data-author="' + author.trim() + '" style="color: #1884cf; text-decoration: none; font-weight: bold;">' + author.trim() + '</a>';
-            }).join(', ');
-
-            authorLine.innerHTML = authorHtml;
-
-            avatarsContainer.innerHTML = authorParts.map(function (author) {
-                return '<img class="np-author-avatar" data-author="' + author.trim() + '" src="" alt="" title="' + author.trim() + '" style="display:none;">';
-            }).join('');
-
-            authorParts.forEach(function (author) {
-                var authorName = author.trim();
-                fetchAuthorAvatar(authorName, function (avatarUrl) {
-                    if (avatarUrl) {
-                        var avatarImg = avatarsContainer.querySelector('.np-author-avatar[data-author="' + authorName + '"]');
-                        if (avatarImg) {
-                            avatarImg.src = avatarUrl;
-                            avatarImg.style.display = '';
-                            avatarImg.onerror = function () { this.style.display = 'none'; };
-                        }
-                    }
-                });
+        function updatePowerupSection(selectedPowerup) {
+            document.querySelectorAll('.powerup-section').forEach(function (section) {
+                section.style.display = 'none';
             });
 
-            var descEl = document.getElementById('np-description');
-            if (track.description && track.description.trim()) {
-                descEl.textContent = track.description;
-                descEl.style.display = 'block';
-            } else {
-                descEl.style.display = 'none';
-            }
-
-            setNpRow('id', track.id);
-            setNpRowPublished(track.published);
-            setNpRow('size', formatSize(track.size));
-            setNpRow('plays', track.plays);
-
-            var votesRow = document.getElementById('np-row-votes');
-            var votesEl = document.getElementById('np-votes');
-            if (track.upvotes || track.votes) {
-                votesEl.textContent = track.downvotes ? '+' + track.upvotes + ' / -' + track.downvotes : (track.upvotes || track.votes);
-                votesRow.style.display = '';
-            } else {
-                votesRow.style.display = 'none';
-            }
-
-            var remixOfRow = document.getElementById('np-row-remix-of');
-            var remixOfEl = document.getElementById('np-remix-of');
-            if (remixOfRow && remixOfEl) {
-                if (track.remixOf && track.remixOf.length > 0) {
-                    var remixLinks = track.remixOf.map(function (r) {
-                        return '<a href="#" class="np-track-link" data-type="t" data-id="' + r.canonical + '" data-no-context="true" style="color: #1884cf; text-decoration: none;">' + r.name + '</a>';
-                    }).join(', ');
-                    remixOfEl.innerHTML = remixLinks;
-                    remixOfRow.style.display = '';
-                } else {
-                    remixOfRow.style.display = 'none';
-                }
-            }
-
-            var remixesRow = document.getElementById('np-row-remixes');
-            var remixesEl = document.getElementById('np-remixes');
-            if (remixesRow && remixesEl) {
-                if (track.remixCount && track.remixCount > 0) {
-                    var trackName = track.name || track.id;
-                    var trackCanonical = track.canonical || track.id;
-                    remixesEl.innerHTML = '<a href="#" class="np-remixes-link" data-canonical="' + trackCanonical + '" data-name="' + trackName.replace(/"/g, '&quot;') + '" style="color: #1884cf; text-decoration: none;">' + track.remixCount + ' remix' + (track.remixCount > 1 ? 'es' : '') + '</a>';
-                    remixesRow.style.display = '';
-                } else {
-                    remixesRow.style.display = 'none';
-                }
-            }
-
-            var entryToRow = document.getElementById('np-row-entry-to');
-            var entryToEl = document.getElementById('np-entry-to');
-            if (entryToRow && entryToEl) {
-                if (track.entryTo) {
-                    entryToEl.innerHTML = '<a href="#" class="np-playlist-link" data-playlist-id="' + (track.entryTo.canonical) + '" style="color: #1884cf; text-decoration: none;">' + track.entryTo.name + '</a>';
-                    entryToRow.style.display = '';
-                } else {
-                    entryToRow.style.display = 'none';
-                }
-            }
-
-            setNpRowLink('frhd-id', track.frhdId, 'frhd');
-            setNpRowLink('bhr-id', track.bhrId, 'bhr');
-            setNpRowLink('cr-id', track.crId, 'cr');
-            setNpRowLink('tm-id', track.tmId, 'tm');
-
-            if (!playlistContext && !filterContext && track) {
-                checkAdjacentTracks();
+            var sectionId = 'powerup-' + (selectedPowerup || 'none');
+            var section = document.getElementById(sectionId);
+            if (section) {
+                section.style.display = 'block';
             }
         }
 
-        function getBadgeText(type) {
-            var map = { bhr: 'BHR', cr: 'CR', frhd: 'FRHD', fr: 'FR', tm: 'TM', app: 'APP' };
-            return map[type] || type.toUpperCase();
-        }
+        function updatePowerupIcon(s) {
+            var powerupBadge = document.getElementById('powerup-selected');
+            if (powerupBadge && s.selectedPowerup) {
+                var powerupColors = {
+                    'bomb': '#d12929', 'boost': '#8ac932', 'checkpoint': '#826cdc',
+                    'gravity': '#376eb7', 'slowmo': '#aaaaaa', 'goal': '#fae335',
+                    'teleport': '#dd45ec', 'antigravity': '#04cbc5'
+                };
 
-        function setNpRowPublished(dateStr) {
-            var row = document.getElementById('np-row-published');
-            var cell = document.getElementById('np-published');
+                powerupBadge.style.background = powerupColors[s.selectedPowerup] || '#888';
+                powerupBadge.textContent = s.selectedPowerup.toUpperCase();
 
-            if (!dateStr) {
-                row.style.display = 'none';
-                return;
-            }
-
-            var formatted = formatDate(dateStr);
-            if (!formatted) {
-                row.style.display = 'none';
-                return;
-            }
-
-            var year = formatted.substring(0, 4);
-            var rest = formatted.substring(4);
-
-            cell.innerHTML = '<a href="#" class="np-year-link" data-year="' + year + '" style="color: #1884cf; text-decoration: none;">' + year + '</a>' + rest;
-            row.style.display = '';
-        }
-
-        function formatDate(dateStr) {
-            if (!dateStr) return null;
-            if (dateStr.includes('T')) return dateStr.split('T')[0];
-            if (dateStr.includes(' ')) return dateStr.split(' ')[0];
-            return dateStr;
-        }
-
-        function formatSize(bytes) {
-            if (bytes === null || bytes === undefined || bytes === 0 || isNaN(bytes)) { return ''; }
-            const k = 1024;
-            const sizes = ['b', 'k', 'm', 'gb', 'tb'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + sizes[i];
-        }
-
-        function setNpRowLink(field, value, type) {
-            var row = document.getElementById('np-row-' + field);
-            var cell = document.getElementById('np-' + field);
-            if (row && cell) {
-                if (value && type === 'frhd') {
-                    cell.innerHTML = '<a href="https://freeriderhd.com/t/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
-                    row.style.display = '';
-                } else if (value && type === 'cr') {
-                    cell.innerHTML = '<a href="https://canvasrider.com/tracks/' + value + '" target="_blank" rel="nooperner noreferrer" class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
-                    row.style.display = '';
-                } else if (value && (type !== 'frhd' || type !== 'cr')) {
-                    cell.innerHTML = '<span class="np-external-link" data-type="' + type + '" data-id="' + value + '" style="color: #1884cf; text-decoration: none;">' + value + '</span>';
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                updatePowerupSection(s.selectedPowerup);
             }
         }
 
-        function handleThumbnailFallback(img) {
-            img.onerror = null;
-            img.src = '/data/bhr/thumbnails/default.png';
-        }
-        window.handleThumbnailFallback = handleThumbnailFallback;
+        function updateVehiclePowerupIcon(s) {
+            var vehicleBadge = document.getElementById('vehiclepowerup-selected');
+            if (vehicleBadge && s.selectedVehiclePowerup) {
+                var vehicleColors = {
+                    'helicopter': '#f2902e', 'truck': '#94d44e',
+                    'balloon': '#f02728', 'blob': '#a784c5'
+                };
 
-        function setNpRow(field, value) {
-            var row = document.getElementById('np-row-' + field);
-            var cell = document.getElementById('np-' + field);
-            if (value) {
-                cell.textContent = value;
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
+                vehicleBadge.style.background = vehicleColors[s.selectedVehiclePowerup] || '#888';
+                vehicleBadge.textContent = s.selectedVehiclePowerup.toUpperCase();
             }
         }
 
-        function buildFilterParams() {
-            if (!filterContext) return '';
-
-            var params = new URLSearchParams();
-            params.set('sort', 'shuffle');
-            params.set('perPage', '1');
-
-            if (filterContext.type && filterContext.type !== 'db') {
-                params.set('type', filterContext.type);
-            } else {
-                params.set('type', 'db');
+        function updateToolSettings(s) {
+            if (s.brush) {
+                setVal('brush-breakLength', s.brush.breakLength);
+                setVal('brush-trailSpeed', s.brush.trailSpeed);
             }
+            if (s.brushRotate !== undefined) document.getElementById('brush-rotate').checked = s.brushRotate;
+            if (s.brushScale !== undefined) document.getElementById('brush-scale').checked = s.brushScale;
+            if (s.brushRotateJitter !== undefined) setVal('brush-rotateJitter', s.brushRotateJitter);
+            if (s.brushScaleJitter !== undefined) setVal('brush-scaleJitter', s.brushScaleJitter);
 
-            if (filterContext.player) {
-                params.set('author', filterContext.player);
+            var rotateFactor = document.getElementById('select-rotate-factor');
+            var scaleFactor = document.getElementById('select-scale-factor');
+            var offsetFactor = document.getElementById('select-offset-factor');
+
+            if (s.rotateFactor !== undefined && rotateFactor) rotateFactor.value = s.rotateFactor;
+            if (s.scaleFactor !== undefined && scaleFactor) scaleFactor.value = s.scaleFactor;
+            if (s.offsetFactor !== undefined && offsetFactor) offsetFactor.value = s.offsetFactor;
+            if (s.scaleLock !== undefined) document.getElementById('select-scaleLock').checked = s.scaleLock;
+            if (s.copy !== undefined) {
+                state.copyMode = s.copy;
+                document.getElementById('btn-copy').textContent = s.copy ? 'COPY + PASTE' : 'CUT + PASTE';
             }
-
-            if (filterContext.query) {
-                params.set('q', filterContext.query);
+            if (s.circleSegmentLength !== undefined) {
+                setVal('circle-segmentLength', s.circleSegmentLength);
+                document.getElementById('val-circle-segmentLength').value = (s.circleSegmentLength).toFixed(1);
             }
-
-            return params.toString();
+            if (s.ellipse !== undefined) {
+                state.ellipseMode = s.ellipse;
+                document.getElementById('btn-ellipse').textContent = s.ellipse ? 'Ellipse' : 'Circle';
+            }
+            if (s.eraserRadius !== undefined) setVal('eraser-radius', s.eraserRadius);
+            if (s.lineTrim !== undefined) {
+                state.lineTrimMode = s.lineTrim;
+                document.getElementById('btn-lineTrim').textContent = s.lineTrim ? 'Line Trim' : 'Line Erase';
+            }
+            if (s.curveSegmentLength !== undefined) {
+                setVal('curve-segmentLength', s.curveSegmentLength);
+                document.getElementById('val-curve-segmentLength').value = (0.1 * s.curveSegmentLength).toFixed(1);
+            }
+            if (s.vehiclePowerupTime !== undefined) {
+                setVal('vehiclepowerup-time', s.vehiclePowerupTime);
+            }
         }
-
-        document.getElementById('np-prev').addEventListener('click', function () {
-            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
-                if (playlistContext.currentIndex > 0) {
-                    var prevTrack = playlistContext.tracks[playlistContext.currentIndex - 1];
-                    var type, id;
-
-                    if (prevTrack.canonical || prevTrack.type === 't') {
-                        type = 't';
-                        id = prevTrack.canonical || prevTrack.id;
-                    } else {
-                        type = prevTrack.urlType || prevTrack.type || 'frhd';
-                        id = prevTrack.urlId || prevTrack.id;
-                    }
-
-                    sendLoadTrack(type, id);
-                }
-            } else if (!filterContext && currentTrackData) {
-                fetchAdjacentTrack('prev');
-            }
-        });
-
-        document.getElementById('np-next').addEventListener('click', function () {
-            if (playlistContext && playlistContext.tracks && playlistContext.tracks.length > 0) {
-                if (playlistContext.currentIndex < playlistContext.tracks.length - 1) {
-                    var nextTrack = playlistContext.tracks[playlistContext.currentIndex + 1];
-                    var type, id;
-
-                    if (nextTrack.canonical || nextTrack.type === 't') {
-                        type = 't';
-                        id = nextTrack.canonical || nextTrack.id;
-                    } else {
-                        type = nextTrack.urlType || nextTrack.type || 'frhd';
-                        id = nextTrack.urlId || nextTrack.id;
-                    }
-
-                    sendLoadTrack(type, id);
-                }
-            } else if (!filterContext && currentTrackData) {
-                fetchAdjacentTrack('next');
-            }
-        });
-
-        document.getElementById('np-random').addEventListener('click', function () {
-            if (playlistContext && playlistContext.tracks.length > 1) {
-                var availableIndices = [];
-                for (var i = 0; i < playlistContext.tracks.length; i++) {
-                    if (i !== playlistContext.currentIndex) {
-                        availableIndices.push(i);
-                    }
-                }
-                var randomIdx = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-                var randomTrack = playlistContext.tracks[randomIdx];
-                var type, id;
-
-                if (randomTrack.canonical) {
-                    type = 't';
-                    id = randomTrack.canonical;
-                } else {
-                    type = randomTrack.urlType || randomTrack.type || 'frhd';
-                    id = randomTrack.urlId || randomTrack.id;
-                }
-
-                sendLoadTrack(type, id);
-            } else if (filterContext) {
-                if (filterContext.remixesOf) {
-                    fetch('/api/remixes/' + encodeURIComponent(filterContext.remixesOf.canonical))
-                        .then(function (r) { return r.json(); })
-                        .then(function (data) {
-                            var remixes = data.remixes || [];
-                            if (remixes.length > 0) {
-                                var track = remixes[Math.floor(Math.random() * remixes.length)];
-                                var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
-                                var id = track.canonical || track.urlId || track.id;
-                                sendLoadTrack(type, id);
-                            }
-                        })
-                        .catch(function (e) { console.error('Failed to get random remix:', e); });
-                } else {
-                    var params = buildFilterParams();
-                    fetch('/api/db?' + params)
-                        .then(function (r) { return r.json(); })
-                        .then(function (data) {
-                            if (data.tracks && data.tracks.length > 0) {
-                                var track = data.tracks[0];
-                                var type, id;
-
-                                if (track.canonical) {
-                                    type = 't';
-                                    id = track.canonical;
-                                } else {
-                                    type = track.urlType || track.type || 'frhd';
-                                    id = track.urlId || track.id;
-                                }
-
-                                sendLoadTrack(type, id);
-                            }
-                        })
-                        .catch(function (e) {
-                            console.error('Failed to get random track:', e);
-                        });
-                }
-            } else {
-                fetchRandomTrack();
-            }
-        });
-
-        function fetchRandomTrack() {
-            var params = new URLSearchParams();
-            params.set('type', 'db');
-            params.set('sort', 'shuffle');
-            params.set('perPage', '1');
-
-            if (currentTrackData) {
-                var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
-                if (currentCanonical) {
-                    params.set('exclude', currentCanonical);
-                }
-            }
-
-            fetch('/api/db?' + params)
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (data.tracks && data.tracks.length > 0) {
-                        var track = data.tracks[0];
-                        var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
-                        var id = track.canonical || track.urlId || track.id;
-                        sendLoadTrack(type, id);
-                    }
-                })
-                .catch(function (e) {
-                    console.error('Failed to get random track:', e);
-                });
-        }
-
-        function sendLoadTrack(type, id) {
-            var data = { type: type, id: id };
-            if (playlistContext) data.playlist = playlistContext;
-            else if (filterContext) data.filterContext = filterContext;
-            send('load-track', data);
-        }
-        function fetchAdjacentTrack(direction) {
-            if (!currentTrackData) return;
-
-            var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
-
-            var params = new URLSearchParams();
-            params.set('type', 'db');
-            params.set('sort', 'published');
-            params.set('order', 'asc');
-            params.set('perPage', '1');
-
-            if (direction === 'prev') {
-                params.set('beforeCanonical', currentCanonical);
-            } else {
-                params.set('afterCanonical', currentCanonical);
-            }
-
-            fetch('/api/db?' + params)
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (data.tracks && data.tracks.length > 0) {
-                        var track = data.tracks[0];
-                        var type = track.canonical ? 't' : (track.urlType || track.type || 'frhd');
-                        var id = track.canonical || track.urlId || track.id;
-                        sendLoadTrack(type, id);
-                    } else {
-                        console.log('No more tracks in ' + direction + ' direction');
-                    }
-                })
-                .catch(function (e) {
-                    console.error('Failed to get adjacent track:', e);
-                });
-        }
-
-        function checkAdjacentTracks() {
-            if (!currentTrackData) {
-                document.getElementById('np-prev').disabled = true;
-                document.getElementById('np-next').disabled = true;
-                document.getElementById('np-prev').style.borderRight = '8px solid #aaa';
-                document.getElementById('np-next').style.borderLeft = '8px solid #aaa';
-                return;
-            }
-
-            var currentCanonical = currentTrackData.canonical || currentTrackData.canonicalId || currentTrackData.id;
-
-            var prevParams = new URLSearchParams();
-            prevParams.set('type', 'db');
-            prevParams.set('sort', 'published');
-            prevParams.set('order', 'asc');
-            prevParams.set('perPage', '1');
-            prevParams.set('beforeCanonical', currentCanonical);
-
-            fetch('/api/db?' + prevParams)
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    var hasPrev = data.tracks && data.tracks.length > 0;
-                    document.getElementById('np-prev').disabled = !hasPrev;
-                    document.getElementById('np-prev').style.opacity = hasPrev ? '1' : '0.5';
-                });
-
-            var nextParams = new URLSearchParams();
-            nextParams.set('type', 'db');
-            nextParams.set('sort', 'published');
-            nextParams.set('order', 'asc');
-            nextParams.set('perPage', '1');
-            nextParams.set('afterCanonical', currentCanonical);
-
-            fetch('/api/db?' + nextParams)
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    var hasNext = data.tracks && data.tracks.length > 0;
-                    document.getElementById('np-next').disabled = !hasNext;
-                    document.getElementById('np-next').style.opacity = hasNext ? '1' : '0.5';
-                });
-        }
-
-        document.getElementById('np-copy').addEventListener('click', function () {
-            if (!currentTrackData) return;
-            var url = currentTrackData.permalink || (window.location.origin + '/' + currentTrackData.type + '/' + currentTrackData.id);
-            navigator.clipboard.writeText(url).then(function () {
-                var btn = document.getElementById('copy-button');
-                btn.textContent = 'Copied!';
-                setTimeout(function () { btn.textContent = 'Copy Link'; }, 1500);
-            });
-        });
-
-        document.getElementById('np-set-start').addEventListener('click', function () {
-            send('change-tool', 'pete');
-        });
-
-        document.getElementById('vehicle-mod-play').addEventListener('click', function () {
-            var active = !this.classList.contains('engaged');
-            this.classList.toggle('engaged', active);
-            send('mod-play', active);
-            var modCb = document.getElementById('mod-play');
-            if (modCb) modCb.checked = active;
-        });
-
-        document.getElementById('vehicle-mod-mobile').addEventListener('click', function () {
-            var active = !this.classList.contains('engaged');
-            this.classList.toggle('engaged', active);
-            send('mod-mobile', active);
-            var modCb = document.getElementById('mod-mobile');
-            if (modCb) modCb.checked = active;
-        });
-
-        /*document.getElementById('np-export-ghost').addEventListener('click', function () {
-            send('export-ghost', true);
-        });*/
-
-        document.getElementById('np-author-line').addEventListener('click', function (e) {
-            var authorLink = e.target.closest('.np-author-link');
-            if (authorLink) {
-                e.preventDefault();
-                var playerName = authorLink.dataset.author;
-                if (playerName) {
-                    showPlayerProfile(playerName);
-                    send('open-author', playerName);
-                }
-            }
-        });
-
-        document.getElementById('np-playlist-name').addEventListener('click', function (e) {
-            e.preventDefault();
-            if (playlistContext && playlistContext.id) {
-                send('open-playlist', playlistContext.id);
-            }
-        });
-
-        document.getElementById('np-playlist-info').addEventListener('click', function (e) {
-            if (e.target.id === 'np-playlist-name' && playlistContext) {
-                return;
-            }
-
-            if (filterContext) {
-                e.preventDefault();
-                if (filterContext.remixesOf) {
-                    send('open-remix-search', filterContext.remixesOf);
-                } else if (filterContext.player) {
-                    send('open-author', {
-                        player: filterContext.player,
-                        type: filterContext.type || 'db',
-                        sortBy: filterContext.sortBy || 'shuffle',
-                        sortOrder: filterContext.sortOrder || 'desc'
-                    });
-                } else if (filterContext.query) {
-                    send('open-filter', {
-                        query: filterContext.query,
-                        type: filterContext.type || 'db',
-                        sortBy: filterContext.sortBy || 'shuffle',
-                        sortOrder: filterContext.sortOrder || 'desc'
-                    });
-                } else if (filterContext.type && filterContext.type !== 'db') {
-                    send('open-filter', {
-                        type: filterContext.type,
-                        sortBy: filterContext.sortBy || 'shuffle',
-                        sortOrder: filterContext.sortOrder || 'desc'
-                    });
-                }
-            }
-        });
-
-        document.addEventListener('click', function (e) {
-            var playlistLink = e.target.closest('.np-playlist-link');
-            if (playlistLink) {
-                e.preventDefault();
-                var playlistId = playlistLink.dataset.playlistId;
-                if (playlistId) {
-                    send('open-playlist', playlistId);
-                }
-            }
-        });
 
         // snap options
         document.getElementById('snap-distance').addEventListener('change', function () {
             send('snap-distance', parseInt(this.value));
         });
-
         document.getElementById('snap-type').addEventListener('change', function () {
             send('snap-type', this.value);
         });
-
         document.getElementById('snap-cursor').addEventListener('change', function () {
             send('snap-cursor', this.value);
         });
@@ -3743,11 +2780,9 @@ body.dialog-mode #tab-track {
         document.getElementById('grid-size').addEventListener('change', function () {
             send('grid-size', parseInt(this.value));
         });
-
         document.getElementById('grid-type').addEventListener('change', function () {
             send('grid-type', this.value);
         });
-
         document.getElementById('grid-visibility').addEventListener('change', function () {
             send('grid-visibility', this.value);
         });
@@ -3756,11 +2791,9 @@ body.dialog-mode #tab-track {
         document.getElementById('select-rotate-factor').addEventListener('change', function () {
             send('select-rotate-factor', parseInt(this.value));
         });
-
         document.getElementById('select-scale-factor').addEventListener('change', function () {
             send('select-scale-factor', parseFloat(this.value));
         });
-
         document.getElementById('select-offset-factor').addEventListener('change', function () {
             send('select-offset-factor', parseInt(this.value));
         });
@@ -3769,11 +2802,9 @@ body.dialog-mode #tab-track {
         document.getElementById('camera-sensitivity').addEventListener('change', function () {
             send('camera-sensitivity', parseFloat(this.value));
         });
-
         document.getElementById('camera-movement').addEventListener('change', function () {
             send('camera-movement', this.value);
         });
-
         document.getElementById('camera-speed').addEventListener('change', function () {
             send('camera-speed', parseInt(this.value));
         });
@@ -3787,19 +2818,15 @@ body.dialog-mode #tab-track {
         document.getElementById('btn-object-import').addEventListener('click', function () {
             send('object-import', true);
         });
-
         document.getElementById('btn-object-clear-all').addEventListener('click', function () {
             send('object-clear-all', true);
         });
-
         document.getElementById('object-rotate-sensitivity').addEventListener('change', function () {
             send('object-rotate-sensitivity', parseInt(this.value));
         });
-
         document.getElementById('object-scale-sensitivity').addEventListener('change', function () {
             send('object-scale-sensitivity', parseFloat(this.value));
         });
-
         document.getElementById('object-offset-sensitivity').addEventListener('change', function () {
             send('object-offset-sensitivity', parseInt(this.value));
         });
@@ -3810,157 +2837,93 @@ body.dialog-mode #tab-track {
             document.getElementById('val-pattern-brushSize').value = v;
             send('pattern-brushSize', v);
         });
-
         document.getElementById('pattern-brush').addEventListener('change', function () {
             var v = parseInt(this.value);
             send('pattern-brush', v);
             updatePatternPreviewWrapper(v);
-
             if (window.lastPatternPreviewData) {
                 drawPatternPreview(window.lastPatternPreviewData, v);
             }
         });
-
         document.getElementById('pattern-globalGrid').addEventListener('change', function () {
             send('pattern-globalGrid', this.checked);
         });
-
         document.getElementById('pattern-experimentalSpeedups').addEventListener('change', function () {
             send('pattern-experimentalSpeedups', this.checked);
         });
-
         document.getElementById('pattern-experimentalStabilization').addEventListener('change', function () {
             send('pattern-experimentalStabilization', this.checked);
         });
-
         document.getElementById('btn-pattern-from-object').addEventListener('click', function () {
             send('pattern-from-object', true);
         });
-
         document.getElementById('btn-pattern-from-db').addEventListener('click', function () {
             send('pattern-from-db', true);
         });
 
         // select transform buttons
-        document.getElementById('btn-select-rotate-cw').addEventListener('click', function () {
-            send('select-transform', { type: 'rotate', direction: 1 });
-        });
-        document.getElementById('btn-select-rotate-ccw').addEventListener('click', function () {
-            send('select-transform', { type: 'rotate', direction: -1 });
-        });
-        document.getElementById('btn-select-scale-up').addEventListener('click', function () {
-            send('select-transform', { type: 'scale', direction: 1 });
-        });
-        document.getElementById('btn-select-scale-down').addEventListener('click', function () {
-            send('select-transform', { type: 'scale', direction: -1 });
-        });
-        document.getElementById('btn-select-flip-x').addEventListener('click', function () {
-            send('select-transform', { type: 'flipX' });
-        });
-        document.getElementById('btn-select-flip-y').addEventListener('click', function () {
-            send('select-transform', { type: 'flipY' });
-        });
-        document.getElementById('btn-select-invert').addEventListener('click', function () {
-            send('select-transform', { type: 'invert' });
-        });
-        document.getElementById('btn-select-invert-flat').addEventListener('click', function () {
-            send('select-transform', { type: 'invertFlat' });
-        });
-                document.getElementById('btn-select-move-left').addEventListener('click', function () {
-            send('select-transform', { type: 'moveX', direction: -1 });
-        });
-        document.getElementById('btn-select-move-right').addEventListener('click', function () {
-            send('select-transform', { type: 'moveX', direction: 1 });
-        });
-        document.getElementById('btn-select-move-up').addEventListener('click', function () {
-            send('select-transform', { type: 'moveY', direction: -1 });
-        });
-        document.getElementById('btn-select-move-down').addEventListener('click', function () {
-            send('select-transform', { type: 'moveY', direction: 1 });
-        });
-        document.getElementById('btn-select-offset-left').addEventListener('click', function () {
-            send('select-transform', { type: 'offsetX', direction: -1 });
-        });
-        document.getElementById('btn-select-offset-right').addEventListener('click', function () {
-            send('select-transform', { type: 'offsetX', direction: 1 });
-        });
-        document.getElementById('btn-select-offset-up').addEventListener('click', function () {
-            send('select-transform', { type: 'offsetY', direction: -1 });
-        });
-        document.getElementById('btn-select-offset-down').addEventListener('click', function () {
-            send('select-transform', { type: 'offsetY', direction: 1 });
-        });
-        document.getElementById('btn-select-transform-reset').addEventListener('click', function () {
-            send('select-transform', { type: 'reset' });
-        });
-        document.getElementById('btn-select-save-object').addEventListener('click', function () {
-            send('select-save-object', true);
-        });
+        document.getElementById('btn-select-rotate-cw').addEventListener('click', function () { send('select-transform', { type: 'rotate', direction: 1 }); });
+        document.getElementById('btn-select-rotate-ccw').addEventListener('click', function () { send('select-transform', { type: 'rotate', direction: -1 }); });
+        document.getElementById('btn-select-scale-up').addEventListener('click', function () { send('select-transform', { type: 'scale', direction: 1 }); });
+        document.getElementById('btn-select-scale-down').addEventListener('click', function () { send('select-transform', { type: 'scale', direction: -1 }); });
+        document.getElementById('btn-select-flip-x').addEventListener('click', function () { send('select-transform', { type: 'flipX' }); });
+        document.getElementById('btn-select-flip-y').addEventListener('click', function () { send('select-transform', { type: 'flipY' }); });
+        document.getElementById('btn-select-invert').addEventListener('click', function () { send('select-transform', { type: 'invert' }); });
+        document.getElementById('btn-select-invert-flat').addEventListener('click', function () { send('select-transform', { type: 'invertFlat' }); });
+        document.getElementById('btn-select-move-left').addEventListener('click', function () { send('select-transform', { type: 'moveX', direction: -1 }); });
+        document.getElementById('btn-select-move-right').addEventListener('click', function () { send('select-transform', { type: 'moveX', direction: 1 }); });
+        document.getElementById('btn-select-move-up').addEventListener('click', function () { send('select-transform', { type: 'moveY', direction: -1 }); });
+        document.getElementById('btn-select-move-down').addEventListener('click', function () { send('select-transform', { type: 'moveY', direction: 1 }); });
+        document.getElementById('btn-select-offset-left').addEventListener('click', function () { send('select-transform', { type: 'offsetX', direction: -1 }); });
+        document.getElementById('btn-select-offset-right').addEventListener('click', function () { send('select-transform', { type: 'offsetX', direction: 1 }); });
+        document.getElementById('btn-select-offset-up').addEventListener('click', function () { send('select-transform', { type: 'offsetY', direction: -1 }); });
+        document.getElementById('btn-select-offset-down').addEventListener('click', function () { send('select-transform', { type: 'offsetY', direction: 1 }); });
+        document.getElementById('btn-select-transform-reset').addEventListener('click', function () { send('select-transform', { type: 'reset' }); });
+        document.getElementById('btn-select-save-object').addEventListener('click', function () { send('select-save-object', true); });
 
         // object transform buttons
-        document.getElementById('btn-rotate-cw').addEventListener('click', function () {
-            send('object-transform', { type: 'rotate', direction: 1 });
-        });
-        document.getElementById('btn-rotate-ccw').addEventListener('click', function () {
-            send('object-transform', { type: 'rotate', direction: -1 });
-        });
-        document.getElementById('btn-scale-up').addEventListener('click', function () {
-            send('object-transform', { type: 'scale', direction: 1 });
-        });
-        document.getElementById('btn-scale-down').addEventListener('click', function () {
-            send('object-transform', { type: 'scale', direction: -1 });
-        });
-        /*document.getElementById('btn-stretch-x-up').addEventListener('click', function() {
-            send('object-transform', { type: 'stretchX', direction: 1 });
-        });
-        document.getElementById('btn-stretch-x-down').addEventListener('click', function() {
-            send('object-transform', { type: 'stretchX', direction: -1 });
-        });
-        document.getElementById('btn-stretch-y-up').addEventListener('click', function() {
-            send('object-transform', { type: 'stretchY', direction: 1 });
-        });
-        document.getElementById('btn-stretch-y-down').addEventListener('click', function() {
-            send('object-transform', { type: 'stretchY', direction: -1 });
-        });*/
-        document.getElementById('btn-offset-left').addEventListener('click', function () {
-            send('object-transform', { type: 'offsetX', direction: -1 });
-        });
-        document.getElementById('btn-offset-right').addEventListener('click', function () {
-            send('object-transform', { type: 'offsetX', direction: 1 });
-        });
-        document.getElementById('btn-offset-up').addEventListener('click', function () {
-            send('object-transform', { type: 'offsetY', direction: -1 });
-        });
-        document.getElementById('btn-offset-down').addEventListener('click', function () {
-            send('object-transform', { type: 'offsetY', direction: 1 });
-        });
-        document.getElementById('btn-flip-x').addEventListener('click', function () {
-            send('object-transform', { type: 'flipX' });
-        });
-        document.getElementById('btn-flip-y').addEventListener('click', function () {
-            send('object-transform', { type: 'flipY' });
-        });
-        document.getElementById('btn-invert').addEventListener('click', function () {
-            send('object-transform', { type: 'invert' });
-        });
-        document.getElementById('btn-invert-flat').addEventListener('click', function () {
-            send('object-transform', { type: 'invertFlat' });
-        });
-        document.getElementById('btn-transform-reset').addEventListener('click', function () {
-            send('object-transform', { type: 'reset' });
-        });
+        document.getElementById('btn-rotate-cw').addEventListener('click', function () { send('object-transform', { type: 'rotate', direction: 1 }); });
+        document.getElementById('btn-rotate-ccw').addEventListener('click', function () { send('object-transform', { type: 'rotate', direction: -1 }); });
+        document.getElementById('btn-scale-up').addEventListener('click', function () { send('object-transform', { type: 'scale', direction: 1 }); });
+        document.getElementById('btn-scale-down').addEventListener('click', function () { send('object-transform', { type: 'scale', direction: -1 }); });
+        document.getElementById('btn-offset-left').addEventListener('click', function () { send('object-transform', { type: 'offsetX', direction: -1 }); });
+        document.getElementById('btn-offset-right').addEventListener('click', function () { send('object-transform', { type: 'offsetX', direction: 1 }); });
+        document.getElementById('btn-offset-up').addEventListener('click', function () { send('object-transform', { type: 'offsetY', direction: -1 }); });
+        document.getElementById('btn-offset-down').addEventListener('click', function () { send('object-transform', { type: 'offsetY', direction: 1 }); });
+        document.getElementById('btn-flip-x').addEventListener('click', function () { send('object-transform', { type: 'flipX' }); });
+        document.getElementById('btn-flip-y').addEventListener('click', function () { send('object-transform', { type: 'flipY' }); });
+        document.getElementById('btn-invert').addEventListener('click', function () { send('object-transform', { type: 'invert' }); });
+        document.getElementById('btn-invert-flat').addEventListener('click', function () { send('object-transform', { type: 'invertFlat' }); });
+        document.getElementById('btn-transform-reset').addEventListener('click', function () { send('object-transform', { type: 'reset' }); });
 
         // toggle event listeners
-        document.getElementById('grid-toggle').addEventListener('click', function () {
-            send('grid-toggle', true);
-        });
+        document.getElementById('grid-toggle').addEventListener('click', function () { send('grid-toggle', true); });
+        document.getElementById('snap-toggle').addEventListener('click', function () { send('snap-toggle', true); });
+        document.getElementById('camera-lock-toggle').addEventListener('click', function () { send('camera-locked', !state.cameraLockMode); });
 
-        document.getElementById('snap-toggle').addEventListener('click', function () {
-            send('snap-toggle', true);
+        // vehicle tab buttons
+        document.getElementById('vt-set-start').addEventListener('click', function () {
+            send('change-tool', 'pete');
         });
-
-        document.getElementById('camera-lock-toggle').addEventListener('click', function () {
-            send('camera-locked', !state.cameraLockMode);
+        document.getElementById('vt-mod-play').addEventListener('click', function () {
+            var active = !this.classList.contains('engaged');
+            this.classList.toggle('engaged', active);
+            send('mod-play', active);
+            var modCb = document.getElementById('mod-play');
+            if (modCb) modCb.checked = active;
+            // sync now-playing button if it exists
+            var npBtn = document.getElementById('vehicle-mod-play');
+            if (npBtn) npBtn.classList.toggle('engaged', active);
+        });
+        document.getElementById('vt-mod-mobile').addEventListener('click', function () {
+            var active = !this.classList.contains('engaged');
+            this.classList.toggle('engaged', active);
+            send('mod-mobile', active);
+            var modCb = document.getElementById('mod-mobile');
+            if (modCb) modCb.checked = active;
+            // sync now-playing button if it exists
+            var npBtn = document.getElementById('vehicle-mod-mobile');
+            if (npBtn) npBtn.classList.toggle('engaged', active);
         });
 
         // powerup options
@@ -3970,16 +2933,9 @@ body.dialog-mode #tab-track {
             send('vehiclepowerup-time', v);
         });
 
-        // vehicle options
-        document.getElementById('btn-track-import').addEventListener('click', function () {
-            send('open-import', true);
-        });
-        
-
         // sliders
         document.querySelectorAll('input[type="range"]').forEach(function (slider) {
             var valInput = document.getElementById('val-' + slider.id);
-
             updateSliderTrack(slider);
 
             slider.addEventListener('input', function () {
@@ -4010,18 +2966,6 @@ body.dialog-mode #tab-track {
             });
         });
 
-        // avatars
-        document.getElementById('np-author-avatars').addEventListener('click', function (e) {
-            var avatar = e.target.closest('.np-author-avatar');
-            if (avatar) {
-                var playerName = avatar.dataset.author;
-                if (playerName) {
-                    showPlayerProfile(playerName);
-                    send('open-author', playerName);
-                }
-            }
-        });
-
         // hide button to all descriptions
         document.querySelectorAll('.description').forEach(function (desc) {
             var btn = document.createElement('button');
@@ -4047,169 +2991,6 @@ body.dialog-mode #tab-track {
             section.appendChild(btn);
         });
 
-        // linked track clicks
-        document.addEventListener('click', function (e) {
-            var trackLink = e.target.closest('.np-track-link');
-            if (trackLink) {
-                e.preventDefault();
-                var type = trackLink.dataset.type;
-                var id = trackLink.dataset.id;
-                if (type && id) {
-                    if (trackLink.dataset.noContext) {
-                        playlistContext = null;
-                        filterContext = null;
-                        updatePlaylistUI();
-                    }
-                    sendLoadTrack(type, id);
-                }
-            }
-        });
-
-        // remixes link - search for remixes of this track
-        document.addEventListener('click', function (e) {
-            var remixesLink = e.target.closest('.np-remixes-link');
-            if (remixesLink) {
-                e.preventDefault();
-                var canonical = remixesLink.dataset.canonical;
-                var name = remixesLink.dataset.name;
-                if (canonical) {
-                    send('open-remix-search', { canonical: canonical, name: name });
-                }
-            }
-        });
-
-        // published year link
-        document.addEventListener('click', function (e) {
-            var yearLink = e.target.closest('.np-year-link');
-            if (yearLink) {
-                e.preventDefault();
-                var year = yearLink.dataset.year;
-                if (year) {
-                    send('open-filter', { query: 'year=' + year, type: 'db', sort: 'published', sortOrder: 'asc' });
-                }
-            }
-        });
-
-        function updatePowerupSection(selectedPowerup) {
-            // hide all powerup sections
-            document.querySelectorAll('.powerup-section').forEach(function (section) {
-                section.style.display = 'none';
-            });
-
-            // show the selected powerup section
-            var sectionId = 'powerup-' + (selectedPowerup || 'none');
-            var section = document.getElementById(sectionId);
-            if (section) {
-                section.style.display = 'block';
-            } else {
-                document.getElementById('powerup-none').style.display = 'block';
-            }
-        }
-
-        function updatePowerupIcon(s) {
-            var powerupBadge = document.getElementById('powerup-selected');
-            if (powerupBadge && s.selectedPowerup) {
-                var powerupColors = {
-                    'bomb': '#d12929',
-                    'boost': '#8ac932',
-                    'checkpoint': '#826cdc',
-                    'gravity': '#376eb7',
-                    'slowmo': '#aaaaaa',
-                    'goal': '#fae335',
-                    'teleport': '#dd45ec',
-                    'antigravity': '#04cbc5'
-                };
-
-                powerupBadge.style.background = powerupColors[s.selectedPowerup] || '#888';
-                powerupBadge.textContent = s.selectedPowerup.toUpperCase();
-
-                updatePowerupSection(s.selectedPowerup);
-            }
-        }
-
-        function updateVehiclePowerupIcon(s) {
-            var vehicleBadge = document.getElementById('vehiclepowerup-selected');
-            if (vehicleBadge && s.selectedVehiclePowerup) {
-                var vehicleColors = {
-                    'helicopter': '#f2902e',
-                    'truck': '#94d44e',
-                    'balloon': '#f02728',
-                    'blob': '#a784c5'
-                };
-
-                vehicleBadge.style.background = vehicleColors[s.selectedVehiclePowerup] || '#888';
-                vehicleBadge.textContent = s.selectedVehiclePowerup.toUpperCase();
-            }
-        }
-
-        function updateVehicleIcon(s) {
-            var vehicleBadge = document.getElementById('vehicle-selected');
-            if (vehicleBadge && s.vehicle) {
-                var vehicleColors = {
-                    'BMX': '#000000',
-                    'MTB': '#aaaaaa',
-                    'HELI': '#f2902e',
-                    'TRUCK': '#94d44e',
-                    'BALLOON': '#f02728',
-                    'BLOB': '#a784c5'
-                };
-
-                vehicleBadge.style.background = vehicleColors[s.vehicle] || '#888';
-                vehicleBadge.textContent = s.vehicle;
-            }
-        }
-
-        function updateToolSettings(s) {
-            if (s.brush) {
-                setVal('brush-breakLength', s.brush.breakLength);
-                setVal('brush-trailSpeed', s.brush.trailSpeed);
-            }
-            if (s.brushRotate !== undefined) document.getElementById('brush-rotate').checked = s.brushRotate;
-            if (s.brushScale !== undefined) document.getElementById('brush-scale').checked = s.brushScale;
-            if (s.brushRotateJitter !== undefined) setVal('brush-rotateJitter', s.brushRotateJitter);
-            if (s.brushScaleJitter !== undefined) setVal('brush-scaleJitter', s.brushScaleJitter);
-            //if (s.rotateFactor !== undefined) setVal('select-rotateFactor', s.rotateFactor);
-            //if (s.scaleFactor !== undefined) setVal('select-scaleFactor', s.scaleFactor);
-            var rotateFactor = document.getElementById('select-rotate-factor');
-            var scaleFactor = document.getElementById('select-scale-factor');
-            var offsetFactor = document.getElementById('select-offset-factor');
-
-            if (s.rotateFactor !== undefined && rotateFactor) {
-                rotateFactor.value = s.rotateFactor;
-            }
-            if (s.scaleFactor !== undefined && scaleFactor) {
-                scaleFactor.value = s.scaleFactor;
-            }
-            if (s.offsetFactor !== undefined && offsetFactor) {
-                offsetFactor.value = s.offsetFactor;
-            }
-            if (s.scaleLock !== undefined) document.getElementById('select-scaleLock').checked = s.scaleLock;
-            if (s.copy !== undefined) {
-                state.copyMode = s.copy;
-                document.getElementById('btn-copy').textContent = s.copy ? 'COPY + PASTE' : 'CUT + PASTE';
-            }
-            if (s.circleSegmentLength !== undefined) {
-                setVal('circle-segmentLength', s.circleSegmentLength);
-                document.getElementById('val-circle-segmentLength').value = (s.circleSegmentLength).toFixed(1);
-            }
-            if (s.ellipse !== undefined) {
-                state.ellipseMode = s.ellipse;
-                document.getElementById('btn-ellipse').textContent = s.ellipse ? 'Ellipse' : 'Circle';
-            }
-            if (s.eraserRadius !== undefined) setVal('eraser-radius', s.eraserRadius);
-            if (s.lineTrim !== undefined) {
-                state.lineTrimMode = s.lineTrim;
-                document.getElementById('btn-lineTrim').textContent = s.lineTrim ? 'Line Trim' : 'Line Erase';
-            }
-            if (s.curveSegmentLength !== undefined) {
-                setVal('curve-segmentLength', s.curveSegmentLength);
-                document.getElementById('val-curve-segmentLength').value = (0.1 * s.curveSegmentLength).toFixed(1);
-            }
-            if (s.vehiclePowerupTime !== undefined) {
-                setVal('vehiclepowerup-time', s.vehiclePowerupTime);
-            }
-        }
-
         function toggleDescriptions(show) {
             var container = document.querySelector('.editorDialog-tools');
             if (show) {
@@ -4226,11 +3007,9 @@ body.dialog-mode #tab-track {
             const max = parseFloat(slider.max) || 100;
             const value = parseFloat(slider.value);
             const percentage = ((value - min) / (max - min)) * 100;
-
             slider.style.background = `linear-gradient(to right, #000 0%, #000 ${percentage}%, #9B9B9B ${percentage}%, #9B9B9B 100%)`;
         }
 
-        // load saved preference
         (function () {
             var hideDescriptions = localStorage.getItem('tools-hide-descriptions') === 'true';
             if (hideDescriptions) {
@@ -4256,9 +3035,7 @@ body.dialog-mode #tab-track {
                 updateVehicleIcon(s);
                 updateToolSettings(s);
                 if (s.currentTool) setCurrentTool(s.currentTool);
-                if (s.modVars) {
-                    updateModSettings(s.modVars);
-                }
+                if (s.modVars) updateModSettings(s.modVars);
             },
             'toolChanged': function (data) {
                 setCurrentTool(data.tool);
@@ -4268,11 +3045,16 @@ body.dialog-mode #tab-track {
             },
             'trackChanged': function (data) {
                 hidePlayerProfile();
+                if (!data.ghost) {
+                    clearActiveGhost();
+                }
                 if (data.type && data.id) {
                     loadTrackData(data.type, data.id);
                 }
+                if (data.ghost) {
+                    setActiveGhost(data.ghost);
+                }
 
-                // handle playlist context
                 if (data.playlist) {
                     setPlaylistContext(data.playlist, data.id);
                 } else if (data.filterContext) {
@@ -4306,62 +3088,66 @@ body.dialog-mode #tab-track {
                 var tool = data.tool;
 
                 var toolToTab = {
-                    'straightline': 'tool',
-                    'curve': 'tool',
-                    'circle': 'tool',
-                    'brush': 'tool',
-                    'pattern': 'tool',
-                    'eraser': 'tool',
-                    'powerup': 'tool',
-                    'vehiclepowerup': 'tool',
-                    'select': 'tool',
-                    'camera': 'tool',
-                    'grid': 'grid',
-                    'snap': 'snap',
-                    'object': 'object',
-                    'layer': 'layer',
-                    'vehicle': 'vehicle',
-                    'mod': 'mods',
-                    'mods': 'mods',
+                    'straightline': 'tool', 'curve': 'tool', 'circle': 'tool',
+                    'brush': 'tool', 'pattern': 'tool', 'eraser': 'tool',
+                    'powerup': 'tool', 'vehiclepowerup': 'tool', 'select': 'tool',
+                    'camera': 'tool', 'grid': 'grid', 'snap': 'snap',
+                    'object': 'object', 'layer': 'layer', 'vehicle': 'vehicle',
+                    'mod': 'mods', 'mods': 'mods',
                 };
 
                 var tabName = toolToTab[tool] || 'tool';
 
-                switchTab(tabName);
-
-                if (tabName === 'tool') {
-                    setCurrentTool(tool);
+                var toolbox = document.getElementById('toolbox-content');
+                if (toolbox && toolbox.style.display === 'none') {
+                    var toolboxBtn = document.querySelector('.bottom-bar-button[data-panel="toolbox"]');
+                    if (toolboxBtn) toolboxBtn.click();
                 }
+
+                switchTab(tabName);
+                if (tabName === 'tool') setCurrentTool(tool);
             },
             'enterDialogMode': function (data) {
                 document.body.classList.add('dialog-mode');
             },
             'exitDialogMode': function (data) {
                 document.body.classList.remove('dialog-mode');
+            },
+            'ghostUploaded': function () {
+                var btn = document.getElementById('np-ghost-upload');
+                if (btn) {
+                    btn.textContent = 'Uploaded!';
+                    setTimeout(function () { btn.textContent = 'Upload Ghost'; }, 1500);
+                }
+                if (currentTrackData) {
+                    var ghostType = currentTrackData.type || 'db';
+                    var ghostId = currentTrackData.canonical || currentTrackData.id;
+                    fetchTrackGhosts(ghostType, ghostId);
+                }
+            },
+            'ghostUploadFailed': function () {
+                var btn = document.getElementById('np-ghost-upload');
+                if (btn) {
+                    btn.textContent = 'Upload Failed!';
+                    setTimeout(function () { btn.textContent = 'Upload Ghost'; }, 1500);
+                }
             }
         };
 
-        /*window.addEventListener('message', function (e) {
+        window.addEventListener('message', function (e) {
+            var forwardActions = [
+                'loadTrack', 'filterChanged', 'filterCleared',
+                'playerProfile', 'linkClicked'
+            ];
+            if (forwardActions.indexOf(e.data.action) !== -1) {
+                if (window.parent !== window) {
+                    window.parent.postMessage(e.data, '*');
+                    window.parent.focus();
+                }
+                return;
+            }
             var handler = messageHandlers[e.data.action];
             if (handler) handler(e.data);
-        });*/
-
-        window.addEventListener('message', function (e) {
-        var forwardActions = [
-            'loadTrack',
-            'filterChanged',
-            'filterCleared',
-            'playerProfile',
-            'linkClicked'
-        ];
-        if (forwardActions.indexOf(e.data.action) !== -1) {
-            if (window.parent !== window) {
-                window.parent.postMessage(e.data, '*');
-            }
-            return;
-        }
-        var handler = messageHandlers[e.data.action];
-        if (handler) handler(e.data);
         });
 
         var slidersInitialized = {};
@@ -4409,18 +3195,13 @@ body.dialog-mode #tab-track {
         // ---- Mod Layout ----
 
         var modLayout = [
-            /*{
-                type: 'folder', title: 'Mods',
-                keys: ['mobile', 'play']
-            },*/
             {
                 type: 'folder', title: "Editor Mods",
-                keys: [/*'lineShadow',*/ 'fadedVehiclePowerups', 'accurateEraser',
-                    /*'keepDeadRiders',*/ 'snap15', 'pointDataAlways']
+                keys: ['fadedVehiclePowerups', 'accurateEraser', 'snap15', 'pointDataAlways']
             },
             {
                 type: 'folder', title: 'Bike/Vehicle Mods',
-                keys: ['slowmo', 'rewind', 'oldTimer', 'bikeData', /*'gameData',*/
+                keys: ['slowmo', 'rewind', 'oldTimer', 'bikeData',
                     'hitboxes', 'inputDisplay', 'pixelSnapEverything', 'mario', 'mini', 'propeller', 'crouch',
                     'frontBrake', 'invincibility', 'invisibleRider', 'noClip']
             },
@@ -4438,15 +3219,15 @@ body.dialog-mode #tab-track {
 
         var modTitles = {
             crHead: 'Head', crRagdoll: 'Ragdoll', crBmx: 'BMX', crMtb: 'MTB',
-            crHeli: 'Helicopter', crPowerups: 'Powerups', /*lineShadow: 'Line Shadows',*/
+            crHeli: 'Helicopter', crPowerups: 'Powerups',
             fadedVehiclePowerups: 'Faded Powerups', accurateEraser: 'Accurate Eraser',
-            /*keepDeadRiders: 'Keep Dead Riders',*/ pixelSnapEverything: 'Pixel Snap Rider',
+            pixelSnapEverything: 'Pixel Snap Rider',
             snap15: 'Snap to 15', pointDataAlways: 'Point Data Always',
             blackHat: 'Black Hat', mario: 'Mario Mode', mini: 'Mini-Bike',
             propeller: 'Propeller', crouch: 'Crouch', frontBrake: 'Old-School Front Brake',
             invincibility: 'Invincibility', invisibleRider: 'Invisible Rider',
             noClip: 'No Clip', slowmo: 'Slow-Mode', rewind: 'Rewind',
-            oldTimer: 'Old-Timer', bikeData: 'Bike/Vehicle Data', /*gameData: 'Game Data',*/
+            oldTimer: 'Old-Timer', bikeData: 'Bike/Vehicle Data',
             hitboxes: 'Visible Hitboxes', inputDisplay: 'Input Display',
             mobile: 'Mobile Mode', play: 'Play Mode',
             invertColors: 'Invert Colors', darkenColors: 'Darken Colors',
@@ -4463,10 +3244,8 @@ body.dialog-mode #tab-track {
             crMtb: "Alters the MTB to look like it did in Canvas Rider.",
             crHeli: "Alters the helicopter to look like it did in Free Rider 2.",
             crPowerups: "Alters the powerups to look like they did in Canvas Rider.",
-            /*lineShadow: "Adds shadows behind the black lines to make them stand out more.",*/
             fadedVehiclePowerups: "When powerups are collected, they become faded out rather than disappearing.",
             accurateEraser: "Makes the eraser correctly account for line thickness. More responsive, but precise erases may be harder. Does not work with Line Trim.",
-            /*keepDeadRiders: "When you restart, your old bike and rider are kept on the map. Max 10 copies.",*/
             pixelSnapEverything: "Snaps the rider's position to pixels. Trades smoothness for accuracy.",
             snap15: "When holding CTRL, tool angles snap in 15° increments.",
             pointDataAlways: "Point data is always shown, even without CTRL held.",
@@ -4483,7 +3262,6 @@ body.dialog-mode #tab-track {
             rewind: "Position is saved every tick. Backspace rewinds. Shift+Backspace restarts.",
             oldTimer: "When restarting from a checkpoint, the timer resets to when the checkpoint was collected.",
             bikeData: "Shows metadata about the rider, including head angle and speed.",
-            /*gameData: "Shows game data, including FPS.",*/
             hitboxes: "Shows the hitboxes (masses) and springs for bikes and vehicles.",
             inputDisplay: "Shows the keys that are pressed.",
             mobile: "Adds touchscreen controls for playing.",
@@ -4497,12 +3275,10 @@ body.dialog-mode #tab-track {
             lineColor: "The color of the physical lines.",
             sceneryColor: "The color of the scenery lines.",
             backgroundColor: "The color of the background.",
-            hatColor: "The color of the rider's hat.",
-            seeGhost: "Shows a replay for the track if available."
+            hatColor: "The color of the rider's hat."
         };
 
         var modFolderDescriptions = {
-            'Mods': "General gameplay mods and display options.",
             "Editor Mods": "Mods that alter tools and the editor.",
             'Bike/Vehicle Mods': "Mods that alter the bikes, vehicles, and gameplay.",
             'Nostalgia Mode': "Options to make the game look like Canvas Rider and Black Hat Rider.",
@@ -4510,8 +3286,6 @@ body.dialog-mode #tab-track {
         };
 
         var modListBuilt = false;
-
-        // ---- Build Functions ----
 
         function buildModList(modVars) {
             if (modListBuilt) return;
@@ -4557,15 +3331,11 @@ body.dialog-mode #tab-track {
             }
 
             (folder.keys || []).forEach(function (key) {
-                settingsCol.appendChild(
-                    buildModCheckbox(key, modTitles[key] || key, modVars, setDesc)
-                );
+                settingsCol.appendChild(buildModCheckbox(key, modTitles[key] || key, modVars, setDesc));
             });
 
             (folder.colors || []).forEach(function (key) {
-                settingsCol.appendChild(
-                    buildModColorInput(key, modTitles[key] || key, modVars, setDesc)
-                );
+                settingsCol.appendChild(buildModColorInput(key, modTitles[key] || key, modVars, setDesc));
             });
 
             inner.appendChild(settingsCol);
@@ -4601,12 +3371,8 @@ body.dialog-mode #tab-track {
             });
 
             if (setDesc) {
-                row.addEventListener('mouseenter', function () {
-                    setDesc(modDescriptions[key] || '');
-                });
-                row.addEventListener('mouseleave', function () {
-                    setDesc(null);
-                });
+                row.addEventListener('mouseenter', function () { setDesc(modDescriptions[key] || ''); });
+                row.addEventListener('mouseleave', function () { setDesc(null); });
             }
 
             row.appendChild(checkbox);
@@ -4620,11 +3386,8 @@ body.dialog-mode #tab-track {
 
             var label = document.createElement('span');
             label.textContent = title;
-            label.style.cssText = 'font-size: 11px; flex: 1;';
-            label.style.cursor = 'pointer';
-            label.addEventListener('click', function () {
-                colorInput.click();
-            });
+            label.style.cssText = 'font-size: 11px; flex: 1; cursor: pointer;';
+            label.addEventListener('click', function () { colorInput.click(); });
 
             var colorLabel = document.createElement('label');
             colorLabel.className = 'layer-color-label';
@@ -4646,21 +3409,14 @@ body.dialog-mode #tab-track {
                 swatch.style.background = this.value;
                 send('mod-' + key, hexToRgb(this.value));
             });
-
-            colorInput.addEventListener('click', function (e) {
-                e.stopPropagation();
-            });
+            colorInput.addEventListener('click', function (e) { e.stopPropagation(); });
 
             colorLabel.appendChild(swatch);
             colorLabel.appendChild(colorInput);
 
             if (setDesc) {
-                row.addEventListener('mouseenter', function () {
-                    setDesc(modDescriptions[key] || '');
-                });
-                row.addEventListener('mouseleave', function () {
-                    setDesc(null);
-                });
+                row.addEventListener('mouseenter', function () { setDesc(modDescriptions[key] || ''); });
+                row.addEventListener('mouseleave', function () { setDesc(null); });
             }
 
             row.appendChild(colorLabel);
@@ -4671,24 +3427,16 @@ body.dialog-mode #tab-track {
         function updateColorDisabledState() {
             var cb = document.getElementById('mod-customColors');
             var enabled = cb && cb.checked;
-            var colorKeys = ['vehicleColor', 'riderColor', 'lineColor',
-                'sceneryColor', 'backgroundColor'];
+            var colorKeys = ['vehicleColor', 'riderColor', 'lineColor', 'sceneryColor', 'backgroundColor'];
             colorKeys.forEach(function (key) {
                 var el = document.getElementById('mod-' + key);
                 if (!el) return;
                 var row = el.closest('.mod-setting-row');
                 if (!row) return;
-                if (enabled) {
-                    row.style.opacity = '1';
-                    row.style.pointerEvents = '';
-                } else {
-                    row.style.opacity = '0.35';
-                    row.style.pointerEvents = 'none';
-                }
+                row.style.opacity = enabled ? '1' : '0.35';
+                row.style.pointerEvents = enabled ? '' : 'none';
             });
         }
-
-        // ---- Helpers ----
 
         function rgbToHex(rgb) {
             return '#' + rgb.map(function (c) {
@@ -4702,8 +3450,6 @@ body.dialog-mode #tab-track {
             var b = parseInt(hex.slice(5, 7), 16);
             return [r, g, b];
         }
-
-        // ---- Update from Parent ----
 
         function updateModSettings(modVars) {
             if (!modVars) return;
@@ -4729,10 +3475,14 @@ body.dialog-mode #tab-track {
             if (modVars.play !== undefined) {
                 var vPlay = document.getElementById('vehicle-mod-play');
                 if (vPlay) vPlay.classList.toggle('engaged', !!modVars.play);
+                var vtPlay = document.getElementById('vt-mod-play');
+                if (vtPlay) vtPlay.classList.toggle('engaged', !!modVars.play);
             }
             if (modVars.mobile !== undefined) {
                 var vMobile = document.getElementById('vehicle-mod-mobile');
                 if (vMobile) vMobile.classList.toggle('engaged', !!modVars.mobile);
+                var vtMobile = document.getElementById('vt-mod-mobile');
+                if (vtMobile) vtMobile.classList.toggle('engaged', !!modVars.mobile);
             }
 
             updateColorDisabledState();
@@ -4744,7 +3494,6 @@ body.dialog-mode #tab-track {
         }
 
         document.body.addEventListener('click', function (e) {
-            // skip focus for settings inputs and sliders
             if (e.target.closest('.settingInput') ||
                 e.target.closest('.horizontal-slider-container-2') ||
                 e.target.closest('input[type="range"]') ||
@@ -4775,17 +3524,12 @@ body.dialog-mode #tab-track {
         window.lastObjectPreviewData = null;
         window.lastPatternPreviewData = null;
 
-        // resize handler
         var resizeTimeout;
         window.addEventListener('resize', function () {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function () {
-                if (window.lastSelectPreviewData) {
-                    drawSelectPreview(window.lastSelectPreviewData);
-                }
-                if (window.lastObjectPreviewData) {
-                    drawObjectPreview(window.lastObjectPreviewData);
-                }
+                if (window.lastSelectPreviewData) drawSelectPreview(window.lastSelectPreviewData);
+                if (window.lastObjectPreviewData) drawObjectPreview(window.lastObjectPreviewData);
                 if (window.lastPatternPreviewData) {
                     var brushType = parseInt(document.getElementById('pattern-brush').value) || 1;
                     drawPatternPreview(window.lastPatternPreviewData, brushType);
@@ -4793,17 +3537,18 @@ body.dialog-mode #tab-track {
             }, 0);
         });
 
-        (function () {
-            try {
-                var parentPath = window.parent.location.pathname;
-                var match = parentPath.match(/^\/(frhd|bhr|cr|tm|app|t)\/([a-zA-Z0-9_-]+)/);
-                if (match) {
-                    loadTrackData(match[1], match[2]);
-                }
-            } catch (e) {
-                // cross-origin, wait for message
-            }
-        })();
+        var scrollFocusTimeout;
+        var toolsContainer = document.querySelector('.editorDialog-tools');
+        if (toolsContainer) {
+            toolsContainer.addEventListener('scroll', function () {
+                clearTimeout(scrollFocusTimeout);
+                scrollFocusTimeout = setTimeout(function () {
+                    if (window.parent && window.parent.focus) {
+                        window.parent.focus();
+                    }
+                }, 0);
+            });
+        }
     </script>
 </body>
 

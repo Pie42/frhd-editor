@@ -140,6 +140,12 @@ function setupLiveRacing(server) {
                         crMtb: msg.crMtb || false,
                         propeller: msg.propeller || false
                     }, playerId);
+                } else if (msg.type === 'ghost-uploaded' && session && playerId) {
+                    broadcastJSON(session, {
+                        type: 'ghost-uploaded',
+                        playerId,
+                        username
+                    }, playerId);
                 } else if (msg.type === 'appearance' && session && playerId) {
                     const playerInfo = session.get(playerId);
                     if (playerInfo) {

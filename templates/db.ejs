@@ -37,9 +37,9 @@
                             <span class="track-type-filter" data-mode="tracks">
                                 <span class="type-filter-link">TRACKS</span>
                             </span> /
-                            <!--<span class="track-type-filter" data-mode="ghosts">
+                            <span class="track-type-filter" data-mode="ghosts">
                                 <span class="type-filter-link">GHOSTS</span>
-                            </span> /-->
+                            </span> /
                             <span class="track-type-filter" data-mode="players">
                                 <span class="type-filter-link">PLAYERS</span>
                             </span>
@@ -276,6 +276,7 @@
         }
 
         function showFilterIndicator(html, type) {
+            document.querySelectorAll(`.filter-indicator[data-filter-type="${type}"]`).forEach(el => el.remove());
             const indicator = document.createElement('div');
             indicator.className = 'filter-indicator';
             indicator.dataset.filterType = type;
@@ -619,7 +620,7 @@
             badges = badges.filter(b => b && b !== 't');
 
             const liveKey = `${urlType}/${urlId}`;
-            const liveBadge = liveSessions[liveKey] > 0 ? '<span class="live-badge">LIVE</span>' : '';
+            const liveBadge = liveSessions[liveKey]?.count > 0 ? '<span class="live-badge">LIVE</span>' : '';
             const sortValue = getSortValueDisplay(track);
             const sortValueHtml = sortValue ? `<br><small style="color: #888;">${sortValue}</small>` : '';
 
@@ -675,7 +676,13 @@
                    data-ghost-vehicle="${ghost.vehicle || 'BMX'}"
                    data-ghost-time="${ghost.time || ''}"
                    data-ghost-ticks="${ghost.timeTicks || ''}"
-                   data-ghoster="${ghost.ghostUsername || ''}">
+                   data-ghoster="${ghost.ghostUsername || ''}"
+                   data-hat-color="${ghost.hatColor || ''}"
+                   data-hat-type="${ghost.hatType || ''}"
+                   data-vehicle-color="${ghost.vehicleColor || ''}"
+                   data-rider-color="${ghost.riderColor || ''}"
+                   data-cr-bmx="${ghost.crBmx || false}"
+                   data-cr-mtb="${ghost.crMtb || false}">
                     <div class="thumbnail">
                         <div class="badge-container">${renderBadges(badges)}</div>
                         <div class="ghost-badge">
@@ -1198,7 +1205,13 @@
                         vehicle: link.dataset.ghostVehicle,
                         time: link.dataset.ghostTime,
                         ticks: parseInt(link.dataset.ghostTicks) || null,
-                        username: link.dataset.ghoster
+                        username: link.dataset.ghoster,
+                        hatColor: link.dataset.hatColor || null,
+                        hatType: link.dataset.hatType || null,
+                        vehicleColor: link.dataset.vehicleColor || null,
+                        riderColor: link.dataset.riderColor || null,
+                        crBmx: link.dataset.crBmx === 'true',
+                        crMtb: link.dataset.crMtb === 'true'
                     };
                 }
 
@@ -1273,6 +1286,10 @@
         }
 
         async function showInitialFilterIndicators() {
+            if (state.player) {
+                showFilterIndicator(`<strong>${state.player}</strong>`, 'player');
+                updatePlayerIndicatorForMode();
+            }
             if (state.remixesOf) {
                 const name = state._remixesOfName || state.remixesOf;
                 showFilterIndicator(`Remixes of <strong>${name}</strong>`, 'remixes');
@@ -1507,7 +1524,6 @@
 
             await showInitialFilterIndicators();
 
-            initAuthorFromURL();
             fetchTracks(false);
             setInterval(fetchLiveSessions, 10000);
         });

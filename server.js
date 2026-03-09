@@ -2802,6 +2802,71 @@ app.get('/t/:id', async (req, res) => {
     res.status(200).send(renderedHtml);
 });
 
+app.get('/frhd/:id/:user', async (req, res) => {
+    const trackId = req.params.id;
+    const username = req.params.user;
+    const trackHandler = createTrackHandler('frhd');
+
+    const apiBase = new URL('https://www.freeriderhd.com');
+    apiBase.searchParams.set('ajax', 'true');
+    apiBase.searchParams.set('t_1', 'ref');
+    apiBase.searchParams.set('t_2', 'desk');
+
+    try {
+        const userUrl = new URL('https://www.freeriderhd.com/u/' + encodeURIComponent(username));
+        userUrl.searchParams.set('ajax', 'true');
+        userUrl.searchParams.set('t_1', 'ref');
+        userUrl.searchParams.set('t_2', 'desk');
+
+        const userRes = await fetch(userUrl.toString());
+        const userJson = await userRes.json();
+        const uid = userJson?.data?.user?.u_id || userJson?.user?.u_id;
+
+        if (!uid) {
+            console.log(`[Ghost link] Could not resolve username "${username}" to u_id`);
+            return trackHandler(req, res);
+        }
+
+        const raceUrl = new URL('https://www.freeriderhd.com/track_api/load_races');
+        raceUrl.searchParams.set('ajax', 'true');
+        raceUrl.searchParams.set('t_1', 'ref');
+        raceUrl.searchParams.set('t_2', 'desk');
+
+        const raceRes = await fetch(raceUrl.toString(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ t_id: trackId, u_ids: uid }).toString()
+        });
+
+        const raceJson = await raceRes.json();
+        const entry = raceJson.data?.[0];
+
+        if (!entry) {
+            console.log(`[Ghost link] No race found for ${username} (${uid}) on track ${trackId}`);
+            return trackHandler(req, res);
+        }
+
+        const race = entry.race;
+        const user = entry.user;
+        const code = typeof race.code === 'string' ? JSON.parse(race.code) : race.code;
+
+        req.linkedGhost = {
+            ghostCode: code,
+            vehicle: race.vehicle || 'BMX',
+            runTicks: race.run_ticks || 0,
+            runTime: race.run_time || '',
+            username: user.d_name || user.u_name || username
+        };
+
+        console.log(`[Ghost link] Loaded ghost for ${req.linkedGhost.username} on frhd/${trackId}`);
+        return trackHandler(req, res);
+
+    } catch (e) {
+        console.error('[Ghost link] Error:', e.message);
+        return trackHandler(req, res);
+    }
+});
+
 function createTrackHandler(type) {
     return async (req, res) => {
         const trackId = req.params.id;
@@ -2926,14 +2991,50 @@ function createTrackHandler(type) {
                 downvotes: trackData.downvotes,
                 plays: trackData.plays,
                 badges: trackData.badges,
-                permalink: trackData.permalink
+                permalink: trackData.permalink,
+                fullRaceData: req.linkedGhost ? JSON.stringify({
+                    user: {
+                        id: req.linkedGhost.username,
+                        username: req.linkedGhost.username,
+                        displayName: req.linkedGhost.username,
+                        cosmetics: {}
+                    },
+                    ghost: {
+                        code: req.linkedGhost.ghostCode,
+                        vehicle: req.linkedGhost.vehicle,
+                        desktop: true,
+                        run_ticks: req.linkedGhost.runTicks
+                    }
+                }) : null,
+                ghoster: req.linkedGhost?.username || null,
+                ghostTime: req.linkedGhost?.runTime || null,
+                ghostTicks: req.linkedGhost?.runTicks || null,
             });
         }
 
         const renderedHtml = editorTemplate({
             trackId: trackId,
             trackType: type,
-            track: trackData
+            track: {
+                ...trackData,
+                ghoster: req.linkedGhost?.username || null,
+                ghostTime: req.linkedGhost?.runTime || null,
+                ghostTicks: req.linkedGhost?.runTicks || null,
+                fullRaceData: req.linkedGhost ? JSON.stringify({
+                    user: {
+                        id: req.linkedGhost.username,
+                        username: req.linkedGhost.username,
+                        displayName: req.linkedGhost.username,
+                        cosmetics: {}
+                    },
+                    ghost: {
+                        code: req.linkedGhost.ghostCode,
+                        vehicle: req.linkedGhost.vehicle,
+                        desktop: true,
+                        run_ticks: req.linkedGhost.runTicks
+                    }
+                }) : null
+            }
         });
 
         res.status(200).send(renderedHtml);
@@ -3189,7 +3290,16 @@ app.get('/api/live-sessions', (req, res) => {
     const sessions = {};
     for (const [trackId, players] of liveSessions) {
         if (players.size > 0) {
-            sessions[trackId] = players.size;
+            sessions[trackId] = {
+                count: players.size,
+                players: Array.from(players.entries()).map(([playerId, p]) => ({
+                    playerId,
+                    username: p.username,
+                    vehicleType: p.vehicleType || 'BMX',
+                    hatColor: p.hatColor || '#000000',
+                    hatType: p.hatType || 'none'
+                }))
+            };
         }
     }
     res.json(sessions);

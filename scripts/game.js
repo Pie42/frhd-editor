@@ -12122,17 +12122,36 @@
             this.focusOnPlayer();
         }
         focusOnPlayer() {
-          const t = this.scene,
-            e = t.playerManager;
+          const t = this.scene, e = t.playerManager;
           e.getPlayerCount() <= this.focusIndex && (this.focusIndex = 0);
           const s = e.getPlayerByIndex(this.focusIndex);
           if (this.playerFocus !== s) {
             const e = this.playerFocus;
             (this.playerFocus = s),
               t.vehicleTimer.setPlayer(s),
-              e
-                ? s.getDistanceBetweenPlayers(e) > 1500 && this.fastforward()
+              e ? s.getDistanceBetweenPlayers(e) > 1500 && this.fastforward()
                 : this.fastforward();
+
+            var focusedPlayer = s;
+            var ghostUrl = focusedPlayer._ghostUrl || null;
+            var livePlayerId = null;
+
+            if (t.liveRider) {
+              for (var [pid, pd] of t.liveRider.ghostPlayers) {
+                if (pd.ghost === focusedPlayer) { livePlayerId = pid; break; }
+              }
+            }
+
+            var toolsIframe = document.getElementById('toolsIframe');
+            if (toolsIframe && toolsIframe.contentWindow) {
+              toolsIframe.contentWindow.postMessage({
+                action: 'cameraFocusChanged',
+                ghostUrl: ghostUrl,
+                livePlayerId: livePlayerId,
+                isGhost: focusedPlayer.isGhost(),
+                isLive: !!focusedPlayer._liveRider
+              }, '*');
+            }
           }
         }
         focusOnMainPlayer() {
@@ -12337,6 +12356,7 @@
           (this.chunkTicks = []),
           (this.hasHeader = false);
         (this.lastRecordedTick = -1);
+        this.keyFrames = [];
       }
       listen() {
         (document.onkeydown = this.handleButtonDown.bind(this)),
@@ -12595,16 +12615,42 @@
         this.replaying = true;
       }
 
+              seekToTick(tick) {
+          this._lastCPGHTick = undefined;
+          this._pendingSeekTick = tick;
+        }
+
       updateCPGHPlayback() {
         if (!this.playbackFrames) return;
 
-        const currentTick = this.scene.ticks;
+        let currentTick = this.scene.ticks;
 
-        if (currentTick >= this.playbackFrames.length) {
-          return;
+        if (this._pendingSeekTick !== undefined) {
+          currentTick = this._pendingSeekTick;
+          this._pendingSeekTick = undefined;
+          this._lastCPGHTick = currentTick;
+        } else {
+          if (currentTick === this._lastCPGHTick) return;
+
+          if (this._lastCPGHTick !== undefined && currentTick < this._lastCPGHTick) {
+            const tickDelta = this._lastCPGHTick - currentTick;
+            const isRewinding = this.scene.playerManager?.firstPlayer?._gamepad?.isButtonDown("backspace");
+            const isCheckpointRestore = tickDelta > 1;
+
+            if (!isRewinding && !isCheckpointRestore) {
+              this._lastCPGHTick = currentTick;
+              return;
+            }
+          }
+
+          this._lastCPGHTick = currentTick;
         }
 
-        const frameData = this.playbackFrames[currentTick];
+        const isRewinding = this.scene.playerManager?.firstPlayer?._gamepad?.isButtonDown("backspace");
+        const isPlaying = this.scene.state.playing && !this.scene.state.paused;
+        const frameIndex = (isPlaying && !isRewinding) ? currentTick + 1 : currentTick;
+        const frameData = this.playbackFrames[frameIndex];
+        
         if (!frameData || !frameData.masses) return;
 
         if (this.keyPlayback && this.keysToPlay) {
@@ -12625,7 +12671,6 @@
             }
           }
         }
-
         let ghostPlayer = null;
         for (let i = 0; i < this.scene.playerManager._players.length; i++) {
           const player = this.scene.playerManager._players[i];
@@ -12679,7 +12724,10 @@
         vehicle.slow = frameData.slow;
 
         if (vehicle.mini !== undefined) vehicle.mini = frameData.mini;
-        if (vehicle.propeller !== undefined) vehicle.propeller = frameData.propeller;
+        if (vehicle.propeller !== undefined) {
+          vehicle.propeller = frameData.x ? GameSettings.propeller * 0.3 : 0;
+        }
+        ghostPlayer._propeller = frameData.propeller;
         if (vehicle.crouch !== undefined) vehicle.crouch = frameData.crouch;
 
         // Handle vehicle-specific properties
@@ -12781,7 +12829,11 @@
 
         const vehicle = ghostPlayer.getActiveVehicle();
 
-        // Apply mass positions
+        vehicle.dir = frameData.dir;
+        if (vehicle.pedala !== undefined) vehicle.pedala = frameData.pedala || 0;
+        vehicle.alive = frameData.alive;
+        vehicle.slow = frameData.slow;
+
         for (let i = 0; i < frameData.masses.length && i < vehicle.masses.length; i++) {
           const mass = vehicle.masses[i];
           const massData = frameData.masses[i];
@@ -12790,6 +12842,17 @@
           mass.pos.y = massData.y;
           mass.old.x = massData.x;
           mass.old.y = massData.y;
+        }
+
+        for (let i = 0; i < frameData.springs.length && i < vehicle.springs.length; i++) {
+          vehicle.springs[i].leff = frameData.springs[i].leff;
+        }
+
+        if (vehicle.frontWheel && vehicle.rearWheel) {
+          vehicle.drawHeadAngle = -(Math.atan2(
+            vehicle.frontWheel.pos.x - vehicle.rearWheel.pos.x,
+            vehicle.frontWheel.pos.y - vehicle.rearWheel.pos.y
+          ) - Math.PI / 2);
         }
       }
       disableCollisions(vehicle) {
@@ -12894,7 +12957,7 @@
         return i;
       }
       getReplayString() {
-        return JSON.stringify(this.records);
+        return JSON.stringify(this.deriveRecords());
       }
       encodeReplayString(t) {
         const e = { version: this.scene.settings.replayVersion };
@@ -12952,7 +13015,16 @@
       encodeFrame(V) {
         const currentTick = this.scene.ticks;
 
-        if (currentTick === this.lastRecordedTick) return;
+        if (currentTick === this.lastRecordedTick) {
+          if (this.recording && this.keyFrames.length > 0) {
+            const keyState = {};
+            for (const key of this.keysToRecord) {
+              keyState[key] = !!this.tickDownButtons[key];
+            }
+            this.keyFrames[this.keyFrames.length - 1] = keyState;
+          }
+          return;
+        }
         if (currentTick > 0 && (this.scene.state.paused || !this.scene.state.playing)) return;
 
         // if we rewind, remove all frames after current tick
@@ -12971,6 +13043,14 @@
 
             this.chunks.splice(actualCutoff);
             this.chunkTicks.splice(cutoffIndex);
+          }
+
+          this.keyFrames.splice(cutoffIndex);
+
+          if (this.recording) {
+            for (const key in this.records) {
+              this.records[key] = this.records[key].filter(t => t < currentTick);
+            }
           }
         }
 
@@ -13047,8 +13127,39 @@
           offset += 6;
         }
 
+        const keyState = {};
+        for (const key of this.keysToRecord) {
+          keyState[key] = !!this.tickDownButtons[key];
+        }
+        this.keyFrames.push(keyState);
+
         this.chunks.push(frameBuffer);
         this.chunkTicks.push(currentTick);
+      }
+      deriveRecords() {
+        const records = {};
+        for (const key of this.keysToRecord) {
+          records[key + '_down'] = [];
+          records[key + '_up'] = [];
+        }
+
+        let prevState = {};
+
+        for (let i = 0; i < this.keyFrames.length; i++) {
+          const tick = this.chunkTicks[i];
+          const frame = this.keyFrames[i];
+
+          for (const key of this.keysToRecord) {
+            const wasDown = !!prevState[key];
+            const isDown = !!frame[key];
+            if (!wasDown && isDown) records[key + '_down'].push(tick);
+            else if (wasDown && !isDown) records[key + '_up'].push(tick);
+          }
+
+          prevState = frame;
+        }
+
+        return records;
       }
       encodeMass(M, D, o) {
         D.setFloat64(o, M.pos.x);
@@ -13105,7 +13216,35 @@
         a.click();
         URL.revokeObjectURL(u);
 
-        console.log('Ghost exported as:', safeFileName + '.cpgh');
+        let jsonBlob = new Blob([JSON.stringify(this.records)], { type: 'application/json' });
+        let jsonUrl = URL.createObjectURL(jsonBlob);
+        let jsonLink = document.createElement('a');
+        jsonLink.href = jsonUrl;
+        jsonLink.download = safeFileName + '.json';
+        jsonLink.click();
+        URL.revokeObjectURL(jsonUrl);
+
+        console.log('Ghost exported as:', safeFileName + '.cpgh', '+', safeFileName + '.json');
+      }
+      getUsedMods() {
+        const mods = new Set();
+        const startIndex = this.hasHeader ? 1 : 0;
+
+        for (let i = startIndex; i < this.chunks.length; i++) {
+          const chunk = this.chunks[i];
+          if (!chunk || chunk.byteLength < 4) continue;
+          const frame = new DataView(chunk);
+          const flags = frame.getUint16(2);
+
+          if (flags & 16) mods.add('mini');
+          if (flags & 32) mods.add('slow');
+          if ((flags & 64) && (flags & 256)) mods.add('propeller');
+          if ((flags & 128) && (flags & 256)) mods.add('crouch');
+          if (flags & 512) mods.add('invincibility');
+          if (flags & 1024) mods.add('noClip');
+        }
+
+        return Array.from(mods);
       }
         clone() {
           const t = new _(this.scene),
@@ -14029,9 +14168,6 @@
               r = t.isButtonDown("z"),
               o = e ? 1 : 0,
               a = this.rearWheel;
-
-              if (this.scene.game.mod.getVar("slowmo")) {
-              this.slow = !x}
   
               if (this.scene.game.mod.getVar("propeller")) {
                 let angle = this.frontWheel.pos.sub(this.rearWheel.pos);
@@ -17037,8 +17173,10 @@
                       ),
                       (t = this._baseVehicle))),
                   this._effectTicks > 0 &&
-                    (this._effectTicks--, this._effect.update()),
-                  t.update();
+                    (this._effectTicks--, this._effect.update());
+                  if (!(this._ghost && this._gamepad.playbackFrames)) {
+            t.update();
+        };
                 for (let t = 0; t < this.deadVehicles.length; t++)
                   this.deadVehicles[t] && this.deadVehicles[t].update();
                 if (this._addCheckpoint && !this._game.mod.getVar("rewind")) {
@@ -17076,27 +17214,27 @@
                 r = i.pixelRatio,
                 o = i.canvas.getContext("2d"),
                 a = this._opacity,
-                h = this.getActiveVehicle().focalPoint.pos.toScreen(t);
+                v = this.getActiveVehicle(),
+                centerPos = v.head && v.backMass
+            ? v.head.pos.add(v.backMass.pos).factor(0.5).toScreen(t)
+            : v.focalPoint.pos.toScreen(t);
               (o.globalAlpha = a),
                 o.beginPath(),
                 (o.fillStyle = e),
-                o.moveTo(h.x, h.y - 40 * n),
-                o.lineTo(h.x - 5 * n, h.y - 50 * n),
-                o.lineTo(h.x + 5 * n, h.y - 50 * n),
-                o.lineTo(h.x, h.y - 40 * n),
+                o.moveTo(centerPos.x, centerPos.y - 40 * n),
+                o.lineTo(centerPos.x - 5 * n, centerPos.y - 50 * n),
+                o.lineTo(centerPos.x + 5 * n, centerPos.y - 50 * n),
+                o.lineTo(centerPos.x, centerPos.y - 40 * n),
                 o.fill();
               const l = 5 * r * Yt(n, 1);
               (o.font = l + "pt helsinki"),
                 (o.textAlign = "center"),
                 (o.fillStyle = e),
-                o.fillText(s, h.x, h.y - 60 * n),
+                o.fillText(s, centerPos.x, centerPos.y - 60 * n),
                 (o.globalAlpha = 1);
             }
             draw() {
               this.updateOpacity();
-              if (this._ghost && this._gamepad.playbackFrames) {
-                this._gamepad.applyCPGHPositions();
-              }
               if (this._ghost && this._liveRider && this._lastLiveFrame) {
                 const v = this.getActiveVehicle();
                 for (let i = 0; i < this._lastLiveFrame.masses.length && i < v.masses.length; i++) {
@@ -17211,6 +17349,7 @@
                     (this._tempVehicleType = s._tempVehicleType),
                     (this._tempVehicleTicks = s._tempVehicleTicks),
                     t.updateCameraFocalPoint();
+                    if (t.updateDrawHeadAngle) t.updateDrawHeadAngle();
                 } else {
                   const t = this._baseVehicle,
                     e = JSON.parse(s._baseVehicle);
@@ -17236,6 +17375,7 @@
                     (this._tempVehicleTicks = 0),
                     (this._tempVehicleType = !1),
                     i.updateCameraFocalPoint();
+                    if (i.updateDrawHeadAngle) i.updateDrawHeadAngle();
                 }
                 if (
                   ((this._powerupsConsumed = JSON.parse(s._powerupsConsumed)),
@@ -17244,6 +17384,13 @@
                 ) {
                   if (this._game.mod.getVar("oldTimer")) { e.ticks = s._sceneTicks };
                   if (!this._scene.playerManager.firstPlayer.complete && this._game.mod.getVar("oldTimer")) { e.ticks = e.ticks + 1 }
+                  const seekTick = e.ticks;
+                  for (const player of this._scene.playerManager._players) {
+                    if (player.isGhost() && player._gamepad.playbackFrames) {
+                      player._gamepad.seekToTick(seekTick);
+                      player._gamepad.updateCPGHPlayback();
+                    }
+                  }
                   const t = e.settings;
                   var keyCodeToChar = { 8: "Backspace", 9: "Tab", 13: "Enter", 16: "Shift", 17: "Ctrl", 18: "Alt", 19: "Pause/Break", 20: "Caps Lock", 27: "Esc", 32: "Space", 33: "Page Up", 34: "Page Down", 35: "End", 36: "Home", 37: "Left", 38: "Up", 39: "Right", 40: "Down", 45: "Insert", 46: "Delete", 48: "0", 49: "1", 50: "2", 51: "3", 52: "4", 53: "5", 54: "6", 55: "7", 56: "8", 57: "9", 65: "A", 66: "B", 67: "C", 68: "D", 69: "E", 70: "F", 71: "G", 72: "H", 73: "I", 74: "J", 75: "K", 76: "L", 77: "M", 78: "N", 79: "O", 80: "P", 81: "Q", 82: "R", 83: "S", 84: "T", 85: "U", 86: "V", 87: "W", 88: "X", 89: "Y", 90: "Z", 91: "Windows", 93: "Right Click", 96: "Numpad 0", 97: "Numpad 1", 98: "Numpad 2", 99: "Numpad 3", 100: "Numpad 4", 101: "Numpad 5", 102: "Numpad 6", 103: "Numpad 7", 104: "Numpad 8", 105: "Numpad 9", 106: "Numpad Multiply", 107: "Numpad Plus", 109: "Numpad Minus", 110: "Numpad Decimal", 111: "Numpad Divide", 112: "F1", 113: "F2", 114: "F3", 115: "F4", 116: "F5", 117: "F6", 118: "F7", 119: "F8", 120: "F9", 121: "F10", 122: "F11", 123: "F12", 144: "Num Lock", 145: "Scroll Lock", 182: "My Computer", 183: "My Calculator", 186: "Semi-colon", 187: "Equal Sign", 188: "Comma", 189: "Minus", 190: "Period", 191: "Slash", 192: "Backquote", 219: "Open Bracket", 220: "Backslash", 221: "Close Bracket", 222: "'" };
                   let y = keyCodeToChar[GameSettings.editorHotkeys.backspace];
@@ -17396,6 +17543,19 @@
         }
         getPlayerCount() {
           return this._players.length;
+        }
+        removePlayerByGhostUrl(ghostUrl) {
+          const idx = this._players.findIndex(p => p._ghostUrl === ghostUrl && p.isGhost());
+          if (idx > 0) {
+            const player = this._players[idx];
+            player.getActiveVehicle().stopSounds();
+            delete this._playerLookup[player.id];
+            this._players.splice(idx, 1);
+            if (this.scene.camera.focusIndex >= this._players.length) {
+              this.scene.camera.focusIndex = 0;
+              this.scene.camera.focusOnPlayer();
+            }
+          }
         }
         reset() {
           for (const t of this._players) {
@@ -26551,7 +26711,7 @@
             (this.ticks = 0),
             this.playerManager.reset(),
             this.playerManager.getPlayerCount() > 0 &&
-              (this.camera.focusIndex = 1),
+              (this.camera.focusIndex = this.camera.focusIndex > 0 ? this.camera.focusIndex : 0),
             this.camera.focusOnPlayer(),
             this.camera.fastforward(),
             this.score.update();
@@ -27247,6 +27407,20 @@
           const timeFormatted = this.formatGhostTime(this.completedTicks, drawFPS);
           const vehicleType = this.playerManager.firstPlayer._baseVehicleType || 'BMX';
 
+          const mod = this.game.mod;
+          const hatColorRgb = mod ? mod.getVar('hatColor') : null;
+          const hatColor = hatColorRgb
+            ? '#' + hatColorRgb.map(c => ('0' + c.toString(16)).slice(-2)).join('')
+            : '#000000';
+          const crHead = mod ? mod.getVar('crHead') : false;
+          const blackHat = mod ? mod.getVar('blackHat') : false;
+          const hatType = blackHat ? 'BHR' : (crHead ? 'CR' : 'none');
+
+          const customColors = mod ? mod.getVar('customColors') : false;
+          const vehicleColorRgb = (customColors && mod) ? mod.getVar('vehicleColor') : null;
+          const riderColorRgb = (customColors && mod) ? mod.getVar('riderColor') : null;
+          const toHex = (rgb) => rgb ? '#' + rgb.map(c => ('0' + c.toString(16)).slice(-2)).join('') : null;
+
           gamepad.createHeader();
 
           const ghostBlob = new Blob(gamepad.chunks, { type: 'application/octet-stream' });
@@ -27260,32 +27434,69 @@
             reader.readAsDataURL(ghostBlob);
           });
 
-          try {
+          const payload = {
+            trackType: GameSettings.urlType,
+            trackId: GameSettings.id,
+            timeTicks: this.completedTicks,
+            timeFormatted: timeFormatted,
+            vehicle: vehicleType,
+            ghostData: ghostBase64,
+            keyData: gamepad.deriveRecords(),
+            guestUsername: guestUsername,
+            hatColor: hatColor,
+            hatType: hatType,
+            vehicleColor: toHex(vehicleColorRgb),
+            riderColor: toHex(riderColorRgb),
+            crBmx: mod ? mod.getVar('crBmx') || false : false,
+            crMtb: mod ? mod.getVar('crMtb') || false : false,
+            modsUsed: gamepad.getUsedMods()
+          };
+
+          const attemptUpload = async () => {
             const response = await fetch('/api/ghosts/upload', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                trackType: GameSettings.type,
-                trackId: GameSettings.id,
-                timeTicks: this.completedTicks,
-                timeFormatted: timeFormatted,
-                vehicle: vehicleType,
-                ghostData: ghostBase64,
-                keyData: gamepad.records,
-                guestUsername: guestUsername
-              })
+              body: JSON.stringify(payload)
             });
+            return await response.json();
+          };
 
-            const result = await response.json();
-
-            if (result.success) {
-              const displayName = result.username || guestUsername || 'Guest';
-              console.log(`[Ghost] Uploaded${result.isGuest ? ` as "${displayName}"` : ''}: ${timeFormatted}`);
-            } else {
-              console.log(`[Ghost] ${result.message}`);
+          const notifyIframe = (action) => {
+            var toolsIframe = document.getElementById('toolsIframe');
+            if (toolsIframe && toolsIframe.contentWindow) {
+              toolsIframe.contentWindow.postMessage({ action }, '*');
             }
-          } catch (error) {
-            console.error('[Ghost] Upload failed:', error);
+          };
+
+          let uploaded = false;
+
+          while (!uploaded) {
+            try {
+              const result = await attemptUpload();
+
+              if (result.success) {
+                uploaded = true;
+                const displayName = result.username || guestUsername || 'Guest';
+                console.log(`[Ghost] Uploaded${result.isGuest ? ` as "${displayName}"` : ''}: ${timeFormatted}`);
+
+                if (this.liveRider) {
+                  this.liveRider.notifyGhostUploaded();
+                }
+                notifyIframe('ghostUploaded');
+              } else {
+                console.log(`[Ghost] ${result.message}`);
+                if (!confirm(`Ghost upload failed: ${result.message}\nWould you like to try again?`)) {
+                  notifyIframe('ghostUploadFailed');
+                  break;
+                }
+              }
+            } catch (error) {
+              console.error('[Ghost] Upload failed:', error);
+              if (!confirm('Ghost upload failed due to a network error.\nWould you like to try again?')) {
+                notifyIframe('ghostUploadFailed');
+                break;
+              }
+            }
           }
         }
 
@@ -27420,8 +27631,11 @@
                   oldScene.liveRider.disconnect();
                 }
 
+              GameManager.game.currentScene.playerManager.clear();
+
               var toolsIframe = document.getElementById('toolsIframe');
               if (toolsIframe && toolsIframe.contentWindow) {
+                toolsIframe.contentWindow.postMessage({ action: 'clearGhosts' }, '*');
                 toolsIframe.contentWindow.postMessage({
                   action: 'trackChanged',
                   type: null,
@@ -27590,6 +27804,14 @@
 
             const player = playerManager.createPlayer(this, mappedUser);
 
+            player._hatColor = raceData.hatColor || null;
+            player._hatType = raceData.hatType || 'none';
+            player._vehicleColor = raceData.vehicleColor || null;
+            player._riderColor = raceData.riderColor || null;
+            player._crBmx = raceData.crBmx || false;
+            player._crMtb = raceData.crMtb || false;
+            player._ghostUrl = raceData.ghostUrl || raceData.url || null;
+
             this.settings.startVehicle = originalStartVehicle;
             if (this.settings.track) {
               this.settings.track.vehicle = originalTrackVehicle;
@@ -27609,6 +27831,31 @@
 
             console.log("CPGH ghost added to race with vehicle:", vehicleType);
             return;
+          }
+
+          if (raceData && !raceData.cpghData && !raceData.code) {
+            const keys = Object.keys(raceData)
+              .filter(k => k.endsWith('_down') || k.endsWith('_up'))
+              .map(k => k.replace(/_down$|_up$/, ''))
+              .filter((v, i, a) => a.indexOf(v) === i);
+
+            if (keys.length > 0) {
+              const mappedUser = {
+                "u_id": 999,
+                "u_name": raceData.username || "Ghost",
+                "d_name": raceData.username || "Ghost",
+                "cosmetics": {}
+              };
+
+              const player = playerManager.createPlayer(this, mappedUser);
+              player.setBaseVehicle(raceData.vehicle || "MTB");
+              player.setAsGhost();
+              player.getGamepad().loadPlayback(raceData, keys);
+              playerManager.addPlayer(player);
+
+              console.log("[Ghost] Raw key format ghost added");
+              return;
+            }
           }
 
           if (raceData && raceData.code) {
@@ -32200,7 +32447,20 @@ class LiveRiderManager {
                 crMtb: p.crMtb || false,
                 propeller: p.propeller || false
               });
+              this.createGhost(p.playerId, p.username, p.hatColor, p.hatType);
               setTimeout(() => this.sendAppearance(), 500);
+
+              var toolsIframe = document.getElementById('toolsIframe');
+              if (toolsIframe && toolsIframe.contentWindow) {
+                toolsIframe.contentWindow.postMessage({
+                  action: 'livePlayerJoined',
+                  playerId: p.playerId,
+                  username: p.username,
+                  vehicleType: p.vehicleType || 'BMX',
+                  hatColor: p.hatColor,
+                  hatType: p.hatType
+                }, '*');
+              }
             }
           });
         } else if (msg.type === 'player_joined' && msg.playerId !== this.playerId) {
@@ -32215,8 +32475,33 @@ class LiveRiderManager {
             crMtb: msg.crMtb || false,
             propeller: msg.propeller || false
           });
+          this.createGhost(msg.playerId, msg.username, msg.hatColor, msg.hatType);
+
+          var toolsIframe = document.getElementById('toolsIframe');
+          if (toolsIframe && toolsIframe.contentWindow) {
+            toolsIframe.contentWindow.postMessage({
+              action: 'livePlayerJoined',
+              playerId: msg.playerId,
+              username: msg.username,
+              vehicleType: msg.vehicleType || 'BMX',
+              hatColor: msg.hatColor,
+              hatType: msg.hatType
+            }, '*');
+          }
         } else if (msg.type === 'player_left') {
           this.removeGhost(msg.playerId);
+          var toolsIframe = document.getElementById('toolsIframe');
+          if (toolsIframe && toolsIframe.contentWindow) {
+            toolsIframe.contentWindow.postMessage({
+              action: 'livePlayerLeft',
+              playerId: msg.playerId
+            }, '*');
+          }
+        } else if (msg.type === 'ghost-uploaded' && msg.playerId !== this.playerId) {
+          var toolsIframe = document.getElementById('toolsIframe');
+          if (toolsIframe && toolsIframe.contentWindow) {
+            toolsIframe.contentWindow.postMessage({ action: 'ghostLeaderboardUpdate' }, '*');
+          }
         } else if (msg.type === 'appearance' && msg.playerId !== this.playerId) {
           const playerData = this.ghostPlayers.get(msg.playerId);
           if (playerData) {
@@ -32259,6 +32544,11 @@ class LiveRiderManager {
     }
     this.ghostPlayers.clear();
 
+    var toolsIframe = document.getElementById('toolsIframe');
+    if (toolsIframe && toolsIframe.contentWindow) {
+      toolsIframe.contentWindow.postMessage({ action: 'livePlayersCleared' }, '*');
+    }
+
     this.playerId = null;
     this.connected = false;
 
@@ -32275,9 +32565,7 @@ class LiveRiderManager {
     }
 
     const playerData = this.ghostPlayers.get(playerId);
-    if (playerData && !playerData.ghost) {
-      this.createGhost(playerId, playerData.username, playerData.hatColor, playerData.hatType);
-    }
+    if (!playerData || !playerData.ghost) return
 
     this.applyFrame(playerId, buffer.slice(17));
   }
@@ -32359,11 +32647,20 @@ class LiveRiderManager {
     }
 
     if (ghost._baseVehicleType !== targetVehicleType && Vehicles?.[targetVehicleType]) {
-      ghost._baseVehicle?.stopSounds?.();
-      ghost._baseVehicleType = targetVehicleType;
-      ghost._baseVehicle = new Vehicles[targetVehicleType](ghost, { x, y }, dir, { x: 0, y: 0 });
-      this.disableCollisions(ghost._baseVehicle);
+    ghost._baseVehicle?.stopSounds?.();
+    ghost._baseVehicleType = targetVehicleType;
+    ghost._baseVehicle = new Vehicles[targetVehicleType](ghost, { x, y }, dir, { x: 0, y: 0 });
+    this.disableCollisions(ghost._baseVehicle);
+
+    var toolsIframe = document.getElementById('toolsIframe');
+    if (toolsIframe && toolsIframe.contentWindow) {
+        toolsIframe.contentWindow.postMessage({
+            action: 'livePlayerVehicleChanged',
+            playerId: playerId,
+            vehicleType: targetVehicleType
+        }, '*');
     }
+}
 
     const v = ghost.getActiveVehicle();
     v.dir = dir;
@@ -32541,6 +32838,11 @@ class LiveRiderManager {
     const idx = players.indexOf(ghost);
     if (idx > -1) players.splice(idx, 1);
     this.ghostPlayers.delete(playerId);
+  }
+
+  notifyGhostUploaded() {
+    if (!this.connected || this.ws.readyState !== WebSocket.OPEN) return;
+    this.ws.send(JSON.stringify({ type: 'ghost-uploaded' }));
   }
 
   disconnect() {
