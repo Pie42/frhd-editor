@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 
 app.get('/login', (req, res) => {
     const redirect = req.query.redirect || 'https://freerider.app';
-    res.redirect(`${NODEBB_URL}/login`);
+    res.redirect(`${NODEBB_URL}/login?redirect=${encodeURIComponent(redirect)}`);
 });
 
 app.get('/api/auth/me', (req, res) => {

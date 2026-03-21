@@ -149,6 +149,19 @@
             <div id="np-live-list" style="font-size: 11px;"></div>
         </div>
 
+        <div id="np-comments-section"
+            style="display: none; margin-top: 10px; padding: 10px 0px; border-top: 1px solid #ddd;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                <strong style="font-size: 11px; text-transform: uppercase; color: #666;">Discussion</strong>
+            </div>
+            <div id="np-comments-container">
+                <div id="nodebb"></div>
+                <a id="nodebb-comments"></a>
+            </div>
+        </div>
+        <script id="nbb-title" type="text/markdown"></script>
+        <script id="nbb-markdown" type="text/markdown"></script>
+
         <div style="display: flex; gap: 5px; margin-bottom: 10px; margin-top: 10px;">
             <!--<button id="np-set-start" class="navi-toggle" style="flex: 1; padding: 6px; font-size: 11px;">
                 Start Position
@@ -256,6 +269,45 @@
             .catch(function (e) {
                 console.error('Failed to load track:', e);
             });
+    }
+
+    function loadTrackComments(track) {
+        var section = document.getElementById('np-comments-section');
+        if (!track || !track.name) {
+            section.style.display = 'none';
+            return;
+        }
+        section.style.display = 'block';
+
+        var oldNodebb = document.getElementById('nodebb');
+        if (oldNodebb) oldNodebb.remove();
+
+        var oldStylesheet = document.querySelector('link[href*="blog-comments"]');
+        if (oldStylesheet) oldStylesheet.remove();
+
+        var oldScript = document.querySelector('script[src*="blog-comments"]');
+        if (oldScript) oldScript.remove();
+
+        var container = document.getElementById('np-comments-container');
+        container.innerHTML = '<a id="nodebb-comments"></a>';
+
+        window.nbb = {
+            url: '//forum.freerider.app',
+            cid: 11,
+            articleID: 'track-' + (track.canonical || track.id),
+            tags: [track.type || 'track']
+        };
+
+        document.getElementById('nbb-title').textContent = track.name;
+        document.getElementById('nbb-markdown').textContent =
+            '**' + track.name + '** by ' + (track.authors || 'Unknown') +
+            '\n\n[Play this track](https://freerider.app/' +
+            (track.type || 't') + '/' + (track.canonical || track.id) + ')';
+
+        var script = document.createElement('script');
+        script.src = nbb.url + '/plugins/nodebb-plugin-blog-comments/lib/ghost.js';
+        script.async = true;
+        document.body.appendChild(script);
     }
 
     function setPlaylistContext(playlist, currentTrackId) {
@@ -590,6 +642,7 @@
         var ghostType = track.type || 'db';
         var ghostId = track.canonical || track.id;
         fetchTrackGhosts(ghostType, ghostId);
+        loadTrackComments(track);
     }
 
     function getBadgeText(type) {
@@ -1704,9 +1757,9 @@
     })();
 
     if (window.parent !== window) {
-    window.parent.postMessage({ action: 'requestLivePlayers' }, '*');
-    setTimeout(function () {
         window.parent.postMessage({ action: 'requestLivePlayers' }, '*');
-    }, 2000);
-}
+        setTimeout(function () {
+            window.parent.postMessage({ action: 'requestLivePlayers' }, '*');
+        }, 2000);
+    }
 </script>
