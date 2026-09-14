@@ -27353,13 +27353,13 @@
           this.completedTicks = this.playerManager.firstPlayer._scene.ticks;
           this.logTrackComplete();
 
-          if (!this.ghostUploadPrompted) {
+          /*if (!this.ghostUploadPrompted) {
             const gamepad = this.playerManager.firstPlayer._gamepad;
             if (gamepad && gamepad.recording && GameSettings.type && GameSettings.id) {
               this.ghostUploadPrompted = true;
               this.promptGhostUpload(gamepad);
             }
-          }
+          }*/
         }
 
         async promptGhostUpload(gamepad) {

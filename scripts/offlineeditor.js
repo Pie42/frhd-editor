@@ -3355,9 +3355,9 @@
                 e = GameSettings.initialDialog;
               }
 
-              if (!e && !this.hasShownPromo && !playMode && !hasInitialDialog) {
+              /*if (!e && !this.hasShownPromo && !playMode && !hasInitialDialog) {
                 e = "offline_editor";
-              }
+              }*/
 
               var t = this.props.data.dialogOptions,
                 h = {},

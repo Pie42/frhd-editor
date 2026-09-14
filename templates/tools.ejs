@@ -1564,7 +1564,7 @@ body.dialog-mode #tab-track {
             <button class="bottom-bar-button active" data-panel="toolbox">Draw</button>
             <button class="bottom-bar-button" data-panel="play">Play</button>
             <button class="bottom-bar-button" data-panel="db">DB</button>
-            <button class="bottom-bar-button" data-panel="forum">Talk</button>
+            <!-- <button class="bottom-bar-button" data-panel="forum">Talk</button> -->
         </div>
     </div>
 
@@ -3469,6 +3469,12 @@ body.dialog-mode #tab-track {
                     if (swatch && swatch.classList.contains('layer-color-swatch')) {
                         swatch.style.background = hex;
                     }
+                }
+
+                // sync now-playing bike mod checkbox
+                var npEl = document.getElementById('np-mod-' + key);
+                if (npEl && npEl.type === 'checkbox') {
+                    npEl.checked = !!modVars[key];
                 }
             }
 

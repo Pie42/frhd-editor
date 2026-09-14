@@ -6,22 +6,26 @@
 
 <div id="now-playing-wrapper">
     <div id="now-playing-container" style="padding: 10px;">
-        <div id="now-playing-empty" style="padding: 5px; color: #888; text-align: left;">
-            <div style="margin-bottom: 10px;">
-                <button id="btn-track-import" class="tool-button">+ Import Track</button>
-            </div>
+        <div style="display: flex; gap: 5px;">
+            <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track" disabled
+                style="opacity: 0.5;"></button>
+            <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
+            <button id="np-next" class="navi-toggle navi-icon next" title="Next Track" disabled
+                style="opacity: 0.5;"></button>
+            <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 0; width: auto;" title="Copy Link">
+                <span id="copy-button" class="copy-text" style="margin: 8px; font-size: 11px; text-wrap: nowrap;">Copy
+                    Link</span>
+            </button>
+            <button id="np-open" class="navi-toggle navi-icon open" style="flex: 0; width: auto;" title="Open Database">
+                <span id="open-button" class="open-text"
+                    style="margin: 8px; font-size: 11px; text-wrap: nowrap;">DB</span>
+            </button>
+        </div>
+        <div id="now-playing-empty" style="color: #888; text-align: left;">
         </div>
 
         <div id="now-playing-content" style="display: none; margin-bottom: 10px;">
             <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                <button id="np-prev" class="navi-toggle navi-icon prev" title="Previous Track"></button>
-                <button id="np-random" class="navi-toggle navi-icon shuffle" title="Random Track"></button>
-                <button id="np-next" class="navi-toggle navi-icon next" title="Next Track"></button>
-                <button id="np-copy" class="navi-toggle navi-icon copy" style="flex: 0; width: auto;" title="Copy Link">
-                    <span id="copy-button" class="copy-text"
-                        style="margin: 8px; font-size: 11px; text-wrap: nowrap;">Copy
-                        Link</span>
-                </button>
             </div>
             <div class="track-item" style="margin-bottom: 10px;">
                 <div class="thumbnail">
@@ -31,12 +35,13 @@
                 </div>
             </div>
 
-            <div class="np-header">
-                <div class="np-header-text">
+            <div class="np-header" style="position: relative;">
+                <div class="np-header-text" style="padding-right: 40px;">
                     <div id="np-name" style="font-weight: bold; font-size: 14px;"></div>
                     <div id="np-author-line" style="font-size: 12px; color: #666;"></div>
                 </div>
-                <div id="np-author-avatars" class="np-author-avatars"></div>
+                <div id="np-author-avatars" class="np-author-avatars" style="position: absolute; right: 0; top: 0;">
+                </div>
             </div>
 
             <blockquote id="np-description"
@@ -173,6 +178,17 @@
                 Mobile Mode
             </button>
         </div>
+
+        <div id="np-bike-mods" style="margin-bottom: 10px;">
+            <details class="mod-folder">
+                <summary class="mod-folder-title">Bike/Vehicle Mods</summary>
+                <div class="mod-folder-inner">
+                    <div class="mod-folder-settings" id="np-bike-mod-settings"></div>
+                    <div class="mod-folder-description" id="np-bike-mod-desc">Mods that alter the bikes, vehicles, and
+                        gameplay.</div>
+                </div>
+            </details>
+        </div>
     </div>
 </div>
 
@@ -262,7 +278,7 @@
                         playlistContext.currentIndex = newIndex;
                     }
                     updatePlaylistUI();
-                } else if (!filterContext) {
+                } else {
                     checkAdjacentTracks();
                 }
             })
@@ -271,13 +287,14 @@
             });
     }
 
+    /*
     function loadTrackComments(track) {
         var section = document.getElementById('np-comments-section');
         if (!track || !track.name) {
             section.style.display = 'none';
             return;
         }
-        section.style.display = 'block';
+        section.style.display = 'none';
 
         var oldNodebb = document.getElementById('nodebb');
         if (oldNodebb) oldNodebb.remove();
@@ -309,6 +326,7 @@
         script.async = true;
         document.body.appendChild(script);
     }
+    */
 
     function setPlaylistContext(playlist, currentTrackId) {
         if (!playlist || !playlist.tracks || playlist.tracks.length === 0) {
@@ -635,14 +653,14 @@
         setNpRowLink('cr-id', track.crId, 'cr');
         setNpRowLink('tm-id', track.tmId, 'tm');
 
-        if (!playlistContext && !filterContext && track) {
+        if (!playlistContext && track) {
             checkAdjacentTracks();
         }
 
         var ghostType = track.type || 'db';
         var ghostId = track.canonical || track.id;
         fetchTrackGhosts(ghostType, ghostId);
-        loadTrackComments(track);
+        //loadTrackComments(track);
     }
 
     function getBadgeText(type) {
@@ -792,8 +810,8 @@
         if (!currentTrackData) {
             document.getElementById('np-prev').disabled = true;
             document.getElementById('np-next').disabled = true;
-            document.getElementById('np-prev').style.borderRight = '8px solid #aaa';
-            document.getElementById('np-next').style.borderLeft = '8px solid #aaa';
+            document.getElementById('np-prev').style.opacity = '0.5';
+            document.getElementById('np-next').style.opacity = '0.5';
             return;
         }
 
@@ -869,7 +887,7 @@
 
     function fetchTrackGhosts(type, id) {
         var section = document.getElementById('np-ghosts-section');
-        section.style.display = 'block';
+        section.style.display = 'none';
 
         var previousSourceFilter = ghostSourceFilter || 'app';
         var previousVehicleFilter = ghostVehicleFilter || 'BMX';
@@ -1244,7 +1262,7 @@
             return;
         }
 
-        section.style.display = 'block';
+        section.style.display = 'none';
         list.innerHTML = '';
 
         livePlayers.forEach(function (p, playerId) {
@@ -1323,7 +1341,7 @@
 
                 sendLoadTrack(type, id);
             }
-        } else if (!filterContext && currentTrackData) {
+        } else if (currentTrackData) {
             fetchAdjacentTrack('prev');
         }
     });
@@ -1344,7 +1362,7 @@
 
                 sendLoadTrack(type, id);
             }
-        } else if (!filterContext && currentTrackData) {
+        } else if (currentTrackData) {
             fetchAdjacentTrack('next');
         }
     });
@@ -1443,6 +1461,96 @@
         if (modCb) modCb.checked = active;
     });
 
+    (function () {
+        var bikeModKeys = [
+            'slowmo', 'rewind', 'oldTimer', 'bikeData',
+            'hitboxes', 'inputDisplay', 'pixelSnapEverything', 'mario', 'mini', 'propeller', 'crouch',
+            'frontBrake', 'invincibility', 'invisibleRider', 'noClip'
+        ];
+
+        var bikeModTitles = {
+            slowmo: 'Slow-Mode', rewind: 'Rewind', oldTimer: 'Old-Timer',
+            bikeData: 'Bike/Vehicle Data', hitboxes: 'Visible Hitboxes',
+            inputDisplay: 'Input Display', pixelSnapEverything: 'Pixel Snap Rider',
+            mario: 'Mario Mode', mini: 'Mini-Bike', propeller: 'Propeller',
+            crouch: 'Crouch', frontBrake: 'Old-School Front Brake',
+            invincibility: 'Invincibility', invisibleRider: 'Invisible Rider',
+            noClip: 'No Clip'
+        };
+
+        var bikeModDescs = {
+            slowmo: 'Toggles slow-motion mode. The rider and timer are constantly slowed.',
+            rewind: 'Position is saved every tick. Backspace rewinds. Shift+Backspace restarts.',
+            oldTimer: 'When restarting from a checkpoint, the timer resets to when the checkpoint was collected.',
+            bikeData: 'Shows metadata about the rider, including head angle and speed.',
+            hitboxes: 'Shows the hitboxes (masses) and springs for bikes and vehicles.',
+            inputDisplay: 'Shows the keys that are pressed.',
+            pixelSnapEverything: 'Snaps the rider\'s position to pixels. Trades smoothness for accuracy.',
+            mario: 'Enables horizontal scrolling, replaces goals with Mario stars, and gives Pete a colored cap.',
+            mini: 'Shrinks the frame and wheels of the bike.',
+            propeller: 'Adds a propeller to the bike. Press \'X\' to fly.',
+            crouch: 'Press \'X\' to crouch.',
+            frontBrake: 'Front brake is engaged when pressing the down arrow key.',
+            invincibility: 'Makes the rider invincible to line collisions and bombs.',
+            invisibleRider: 'Makes the rider invisible.',
+            noClip: 'Collisions with the head mass are disabled.'
+        };
+
+        var container = document.getElementById('np-bike-mod-settings');
+        var descEl = document.getElementById('np-bike-mod-desc');
+
+        bikeModKeys.forEach(function (key) {
+            var row = document.createElement('div');
+            row.className = 'mod-setting-row';
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'np-mod-' + key;
+
+            var label = document.createElement('label');
+            label.style.cursor = 'pointer';
+            label.textContent = bikeModTitles[key] || key;
+
+            checkbox.addEventListener('change', function () {
+                send('mod-' + key, this.checked);
+                var toolsCb = document.getElementById('mod-' + key);
+                if (toolsCb) toolsCb.checked = this.checked;
+            });
+
+            row.addEventListener('click', function (e) {
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    send('mod-' + key, checkbox.checked);
+                    var toolsCb = document.getElementById('mod-' + key);
+                    if (toolsCb) toolsCb.checked = checkbox.checked;
+                }
+            });
+
+            row.addEventListener('mouseenter', function () {
+                descEl.textContent = bikeModDescs[key] || '';
+                descEl.classList.add('active');
+            });
+            row.addEventListener('mouseleave', function () {
+                descEl.textContent = 'Mods that alter the bikes, vehicles, and gameplay.';
+                descEl.classList.remove('active');
+            });
+
+            row.appendChild(checkbox);
+            row.appendChild(label);
+            container.appendChild(row);
+        });
+
+        window.addEventListener('message', function (e) {
+            if (e.data && e.data.action === 'settings' && e.data.settings && e.data.settings.modVars) {
+                var modVars = e.data.settings.modVars;
+                bikeModKeys.forEach(function (key) {
+                    var cb = document.getElementById('np-mod-' + key);
+                    if (cb) cb.checked = !!modVars[key];
+                });
+            }
+        });
+    })();
+
     document.getElementById('np-author-line').addEventListener('click', function (e) {
         var authorLink = e.target.closest('.np-author-link');
         if (authorLink) {
@@ -1512,8 +1620,8 @@
         }
     });
 
-    document.getElementById('btn-track-import').addEventListener('click', function () {
-        send('open-import', true);
+    document.getElementById('np-open').addEventListener('click', function () {
+        send('open-db', true);
     });
 
     document.getElementById('np-ghost-export').addEventListener('click', function () {
